@@ -1,0 +1,3842 @@
+(() => {
+  const groups = window.WORD_WALL_DATA || [];
+  const state = { group: null, pageIndex: 0, activeStandard: null, labOpen: false, labStandard: null };
+  const STORAGE_KEY = "mww-progress-v1";
+  const VIDEO_TITLES = {
+    "https://go.screenpal.com/watch/cOfO6KnOkoC": "Orientation: What Does It Mean?",
+    "https://go.screenpal.com/watch/cOfO68nOkoR": "Congruence Through Transformations",
+    "https://go.screenpal.com/watch/cOfOXjnOkDt": "Dilations: Orientation and Congruence",
+    "https://go.screenpal.com/watch/cOfOX2nOkDE": "Rotations: Orientation and Congruence",
+    "https://go.screenpal.com/watch/cOfOXwnOkbA": "Reflections: Orientation and Congruence",
+    "https://go.screenpal.com/watch/cOfOX3nOkb2": "Translations: Orientation and Congruence",
+    "https://go.screenpal.com/watch/cOfOlYnOkYh": "Understanding Clockwise and Counterclockwise Rotations",
+    "https://go.screenpal.com/watch/cOfthunOpmB": "Determining Algebraic Rules for Rotations",
+    "https://go.screenpal.com/watch/cOfOlonOkqU": "Determining the Algebraic Rule for Translations",
+    "https://go.screenpal.com/watch/cOfUfhnOJ6F": "Developing the Algebraic Rule for Reflections",
+    "https://go.screenpal.com/watch/cOfUhunOJbD": "Identifying Dilation Problems",
+    "https://go.screenpal.com/watch/cOfUhlnOJo8": "Matching Translations to Rules, Graphs, and Descriptions",
+    "https://go.screenpal.com/watch/cOfUhNnOJqz": "Solving Problems with Reflections",
+    "https://go.screenpal.com/watch/cOfUhJnOJqe": "Understanding Rotation Rules and Graphs",
+    "https://go.screenpal.com/watch/cOfU12nOJrp": "Understanding Transformations in Geometry",
+    "https://go.screenpal.com/watch/cOfOlQnOkqo": "Area and Perimeter After a Dilation",
+    "https://go.screenpal.com/watch/cThUFQn6C0K": "Corresponding Sides in Shapes",
+    "https://go.screenpal.com/watch/cThUFRn6CvT": "Understanding Ratios in Geometry",
+    "https://go.screenpal.com/watch/cThUbHn6CYE": "Determining Similar Figures",
+    "https://go.screenpal.com/watch/cThUF2n6CZw": "Understanding Proportional Shapes",
+    "https://go.screenpal.com/watch/cThUb3n6CD2": "Understanding Figure Dilation",
+    "https://go.screenpal.com/watch/cThUF8n6CUW": "Understanding Dilation and Scale Factor",
+    "https://go.screenpal.com/watch/cThvqin6m": "Using the Numeric Solver to Solve for x",
+    "https://go.screenpal.com/watch/cThvq4n6mhL": "Simplifying Fractions with a Calculator",
+    "https://go.screenpal.com/watch/cOnjf1n395j": "Dilation and Scale Factor in Geometry",
+    "https://go.screenpal.com/watch/cOnjeJn39Cl": "Understanding Dilations: Changing Characteristics of Shapes",
+    "https://go.screenpal.com/watch/cOnjfDn395a": "Orientation and Dilation",
+    "https://go.screenpal.com/watch/cOnjewn39pp": "Exploring Dilations on a Coordinate Plane",
+    "https://go.screenpal.com/watch/cOnDoQn03s4": "Identifying Dilation as an Enlargement or Reduction",
+    "https://somup.com/cOnDoFWOTn": "Finding the Scale Factor with Coordinate Points",
+    "https://somup.com/cOnDoTWOTd": "Understanding Algebraic Scale Factors",
+    "https://go.screenpal.com/watch/cOnXVbn01bd": "Finding the Rise",
+    "https://go.screenpal.com/watch/cOnXVun01FG": "Finding the Run",
+    "https://go.screenpal.com/watch/cOnXVCn01qR": "Finding Slope from a Graph",
+    "https://go.screenpal.com/watch/cOnDo4n03Pu": "Understanding Proportional Relationships",
+    "https://somup.com/cOnDDfWOU8": "Understanding Unit Rate",
+    "https://somup.com/cOnb2iWu3R": "Reading Proportional Graphs",
+    "https://go.screenpal.com/watch/cOnTFTn0MMU": "Slope from a Table",
+    "https://somup.com/cOnOfxWE0s": "Slope from a Graph",
+    "https://go.screenpal.com/watch/cOnTFJn0MPL": "y-intercept from a Table",
+    "https://somup.com/cOnOfkWEZU": "y-intercept from a Graph",
+    "https://go.screenpal.com/watch/cOnTbgn0MEM": "Slope and y-intercept from a Situation",
+    "https://somup.com/cOnIFYW01D": "Solving for Slope with the Calculator",
+    "https://somup.com/cOnTbFW5aB": "Graphing Proportional Equations with the Calculator",
+    "https://go.screenpal.com/watch/cOnOf8n0Nr2": "Using a Calculator Table to Find Slope and y-intercept",
+    "https://go.screenpal.com/watch/cOnOhTn0NTU": "Using Graph Points to Find Slope and y-intercept"
+  };
+  const $ = (selector) => document.querySelector(selector);
+
+  const dashboardView = $("#dashboardView");
+  const workspaceView = $("#workspaceView");
+  const groupList = $("#groupList");
+  const mapHotspots = $("#mapHotspots");
+  const search = $("#standardSearch");
+  const lessonImage = $("#lessonImage");
+  const videoDialog = $("#videoDialog");
+  const videoFrame = $("#videoFrame");
+  const videoDialogShell = $("#videoDialogShell");
+  const lessonViewer = $("#lessonViewer");
+  const transformLab = $("#transformLab");
+  const standardsLab = $("#standardsLab");
+  const lessonNavigation = $("#lessonNavigation");
+  const lessonHotspots = $("#lessonHotspots");
+  const whiteboardOverlay = $("#whiteboardOverlay");
+  const whiteboardCanvas = $("#whiteboardCanvas");
+  const whiteboardStage = $("#whiteboardStage");
+  const whiteboardTextEntry = $("#whiteboardTextEntry");
+  const openWhiteboardButton = $("#openWhiteboard");
+  document.body.append(whiteboardOverlay, openWhiteboardButton);
+  openWhiteboardButton.hidden = true;
+  const WHITEBOARD_STORAGE_KEY = "mww-whiteboards-v1";
+  const whiteboardState = {
+    open: false,
+    standard: null,
+    tool: "pointer",
+    color: "#10223d",
+    width: 5,
+    textSize: 30,
+    operations: [],
+    redo: [],
+    draft: null,
+    drawing: false,
+    textPoint: null
+  };
+
+  function readProgress() {
+    try {
+      const progress = JSON.parse(localStorage.getItem(STORAGE_KEY)) || { visited: {} };
+      if ((progress.schemaVersion || 1) < 2) {
+        if (progress.last?.groupId === "8-10") {
+          progress.last.pageIndex = progress.last.pageIndex <= 1 ? 0 : progress.last.pageIndex - 1;
+        }
+        if (progress.visited?.["8-10"]) {
+          progress.visited["8-10"] = [...new Set(progress.visited["8-10"].map(index => index <= 1 ? 0 : index - 1))];
+        }
+        progress.schemaVersion = 2;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+      }
+      if ((progress.schemaVersion || 2) < 3) {
+        const moveForNewSupportPage = index => index >= 6 ? Math.min(index + 1, 8) : index;
+        if (progress.last?.groupId === "8-10") progress.last.pageIndex = moveForNewSupportPage(progress.last.pageIndex);
+        if (progress.visited?.["8-10"]) progress.visited["8-10"] = [...new Set(progress.visited["8-10"].map(moveForNewSupportPage))];
+        progress.schemaVersion = 3;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+      }
+      if ((progress.schemaVersion || 3) < 4) {
+        const moveForRedesigned82 = index => {
+          if (index <= 1) return 0;
+          if (index <= 3) return 1;
+          if (index === 4) return 2;
+          if (index <= 6) return 3;
+          if (index === 7) return 4;
+          if (index <= 9) return 5;
+          if (index === 10) return 6;
+          if (index <= 12) return 7;
+          return 8;
+        };
+        if (progress.last?.groupId === "8-2") progress.last.pageIndex = moveForRedesigned82(progress.last.pageIndex);
+        if (progress.visited?.["8-2"]) progress.visited["8-2"] = [...new Set(progress.visited["8-2"].map(moveForRedesigned82))];
+        progress.schemaVersion = 4;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+      }
+      if ((progress.schemaVersion || 4) < 5) {
+        const moveForRedesigned83 = index => {
+          if (index <= 1) return 0;
+          if (index <= 3) return 1;
+          if (index === 4) return 2;
+          if (index <= 6) return 3;
+          if (index === 7) return 4;
+          if (index <= 9) return 5;
+          return 6;
+        };
+        if (progress.last?.groupId === "8-3") progress.last.pageIndex = moveForRedesigned83(progress.last.pageIndex);
+        if (progress.visited?.["8-3"]) progress.visited["8-3"] = [...new Set(progress.visited["8-3"].map(moveForRedesigned83))];
+        progress.schemaVersion = 5;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+      }
+      if ((progress.schemaVersion || 5) < 6) {
+        const moveForRedesigned84 = index => {
+          if (index <= 1) return 0;
+          if (index <= 3) return 1;
+          if (index === 4) return 2;
+          if (index <= 6) return 3;
+          if (index === 7) return 4;
+          if (index <= 9) return 5;
+          return 6;
+        };
+        if (progress.last?.groupId === "8-4") progress.last.pageIndex = moveForRedesigned84(progress.last.pageIndex);
+        if (progress.visited?.["8-4"]) progress.visited["8-4"] = [...new Set(progress.visited["8-4"].map(moveForRedesigned84))];
+        progress.schemaVersion = 6;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+      }
+      return progress;
+    }
+    catch { return { visited: {} }; }
+  }
+
+  function saveProgress() {
+    const progress = readProgress();
+    progress.last = {
+      groupId: state.group.id,
+      pageIndex: state.pageIndex,
+      labStandard: state.labOpen ? state.labStandard : null
+    };
+    progress.visited ||= {};
+    progress.visited[state.group.id] ||= [];
+    if (!progress.visited[state.group.id].includes(state.pageIndex)) {
+      progress.visited[state.group.id].push(state.pageIndex);
+    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+  }
+
+  function filteredGroups(query = "") {
+    const needle = query.trim().toLowerCase();
+    if (!needle) return groups;
+    return groups.filter(group =>
+      [group.code, group.topic, ...group.standards].join(" ").toLowerCase().includes(needle)
+    );
+  }
+
+  function renderDashboard(query = "") {
+    const shown = filteredGroups(query);
+    groupList.innerHTML = "";
+    shown.forEach(group => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "group-card";
+      button.dataset.accent = group.accent;
+      button.innerHTML = `
+        <span class="group-index">${group.number}</span>
+        <span><strong>${group.code} · ${group.topic}</strong><small>${group.standards.join(" · ")}</small></span>
+        <span class="group-arrow" aria-hidden="true">→</span>`;
+      button.addEventListener("click", () => openGroup(group.id));
+      groupList.append(button);
+    });
+    $("#groupCount").textContent = `${shown.length} ${shown.length === 1 ? "group" : "groups"}`;
+    $("#emptyState").hidden = shown.length > 0;
+  }
+
+  function renderHotspots() {
+    groups.forEach(group => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "map-hotspot";
+      button.style.left = `${group.pos[0]}%`;
+      button.style.top = `${group.pos[1]}%`;
+      button.setAttribute("aria-label", `Open ${group.code}: ${group.topic}`);
+      button.title = `${group.code}: ${group.topic}`;
+      button.addEventListener("click", () => openGroup(group.id));
+      mapHotspots.append(button);
+    });
+  }
+
+  function updateContinueCard() {
+    const progress = readProgress();
+    const card = $("#continueCard");
+    const group = groups.find(item => item.id === progress.last?.groupId);
+    if (!group) { card.hidden = true; return; }
+    const page = group.pages[progress.last.pageIndex] || group.pages[0];
+    $("#continueText").textContent = progress.last.labStandard
+      ? `${progress.last.labStandard} — Interactive lab`
+      : `${group.code} · ${group.topic} — ${page.resource}`;
+    card.hidden = false;
+    card.onclick = () => openGroup(group.id, progress.last.pageIndex, progress.last.labStandard);
+  }
+
+  function showView(view) {
+    dashboardView.classList.toggle("is-active", view === "dashboard");
+    workspaceView.classList.toggle("is-active", view === "workspace");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function openGroup(id, requestedPage, requestedLab) {
+    const group = groups.find(item => item.id === id);
+    if (!group) return;
+    state.group = group;
+    const saved = readProgress().last;
+    const entryPage = Number.isInteger(group.entryPageIndex) ? group.entryPageIndex : Math.min(1, group.pages.length - 1);
+    state.pageIndex = Number.isInteger(requestedPage)
+      ? requestedPage
+      : saved?.groupId === id ? Math.min(saved.pageIndex, group.pages.length - 1) : entryPage;
+    state.activeStandard = group.pages[state.pageIndex].standard || null;
+    state.labOpen = false;
+    $("#groupNumber").textContent = group.number;
+    $("#groupCode").textContent = group.code;
+    $("#groupTitle").textContent = group.topic;
+    $("#locationLabel").textContent = `${group.code} · ${group.topic}`;
+    renderStandards();
+    renderPage();
+    showView("workspace");
+    if (requestedLab && LABS[requestedLab]) showStandardLab(requestedLab);
+  }
+
+  function renderStandards() {
+    const container = $("#standardList");
+    container.innerHTML = "";
+    state.group.standards.forEach(code => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "standard-button";
+      button.textContent = code;
+      button.classList.toggle("is-active", code === state.activeStandard);
+      button.addEventListener("click", () => {
+        const index = state.group.pages.findIndex(page => page.standard === code);
+        state.activeStandard = code;
+        setPage(index >= 0 ? index : 1);
+      });
+      container.append(button);
+    });
+  }
+
+  function setPage(index) {
+    if (!state.group) return;
+    if (whiteboardState.open) closeWhiteboard();
+    state.pageIndex = Math.max(0, Math.min(index, state.group.pages.length - 1));
+    state.labOpen = false;
+    state.labStandard = null;
+    const page = state.group.pages[state.pageIndex];
+    if (page.standard) state.activeStandard = page.standard;
+    renderStandards();
+    renderPage();
+  }
+
+  function standardPages() {
+    if (!state.activeStandard) return state.group.pages.slice(0, Math.min(3, state.group.pages.length));
+    const pages = state.group.pages.filter(page => page.standard === state.activeStandard);
+    return pages.length ? pages : state.group.pages;
+  }
+
+  function renderResourceTabs() {
+    const container = $("#resourceTabs");
+    container.innerHTML = "";
+    const currentPage = state.group.pages[state.pageIndex];
+    const isHub = Array.isArray(currentPage.substandardHotspots);
+    container.hidden = isHub;
+    if (isHub) return;
+    standardPages().forEach(page => {
+      const index = state.group.pages.indexOf(page);
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "resource-tab";
+      button.classList.toggle("is-active", !state.labOpen && index === state.pageIndex);
+      button.textContent = page.resource;
+      button.addEventListener("click", () => setPage(index));
+      container.append(button);
+    });
+    if (LABS[state.activeStandard]) {
+      const labButton = document.createElement("button");
+      labButton.type = "button";
+      labButton.className = "resource-tab lab-resource-tab";
+      labButton.classList.toggle("is-active", state.labOpen);
+      labButton.textContent = "▶ Interactive lab";
+      labButton.addEventListener("click", () => showStandardLab(state.activeStandard));
+      container.append(labButton);
+    }
+  }
+
+  function renderSubstandardHotspots(page) {
+    lessonHotspots.innerHTML = "";
+    const hotspots = page.substandardHotspots || [];
+    lessonHotspots.hidden = hotspots.length === 0;
+    hotspots.forEach(hotspot => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "substandard-hotspot";
+      button.style.left = `${hotspot.left}%`;
+      button.style.top = `${hotspot.top}%`;
+      button.style.width = `${hotspot.width}%`;
+      button.style.height = `${hotspot.height}%`;
+      button.setAttribute("aria-label", `Open ${hotspot.standard}: ${hotspot.label}`);
+      button.title = `Open ${hotspot.standard}: ${hotspot.label}`;
+      button.addEventListener("click", () => {
+        const index = state.group.pages.findIndex(item => item.standard === hotspot.standard);
+        if (index >= 0) setPage(index);
+      });
+      lessonHotspots.append(button);
+    });
+  }
+
+  function renderVideos(page) {
+    const overlay = $("#videoOverlays");
+    const shelf = $("#videoShelf");
+    const list = $("#videoList");
+    overlay.innerHTML = "";
+    list.innerHTML = "";
+    shelf.hidden = page.videos.length === 0;
+    (page.videoHotspots || []).forEach(video => {
+      const displayTitle = VIDEO_TITLES[video.url] || video.title;
+      const hotspot = document.createElement("button");
+      hotspot.type = "button";
+      hotspot.className = "video-hotspot";
+      hotspot.style.left = `${video.left}%`;
+      hotspot.style.top = `${video.top}%`;
+      hotspot.style.width = `${video.width}%`;
+      hotspot.style.height = `${video.height}%`;
+      hotspot.setAttribute("aria-label", `Watch: ${displayTitle}`);
+      hotspot.addEventListener("click", () => openVideo({ ...video, title: displayTitle }));
+      overlay.append(hotspot);
+    });
+    page.videos.forEach(video => {
+      const displayTitle = VIDEO_TITLES[video.url] || video.title;
+      const shelfButton = document.createElement("button");
+      shelfButton.type = "button";
+      shelfButton.textContent = `▶ ${displayTitle}`;
+      shelfButton.addEventListener("click", () => openVideo({ ...video, title: displayTitle }));
+      list.append(shelfButton);
+    });
+  }
+
+  function renderDots() {
+    const progress = readProgress();
+    const seen = progress.visited?.[state.group.id] || [];
+    const container = $("#pageDots");
+    container.innerHTML = "";
+    state.group.pages.forEach((page, index) => {
+      const dot = document.createElement("button");
+      dot.type = "button";
+      dot.className = "page-dot";
+      dot.classList.toggle("is-active", index === state.pageIndex);
+      dot.classList.toggle("is-seen", seen.includes(index) && index !== state.pageIndex);
+      dot.setAttribute("aria-label", `Go to page ${index + 1}: ${page.resource}`);
+      dot.addEventListener("click", () => setPage(index));
+      container.append(dot);
+    });
+  }
+
+  function renderProgress() {
+    const seen = readProgress().visited?.[state.group.id] || [];
+    const percent = Math.round((seen.length / state.group.pages.length) * 100);
+    $("#progressText").textContent = `${percent}%`;
+    $("#progressFill").style.width = `${percent}%`;
+  }
+
+  function renderPage() {
+    const page = state.group.pages[state.pageIndex];
+    document.body.classList.remove("lab-is-open");
+    openWhiteboardButton.hidden = true;
+    state.labOpen = false;
+    state.labStandard = null;
+    transformLab.hidden = true;
+    standardsLab.hidden = true;
+    lessonViewer.hidden = false;
+    lessonNavigation.hidden = false;
+    saveProgress();
+    $("#pageKicker").textContent = page.standard || state.group.code;
+    $("#pageTitle").textContent = page.resource;
+    $("#pageCount").textContent = `Page ${state.pageIndex + 1} of ${state.group.pages.length}`;
+    lessonImage.src = page.image;
+    lessonImage.alt = `${state.group.code} ${state.group.topic}: ${page.resource}`;
+    renderSubstandardHotspots(page);
+    $("#previousPage").disabled = state.pageIndex === 0;
+    $("#nextPage").disabled = state.pageIndex === state.group.pages.length - 1;
+    renderResourceTabs();
+    renderVideos(page);
+    renderDots();
+    renderProgress();
+  }
+
+  function showStandardLab(standard) {
+    if (!LABS[standard]) return;
+    document.body.classList.add("lab-is-open");
+    openWhiteboardButton.hidden = false;
+    state.labOpen = true;
+    state.labStandard = standard;
+    state.activeStandard = standard;
+    lessonViewer.hidden = true;
+    transformLab.hidden = true;
+    standardsLab.hidden = false;
+    $("#videoShelf").hidden = true;
+    lessonNavigation.hidden = true;
+    $("#pageKicker").textContent = standard;
+    $("#pageTitle").textContent = "Interactive Lab";
+    $("#pageCount").textContent = "Learn by doing";
+    renderStandards();
+    renderResourceTabs();
+    renderStandardsLab(standard);
+    saveProgress();
+    standardsLab.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    openWhiteboard();
+  }
+
+  function showTransformationLab() {
+    state.labOpen = true;
+    lessonViewer.hidden = true;
+    $("#videoShelf").hidden = true;
+    lessonNavigation.hidden = true;
+    transformLab.hidden = false;
+    $("#pageKicker").textContent = "8.10C";
+    $("#pageTitle").textContent = "Transformation Play Lab";
+    $("#pageCount").textContent = "Interactive";
+    renderResourceTabs();
+    transformLab.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  function openVideo(video) {
+    $("#videoTitle").textContent = video.title;
+    videoFrame.src = video.url.includes("go.screenpal.com/watch/")
+      ? video.url.replace("/watch/", "/player/")
+      : video.url;
+    videoDialog.showModal();
+  }
+
+  function closeVideo() {
+    videoFrame.src = "about:blank";
+    videoDialogShell.classList.remove("is-expanded");
+    videoDialog.close();
+    $("#expandVideo span").textContent = "Expand";
+  }
+
+  function goHome() {
+    if (whiteboardState.open) closeWhiteboard();
+    document.body.classList.remove("lab-is-open");
+    openWhiteboardButton.hidden = true;
+    closeVideoIfOpen();
+    $("#locationLabel").textContent = "Standards map";
+    updateContinueCard();
+    showView("dashboard");
+  }
+
+  function closeVideoIfOpen() {
+    if (videoDialog.open) closeVideo();
+  }
+
+  function readSavedWhiteboards() {
+    try { return JSON.parse(localStorage.getItem(WHITEBOARD_STORAGE_KEY)) || {}; }
+    catch { return {}; }
+  }
+
+  function saveWhiteboard() {
+    if (!whiteboardState.standard) return;
+    try {
+      const boards = readSavedWhiteboards();
+      boards[whiteboardState.standard] = {
+        operations: whiteboardState.operations.slice(-300)
+      };
+      localStorage.setItem(WHITEBOARD_STORAGE_KEY, JSON.stringify(boards));
+    } catch {
+      $("#whiteboardHint").textContent = "Your browser could not save more whiteboard work, but this board will remain until the page closes.";
+    }
+  }
+
+  function currentWhiteboardKey() {
+    const standard = state.labStandard || "lab";
+    const data = labRuntime.data || {};
+    if (standard === "8.2A") return `${standard}:${data.phase || "sort"}:${data.visualIndex || 0}`;
+    if (standard === "8.2B") return `${standard}:${data.phase || "numberLine"}:${data.phase === "application" ? data.applicationIndex || 0 : data.lineIndex || 0}`;
+    if (standard === "8.10B") return `${standard}:activity`;
+    return `${standard}:${data.index || 0}`;
+  }
+
+  function loadWhiteboard(boardKey) {
+    const saved = readSavedWhiteboards()[boardKey] || {};
+    whiteboardState.standard = boardKey;
+    whiteboardState.operations = Array.isArray(saved.operations) ? saved.operations : [];
+    whiteboardState.redo = [];
+    whiteboardState.draft = null;
+    whiteboardState.drawing = false;
+  }
+
+  function whiteboardPoint(event) {
+    const rect = whiteboardCanvas.getBoundingClientRect();
+    return {
+      x: Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width)),
+      y: Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height))
+    };
+  }
+
+  function drawWhiteboardOperation(context, operation, width, height) {
+    context.save();
+    context.lineCap = "round";
+    context.lineJoin = "round";
+    context.strokeStyle = operation.color || "#10223d";
+    context.fillStyle = operation.color || "#10223d";
+    context.lineWidth = operation.width || 5;
+    context.globalAlpha = operation.tool === "highlighter" ? .28 : 1;
+    if (operation.tool === "eraser") {
+      context.globalCompositeOperation = "destination-out";
+      context.lineWidth = Math.max(18, (operation.width || 5) * 2.6);
+      context.globalAlpha = 1;
+    }
+    if (operation.tool === "text") {
+      context.globalCompositeOperation = "source-over";
+      context.globalAlpha = 1;
+      context.font = `700 ${operation.size || 30}px Arial, sans-serif`;
+      context.textBaseline = "top";
+      context.fillText(operation.text, operation.point.x * width, operation.point.y * height);
+    } else if (operation.tool === "line") {
+      context.beginPath();
+      context.moveTo(operation.start.x * width, operation.start.y * height);
+      context.lineTo(operation.end.x * width, operation.end.y * height);
+      context.stroke();
+    } else if (operation.points?.length) {
+      context.beginPath();
+      context.moveTo(operation.points[0].x * width, operation.points[0].y * height);
+      operation.points.slice(1).forEach(point => context.lineTo(point.x * width, point.y * height));
+      if (operation.points.length === 1) context.lineTo(operation.points[0].x * width + .01, operation.points[0].y * height + .01);
+      context.stroke();
+    }
+    context.restore();
+  }
+
+  function renderWhiteboard() {
+    if (!whiteboardCanvas || !whiteboardStage) return;
+    const rect = whiteboardStage.getBoundingClientRect();
+    const width = Math.max(320, Math.round(rect.width));
+    const height = Math.max(280, Math.round(rect.height));
+    const density = Math.min(2, window.devicePixelRatio || 1);
+    if (whiteboardCanvas.width !== Math.round(width * density) || whiteboardCanvas.height !== Math.round(height * density)) {
+      whiteboardCanvas.width = Math.round(width * density);
+      whiteboardCanvas.height = Math.round(height * density);
+      whiteboardCanvas.style.width = `${width}px`;
+      whiteboardCanvas.style.height = `${height}px`;
+    }
+    const context = whiteboardCanvas.getContext("2d");
+    context.setTransform(density, 0, 0, density, 0, 0);
+    context.clearRect(0, 0, width, height);
+    whiteboardState.operations.forEach(operation => drawWhiteboardOperation(context, operation, width, height));
+    if (whiteboardState.draft) drawWhiteboardOperation(context, whiteboardState.draft, width, height);
+    const hint = $("#whiteboardHint");
+    hint.hidden = whiteboardState.operations.length > 0 || Boolean(whiteboardState.draft);
+    $("#whiteboardUndo").disabled = whiteboardState.operations.length === 0;
+    $("#whiteboardRedo").disabled = whiteboardState.redo.length === 0;
+  }
+
+  function commitWhiteboardOperation(operation) {
+    if (!operation) return;
+    whiteboardState.operations.push(operation);
+    if (whiteboardState.operations.length > 300) whiteboardState.operations.shift();
+    whiteboardState.redo = [];
+    whiteboardState.draft = null;
+    saveWhiteboard();
+    renderWhiteboard();
+  }
+
+  function updateWhiteboardTool(tool) {
+    whiteboardState.tool = tool;
+    const writing = tool !== "pointer";
+    document.querySelectorAll("[data-whiteboard-tool]").forEach(button => {
+      const active = button.dataset.whiteboardTool === tool;
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-pressed", String(active));
+    });
+    whiteboardCanvas.dataset.tool = tool;
+    whiteboardCanvas.classList.toggle("is-writing", writing);
+    document.body.classList.toggle("whiteboard-is-writing", whiteboardState.open && writing);
+    if (!writing) {
+      whiteboardState.drawing = false;
+      whiteboardState.draft = null;
+      whiteboardTextEntry.hidden = true;
+      whiteboardState.textPoint = null;
+      renderWhiteboard();
+    }
+    $("#whiteboardHint").textContent = tool === "text"
+      ? "Click anywhere on the board, type your note, and press Enter."
+      : tool === "line" ? "Drag from one point to another to make a straight line."
+      : tool === "eraser" ? "Drag across any mark to erase it. Undo is available."
+      : "Draw anywhere. Your work stays here when you return to the lab.";
+  }
+
+  function openWhiteboard() {
+    if (!state.labStandard) return;
+    const boardKey = currentWhiteboardKey();
+    if (whiteboardState.standard !== boardKey) loadWhiteboard(boardKey);
+    whiteboardState.open = true;
+    whiteboardOverlay.hidden = false;
+    document.body.classList.add("whiteboard-is-open");
+    openWhiteboardButton.setAttribute("aria-expanded", "true");
+    openWhiteboardButton.textContent = "✎ Tools open";
+    updateWhiteboardTool("pointer");
+    requestAnimationFrame(renderWhiteboard);
+  }
+
+  function closeWhiteboard() {
+    if (!whiteboardState.open) return;
+    saveWhiteboard();
+    whiteboardState.open = false;
+    whiteboardState.drawing = false;
+    whiteboardState.draft = null;
+    whiteboardTextEntry.hidden = true;
+    whiteboardOverlay.hidden = true;
+    document.body.classList.remove("whiteboard-is-open");
+    document.body.classList.remove("whiteboard-is-writing");
+    openWhiteboardButton.setAttribute("aria-expanded", "false");
+    openWhiteboardButton.textContent = "✎ Writing tools";
+    openWhiteboardButton.focus();
+  }
+
+  function syncWhiteboardQuestion() {
+    if (!whiteboardState.open) return;
+    const boardKey = currentWhiteboardKey();
+    if (whiteboardState.standard === boardKey) return;
+    saveWhiteboard();
+    loadWhiteboard(boardKey);
+    renderWhiteboard();
+  }
+
+  function showWhiteboardTextEntry(event) {
+    const stageRect = whiteboardStage.getBoundingClientRect();
+    const point = whiteboardPoint(event);
+    whiteboardState.textPoint = point;
+    whiteboardTextEntry.value = "";
+    whiteboardTextEntry.style.left = `${Math.min(stageRect.width - 240, Math.max(8, event.clientX - stageRect.left))}px`;
+    whiteboardTextEntry.style.top = `${Math.min(stageRect.height - 52, Math.max(8, event.clientY - stageRect.top))}px`;
+    whiteboardTextEntry.hidden = false;
+    requestAnimationFrame(() => whiteboardTextEntry.focus());
+  }
+
+  function commitWhiteboardText() {
+    if (whiteboardTextEntry.hidden) return;
+    const textValue = whiteboardTextEntry.value.trim();
+    whiteboardTextEntry.hidden = true;
+    if (!textValue || !whiteboardState.textPoint) return;
+    commitWhiteboardOperation({
+      tool: "text",
+      color: whiteboardState.color,
+      size: whiteboardState.textSize,
+      point: whiteboardState.textPoint,
+      text: textValue
+    });
+    whiteboardState.textPoint = null;
+  }
+
+  const LABS = {
+    "8.4A": {
+      title: "Slope: Do It With Me",
+      description: "Choose four exact points on each line. The lab groups them into two pairs, and you complete the rise-first, run-second process for both pairs to prove that the slope stays the same. Pay attention to the value of each axis interval: the first five problems coach every move, and the final ten ask you to determine and enter both sets of signed changes yourself.",
+      summary: "You calculated slope twice on every line and proved that any two pairs of points on the same line produce the same slope. The rise is the signed change in y, and the run is the signed change in x; when you move from the left point to the right point, the run is positive while the rise may be positive, negative, or zero. A vertical line has a run of zero, so both calculations show that its slope is undefined, while a horizontal line has a rise of zero and slope zero. You also connected the matching rise-over-run ratios to the equation and noticed that proportional lines pass through the origin while nonproportional lines have a nonzero y-intercept.",
+      videos: [
+        ["https://go.screenpal.com/watch/cOnXVbn01bd", "Finding the Rise"],
+        ["https://go.screenpal.com/watch/cOnXVun01FG", "Finding the Run"],
+        ["https://go.screenpal.com/watch/cOnXVCn01qR", "Finding Slope from a Graph"]
+      ]
+    },
+    "8.3A": {
+      title: "Similar Figures Ratio Builder",
+      description: "Turn the second drawing so the figures are easier to compare, discover and color-match corresponding sides, then build valid proportions and solve for missing measures. The lab guides each decision and gives a helpful clue whenever a match or ratio needs another look.",
+      summary: "You aligned similar figures, traced corresponding sides, and used color to keep ratios in the same order. A dilation preserves angle measures and creates proportional corresponding side lengths, even when the figures are drawn at different rotations on the page. Valid proportions compare Figure I to Figure II, use the reciprocal consistently, or compare matching pairs of sides within each figure. In real situations, mark corresponding lengths first, write one consistent proportion, and then solve for the missing measure.",
+      videos: [
+        ["https://go.screenpal.com/watch/cThUFQn6C0K", "Corresponding Sides in Shapes"],
+        ["https://go.screenpal.com/watch/cThUFRn6CvT", "Understanding Ratios in Geometry"],
+        ["https://go.screenpal.com/watch/cThUbHn6CYE", "Determining Similar Figures"],
+        ["https://go.screenpal.com/watch/cThUF8n6CUW", "Understanding Dilation and Scale Factor"]
+      ]
+    },
+    "8.3B": {
+      title: "Dilation Attribute Explorer",
+      description: "Choose the origin as the center of dilation, then drag one glowing vertex along its ray. The entire figure will grow or shrink with that point, helping you see which attributes change and which stay fixed.",
+      summary: "You created five reductions and five enlargements with the origin as the center of dilation. Every coordinate, distance from the origin, side length, and perimeter is multiplied by the scale factor k, while area is multiplied by k². Corresponding angle measures, orientation, shape, and parallel relationships do not change, so the original figure and its dilation remain similar. A scale factor between 0 and 1 makes a reduction, and a scale factor greater than 1 makes an enlargement; when k is not 1, congruence is not preserved.",
+      videos: [
+        ["https://go.screenpal.com/watch/cOnjf1n395j", "Dilation and Scale Factor in Geometry"],
+        ["https://go.screenpal.com/watch/cOnjeJn39Cl", "Changing and Unchanging Attributes"],
+        ["https://go.screenpal.com/watch/cOnjfDn395a", "Orientation and Dilation"],
+        ["https://go.screenpal.com/watch/cOnjewn39pp", "Dilations on a Coordinate Plane"]
+      ]
+    },
+    "8.3C": {
+      title: "Algebraic Dilation Rule Lab",
+      description: "Connect descriptions, coordinate pairs, and figures on coordinate planes to algebraic dilation rules. Each question asks you to use the same multiplier for both coordinates and explain whether the result is a reduction, an enlargement, a translation, or not a dilation.",
+      summary: "You matched verbal descriptions, coordinate pairs, and coordinate-plane figures to algebraic dilation rules. A dilation centered at the origin multiplies both coordinates by the same positive scale factor: (x, y) → (kx, ky). A scale factor between 0 and 1 creates a reduction, while a scale factor greater than 1 creates an enlargement. Adding constants describes a translation, and using different multipliers for x and y does not create a dilation because the figure’s proportions change.",
+      videos: [
+        ["https://go.screenpal.com/watch/cOnDoQn03s4", "Identifying Dilation as an Enlargement or Reduction"],
+        ["https://somup.com/cOnDoFWOTn", "Finding the Scale Factor with Coordinate Points"],
+        ["https://somup.com/cOnDoTWOTd", "Understanding Algebraic Scale Factors"]
+      ]
+    },
+    "8.2A": {
+      title: "Build the Real Number System",
+      description: "First, drag or tap each number into its most specific category. Then choose the visual that correctly represents five relationships among the real-number sets.",
+      summary: "You built the real-number system by simplifying and classifying different forms of numbers. Natural, whole, integer, and rational numbers are nested because every smaller set also belongs to the sets surrounding it. Repeating or terminating decimals are rational, while nonterminating, nonrepeating numbers are irrational. When classifying a number, simplify it first and then identify its most specific home.",
+      videos: [
+        ["https://go.screenpal.com/watch/cTe3f2niYMB", "Understanding Real Numbers"],
+        ["https://go.screenpal.com/watch/cTe3fTniYLf", "Understanding Rational Numbers"],
+        ["https://go.screenpal.com/watch/cTe3fAniYL5", "Understanding Integers and Whole Numbers"],
+        ["https://go.screenpal.com/watch/cTe31JniYSa", "Understanding Whole Numbers"],
+        ["https://go.screenpal.com/watch/cTe31LniYS9", "Understanding Natural Numbers"],
+        ["https://go.screenpal.com/watch/cTe3fjniYMF", "Understanding Irrational Numbers"]
+      ]
+    },
+    "8.2B": {
+      title: "Estimate Square Roots on a Number Line",
+      description: "Place square roots in relation to integers and unlabeled midpoint ticks. Then use square roots to find missing side lengths in five original real-world square-area problems.",
+      summary: "You estimated square roots by locating the perfect squares on either side of each radicand. The closer the radicand is to one perfect square, the closer its square root is to that integer, and the unlabeled midpoint helps you decide which half of the interval contains the value. In square situations, area equals side length squared, so finding a missing side length requires the square root of the area. Use nearby perfect squares to check whether a calculator estimate is reasonable.",
+      videos: [
+        ["https://go.screenpal.com/watch/cTetFPniALx", "Squares and Square Roots"],
+        ["https://go.screenpal.com/watch/cTetqeniANT", "Understanding Squaring Numbers"],
+        ["https://go.screenpal.com/watch/cTeuclniBvT", "Area of a Square and Square Roots"],
+        ["https://go.screenpal.com/watch/cTeucmniByc", "Understanding Square Roots"],
+        ["https://go.screenpal.com/watch/cTeuc0niBwY", "Perfect Squares on a Number Line"],
+        ["https://go.screenpal.com/watch/cTeuc4niBxX", "Understanding Non-Perfect Squares"]
+      ]
+    },
+    "8.2C": {
+      title: "Scientific Notation Place-Value Lab",
+      description: "Convert very small and very large numbers in both directions, then identify the coefficient and exponent in scientific notation. Enter each response yourself so every zero and exponent sign matters.",
+      summary: "You converted very small and very large values between standard notation and scientific notation. A positive exponent represents a value greater than or equal to one, while a negative exponent represents a value between zero and one. Zeros between nonzero digits are part of the number and must remain in the coefficient or standard-form value. A scientific-notation coefficient is at least 1 but less than 10, and the exponent records how many places the decimal moves.",
+      videos: [
+        ["https://go.screenpal.com/watch/cTffDtniSGz", "Understanding Decimal Notation"],
+        ["https://go.screenpal.com/watch/cTffDUniSGN", "Understanding Scientific Notation"],
+        ["https://go.screenpal.com/watch/cTfnFEniMN5", "Large Numbers to Scientific Notation"],
+        ["https://go.screenpal.com/watch/cTfn31niLZE", "Expanding Scientific Notation"],
+        ["https://go.screenpal.com/watch/cTfnF8niMP5", "Simplifying Scientific Notation"],
+        ["https://go.screenpal.com/watch/cTfnqQniMSh", "Scientific to Standard Notation"],
+        ["https://go.screenpal.com/watch/cTffDgniSHv", "Coefficients in Scientific Notation"],
+        ["https://go.screenpal.com/watch/cTffbjniS7d", "Exponents in Scientific Notation"],
+        ["https://go.screenpal.com/watch/cTffDLniSdW", "Base 10 in Scientific Notation"]
+      ]
+    },
+    "8.2D": {
+      title: "Order and Compare Real Numbers",
+      description: "Order mixed real numbers on number lines and in sequences, then identify values that lie between two real numbers. Convert each form to a useful decimal approximation when the comparison is close.",
+      summary: "You ordered and compared natural numbers, whole numbers, integers, rational numbers, and irrational numbers written in different forms. A decimal approximation creates a common form for comparing fractions, square roots, and familiar irrational values such as π. When negative values are involved, the number farther left on the number line is smaller, even when its absolute value is greater. To find a value between two numbers, first estimate both endpoints to the same decimal place and choose a value that is greater than the lower endpoint and less than the upper endpoint.",
+      videoPlacement: "practice",
+      videos: [
+        ["https://go.screenpal.com/watch/cTfjqhnjQJj", "Using the Calculator to Order Real Numbers"],
+        ["https://go.screenpal.com/watch/cTfl0bnj3pd", "Identifying a Value Between Two Numbers"]
+      ]
+    },
+    "8.10A": {
+      title: "Orientation + Congruence Lab",
+      description: "Compare all four transformations on a coordinate plane. Name the exact transformation, then decide what happened to orientation and congruence.",
+      summary: "You explored how translation, rotation, reflection, and dilation affect a figure. Translation and dilation keep the figure facing the same way, while rotations and reflections change its orientation in this word wall’s visual definition. Translations, rotations, and reflections preserve congruence because side lengths and angle measures stay the same. A dilation changes size, so it does not preserve congruence unless its scale factor is 1.",
+      videos: [
+        ["https://go.screenpal.com/watch/cOfO6KnOkoC", "Orientation: What Does It Mean?"],
+        ["https://go.screenpal.com/watch/cOfO68nOkoR", "Congruence Through Transformations"],
+        ["https://go.screenpal.com/watch/cOfOXjnOkDt", "Dilations: Orientation and Congruence"],
+        ["https://go.screenpal.com/watch/cOfOX2nOkDE", "Rotations: Orientation and Congruence"],
+        ["https://go.screenpal.com/watch/cOfOXwnOkbA", "Reflections: Orientation and Congruence"],
+        ["https://go.screenpal.com/watch/cOfOX3nOkb2", "Translations: Orientation and Congruence"]
+      ]
+    },
+    "8.10B": {
+      title: "Congruence Sorting Lab",
+      description: "Sort each transformation by the evidence it leaves behind, including its algebraic rule. Congruence is preserved only when size and shape stay the same.",
+      summary: "You classified transformations by checking what happens to size and shape. Translations, rotations, and reflections are rigid transformations, so they preserve congruence. A dilation keeps the shape but changes the size when the scale factor is not 1. Use side lengths and angle measures as evidence instead of judging only by how a figure looks.",
+      videos: [
+        ["https://go.screenpal.com/watch/cOfO68nOkoR", "Congruence Through Transformations"]
+      ]
+    },
+    "8.10C": {
+      title: "Transformation + Rule Replay Challenge",
+      description: "Press Play to observe a transformation, then identify the exact movement and its algebraic rule. The final exemplars reverse the thinking by giving you the rule first.",
+      summary: "You connected visible transformations to their algebraic rules. Translations add constants to coordinates, reflections change the sign of one coordinate, rotations swap and change coordinate signs in predictable ways, and dilations multiply both coordinates by the same scale factor. You also worked backward from a rule to name the exact transformation. Use corresponding points and the origin as evidence whenever a diagram is difficult to interpret.",
+      videos: [
+        ["https://go.screenpal.com/watch/cOfOlYnOkYh", "Clockwise and Counterclockwise Vocabulary"],
+        ["https://go.screenpal.com/watch/cOfthunOpmB", "Rotation Rules"],
+        ["https://go.screenpal.com/watch/cOfOlonOkqU", "Translation Rules"],
+        ["https://go.screenpal.com/watch/cOfUfhnOJ6F", "Reflection Rules"],
+        ["https://go.screenpal.com/watch/cOfUhunOJbD", "Identifying Dilation Problems"],
+        ["https://go.screenpal.com/watch/cOfUhlnOJo8", "Translation Problem Solving"],
+        ["https://go.screenpal.com/watch/cOfUhNnOJqz", "Reflection Problem Solving"],
+        ["https://go.screenpal.com/watch/cOfUhJnOJqe", "Rotation Problem Solving"]
+      ]
+    },
+    "8.10D": {
+      title: "Dilation Factor Drop Lab",
+      description: "Compare two dilated figures centered at the origin. Drag the correct factor into the perimeter and area targets, or tap a factor and then tap a target.",
+      summary: "You compared the perimeter and area of four dilated figures. If the scale factor is k, every length and the perimeter change by a factor of k. Area changes by a factor of k² because two dimensions are being scaled. This relationship works for enlargements and reductions, including fractional scale factors.",
+      videos: [
+        ["https://go.screenpal.com/watch/cOfOlQnOkqo", "Area and Perimeter After a Dilation"]
+      ]
+    }
+  };
+
+  const labRuntime = { standard: null, data: null, skipped: 0 };
+
+  function escapeHTML(value) {
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function formatMathText(value) {
+    return escapeHTML(value).replace(/(−?)√([0-9]+(?:\.[0-9]+)?|[A-Za-z])/g, (_, sign, radicand) => {
+      const spoken = `${sign ? "negative " : ""}square root of ${radicand}`;
+      const token = /^[A-Za-z]$/.test(radicand) ? `<mi>${radicand}</mi>` : `<mn>${radicand}</mn>`;
+      return `<math class="radical-expression" display="inline" aria-label="${spoken}"><mrow>${sign ? "<mo>−</mo>" : ""}<msqrt>${token}</msqrt></mrow></math>`;
+    });
+  }
+
+  function formatNumberDisplay(value) {
+    return String(value).includes("<") ? value : formatMathText(value);
+  }
+
+  function setLabProgress(done, total, instruction) {
+    $("#standardsLabProgress").textContent = `${done} of ${total} complete`;
+    $("#standardsLabInstruction").textContent = instruction;
+    $("#standardsLabProgressFill").style.width = `${total ? (done / total) * 100 : 0}%`;
+  }
+
+  function setLabFeedback(message, tone = "") {
+    const feedback = $("#standardsLabFeedback");
+    feedback.innerHTML = formatMathText(message);
+    feedback.className = `lab-feedback${tone ? ` is-${tone}` : ""}`;
+  }
+
+  function showLabCompletion(standard) {
+    const config = LABS[standard];
+    const skippedNote = labRuntime.skipped
+      ? ` You skipped ${labRuntime.skipped} ${labRuntime.skipped === 1 ? "problem" : "problems"}; restart the lab whenever you want to revisit them.`
+      : "";
+    $("#labCompletionTitle").textContent = labRuntime.skipped ? `${standard} pathway complete` : `${standard} connection complete`;
+    $("#labCompletionText").textContent = `${config.summary}${skippedNote}`;
+    $("#standardsLabCompletion").hidden = false;
+    $("#skipLabProblem").disabled = true;
+    setLabFeedback(labRuntime.skipped ? "You reached the end. Read the summary, then restart whenever you want to practice the skipped problems." : "Excellent work. Read the summary below and explain one connection in your own words.", labRuntime.skipped ? "" : "correct");
+  }
+
+  function renderLabVideos(standard) {
+    const list = $("#standardsLabVideoList");
+    list.innerHTML = "";
+    list.closest(".standards-lab-videos").hidden = LABS[standard].videoPlacement === "practice";
+    LABS[standard].videos.forEach(([url, title]) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = `▶ ${title}`;
+      button.addEventListener("click", () => openVideo({ url, title }));
+      list.append(button);
+    });
+  }
+
+  function renderStandardsLab(standard, reset = false) {
+    const config = LABS[standard];
+    if (!config) return;
+    if (reset || labRuntime.standard !== standard) {
+      labRuntime.data = null;
+      labRuntime.skipped = 0;
+    }
+    labRuntime.standard = standard;
+    $("#skipLabProblem").disabled = false;
+    $("#standardsLabBadge").textContent = `${standard} Lab`;
+    $("#standardsLabTitle").textContent = config.title;
+    $("#standardsLabDescription").textContent = config.description;
+    $("#standardsLabCompletion").hidden = true;
+    renderLabVideos(standard);
+    if (standard === "8.2A") renderLab82A();
+    if (standard === "8.2B") renderLab82B();
+    if (standard === "8.2C") renderLab82C();
+    if (standard === "8.2D") renderLab82D();
+    if (standard === "8.3A") renderLab83A();
+    if (standard === "8.3B") renderLab83B();
+    if (standard === "8.3C") renderLab83C();
+    if (standard === "8.4A") renderLab84A();
+    if (standard === "8.10A") renderLabA();
+    if (standard === "8.10B") renderLabB();
+    if (standard === "8.10C") renderLabC();
+    if (standard === "8.10D") renderLabD();
+  }
+
+  const LAB_ORIGIN = 300;
+  const LAB_SCALE = 36;
+  const BASE_TRIANGLE = [{ x: -5, y: 2 }, { x: -2, y: 2 }, { x: -3, y: 5 }];
+
+  const SLOPE_LAB_TASKS = [
+    { mode: "guided", title: "Positive slope through the origin", gridM: 1, gridB: 0, unitX: 1, unitY: 1 },
+    { mode: "guided", title: "Negative slope with a y-intercept", gridM: -1, gridB: 2, unitX: 1, unitY: 2 },
+    { mode: "guided", title: "Horizontal line", gridM: 0, gridB: 3, unitX: 2, unitY: 1 },
+    { mode: "guided", title: "Vertical line", verticalX: 3, unitX: .5, unitY: 1 },
+    { mode: "guided", title: "Positive slope with different axis units", gridM: 1, gridB: -1, unitX: .5, unitY: 2 },
+    { mode: "independent", title: "Positive proportional line", gridM: 2, gridB: 0, unitX: 1, unitY: .5 },
+    { mode: "independent", title: "Negative proportional line", gridM: -2, gridB: 0, unitX: 2, unitY: 1 },
+    { mode: "independent", title: "Gentle positive slope", gridM: 1, gridB: 2, unitX: 2, unitY: .5 },
+    { mode: "independent", title: "Steep negative slope", gridM: -1, gridB: -1, unitX: .5, unitY: 1 },
+    { mode: "independent", title: "Horizontal line through the origin", gridM: 0, gridB: 0, unitX: .5, unitY: 2 },
+    { mode: "independent", title: "Another vertical line", verticalX: -2, unitX: 2, unitY: .5 },
+    { mode: "independent", title: "Positive slope with half-unit axes", gridM: 2, gridB: 0, unitX: .5, unitY: .5 },
+    { mode: "independent", title: "Negative slope with a fractional intercept", gridM: -2, gridB: 1, unitX: 1, unitY: .5 },
+    { mode: "independent", title: "Positive nonproportional line", gridM: .5, gridB: -1, unitX: 2, unitY: 2 },
+    { mode: "independent", title: "Negative slope with unequal axis units", gridM: -1, gridB: 0, unitX: .5, unitY: 2 }
+  ];
+
+  const SLOPE_VIEW = { size: 640, originX: 320, originY: 280, step: 48, min: -5, max: 5 };
+
+  function cleanSlopeNumber(value) {
+    const rounded = Math.round((Number(value) + Number.EPSILON) * 1000) / 1000;
+    return Math.abs(rounded) < .0001 ? 0 : rounded;
+  }
+
+  function displaySlopeNumber(value, showPositive = false) {
+    const clean = cleanSlopeNumber(value);
+    const magnitude = Math.abs(clean).toString();
+    if (clean < 0) return `−${magnitude}`;
+    return showPositive && clean > 0 ? `+${magnitude}` : magnitude;
+  }
+
+  function slopePointKey(point) {
+    return `${point.gx},${point.gy}`;
+  }
+
+  function validSlopePoints(task) {
+    const points = [];
+    if (Number.isFinite(task.verticalX)) {
+      for (let gy = SLOPE_VIEW.min; gy <= SLOPE_VIEW.max; gy += 1) points.push({ gx: task.verticalX, gy });
+      return points;
+    }
+    for (let gx = SLOPE_VIEW.min; gx <= SLOPE_VIEW.max; gx += 1) {
+      const gy = task.gridM * gx + task.gridB;
+      if (gy < SLOPE_VIEW.min || gy > SLOPE_VIEW.max || Math.abs(gy - Math.round(gy)) > .001) continue;
+      points.push({ gx, gy: Math.round(gy) });
+    }
+    return points;
+  }
+
+  function groupSlopePairs(points, task) {
+    const makePair = (first, second, label) => {
+      const ordered = [first, second].sort((a, b) => Number.isFinite(task.verticalX) ? a.gy - b.gy : a.gx - b.gx);
+      return { start: ordered[0], end: ordered[1], label };
+    };
+    if (Number.isFinite(task.verticalX)) {
+      const topToBottom = [...points].sort((a, b) => b.gy - a.gy);
+      return [
+        makePair(topToBottom[0], topToBottom[1], "Top pair"),
+        makePair(topToBottom[2], topToBottom[3], "Bottom pair")
+      ];
+    }
+    const leftToRight = [...points].sort((a, b) => a.gx - b.gx || a.gy - b.gy);
+    return [
+      makePair(leftToRight[0], leftToRight[1], "Left pair"),
+      makePair(leftToRight[2], leftToRight[3], "Right pair")
+    ];
+  }
+
+  function slopeScreenPoint(point) {
+    return {
+      x: SLOPE_VIEW.originX + point.gx * SLOPE_VIEW.step,
+      y: SLOPE_VIEW.originY - point.gy * SLOPE_VIEW.step
+    };
+  }
+
+  function slopeActualPoint(point, task) {
+    return { x: cleanSlopeNumber(point.gx * task.unitX), y: cleanSlopeNumber(point.gy * task.unitY) };
+  }
+
+  function slopeWork(task, pair) {
+    const first = slopeActualPoint(pair.start, task);
+    const second = slopeActualPoint(pair.end, task);
+    const rise = cleanSlopeNumber(second.y - first.y);
+    const run = cleanSlopeNumber(second.x - first.x);
+    const slope = run === 0 ? null : cleanSlopeNumber(rise / run);
+    const intercept = Number.isFinite(task.verticalX) ? null : cleanSlopeNumber(task.gridB * task.unitY);
+    return { first, second, rise, run, slope, intercept };
+  }
+
+  function slopeGcd(a, b) {
+    let first = Math.abs(a);
+    let second = Math.abs(b);
+    while (second) [first, second] = [second, first % second];
+    return first || 1;
+  }
+
+  function simplifiedSlopeText(rise, run) {
+    if (run === 0) return "undefined";
+    if (rise === 0) return "0";
+    const scaledRise = Math.round(rise * 1000);
+    const scaledRun = Math.round(run * 1000);
+    const divisor = slopeGcd(scaledRise, scaledRun);
+    const numerator = scaledRise / divisor;
+    const denominator = scaledRun / divisor;
+    if (denominator === 1) return displaySlopeNumber(numerator);
+    return `${displaySlopeNumber(numerator)}/${displaySlopeNumber(denominator)}`;
+  }
+
+  function slopeEquation(task, work) {
+    if (work.slope === null) return `x = ${displaySlopeNumber(task.verticalX * task.unitX)}`;
+    const m = work.slope;
+    const b = work.intercept;
+    let xTerm = m === 0 ? "0" : m === 1 ? "x" : m === -1 ? "−x" : `${simplifiedSlopeText(m, 1)}x`;
+    if (m === 0) return `y = ${displaySlopeNumber(b)}`;
+    if (b > 0) xTerm += ` + ${displaySlopeNumber(b)}`;
+    if (b < 0) xTerm += ` − ${displaySlopeNumber(Math.abs(b))}`;
+    return `y = ${xTerm}`;
+  }
+
+  function slopeRelationship(task, work) {
+    if (work.slope === null) return "Vertical line • not a proportional function";
+    return work.intercept === 0 ? "Proportional • passes through (0, 0)" : `Nonproportional • y-intercept = ${displaySlopeNumber(work.intercept)}`;
+  }
+
+  function slopeRatioMarkup(work) {
+    return `<span class="slope-ratio-label">m =</span><span class="slope-stacked-fraction"><span>${displaySlopeNumber(work.rise, true)}</span><span>${displaySlopeNumber(work.run, true)}</span></span><span class="slope-ratio-equals">=</span><strong>${simplifiedSlopeText(work.rise, work.run)}</strong>`;
+  }
+
+  function slopeGridMarkup(task) {
+    let markup = "";
+    for (let grid = SLOPE_VIEW.min; grid <= SLOPE_VIEW.max; grid += 1) {
+      const x = SLOPE_VIEW.originX + grid * SLOPE_VIEW.step;
+      const y = SLOPE_VIEW.originY - grid * SLOPE_VIEW.step;
+      const axisClass = grid === 0 ? " slope-axis" : "";
+      markup += `<line class="slope-grid-line${axisClass}" x1="${x}" y1="40" x2="${x}" y2="520"></line>`;
+      markup += `<line class="slope-grid-line${axisClass}" x1="80" y1="${y}" x2="560" y2="${y}"></line>`;
+      if (grid !== 0) {
+        markup += `<text class="slope-tick-label" x="${x}" y="299" text-anchor="middle">${displaySlopeNumber(grid * task.unitX)}</text>`;
+        markup += `<text class="slope-tick-label" x="302" y="${y + 4}" text-anchor="end">${displaySlopeNumber(grid * task.unitY)}</text>`;
+      }
+    }
+    markup += `<text class="slope-axis-name" x="578" y="271">x</text><text class="slope-axis-name" x="330" y="28">y</text><circle class="slope-origin-dot" cx="320" cy="280" r="4"></circle>`;
+    return markup;
+  }
+
+  function slopeLineMarkup(task) {
+    if (Number.isFinite(task.verticalX)) {
+      const x = slopeScreenPoint({ gx: task.verticalX, gy: 0 }).x;
+      return `<line class="slope-given-line" x1="${x}" y1="20" x2="${x}" y2="540" clip-path="url(#slopeClip)"></line>`;
+    }
+    const first = slopeScreenPoint({ gx: -8, gy: task.gridM * -8 + task.gridB });
+    const second = slopeScreenPoint({ gx: 8, gy: task.gridM * 8 + task.gridB });
+    return `<line class="slope-given-line" x1="${first.x}" y1="${first.y}" x2="${second.x}" y2="${second.y}" clip-path="url(#slopeClip)"></line>`;
+  }
+
+  function slopeSelectedMarkup(data) {
+    const membership = new Map();
+    (data.pairs || []).forEach((pair, pairIndex) => {
+      membership.set(slopePointKey(pair.start), { pairIndex, endpoint: "A" });
+      membership.set(slopePointKey(pair.end), { pairIndex, endpoint: "B" });
+    });
+    return data.selected.map((point, index) => {
+      const screen = slopeScreenPoint(point);
+      const member = membership.get(slopePointKey(point));
+      const paired = Boolean(member);
+      const pairClass = member ? ` pair-${member.pairIndex + 1}` : "";
+      const label = member ? `${member.pairIndex + 1}${member.endpoint}` : `P${index + 1}`;
+      return `<g class="slope-selected-point${paired ? " is-paired" : ""}${pairClass}"><circle cx="${screen.x}" cy="${screen.y}" r="${paired ? 10 : 8}"></circle><text x="${screen.x + 12}" y="${screen.y - 12}">${label}</text></g>`;
+    }).join("");
+  }
+
+  function slopeHitTargetsMarkup(task, data) {
+    if (data.step !== "identify") return "";
+    return validSlopePoints(task).map(point => {
+      const screen = slopeScreenPoint(point);
+      const actual = slopeActualPoint(point, task);
+      return `<circle class="slope-point-hit" data-slope-gx="${point.gx}" data-slope-gy="${point.gy}" cx="${screen.x}" cy="${screen.y}" r="18" tabindex="0" role="button" aria-label="Select point (${displaySlopeNumber(actual.x)}, ${displaySlopeNumber(actual.y)})"></circle>`;
+    }).join("");
+  }
+
+  function slopeMovementMarkup(task, data, work, pair, pairIndex) {
+    if (!pair) return "";
+    const active = pairIndex === data.pairIndex && !data.solved;
+    const completed = Boolean(data.completedPairs?.[pairIndex]);
+    const step = active ? data.step : completed ? "result" : "waiting";
+    const start = slopeScreenPoint(pair.start);
+    const end = slopeScreenPoint(pair.end);
+    const corner = slopeScreenPoint({ gx: pair.start.gx, gy: pair.end.gy });
+    const showRise = completed || ["run", "answer", "result"].includes(step);
+    const showRun = completed || ["answer", "result"].includes(step);
+    let markup = `<g class="slope-pair-path pair-${pairIndex + 1}${completed ? " is-complete" : ""}"><circle class="slope-pair-end" cx="${end.x}" cy="${end.y}" r="11"></circle>`;
+    if (showRise) markup += `<line class="slope-rise-path" x1="${start.x}" y1="${start.y}" x2="${corner.x}" y2="${corner.y}"></line>`;
+    if (showRun) markup += `<line class="slope-run-path" x1="${corner.x}" y1="${corner.y}" x2="${end.x}" y2="${end.y}"></line>`;
+    if (showRise) markup += `<text class="slope-leg-label is-rise" x="${corner.x + 13}" y="${(start.y + corner.y) / 2}">${pairIndex + 1}: rise ${displaySlopeNumber(work.rise, true)}</text>`;
+    if (showRun) markup += `<text class="slope-leg-label is-run" x="${(corner.x + end.x) / 2}" y="${corner.y - 13}" text-anchor="middle">${pairIndex + 1}: run ${displaySlopeNumber(work.run, true)}</text>`;
+    if (active && (step === "rise" || step === "run")) {
+      const resting = step === "rise" ? pair.start : { gx: pair.start.gx, gy: pair.end.gy };
+      const handlePoint = data.dragPoint || resting;
+      const handle = slopeScreenPoint(handlePoint);
+      const zeroStep = step === "rise" ? work.rise === 0 : work.run === 0;
+      if (!zeroStep) markup += `<g class="slope-drag-handle is-blinking" role="button" tabindex="0" aria-label="Drag to complete the ${step} for pair ${pairIndex + 1}"><circle cx="${handle.x}" cy="${handle.y}" r="15"></circle><circle cx="${handle.x}" cy="${handle.y}" r="5"></circle></g>`;
+      if (task.mode === "guided") {
+        const target = step === "rise" ? corner : end;
+        markup += `<circle class="slope-guided-target" cx="${target.x}" cy="${target.y}" r="16"></circle>`;
+      }
+    }
+    return markup + "</g>";
+  }
+
+  function slopeCoordinateList(data, task) {
+    if (!data.selected.length) return "";
+    return data.selected.map(point => {
+      const actual = slopeActualPoint(point, task);
+      return `<span>(${displaySlopeNumber(actual.x)}, ${displaySlopeNumber(actual.y)})</span>`;
+    }).join("");
+  }
+
+  function slopeInstruction(task, data, work) {
+    if (data.step === "identify") return `<h4>1. Identify four points</h4><p>Click four grid intersections that lie exactly on the line. Click a selected point again if you want to replace it.</p>`;
+    const pairNumber = data.pairIndex + 1;
+    const pairLabel = data.pairs?.[data.pairIndex]?.label || `Pair ${pairNumber}`;
+    if (data.step === "rise") {
+      if (work.rise === 0) return `<h4>${pairNumber}. ${pairLabel}: find the rise first</h4><p>The two points have the same y-value, so there is no vertical change.</p><button type="button" class="lab-action slope-zero-confirm" id="confirmSlopeZero">Confirm rise = 0</button>`;
+      const guided = task.mode === "guided" ? ` The signed rise is <strong>${displaySlopeNumber(work.rise, true)}</strong>, so move ${work.rise > 0 ? "up" : "down"} ${displaySlopeNumber(Math.abs(work.rise))}.` : " Use the y-axis scale to determine how much the y-value changes.";
+      return `<h4>${pairNumber}. ${pairLabel}: find the rise first</h4><p>Drag the blinking point vertically until it reaches the y-level of its paired point.${guided}</p>`;
+    }
+    if (data.step === "run") {
+      if (work.run === 0) return `<h4>${pairNumber}. ${pairLabel}: find the run</h4><p>A vertical line has no horizontal change. Its run is zero, which makes the slope undefined.</p><button type="button" class="lab-action slope-zero-confirm" id="confirmSlopeZero">Confirm run = 0</button>`;
+      const guided = task.mode === "guided" ? ` The run is <strong>${displaySlopeNumber(work.run, true)}</strong>, so move right ${displaySlopeNumber(work.run)}.` : " Use the x-axis scale to measure the horizontal change.";
+      return `<h4>${pairNumber}. ${pairLabel}: find the run</h4><p>Now drag the blinking point straight right to its paired point.${guided}</p>`;
+    }
+    if (data.step === "answer") return `<h4>${pairNumber}. ${pairLabel}: name your changes</h4><p>Use the axis labels—not the number of grid spaces—to enter the signed rise and run for this pair.</p><div class="slope-answer-fields"><label>Signed rise<input id="slopeRiseAnswer" type="number" step="any" inputmode="decimal" value="${escapeHTML(data.answers.rise)}"></label><label>Run<input id="slopeRunAnswer" type="number" step="any" inputmode="decimal" value="${escapeHTML(data.answers.run)}"></label></div><button type="button" class="lab-action" id="checkSlopeWork">Check pair ${pairNumber}</button>`;
+    return `<h4>Both calculations complete</h4><p>You used two different pairs of points and reached the same slope.</p>`;
+  }
+
+  function slopeResultsMarkup(task, data, works) {
+    const completed = works.map((work, index) => ({ work, index })).filter(({ index }) => data.completedPairs?.[index]);
+    if (!completed.length) return "";
+    const proofRows = completed.map(({ work, index }) => `<div class="slope-pair-proof pair-${index + 1}"><span>Calculation ${index + 1} • ${escapeHTML(data.pairs[index].label)}</span><strong>rise ${displaySlopeNumber(work.rise, true)} • run ${displaySlopeNumber(work.run, true)}</strong><div class="slope-ratio-display">${slopeRatioMarkup(work)}</div></div>`).join("");
+    const conclusion = data.solved
+      ? `<div class="slope-equality-proof"><strong>Same line → same slope</strong><span>Both point pairs produce ${simplifiedSlopeText(works[0].rise, works[0].run)}.</span></div><div><span>Equation</span><strong>${slopeEquation(task, works[0])}</strong></div><p>${slopeRelationship(task, works[0])}</p>`
+      : `<p class="slope-proof-prompt">Calculation 1 is complete. Now repeat rise over run with the second pair.</p>`;
+    return `<section class="slope-result-card"><div class="slope-pair-proof-grid">${proofRows}</div>${conclusion}</section>`;
+  }
+
+  function resetSlopeTask(data) {
+    data.selected = [];
+    data.pairs = [];
+    data.pairIndex = 0;
+    data.completedPairs = [false, false];
+    data.step = "identify";
+    data.dragPoint = null;
+    data.dragging = false;
+    data.answers = { rise: "", run: "" };
+    data.solved = false;
+  }
+
+  function completeSlopePair(data, task, work) {
+    data.completedPairs[data.pairIndex] = true;
+    const slopeText = simplifiedSlopeText(work.rise, work.run);
+    data.dragPoint = null;
+    data.answers = { rise: "", run: "" };
+    if (data.pairIndex === 0) {
+      data.pairIndex = 1;
+      data.step = "rise";
+      renderLab84A();
+      return setLabFeedback(`Calculation 1 gives a slope of ${slopeText}. Now use the second pair to test whether the slope stays the same.`, "correct");
+    }
+    data.step = "result";
+    data.solved = true;
+    renderLab84A();
+    setLabFeedback(`Both calculations give ${slopeText}. Different pairs of points on the same line produce the same slope.`, "correct");
+  }
+
+  function advanceSlopeMovement(data, task, work) {
+    if (data.step === "rise") {
+      data.step = "run";
+      data.dragPoint = null;
+      renderLab84A();
+      return setLabFeedback(`Correct. The signed rise is ${displaySlopeNumber(work.rise, true)}. Now find the run by moving to the right.`, "correct");
+    }
+    data.dragPoint = null;
+    if (task.mode === "guided") {
+      completeSlopePair(data, task, work);
+    } else {
+      data.step = "answer";
+      renderLab84A();
+      setLabFeedback(`Pair ${data.pairIndex + 1} path complete. Enter its signed rise and run using the values marked on the axes.`);
+    }
+  }
+
+  function renderLab84A() {
+    if (!labRuntime.data) {
+      labRuntime.data = { index: 0 };
+      resetSlopeTask(labRuntime.data);
+    }
+    const data = labRuntime.data;
+    if (data.index >= SLOPE_LAB_TASKS.length) return showLabCompletion("8.4A");
+    const task = SLOPE_LAB_TASKS[data.index];
+    const works = (data.pairs || []).map(pair => slopeWork(task, pair));
+    const pair = data.pairs?.[data.pairIndex] || null;
+    const work = works[data.pairIndex] || null;
+    const completed = data.index + (data.solved ? 1 : 0);
+    setLabProgress(completed, SLOPE_LAB_TASKS.length, task.mode === "guided" ? "Do it with me: calculate slope with both point pairs." : "Your turn: determine rise and run twice, then compare the slopes.");
+
+    const selectedCount = data.selected.length;
+    const pairMessage = pair
+      ? `<div class="slope-pair-readout"><span>Calculation ${data.pairIndex + 1} of 2 • ${escapeHTML(pair.label)}</span><strong>(${displaySlopeNumber(work.first.x)}, ${displaySlopeNumber(work.first.y)}) → (${displaySlopeNumber(work.second.x)}, ${displaySlopeNumber(work.second.y)})</strong></div>`
+      : `<div class="slope-point-counter"><strong>${selectedCount}/4</strong><span>points selected</span></div>`;
+    const pairTrack = data.pairs?.length
+      ? `<div class="slope-pair-track"><span class="${data.pairIndex === 0 && !data.solved ? "is-active" : "is-done"}">1 • ${escapeHTML(data.pairs[0].label)}</span><span class="${data.pairIndex === 1 && !data.solved ? "is-active" : data.solved ? "is-done" : ""}">2 • ${escapeHTML(data.pairs[1].label)}</span></div>`
+      : "";
+    const body = $("#standardsLabBody");
+    body.innerHTML = `<div class="slope-lab-shell">
+      <header class="slope-lab-header"><div><p class="lab-mini-title">Problem ${data.index + 1} of ${SLOPE_LAB_TASKS.length}</p><h4>${escapeHTML(task.title)}</h4></div><span class="slope-mode-chip ${task.mode}">${task.mode === "guided" ? "Do it with me" : "You do it"}</span></header>
+      <div class="slope-lab-layout">
+        <section class="slope-graph-card">
+          <div class="slope-axis-scale"><span>x-axis: <strong>${displaySlopeNumber(task.unitX)}</strong> per interval</span><span>y-axis: <strong>${displaySlopeNumber(task.unitY)}</strong> per interval</span></div>
+          <svg class="slope-lab-graph" data-slope-graph viewBox="0 0 640 560" role="img" aria-label="Coordinate plane with a ${escapeHTML(task.title.toLowerCase())}">
+            <defs><clipPath id="slopeClip"><rect x="80" y="40" width="480" height="480" rx="12"></rect></clipPath></defs>
+            <rect class="slope-graph-background" x="80" y="40" width="480" height="480" rx="12"></rect>
+            ${slopeGridMarkup(task)}${slopeLineMarkup(task)}${slopeHitTargetsMarkup(task, data)}${slopeSelectedMarkup(data)}${works.map((pairWork, index) => slopeMovementMarkup(task, data, pairWork, data.pairs[index], index)).join("")}
+          </svg>
+          <div class="slope-coordinate-bank">${slopeCoordinateList(data, task) || "<span>Selected coordinates will appear here.</span>"}</div>
+        </section>
+        <aside class="slope-coaching-card">${pairMessage}${pairTrack}<div class="slope-step-track"><span class="${data.step === "identify" ? "is-active" : "is-done"}">1 Points</span><span class="${data.step === "rise" ? "is-active" : ["run","answer","result"].includes(data.step) ? "is-done" : ""}">2 Rise</span><span class="${data.step === "run" ? "is-active" : ["answer","result"].includes(data.step) ? "is-done" : ""}">3 Run</span><span class="${["answer","result"].includes(data.step) ? "is-active" : ""}">4 Connect</span></div><div class="slope-instruction-card">${slopeInstruction(task, data, work)}</div>${slopeResultsMarkup(task, data, works)}<button type="button" class="lab-next slope-next" id="nextSlopeProblem" ${data.solved ? "" : "hidden"}>${data.index === SLOPE_LAB_TASKS.length - 1 ? "Finish lab →" : "Next line →"}</button></aside>
+      </div>
+    </div>`;
+
+    const graph = body.querySelector("[data-slope-graph]");
+    if (data.step === "identify") {
+      graph.addEventListener("click", event => {
+        const targetPoint = event.target.closest?.("[data-slope-gx]");
+        const rect = graph.getBoundingClientRect();
+        const sx = (event.clientX - rect.left) * SLOPE_VIEW.size / rect.width;
+        const sy = (event.clientY - rect.top) * 560 / rect.height;
+        const gx = targetPoint ? Number(targetPoint.dataset.slopeGx) : Math.round((sx - SLOPE_VIEW.originX) / SLOPE_VIEW.step);
+        const gy = targetPoint ? Number(targetPoint.dataset.slopeGy) : Math.round((SLOPE_VIEW.originY - sy) / SLOPE_VIEW.step);
+        const snapped = slopeScreenPoint({ gx, gy });
+        if (!targetPoint && Math.hypot(sx - snapped.x, sy - snapped.y) > 22) return setLabFeedback("Choose a precise grid intersection on the line.", "incorrect");
+        const valid = validSlopePoints(task).find(point => point.gx === gx && point.gy === gy);
+        if (!valid) return setLabFeedback("That intersection is not on the line. Trace the line to another exact grid crossing.", "incorrect");
+        const existing = data.selected.findIndex(point => point.gx === gx && point.gy === gy);
+        if (existing >= 0) {
+          data.selected.splice(existing, 1);
+          renderLab84A();
+          return setLabFeedback("Point removed. Choose another point on the line.");
+        }
+        if (data.selected.length >= 4) return;
+        data.selected.push(valid);
+        if (data.selected.length === 4) {
+          data.pairs = groupSlopePairs(data.selected, task);
+          data.pairIndex = 0;
+          data.step = "rise";
+          renderLab84A();
+          const grouping = Number.isFinite(task.verticalX) ? "the top two and bottom two points" : "the two left points and two right points";
+          return setLabFeedback(`Four points found. The lab grouped ${grouping}. Begin Calculation 1 by finding the rise.`, "correct");
+        }
+        renderLab84A();
+        setLabFeedback(`${data.selected.length} of 4 points selected. Keep tracing the same line.`);
+      });
+    }
+
+    const zeroButton = $("#confirmSlopeZero");
+    if (zeroButton) zeroButton.addEventListener("click", () => advanceSlopeMovement(data, task, work));
+
+    const handle = body.querySelector(".slope-drag-handle");
+    if (handle) {
+      const resting = data.step === "rise" ? pair.start : { gx: pair.start.gx, gy: pair.end.gy };
+      const target = data.step === "rise" ? { gx: pair.start.gx, gy: pair.end.gy } : pair.end;
+      handle.addEventListener("pointerdown", event => {
+        event.preventDefault();
+        data.dragging = true;
+        data.dragPoint = { ...resting };
+        handle.setPointerCapture(event.pointerId);
+      });
+      handle.addEventListener("pointermove", event => {
+        if (!data.dragging) return;
+        event.preventDefault();
+        const rect = graph.getBoundingClientRect();
+        const gxRaw = ((event.clientX - rect.left) * SLOPE_VIEW.size / rect.width - SLOPE_VIEW.originX) / SLOPE_VIEW.step;
+        const gyRaw = (SLOPE_VIEW.originY - (event.clientY - rect.top) * 560 / rect.height) / SLOPE_VIEW.step;
+        data.dragPoint = data.step === "rise" ? { gx: resting.gx, gy: gyRaw } : { gx: gxRaw, gy: resting.gy };
+        const screen = slopeScreenPoint(data.dragPoint);
+        handle.querySelectorAll("circle").forEach(circle => { circle.setAttribute("cx", screen.x); circle.setAttribute("cy", screen.y); });
+      });
+      const finishDrag = event => {
+        if (!data.dragging) return;
+        event.preventDefault();
+        data.dragging = false;
+        if (handle.hasPointerCapture(event.pointerId)) handle.releasePointerCapture(event.pointerId);
+        const closeEnough = data.dragPoint && Math.hypot(data.dragPoint.gx - target.gx, data.dragPoint.gy - target.gy) < .48;
+        if (closeEnough) return advanceSlopeMovement(data, task, work);
+        data.dragPoint = null;
+        renderLab84A();
+        setLabFeedback(data.step === "rise" ? "Keep the x-value fixed. Use the y-axis labels to stop at the second point’s y-level." : "Keep the y-value fixed and move right until you reach the second selected point.", "incorrect");
+      };
+      handle.addEventListener("pointerup", finishDrag);
+      handle.addEventListener("pointercancel", finishDrag);
+      handle.addEventListener("keydown", event => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        advanceSlopeMovement(data, task, work);
+      });
+    }
+
+    const check = $("#checkSlopeWork");
+    if (check) check.addEventListener("click", () => {
+      data.answers.rise = $("#slopeRiseAnswer").value.trim();
+      data.answers.run = $("#slopeRunAnswer").value.trim();
+      if (data.answers.rise === "" || data.answers.run === "") return setLabFeedback("Enter both the signed rise and the run before checking.", "incorrect");
+      const riseCorrect = Math.abs(Number(data.answers.rise) - work.rise) < .001;
+      const runCorrect = Math.abs(Number(data.answers.run) - work.run) < .001;
+      if (!riseCorrect || !runCorrect) {
+        const clue = !riseCorrect ? `Recheck the y-axis: each interval is worth ${displaySlopeNumber(task.unitY)}, and direction determines the sign.` : `Recheck the x-axis: each interval is worth ${displaySlopeNumber(task.unitX)}.`;
+        return setLabFeedback(clue, "incorrect");
+      }
+      completeSlopePair(data, task, work);
+    });
+
+    const next = $("#nextSlopeProblem");
+    if (next) next.addEventListener("click", () => {
+      if (data.index >= SLOPE_LAB_TASKS.length - 1) return showLabCompletion("8.4A");
+      data.index += 1;
+      resetSlopeTask(data);
+      renderLab84A();
+      setLabFeedback(data.index < 5 ? "New coached line ready. Identify four exact points and calculate slope twice." : "Your turn. Identify four exact points, then determine both sets of signed rise and run.");
+    });
+  }
+
+  const SIMILARITY_SHAPES = {
+    triangle: [[28, 168], [105, 28], [188, 168]],
+    quadrilateral: [[30, 42], [166, 25], [190, 142], [60, 182]],
+    pentagon: [[105, 18], [188, 78], [156, 180], [50, 176], [18, 78]]
+  };
+
+  const SIMILARITY_TASKS = [
+    { kind: "guided", shape: "triangle", rotation: 90, title: "Letters reveal the structure", note: "No measurements are needed yet. Match the side names and build three ways to express the same proportional relationship.", first: ["A", "B", "C"], second: ["a", "b", "c"] },
+    { kind: "guided", shape: "quadrilateral", rotation: 270, title: "Keep the correspondence steady", note: "The figures have different sizes and the second drawing has been turned on the page. The matching order does not change.", first: ["P", "Q", "R"], second: ["p", "q", "r"] },
+    { kind: "guided", shape: "pentagon", rotation: 180, title: "Trace the same position", note: "Use the shape, not the page direction, to decide which three highlighted sides correspond.", first: ["L", "M", "N"], second: ["l", "m", "n"] },
+    { kind: "guided", shape: "triangle", rotation: 270, title: "Find the third side", note: "The color links will help you keep each measurement paired with its corresponding side.", first: ["9", "12", "x"], second: ["6", "8", "10"], answer: 15 },
+    { kind: "guided", shape: "quadrilateral", rotation: 90, title: "Use one consistent scale relationship", note: "Match first, then choose any valid proportion family to determine x.", first: ["14", "x", "18"], second: ["7", "6", "9"], answer: 12 },
+    { kind: "guided", shape: "triangle", rotation: 180, title: "Move from the smaller figure to the larger figure", note: "A correct ratio works in either direction as long as that direction stays consistent.", first: ["5", "8", "x"], second: ["12.5", "20", "17.5"], answer: 7 },
+    { kind: "guided", shape: "pentagon", rotation: 270, title: "Connect decimals and proportional sides", note: "Use the same color in both figures to identify each corresponding pair before solving.", first: ["4.5", "6", "9"], second: ["7.5", "x", "15"], answer: 10 },
+    { kind: "world", scene: "flagpole", title: "Flagpole and yard marker", prompt: "A 1.5-meter yard marker casts a 2-meter shadow. At the same time, a flagpole casts a 14-meter shadow. What is the height h of the flagpole?", choices: ["h/1.5 = 14/2", "h/2 = 14/1.5", "1.5/h = 14/2", "h/14 = 2/1.5"], correct: 0, answer: 10.5, unit: "m", clue: "Match height with height and shadow with shadow. Both ratios must travel from the flagpole triangle to the marker triangle." },
+    { kind: "world", scene: "ramp", title: "Stage ramp support", prompt: "A small right-triangle support rises 3 feet over a 4-foot run. A similar larger support has a 10-foot run. What is its rise x?", choices: ["x/3 = 10/4", "x/4 = 10/3", "3/x = 10/4", "x/10 = 4/3"], correct: 0, answer: 7.5, unit: "ft", clue: "Compare rise to rise and run to run, or compare rise to run in both triangles." },
+    { kind: "world", scene: "mural", title: "Sketch enlarged into a mural", prompt: "A rectangular sketch is 8 inches wide and 5 inches high. A similar mural is 28 feet wide. What is the mural height x?", choices: ["x/5 = 28/8", "x/8 = 28/5", "5/x = 28/8", "x/28 = 8/5"], correct: 0, answer: 17.5, unit: "ft", clue: "Keep height with height and width with width. The units do not need to match when each ratio compares the same figure-to-figure scale factor." }
+  ];
+
+  function similarityPairColor(index) {
+    return ["teal", "orange", "purple"][index % 3];
+  }
+
+  function similarityFraction(top, bottom, topIndex = 0, bottomIndex = 1) {
+    return `<span class="sim-fraction"><span class="sim-ratio-token is-${similarityPairColor(topIndex)}">${escapeHTML(top)}</span><span class="sim-ratio-token is-${similarityPairColor(bottomIndex)}">${escapeHTML(bottom)}</span></span>`;
+  }
+
+  function similarityRatioFamilies(task) {
+    const A = task.first;
+    const a = task.second;
+    const direct = `${similarityFraction(A[0], a[0], 0, 0)}<b>=</b>${similarityFraction(A[1], a[1], 1, 1)}<b>=</b>${similarityFraction(A[2], a[2], 2, 2)}`;
+    const directWrong = `${similarityFraction(A[0], a[0], 0, 0)}<b>=</b>${similarityFraction(a[1], A[1], 1, 1)}<b>=</b>${similarityFraction(A[2], a[2], 2, 2)}`;
+    const reciprocal = `${similarityFraction(a[0], A[0], 0, 0)}<b>=</b>${similarityFraction(a[1], A[1], 1, 1)}<b>=</b>${similarityFraction(a[2], A[2], 2, 2)}`;
+    const reciprocalWrong = `${similarityFraction(a[0], A[0], 0, 0)}<b>=</b>${similarityFraction(A[1], a[1], 1, 1)}<b>=</b>${similarityFraction(a[2], A[2], 2, 2)}`;
+    const within = `${similarityFraction(A[0], A[1], 0, 1)}<b>=</b>${similarityFraction(a[0], a[1], 0, 1)}<i>and</i>${similarityFraction(A[1], A[2], 1, 2)}<b>=</b>${similarityFraction(a[1], a[2], 1, 2)}<i>and</i>${similarityFraction(A[0], A[2], 0, 2)}<b>=</b>${similarityFraction(a[0], a[2], 0, 2)}`;
+    const withinWrong = `${similarityFraction(A[0], A[1], 0, 1)}<b>=</b>${similarityFraction(a[1], a[0], 1, 0)}<i>and</i>${similarityFraction(A[1], A[2], 1, 2)}<b>=</b>${similarityFraction(a[1], a[2], 1, 2)}`;
+    return [
+      { title: "Figure I ÷ Figure II", clue: "Every numerator comes from Figure I; every denominator comes from Figure II.", wrongReason: "The middle ratio is flipped. Each ratio must keep Figure I on top and Figure II on the bottom.", choices: [direct, directWrong] },
+      { title: "Figure II ÷ Figure I", clue: "This is the reciprocal direction. Flip every pair, not just one.", wrongReason: "Only the middle pair was flipped. A reciprocal proportion must place Figure II on top every time.", choices: [reciprocalWrong, reciprocal] },
+      { title: "Within each figure", clue: "Compare two sides in Figure I, then compare their matching sides in the same order in Figure II.", wrongReason: "The side order reverses in Figure II. Compare first-to-second in both figures without switching the order.", choices: [within, withinWrong] }
+    ];
+  }
+
+  function similarityChoiceOrder(length, correctIndex, desiredPosition) {
+    const others = Array.from({ length }, (_, index) => index).filter(index => index !== correctIndex);
+    for (let index = others.length - 1; index > 0; index -= 1) {
+      const swapIndex = Math.floor(Math.random() * (index + 1));
+      [others[index], others[swapIndex]] = [others[swapIndex], others[index]];
+    }
+    const order = [...others];
+    order.splice(Math.max(0, Math.min(desiredPosition, length - 1)), 0, correctIndex);
+    return order;
+  }
+
+  function similarityFigureMarkup(task, figure, rotation, matched, pending) {
+    const points = SIMILARITY_SHAPES[task.shape];
+    const values = figure === 1 ? task.first : task.second;
+    const scale = figure === 1 ? 0.92 : 0.72;
+    const displayedRotation = figure === 2 ? rotation : 0;
+    const center = { x: 110, y: 110 };
+    const sideMarkup = [0, 1, 2].map(index => {
+      const p1 = points[index];
+      const p2 = points[(index + 1) % points.length];
+      const mx = (p1[0] + p2[0]) / 2;
+      const my = (p1[1] + p2[1]) / 2;
+      const dx = mx - center.x;
+      const dy = my - center.y;
+      const length = Math.hypot(dx, dy) || 1;
+      const lx = mx + dx / length * 16;
+      const ly = my + dy / length * 16;
+      const isMatched = matched.includes(index);
+      const isPending = pending && pending.figure === figure && pending.index === index;
+      const colorClass = isMatched ? ` is-${similarityPairColor(index)}` : "";
+      return `<g class="sim-side${colorClass}${isPending ? " is-pending" : ""}" role="button" tabindex="0" aria-label="Figure ${figure}, side ${values[index]}" data-sim-side="${index}" data-sim-figure="${figure}"><line class="sim-side-visible" x1="${p1[0]}" y1="${p1[1]}" x2="${p2[0]}" y2="${p2[1]}"></line><line class="sim-side-hit" x1="${p1[0]}" y1="${p1[1]}" x2="${p2[0]}" y2="${p2[1]}"></line><circle cx="${lx}" cy="${ly}" r="15"></circle><text x="${lx}" y="${ly + 1}">${escapeHTML(values[index])}</text></g>`;
+    }).join("");
+    return `<article class="sim-figure-card"><header><span>Figure ${figure === 1 ? "I" : "II"}</span><strong>${figure === 2 && rotation % 360 !== 0 ? "Turning around its center" : "Ready to compare"}</strong></header><div class="sim-figure-stage"><svg class="sim-figure-svg" viewBox="0 0 220 220" preserveAspectRatio="xMidYMid meet" aria-label="Similar ${task.shape}, Figure ${figure}"><g class="sim-shape-group" style="--sim-rotation:${displayedRotation}deg;--sim-scale:${scale}"><polygon class="sim-shape-fill" points="${points.map(point => point.join(",")).join(" ")}"></polygon>${sideMarkup}</g>${figure === 2 ? '<circle class="sim-rotation-center" cx="110" cy="110" r="4"></circle>' : ""}</svg></div></article>`;
+  }
+
+  function similarityWorldVisual(scene) {
+    if (scene === "flagpole") return `<figure class="sim-world-scene is-flagpole"><img src="assets/8-3A-world-flagpole.png" alt="A tall flagpole and a short yard marker casting shadows across a sunny field"><span class="sim-measure is-marker-height">1.5 m</span><span class="sim-measure is-marker-shadow">2 m</span><span class="sim-measure is-pole-height">h</span><span class="sim-measure is-pole-shadow">14 m</span></figure>`;
+    if (scene === "ramp") return `<figure class="sim-world-scene is-ramp"><img src="assets/8-3A-world-stage-supports.png" alt="A small orange triangular stage support and a larger teal similar support"><span class="sim-measure is-small-rise">3 ft</span><span class="sim-measure is-small-run">4 ft</span><span class="sim-measure is-large-rise">x</span><span class="sim-measure is-large-run">10 ft</span></figure>`;
+    return `<figure class="sim-world-scene is-mural"><img src="assets/8-3A-world-mural.png" alt="A small rectangular art sketch enlarged into a similar wall mural"><span class="sim-measure is-sketch-height">5 in</span><span class="sim-measure is-sketch-width">8 in</span><span class="sim-measure is-mural-height">x</span><span class="sim-measure is-mural-width">28 ft</span></figure>`;
+  }
+
+  function resetSimilarityTask(data) {
+    const task = SIMILARITY_TASKS[data.index];
+    data.phase = task.kind === "guided" ? "align" : "world-ratio";
+    data.rotation = task.rotation || 0;
+    data.matched = [];
+    data.pending = null;
+    data.ratioAnswers = [null, null, null];
+    data.ratioErrors = [null, null, null];
+    const correctRatioChoices = [0, 1, 0];
+    data.ratioOrders = correctRatioChoices.map((correctIndex, familyIndex) => similarityChoiceOrder(2, correctIndex, (data.index + familyIndex) % 2));
+    data.completed = false;
+    data.worldChoice = null;
+    data.worldError = null;
+    if (task.kind === "world") {
+      let correctPosition = Math.floor(Math.random() * task.choices.length);
+      if (data.lastWorldCorrectPosition === correctPosition) correctPosition = (correctPosition + 1) % task.choices.length;
+      data.lastWorldCorrectPosition = correctPosition;
+      data.worldOrder = similarityChoiceOrder(task.choices.length, task.correct, correctPosition);
+    }
+  }
+
+  function completeSimilarityQuestion(data, message) {
+    data.completed = true;
+    setLabProgress(data.index + 1, SIMILARITY_TASKS.length, `Question ${data.index + 1} complete. Take a moment to explain why the proportion is valid.`);
+    setLabFeedback(message, "correct");
+  }
+
+  function renderLab83A() {
+    if (!labRuntime.data) {
+      labRuntime.data = { index: 0 };
+      resetSimilarityTask(labRuntime.data);
+    }
+    const data = labRuntime.data;
+    const task = SIMILARITY_TASKS[data.index];
+    setLabProgress(data.index + (data.completed ? 1 : 0), SIMILARITY_TASKS.length, task.kind === "guided" ? `Guided similarity ${data.index + 1} of 7.` : `Real-world connection ${data.index - 6} of 3.`);
+
+    if (task.kind === "world") {
+      const proportionButtons = data.worldOrder.map(index => {
+        const choice = task.choices[index];
+        return `<button type="button" class="sim-proportion-choice${data.worldChoice === index ? " is-selected" : ""}${data.worldError === index ? " is-incorrect" : ""}${data.phase === "world-solve" && task.correct === index ? " is-correct" : ""}" data-world-proportion="${index}" ${data.completed ? "disabled" : ""}>${choice.split(" = ").map((part, pairIndex) => {
+        const [top, bottom] = part.split("/");
+        return similarityFraction(top, bottom, pairIndex, pairIndex);
+      }).join("<b>=</b>")}</button>`;
+      }).join("");
+      $("#standardsLabBody").innerHTML = `<section class="sim-world-layout"><article class="lab-stage-card"><p class="lab-mini-title">Application ${data.index - 6} of 3</p><h4>${task.title}</h4>${similarityWorldVisual(task.scene)}</article><article class="lab-task-card sim-world-task"><span class="sim-step-chip">Connect → Proportion → Solve</span><h4>${task.prompt}</h4><p>First choose a proportion that keeps corresponding quantities in the same positions.</p><div class="sim-proportion-grid">${proportionButtons}</div>${data.worldError !== null ? `<p class="sim-ratio-explanation"><strong>Why this is not valid:</strong> ${task.clue}</p>` : ""}<button type="button" class="lab-action" id="checkWorldProportion" ${data.worldChoice === null || data.completed ? "disabled" : ""}>Check my proportion</button><div class="sim-solve-panel" id="worldSolvePanel" ${data.phase === "world-solve" || data.completed ? "" : "hidden"}><label for="worldSimilarityAnswer">Solve for the missing measure</label><div class="sim-answer-row"><input id="worldSimilarityAnswer" type="number" step="any" inputmode="decimal" placeholder="x ="><span>${task.unit}</span><button type="button" class="lab-action" id="checkWorldAnswer" ${data.completed ? "disabled" : ""}>Check x</button></div></div><button type="button" class="lab-next" id="nextSimilarityQuestion" ${data.completed ? "" : "hidden"}>${data.index === SIMILARITY_TASKS.length - 1 ? "Finish lab" : "Next situation →"}</button></article></section>`;
+      document.querySelectorAll("[data-world-proportion]").forEach(button => button.addEventListener("click", () => {
+        data.worldChoice = Number(button.dataset.worldProportion);
+        renderLab83A();
+        setLabFeedback("Proportion selected. Check whether both ratios compare corresponding quantities in the same order.");
+      }));
+      const checkProportion = $("#checkWorldProportion");
+      if (checkProportion) checkProportion.addEventListener("click", () => {
+        if (data.worldChoice !== task.correct) {
+          data.worldError = data.worldChoice;
+          renderLab83A();
+          return setLabFeedback(`That proportion is not valid yet. ${task.clue}`, "incorrect");
+        }
+        data.phase = "world-solve";
+        renderLab83A();
+        setLabFeedback("That proportion keeps the correspondence consistent. Now solve for the missing measure.", "correct");
+      });
+      const checkAnswer = $("#checkWorldAnswer");
+      if (checkAnswer) checkAnswer.addEventListener("click", () => {
+        const rawAnswer = $("#worldSimilarityAnswer").value.trim();
+        const answer = Number(rawAnswer);
+        if (!rawAnswer || !Number.isFinite(answer)) return setLabFeedback("Enter a numerical value for the missing measure.", "incorrect");
+        if (Math.abs(answer - task.answer) > 0.01) return setLabFeedback(`Use the proportion you selected and cross multiply. Your result should preserve the same scale factor in both dimensions.`, "incorrect");
+        completeSimilarityQuestion(data, `Yes—x = ${task.answer} ${task.unit}. The corresponding quantities grow by one consistent scale factor.`);
+        renderLab83A();
+      });
+      const next = $("#nextSimilarityQuestion");
+      if (next) next.addEventListener("click", () => {
+        if (data.index === SIMILARITY_TASKS.length - 1) {
+          showLabCompletion("8.3A");
+          return;
+        }
+        data.index += 1;
+        resetSimilarityTask(data);
+        renderLab83A();
+        setLabFeedback("Use the diagram to connect corresponding quantities before choosing a proportion.");
+      });
+      return;
+    }
+
+    const families = similarityRatioFamilies(task);
+    const figures = `${similarityFigureMarkup(task, 1, 0, data.matched, data.pending)}${similarityFigureMarkup(task, 2, data.rotation, data.matched, data.pending)}`;
+    const phaseCopy = data.phase === "align" ? "Step 1 · Align" : data.phase === "match" ? "Step 2 · Match sides" : data.phase === "ratios" ? "Step 3 · Build ratios" : "Step 4 · Solve";
+    let taskPanel = "";
+    if (data.phase === "align") {
+      taskPanel = `<h4>Turn Figure II until its orientation matches Figure I.</h4><p>This turn is a viewing tool. A dilation itself preserves orientation; only this drawing has been rotated on the page.</p><div class="sim-rotation-controls"><button type="button" class="lab-choice" data-sim-rotate="-90" aria-label="Rotate Figure II counterclockwise 90 degrees">↶ Turn left 90°</button><div><strong>${((data.rotation % 360) + 360) % 360}°</strong><span>from aligned</span></div><button type="button" class="lab-choice" data-sim-rotate="90" aria-label="Rotate Figure II clockwise 90 degrees">Turn right 90° ↷</button></div>`;
+    } else if (data.phase === "match") {
+      taskPanel = `<h4>Click one side in each figure to make a corresponding pair.</h4><p>Correct pairs keep their color. Match all three highlighted sides before building proportions.</p><div class="sim-match-key">${[0,1,2].map(index => `<span class="is-${similarityPairColor(index)}"><i></i>${data.matched.includes(index) ? `${task.first[index]} ↔ ${task.second[index]}` : `Pair ${index + 1}`}</span>`).join("")}</div>`;
+    } else if (data.phase === "ratios") {
+      taskPanel = `<h4>Build three valid proportion structures.</h4><p>Choose the valid statement in each row. Color shows which measurements correspond.</p><div class="sim-family-list">${families.map((family, familyIndex) => `<section class="sim-family-card${data.ratioAnswers[familyIndex] !== null ? " is-complete" : ""}"><header><span>${familyIndex + 1}</span><div><strong>${family.title}</strong><small>${family.clue}</small></div></header><div class="sim-family-options">${data.ratioOrders[familyIndex].map(choiceIndex => `<button type="button" class="${data.ratioErrors[familyIndex] === choiceIndex ? "is-incorrect" : ""}${data.ratioAnswers[familyIndex] === choiceIndex ? " is-correct" : ""}" data-ratio-family="${familyIndex}" data-ratio-choice="${choiceIndex}" ${data.ratioAnswers[familyIndex] !== null ? "disabled" : ""}>${family.choices[choiceIndex]}</button>`).join("")}</div>${data.ratioErrors[familyIndex] !== null ? `<p class="sim-ratio-explanation"><strong>Why this is not valid:</strong> ${family.wrongReason}</p>` : ""}</section>`).join("")}</div>`;
+    } else {
+      taskPanel = `<h4>${task.answer === undefined ? "Explain the structure" : "Use one valid proportion to solve for x."}</h4>${task.answer === undefined ? `<p>You created a direct comparison, its reciprocal, and matching within-figure ratios. Each works because the correspondence and order stay consistent.</p><div class="sim-structure-note"><strong>Important:</strong> The within-figure comparisons are separate matching equations—not one long chain.</div>` : `<p>Choose the proportion family that feels clearest, then solve. Your answer must make all three corresponding pairs share one scale factor.</p><div class="sim-answer-row"><label class="sr-only" for="similarityAnswer">Value of x</label><input id="similarityAnswer" type="number" step="any" inputmode="decimal" placeholder="x =" ${data.completed ? "disabled" : ""}><button type="button" class="lab-action" id="checkSimilarityAnswer" ${data.completed ? "disabled" : ""}>Check x</button></div>`}<button type="button" class="lab-action" id="completeSymbolicSimilarity" ${task.answer === undefined && !data.completed ? "" : "hidden"}>I can explain why these ratios work</button><button type="button" class="lab-next" id="nextSimilarityQuestion" ${data.completed ? "" : "hidden"}>Next guided example →</button>`;
+    }
+
+    $("#standardsLabBody").innerHTML = `<section class="sim-lab-shell"><header class="sim-question-header"><div><p class="lab-mini-title">Guided similarity ${data.index + 1} of 7</p><h4>${task.title}</h4><p>${task.note}</p></div><span class="sim-step-chip">${phaseCopy}</span></header><div class="sim-figure-grid">${figures}</div><article class="lab-task-card sim-guidance-panel">${taskPanel}</article></section>`;
+
+    document.querySelectorAll("[data-sim-rotate]").forEach(button => button.addEventListener("click", () => {
+      data.rotation = ((data.rotation + Number(button.dataset.simRotate)) % 360 + 360) % 360;
+      if (data.rotation === 0) {
+        data.phase = "match";
+        renderLab83A();
+        setLabFeedback("Aligned. Now follow the vertices around each figure and match corresponding sides.", "correct");
+      } else {
+        renderLab83A();
+        setLabFeedback("Notice how the vertices move together. Continue until the figures face the same direction.");
+      }
+    }));
+
+    const handleSide = element => {
+      if (data.phase !== "match") return;
+      const selection = { figure: Number(element.dataset.simFigure), index: Number(element.dataset.simSide) };
+      if (!data.pending || data.pending.figure === selection.figure) {
+        data.pending = selection;
+        renderLab83A();
+        setLabFeedback(`Side ${selection.figure === 1 ? task.first[selection.index] : task.second[selection.index]} selected. Now choose its partner in the other figure.`);
+        return;
+      }
+      if (data.pending.index !== selection.index) {
+        data.pending = null;
+        renderLab83A();
+        setLabFeedback("Those sides occupy different positions around the shape. Start at a distinctive corner and trace both figures in the same direction.", "incorrect");
+        return;
+      }
+      if (!data.matched.includes(selection.index)) data.matched.push(selection.index);
+      data.pending = null;
+      if (data.matched.length === 3) data.phase = "ratios";
+      renderLab83A();
+      setLabFeedback(data.matched.length === 3 ? "All three pairs correspond. Keep those colors together as you build each proportion family." : "Correct pair—the matching sides now share one color.", "correct");
+    };
+    document.querySelectorAll("[data-sim-side]").forEach(side => {
+      side.addEventListener("click", () => handleSide(side));
+      side.addEventListener("keydown", event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); handleSide(side); } });
+    });
+    document.querySelectorAll("[data-ratio-family]").forEach(button => button.addEventListener("click", () => {
+      const familyIndex = Number(button.dataset.ratioFamily);
+      const choiceIndex = Number(button.dataset.ratioChoice);
+      const correctIndex = familyIndex === 1 ? 1 : 0;
+      if (choiceIndex !== correctIndex) {
+        data.ratioErrors[familyIndex] = choiceIndex;
+        renderLab83A();
+        return setLabFeedback(`That proportion is not valid yet. ${families[familyIndex].wrongReason}`, "incorrect");
+      }
+      data.ratioAnswers[familyIndex] = choiceIndex;
+      if (data.ratioAnswers.every(answer => answer !== null)) data.phase = "solve";
+      renderLab83A();
+      setLabFeedback(data.phase === "solve" ? "All three structures are valid. Now use one of them to finish the example." : "That structure is valid because every ratio keeps the same correspondence and direction.", "correct");
+    }));
+    const symbolic = $("#completeSymbolicSimilarity");
+    if (symbolic) symbolic.addEventListener("click", () => {
+      completeSimilarityQuestion(data, "Excellent. You can compare the figures in either direction, or compare pairs within each figure, as long as the order remains consistent.");
+      renderLab83A();
+    });
+    const checkAnswer = $("#checkSimilarityAnswer");
+    if (checkAnswer) checkAnswer.addEventListener("click", () => {
+      const rawAnswer = $("#similarityAnswer").value.trim();
+      const answer = Number(rawAnswer);
+      if (!rawAnswer || !Number.isFinite(answer)) return setLabFeedback("Enter a numerical value for x.", "incorrect");
+      if (Math.abs(answer - task.answer) > 0.01) return setLabFeedback("Try one color pair with two known values to find the scale factor. Then apply that same factor to the side containing x.", "incorrect");
+      completeSimilarityQuestion(data, `Correct—x = ${task.answer}. Every matching color pair now has the same scale relationship.`);
+      renderLab83A();
+    });
+    const next = $("#nextSimilarityQuestion");
+    if (next) next.addEventListener("click", () => {
+      data.index += 1;
+      resetSimilarityTask(data);
+      renderLab83A();
+      setLabFeedback(data.index < 7 ? "Begin by turning Figure II into the same orientation as Figure I." : "Now transfer the same correspondence strategy to an original real-world situation.");
+    });
+  }
+
+  const DILATION_ATTRIBUTE_BANK = {
+    coordinates: { title: "Coordinates of the vertices", answer: "changes", reason: task => `Every x- and y-coordinate is multiplied by k = ${task.factorLabel}.` },
+    distance: { title: "Distance from the origin", answer: "changes", reason: task => `Every vertex moves to ${task.factorLabel} times its original distance from the origin.` },
+    sides: { title: "Corresponding side lengths", answer: "changes", reason: task => `Every side length is multiplied by k = ${task.factorLabel}.` },
+    perimeter: { title: "Perimeter", answer: "changes", reason: task => `Perimeter is made from side lengths, so it is multiplied by k = ${task.factorLabel}.` },
+    area: { title: "Area", answer: "changes", reason: task => `Area uses two dimensions, so it is multiplied by k² = ${task.areaFactorLabel}.` },
+    angles: { title: "Corresponding angle measures", answer: "same", reason: () => "A dilation preserves every corresponding angle measure." },
+    orientation: { title: "Orientation", answer: "same", reason: () => "A positive scale factor keeps the vertices in the same order, so orientation is preserved." },
+    shape: { title: "Shape and similarity", answer: "same", reason: () => "A dilation keeps the same shape; the two figures remain similar." },
+    parallel: { title: "Parallel relationships", answer: "same", reason: () => "Corresponding sides keep the same direction and slope, so parallel relationships are preserved." }
+  };
+
+  const DILATION_ATTRIBUTE_TASKS = [
+    { mode: "reduction", k: .5, factorLabel: "1/2", areaFactorLabel: "1/4", points: [{x:4,y:4},{x:8,y:4},{x:8,y:8}], attributes: ["sides","angles","coordinates","orientation"] },
+    { mode: "reduction", k: .25, factorLabel: "1/4", areaFactorLabel: "1/16", points: [{x:-8,y:4},{x:-4,y:4},{x:-4,y:8},{x:-8,y:8}], attributes: ["perimeter","shape","area","parallel"] },
+    { mode: "reduction", k: .75, factorLabel: "3/4", areaFactorLabel: "9/16", points: [{x:-8,y:-4},{x:-4,y:-4},{x:-4,y:-8}], attributes: ["distance","angles","sides","shape"] },
+    { mode: "reduction", k: .5, factorLabel: "1/2", areaFactorLabel: "1/4", points: [{x:4,y:-8},{x:8,y:-8},{x:8,y:-4},{x:6,y:-2}], attributes: ["orientation","perimeter","coordinates","area"] },
+    { mode: "reduction", k: 2/3, factorLabel: "2/3", areaFactorLabel: "4/9", points: [{x:3,y:6},{x:6,y:6},{x:6,y:9},{x:3,y:9}], attributes: ["parallel","distance","angles","perimeter"] },
+    { mode: "enlargement", k: 2, factorLabel: "2", areaFactorLabel: "4", points: [{x:1,y:1},{x:3,y:1},{x:3,y:3}], attributes: ["area","shape","sides","orientation"] },
+    { mode: "enlargement", k: 1.5, factorLabel: "3/2", areaFactorLabel: "9/4", points: [{x:-4,y:2},{x:-2,y:2},{x:-2,y:4},{x:-4,y:4}], attributes: ["coordinates","angles","perimeter","parallel"] },
+    { mode: "enlargement", k: 2, factorLabel: "2", areaFactorLabel: "4", points: [{x:-3,y:-1},{x:-1,y:-1},{x:-1,y:-3},{x:-3,y:-3}], attributes: ["distance","shape","area","orientation"] },
+    { mode: "enlargement", k: 3, factorLabel: "3", areaFactorLabel: "9", points: [{x:1,y:-1},{x:3,y:-1},{x:3,y:-2},{x:2,y:-3},{x:1,y:-2}], attributes: ["sides","parallel","coordinates","angles"] },
+    { mode: "enlargement", k: 1.5, factorLabel: "3/2", areaFactorLabel: "9/4", points: [{x:2,y:2},{x:6,y:2},{x:6,y:4},{x:4,y:6},{x:2,y:4}], attributes: ["perimeter","orientation","area","shape"] }
+  ];
+
+  function resetDilationAttributeTask(data) {
+    data.phase = "center";
+    data.currentScale = 1;
+    data.placed = {};
+    data.selected = null;
+    data.lastWrong = null;
+    data.completed = false;
+    data.dragging = false;
+  }
+
+  function dilationAttributeScreenPoint(point) {
+    const origin = 280;
+    const unit = 24;
+    return { x: origin + point.x * unit, y: origin - point.y * unit };
+  }
+
+  function dilationAttributeScaledScreenPoint(point, scale) {
+    const origin = 280;
+    const unit = 24;
+    return { x: origin + point.x * unit * scale, y: origin - point.y * unit * scale };
+  }
+
+  function dilationAttributeLabelPoint(point, kind) {
+    const origin = 280;
+    const dx = point.x - origin;
+    const dy = point.y - origin;
+    const length = Math.hypot(dx, dy) || 1;
+    const outward = { x: dx / length, y: dy / length };
+    const perpendicular = { x: -dy / length, y: dx / length };
+    const side = kind === "original" ? 16 : -20;
+    const away = kind === "original" ? -2 : 9;
+    return {
+      x: Math.max(54, Math.min(506, point.x + perpendicular.x * side + outward.x * away)),
+      y: Math.max(54, Math.min(506, point.y + perpendicular.y * side + outward.y * away))
+    };
+  }
+
+  function dilationAttributeImageGeometry(task, scale) {
+    const points = task.points.map(point => dilationAttributeScaledScreenPoint(point, scale));
+    return {
+      points,
+      pointString: points.map(point => `${point.x},${point.y}`).join(" "),
+      labels: points.map(point => dilationAttributeLabelPoint(point, "image"))
+    };
+  }
+
+  function updateDilationImageGeometry(svg, task, scale) {
+    const geometry = dilationAttributeImageGeometry(task, scale);
+    const polygon = svg.querySelector("#dilationImageShape");
+    if (polygon) polygon.setAttribute("points", geometry.pointString);
+    geometry.points.forEach((point, index) => {
+      const marker = svg.querySelector(`[data-dilation-image-point="${index}"]`);
+      if (marker) { marker.setAttribute("cx", point.x); marker.setAttribute("cy", point.y); }
+      const label = svg.querySelector(`[data-dilation-image-label="${index}"]`);
+      if (label) { label.setAttribute("x", geometry.labels[index].x); label.setAttribute("y", geometry.labels[index].y); }
+      const ray = svg.querySelector(`[data-dilation-ray="${index}"]`);
+      if (ray) { ray.setAttribute("x2", point.x); ray.setAttribute("y2", point.y); }
+    });
+    const handle = svg.querySelector("[data-dilation-handle]");
+    if (handle) { handle.setAttribute("cx", geometry.points[0].x); handle.setAttribute("cy", geometry.points[0].y); }
+  }
+
+  function dilationAttributeGraph(task, data) {
+    const origin = 280;
+    const controlIndex = 0;
+    const grid = Array.from({length:21}, (_, index) => index - 10).map(value => {
+      const position = origin + value * 24;
+      const weight = value === 0 ? " dilation-axis" : value % 2 === 0 ? " dilation-grid-major" : "";
+      return `<line class="dilation-grid-line${weight}" x1="${position}" y1="40" x2="${position}" y2="520"></line><line class="dilation-grid-line${weight}" x1="40" y1="${position}" x2="520" y2="${position}"></line>`;
+    }).join("");
+    const tickLabels = [-10,-8,-6,-4,-2,2,4,6,8,10].map(value => {
+      const x = origin + value * 24;
+      const y = origin - value * 24;
+      return `<text class="dilation-tick-label" x="${x}" y="${origin + 18}" text-anchor="middle">${value}</text><text class="dilation-tick-label" x="${origin - 12}" y="${y + 5}" text-anchor="end">${value}</text>`;
+    }).join("");
+    const originalPoints = task.points.map(dilationAttributeScreenPoint);
+    const pointString = originalPoints.map(point => `${point.x},${point.y}`).join(" ");
+    const labels = ["A","B","C","D","E"];
+    const originalLabelPoints = originalPoints.map(point => dilationAttributeLabelPoint(point, "original"));
+    const originalLabels = originalPoints.map((point,index) => `<text class="dilation-vertex-label original" x="${originalLabelPoints[index].x}" y="${originalLabelPoints[index].y}" text-anchor="middle">${labels[index]}</text>`).join("");
+    const imageGeometry = dilationAttributeImageGeometry(task, data.currentScale);
+    const imageLabels = imageGeometry.points.map((point,index) => `<text class="dilation-vertex-label image" data-dilation-image-label="${index}" x="${imageGeometry.labels[index].x}" y="${imageGeometry.labels[index].y}" text-anchor="middle">${labels[index]}′</text>`).join("");
+    const showImage = data.phase !== "center";
+    const locked = data.phase === "sort" || data.completed;
+    return `<div class="dilation-coordinate-wrap">
+      <svg class="dilation-attribute-svg" id="dilationAttributeGraph" viewBox="0 0 560 560" role="img" aria-label="Coordinate plane with a figure ready to dilate from the origin">
+        <rect class="dilation-grid-bg" x="40" y="40" width="480" height="480" rx="12"></rect>
+        <g aria-hidden="true">${grid}${tickLabels}<text class="dilation-axis-label" x="528" y="273">x</text><text class="dilation-axis-label" x="290" y="34">y</text></g>
+        ${showImage ? `<g class="dilation-rays" aria-hidden="true">${imageGeometry.points.map((point,index) => `<line class="dilation-ray" data-dilation-ray="${index}" x1="${origin}" y1="${origin}" x2="${point.x}" y2="${point.y}"></line>`).join("")}</g><polygon id="dilationImageShape" class="dilation-image-shape${locked ? " is-locked" : ""}" points="${imageGeometry.pointString}"></polygon>` : ""}
+        <polygon class="dilation-original-shape" points="${pointString}"></polygon>
+        <g class="dilation-original-points">${originalPoints.map(point => `<circle cx="${point.x}" cy="${point.y}" r="5"></circle>`).join("")}${originalLabels}</g>
+        ${showImage ? `<g class="dilation-image-points">${imageGeometry.points.map((point,index) => `<circle class="dilation-image-point" data-dilation-image-point="${index}" cx="${point.x}" cy="${point.y}" r="5"></circle>`).join("")}${imageLabels}<circle class="dilation-drag-handle" data-dilation-handle cx="${imageGeometry.points[controlIndex].x}" cy="${imageGeometry.points[controlIndex].y}" r="9" tabindex="0" aria-label="Drag vertex A prime to dilate the entire figure"></circle></g>` : ""}
+        <g class="dilation-origin-button${data.phase === "center" ? " is-ready" : " is-selected"}" data-dilation-origin role="button" tabindex="0" aria-label="Choose the origin as the center of dilation"><circle cx="${origin}" cy="${origin}" r="17"></circle><circle cx="${origin}" cy="${origin}" r="6"></circle><text x="${origin - 18}" y="${origin + 30}" text-anchor="end">origin</text></g>
+      </svg>
+      <div class="dilation-scale-readout"><span>Current scale</span><strong data-scale-readout>${data.currentScale.toFixed(2)}</strong><i>Goal: k = ${task.factorLabel}</i></div>
+    </div>`;
+  }
+
+  function attachDilationDrag(task, data) {
+    const svg = $("#dilationAttributeGraph");
+    const handle = svg && svg.querySelector("[data-dilation-handle]");
+    if (!svg || !handle || data.phase !== "dilate") return;
+    const origin = 280;
+    const control = dilationAttributeScreenPoint(task.points[0]);
+    const vector = { x: control.x - origin, y: control.y - origin };
+    const denominator = vector.x * vector.x + vector.y * vector.y;
+    let pointerId = null;
+
+    const updateScale = event => {
+      if (!data.dragging) return;
+      const rect = svg.getBoundingClientRect();
+      const pointer = { x: (event.clientX - rect.left) * 560 / rect.width, y: (event.clientY - rect.top) * 560 / rect.height };
+      const offset = { x: pointer.x - origin, y: pointer.y - origin };
+      let nextScale = (offset.x * vector.x + offset.y * vector.y) / denominator;
+      nextScale = Math.max(.15, Math.min(3.25, nextScale));
+      if (Math.abs(nextScale - task.k) < .12) nextScale = task.k;
+      else nextScale = Math.round(nextScale * 20) / 20;
+      data.currentScale = nextScale;
+      updateDilationImageGeometry(svg, task, nextScale);
+      const readout = document.querySelector("[data-scale-readout]");
+      if (readout) readout.textContent = nextScale.toFixed(2);
+    };
+    const finish = event => {
+      if (!data.dragging) return;
+      data.dragging = false;
+      if (pointerId !== null && svg.hasPointerCapture(pointerId)) svg.releasePointerCapture(pointerId);
+      pointerId = null;
+      if (Math.abs(data.currentScale - task.k) < .001) {
+        data.phase = "sort";
+        renderLab83B();
+        setLabFeedback(`You created the ${task.mode}: every point is now ${task.factorLabel} times as far from the origin. Now compare the attributes.`, "correct");
+      } else {
+        renderLab83B();
+        const direction = task.mode === "reduction" ? "closer to the origin" : "farther from the origin";
+        setLabFeedback(`You reached k ≈ ${data.currentScale.toFixed(2)}. Drag A′ ${direction} until the scale reads ${task.factorLabel}.`, "incorrect");
+      }
+    };
+    handle.addEventListener("pointerdown", event => {
+      event.preventDefault();
+      data.dragging = true;
+      pointerId = event.pointerId;
+      svg.setPointerCapture(pointerId);
+      updateScale(event);
+    });
+    handle.addEventListener("keydown", event => {
+      const direction = event.key === "ArrowRight" || event.key === "ArrowUp" ? 1 : event.key === "ArrowLeft" || event.key === "ArrowDown" ? -1 : 0;
+      if (direction) {
+        event.preventDefault();
+        let nextScale = Math.max(.15, Math.min(3.25, data.currentScale + direction * .05));
+        if (Math.abs(nextScale - task.k) < .08) nextScale = task.k;
+        data.currentScale = nextScale === task.k ? task.k : Math.round(nextScale * 100) / 100;
+        updateDilationImageGeometry(svg, task, data.currentScale);
+        const readout = document.querySelector("[data-scale-readout]");
+        if (readout) readout.textContent = data.currentScale.toFixed(2);
+      }
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        if (Math.abs(data.currentScale - task.k) < .001) {
+          data.phase = "sort";
+          renderLab83B();
+          setLabFeedback(`You created the ${task.mode}: every point is now ${task.factorLabel} times as far from the origin. Now compare the attributes.`, "correct");
+        } else {
+          setLabFeedback(`The scale is ${data.currentScale.toFixed(2)}. Continue adjusting A′ until it reaches ${task.factorLabel}.`, "incorrect");
+        }
+      }
+    });
+    svg.addEventListener("pointermove", updateScale);
+    svg.addEventListener("pointerup", finish);
+    svg.addEventListener("pointercancel", finish);
+  }
+
+  function renderLab83B() {
+    if (!labRuntime.data) {
+      labRuntime.data = { index: 0 };
+      resetDilationAttributeTask(labRuntime.data);
+    }
+    const data = labRuntime.data;
+    const task = DILATION_ATTRIBUTE_TASKS[data.index];
+    const completedCount = data.index + (data.completed ? 1 : 0);
+    const phaseInstruction = data.phase === "center" ? "Select the center of dilation." : data.phase === "dilate" ? `Create a ${task.mode} with k = ${task.factorLabel}.` : "Classify the attributes using evidence from your dilation.";
+    setLabProgress(completedCount, DILATION_ATTRIBUTE_TASKS.length, `${task.mode === "reduction" ? "Reduction" : "Enlargement"} ${data.index % 5 + 1} of 5 · ${phaseInstruction}`);
+
+    const remaining = task.attributes.filter(key => !data.placed[key]);
+    const changing = task.attributes.filter(key => data.placed[key] === "changes");
+    const same = task.attributes.filter(key => data.placed[key] === "same");
+    const bank = remaining.map(key => {
+      const attribute = DILATION_ATTRIBUTE_BANK[key];
+      return `<button type="button" class="dilation-attribute-card${data.selected === key ? " is-selected" : ""}${data.lastWrong === key ? " is-incorrect" : ""}" data-attribute-card="${key}" draggable="true"><strong>${attribute.title}</strong><span>Drag or tap</span></button>`;
+    }).join("") || `<div class="dilation-bank-complete">✓ Every attribute classified</div>`;
+    const placedCard = key => `<span class="dilation-placed-attribute"><strong>${DILATION_ATTRIBUTE_BANK[key].title}</strong><small>${DILATION_ATTRIBUTE_BANK[key].reason(task)}</small></span>`;
+
+    let coaching;
+    if (data.phase === "center") coaching = `<span class="sim-step-chip">Step 1 · Center</span><h4>Choose the center of dilation.</h4><p>Click the glowing origin on the coordinate plane. Every vertex will move along a ray that begins at this point.</p>`;
+    else if (data.phase === "dilate") coaching = `<span class="sim-step-chip">Step 2 · Dilate</span><h4>Drag A′ to create the whole ${task.mode}.</h4><p>The figure moves as one unit because every vertex uses the same scale factor. Watch the scale readout and stop at k = ${task.factorLabel}.</p>`;
+    else coaching = `<span class="sim-step-chip">Step 3 · Compare</span><h4>What changed—and what did not?</h4><p>Drag each attribute into a category. On a touch screen, tap a card and then tap its category.</p><div class="dilation-attribute-sort"><div class="dilation-attribute-bank"><p class="lab-mini-title">Attributes to classify</p>${bank}</div><div class="dilation-attribute-zones"><section class="dilation-attribute-zone changes" data-attribute-zone="changes" role="button" tabindex="0"><header><strong>Changes</strong><span>multiplied by k or k²</span></header>${changing.map(placedCard).join("")}</section><section class="dilation-attribute-zone same" data-attribute-zone="same" role="button" tabindex="0"><header><strong>Does not change</strong><span>preserved by dilation</span></header>${same.map(placedCard).join("")}</section></div></div><button type="button" class="lab-next" id="nextDilationAttribute" ${data.completed ? "" : "hidden"}>${data.index === DILATION_ATTRIBUTE_TASKS.length - 1 ? "Finish lab" : "Next dilation →"}</button>`;
+
+    $("#standardsLabBody").innerHTML = `<section class="dilation-attribute-shell"><header class="dilation-attribute-header"><div><p class="lab-mini-title">${task.mode === "reduction" ? "Reduce" : "Enlarge"} · Question ${data.index + 1} of 10</p><h4>Dilate the figure by a scale factor of ${task.factorLabel}.</h4><p>One side is horizontal or vertical so you can track corresponding points clearly.</p></div><span class="dilation-mode-chip is-${task.mode}">${task.mode}</span></header><div class="dilation-attribute-layout"><article class="lab-stage-card">${dilationAttributeGraph(task, data)}</article><article class="lab-task-card dilation-coaching-card">${coaching}</article></div></section>`;
+
+    const originButton = document.querySelector("[data-dilation-origin]");
+    if (originButton && data.phase === "center") {
+      const chooseOrigin = () => {
+        data.phase = "dilate";
+        data.currentScale = task.mode === "reduction" ? .9 : 1.1;
+        renderLab83B();
+        setLabFeedback(`Origin selected. Drag A′ along the ray until the scale reads ${task.factorLabel}.`, "correct");
+      };
+      originButton.addEventListener("click", chooseOrigin);
+      originButton.addEventListener("keydown", event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); chooseOrigin(); } });
+    }
+    attachDilationDrag(task, data);
+
+    function placeAttribute(key, zone) {
+      const attribute = DILATION_ATTRIBUTE_BANK[key];
+      if (!attribute || data.placed[key]) return;
+      if (attribute.answer !== zone) {
+        data.lastWrong = key;
+        renderLab83B();
+        return setLabFeedback(`Look again: ${attribute.reason(task)}`, "incorrect");
+      }
+      data.placed[key] = zone;
+      data.selected = null;
+      data.lastWrong = null;
+      if (Object.keys(data.placed).length === task.attributes.length) {
+        data.completed = true;
+        renderLab83B();
+        setLabFeedback(`Exactly. This ${task.mode} changed measurements connected to scale, but preserved angles, orientation, shape, and direction.`, "correct");
+      } else {
+        renderLab83B();
+        setLabFeedback(`Correct. ${attribute.reason(task)}`, "correct");
+      }
+    }
+
+    document.querySelectorAll("[data-attribute-card]").forEach(card => {
+      card.addEventListener("click", () => {
+        data.selected = card.dataset.attributeCard;
+        data.lastWrong = null;
+        renderLab83B();
+        setLabFeedback(`${DILATION_ATTRIBUTE_BANK[data.selected].title} selected. Choose whether it changes or does not change.`);
+      });
+      card.addEventListener("dragstart", event => {
+        event.dataTransfer.setData("text/plain", card.dataset.attributeCard);
+        event.dataTransfer.effectAllowed = "move";
+      });
+    });
+    document.querySelectorAll("[data-attribute-zone]").forEach(zone => {
+      const useSelected = () => { if (data.selected) placeAttribute(data.selected, zone.dataset.attributeZone); };
+      zone.addEventListener("click", useSelected);
+      zone.addEventListener("keydown", event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); useSelected(); } });
+      zone.addEventListener("dragover", event => { event.preventDefault(); event.dataTransfer.dropEffect = "move"; });
+      zone.addEventListener("dragenter", event => { event.preventDefault(); zone.classList.add("is-ready"); });
+      zone.addEventListener("dragleave", () => zone.classList.remove("is-ready"));
+      zone.addEventListener("drop", event => {
+        event.preventDefault();
+        zone.classList.remove("is-ready");
+        placeAttribute(event.dataTransfer.getData("text/plain"), zone.dataset.attributeZone);
+      });
+    });
+    const next = $("#nextDilationAttribute");
+    if (next) next.addEventListener("click", () => {
+      if (data.index === DILATION_ATTRIBUTE_TASKS.length - 1) {
+        setLabProgress(10, 10, "All reductions, enlargements, and attribute comparisons complete.");
+        showLabCompletion("8.3B");
+        return;
+      }
+      data.index += 1;
+      resetDilationAttributeTask(data);
+      renderLab83B();
+      setLabFeedback("New figure ready. Begin by selecting the origin as the center of dilation.");
+    });
+  }
+
+  const DILATION_RULE_QUESTIONS = [
+    {
+      type: "Words → Rule",
+      prompt: "Which algebraic rule matches this description?",
+      visual: { kind: "words", lead: "Each image point is", factor: "3/2", tail: "times as far from the origin as its corresponding point." },
+      choices: [
+        { display: { kind: "rule", factor: "3/2" } },
+        { display: { kind: "rule", factor: "2/3" }, reason: "This reciprocal would create a reduction, but the description says every distance is multiplied by 3/2." },
+        { display: { kind: "translation", dx: 1.5, dy: 1.5 }, reason: "Adding a constant moves every point the same distance; it does not scale distances from the origin." },
+        { display: { kind: "mixed", xFactor: "3/2", yFactor: "2/3" }, reason: "A dilation must multiply x and y by the same scale factor." }
+      ],
+      explanation: "The common multiplier is k = 3/2. Because 3/2 is greater than 1, the rule creates an enlargement centered at the origin."
+    },
+    {
+      type: "Words → Rule",
+      prompt: "A figure is reduced so every image point is 2/5 as far from the origin. Which rule represents the dilation?",
+      visual: { kind: "distance", factor: "2/5", mode: "reduction" },
+      choices: [
+        { display: { kind: "rule", factor: "2/5" } },
+        { display: { kind: "rule", factor: "5/2" }, reason: "A scale factor of 5/2 is greater than 1, so it would enlarge the figure." },
+        { display: { kind: "translation", dx: -.4, dy: -.4 }, reason: "Subtracting 0.4 is a translation rule, not multiplication by a scale factor." },
+        { display: { kind: "mixed", xFactor: "2/5", yFactor: "5/2" }, reason: "The two coordinates use different multipliers, so the figure would be distorted rather than dilated." }
+      ],
+      explanation: "A dilation centered at the origin multiplies both coordinates by k. Here k = 2/5, and 0 < 2/5 < 1, so the image is a reduction."
+    },
+    {
+      type: "Transformation Check",
+      prompt: "A rule adds 4 to every x-coordinate and subtracts 2 from every y-coordinate. What transformation does it describe?",
+      visual: { kind: "rule", display: { kind: "translation", dx: 4, dy: -2 } },
+      choices: [
+        { display: { kind: "text", text: "Translation 4 units right and 2 units down" } },
+        { display: { kind: "text", text: "Dilation with k = 4" }, reason: "A dilation multiplies coordinates. This rule adds and subtracts constants." },
+        { display: { kind: "text", text: "Dilation with k = 2" }, reason: "The −2 is a vertical shift, not a scale factor." },
+        { display: { kind: "text", text: "Reflection across the x-axis" }, reason: "A reflection across the x-axis changes y to −y; it does not subtract 2." }
+      ],
+      explanation: "Translations add or subtract constants from coordinates. Dilations multiply both coordinates by the same positive scale factor."
+    },
+    {
+      type: "Points → Rule",
+      prompt: "Which rule maps every point to its image?",
+      visual: { kind: "points", rows: [["A", "(2, −3)", "(5, −7.5)"], ["B", "(−4, 2)", "(−10, 5)"]] },
+      choices: [
+        { display: { kind: "rule", factor: "5/2" } },
+        { display: { kind: "rule", factor: "2/5" }, reason: "The image coordinates are larger in magnitude. Dividing image by original gives 5/2, not 2/5." },
+        { display: { kind: "translation", dx: 3, dy: -4.5 }, reason: "That change fits point A only. A translation must add the same amounts to every point." },
+        { display: { kind: "mixed", xFactor: "5/2", yFactor: "2" }, reason: "For A, −3 becomes −7.5, so y is also multiplied by 5/2." }
+      ],
+      explanation: "5 ÷ 2 = 5/2 and −7.5 ÷ −3 = 5/2. The same quotient appears for both coordinates and both points."
+    },
+    {
+      type: "Points → Rule",
+      prompt: "Find the scale factor and choose the matching rule.",
+      visual: { kind: "points", rows: [["M", "(−6, 4)", "(−3, 2)"], ["N", "(2, 8)", "(1, 4)"]] },
+      choices: [
+        { display: { kind: "rule", factor: "1/2" } },
+        { display: { kind: "rule", factor: "2" }, reason: "The image coordinates are half the originals, not twice the originals." },
+        { display: { kind: "translation", dx: 3, dy: -2 }, reason: "Those changes do not work for point N. The relationship is multiplication, not a constant shift." },
+        { display: { kind: "mixed", xFactor: "1/2", yFactor: "1/4" }, reason: "The y-coordinates are also multiplied by 1/2: 4 becomes 2 and 8 becomes 4." }
+      ],
+      explanation: "Each image coordinate is one-half of its original coordinate. The scale factor k = 1/2 creates a reduction."
+    },
+    {
+      type: "Points → Rule",
+      prompt: "Which algebraic rule explains both mappings?",
+      visual: { kind: "points", rows: [["P", "(3, 6)", "(6, 12)"], ["Q", "(−2, 5)", "(−4, 10)"]] },
+      choices: [
+        { display: { kind: "rule", factor: "2" } },
+        { display: { kind: "translation", dx: 3, dy: 6 }, reason: "That shift matches point P only. Point Q uses a different change, so this is not a translation." },
+        { display: { kind: "rule", factor: "1/2" }, reason: "The coordinates double from original to image; 1/2 would reverse the mapping." },
+        { display: { kind: "mixed", xFactor: "2", yFactor: "3" }, reason: "The y-coordinates double too: 6 becomes 12 and 5 becomes 10." }
+      ],
+      explanation: "Every coordinate is multiplied by 2. The common multiplier is the scale factor, so the figure is enlarged by k = 2."
+    },
+    {
+      type: "Graph → Rule",
+      prompt: "Use the labeled vertices to identify the dilation rule.",
+      visual: { kind: "graph", points: [[2,2],[3,2],[2,3]], labels: ["A","B","C"], factor: 2 },
+      choices: [
+        { display: { kind: "rule", factor: "2" } },
+        { display: { kind: "translation", dx: 1, dy: 1 }, reason: "The movement is not a constant shift. For example, B(3,2) maps to B′(6,4)." },
+        { display: { kind: "rule", factor: "1/2" }, reason: "The purple image is farther from the origin, so the scale factor must be greater than 1." },
+        { display: { kind: "mixed", xFactor: "2", yFactor: "1" }, reason: "Both coordinates double, including the y-coordinates." }
+      ],
+      explanation: "A(2,2) maps to A′(4,4), and every other coordinate also doubles. This is an enlargement with k = 2."
+    },
+    {
+      type: "Graph → Rule",
+      prompt: "Which rule maps the teal figure to the purple figure?",
+      visual: { kind: "graph", points: [[6,-8],[8,-8],[8,-6]], labels: ["D","E","F"], factor: .5 },
+      choices: [
+        { display: { kind: "rule", factor: "1/2" } },
+        { display: { kind: "translation", dx: -2, dy: 4 }, reason: "The coordinate changes are not constant for every vertex. Each coordinate is halved." },
+        { display: { kind: "rule", factor: "2" }, reason: "The purple image is closer to the origin, so this is a reduction rather than an enlargement." },
+        { display: { kind: "mixed", xFactor: "1/2", yFactor: "2" }, reason: "The y-coordinate −8 becomes −4, which is multiplication by 1/2, not 2." }
+      ],
+      explanation: "D(6,−8) maps to D′(3,−4). Both coordinates of every point are multiplied by 1/2."
+    },
+    {
+      type: "Graph → Rule",
+      prompt: "The origin is the center of dilation. Select the rule that produces the image.",
+      visual: { kind: "graph", points: [[-4,4],[-3,4],[-3,5],[-4,5]], labels: ["G","H","J","K"], factor: 1.5 },
+      choices: [
+        { display: { kind: "rule", factor: "3/2" } },
+        { display: { kind: "rule", factor: "2/3" }, reason: "The purple image is farther from the origin. A factor of 2/3 would move points closer." },
+        { display: { kind: "translation", dx: -2, dy: 1 }, reason: "The vertices do not all move by the same horizontal and vertical amounts." },
+        { display: { kind: "mixed", xFactor: "3/2", yFactor: "2" }, reason: "For example, G(−4,4) maps to G′(−6,6), so y is multiplied by 3/2 too." }
+      ],
+      explanation: "G(−4,4) maps to G′(−6,6). The common coordinate multiplier is 3/2, so the figure is enlarged."
+    },
+    {
+      type: "Graph → Rule",
+      prompt: "Determine the algebraic rule from the two figures.",
+      visual: { kind: "graph", points: [[-9,-6],[-6,-6],[-6,-9]], labels: ["L","M","N"], factor: 1/3 },
+      choices: [
+        { display: { kind: "rule", factor: "1/3" } },
+        { display: { kind: "rule", factor: "3" }, reason: "The image is closer to the origin, so the factor must be between 0 and 1." },
+        { display: { kind: "translation", dx: 6, dy: 4 }, reason: "That change fits L only. A dilation uses multiplication and works for every vertex." },
+        { display: { kind: "mixed", xFactor: "1/3", yFactor: "1/2" }, reason: "L(−9,−6) maps to L′(−3,−2), so both coordinates use 1/3." }
+      ],
+      explanation: "Dividing each image coordinate by its corresponding original coordinate gives 1/3. The image is a reduction."
+    },
+    {
+      type: "Misconception Check",
+      prompt: "A student says this mapping is a dilation centered at the origin. Which statement is correct?",
+      visual: { kind: "points", warning: true, rows: [["R", "(2, 4)", "(4, 12)"], ["S", "(−3, 2)", "(−6, 6)"]] },
+      choices: [
+        { display: { kind: "text", text: "It is not a dilation because x is multiplied by 2 while y is multiplied by 3." } },
+        { display: { kind: "text", text: "It is a dilation with k = 2." }, reason: "The x-coordinates use 2, but the y-coordinates use 3. A dilation needs one common multiplier." },
+        { display: { kind: "text", text: "It is a dilation with k = 3." }, reason: "The y-coordinates use 3, but the x-coordinates use 2." },
+        { display: { kind: "text", text: "It is a translation 2 units right and 8 units up." }, reason: "The changes are not constant from point R to point S, so it is not that translation." }
+      ],
+      explanation: "A true dilation uses one positive rational scale factor for every coordinate. Two different factors change the figure’s proportions."
+    },
+    {
+      type: "Misconception Check",
+      prompt: "Does one scale factor explain this mapping?",
+      visual: { kind: "points", warning: true, rows: [["T", "(−6, 3)", "(−3, 1)"], ["U", "(9, −6)", "(4.5, −2)"]] },
+      choices: [
+        { display: { kind: "text", text: "No. The x-values use 1/2, but the y-values use 1/3." } },
+        { display: { kind: "text", text: "Yes. The scale factor is 1/2." }, reason: "The x-values are halved, but 3 becomes 1 and −6 becomes −2, so y uses 1/3." },
+        { display: { kind: "text", text: "Yes. The scale factor is 1/3." }, reason: "The y-values use 1/3, but the x-values use 1/2." },
+        { display: { kind: "text", text: "Yes. The scale factor is 2." }, reason: "The image coordinates are smaller in magnitude, and the coordinate ratios are not both 2." }
+      ],
+      explanation: "Because the x- and y-coordinates do not share the same multiplier, the image is distorted. It is not a dilation centered at the origin."
+    },
+    {
+      type: "Scale Factor Meaning",
+      prompt: "What does this rule tell you about the scale factor and the image?",
+      visual: { kind: "rule", display: { kind: "rule", factor: "3/4" } },
+      choices: [
+        { display: { kind: "text", text: "k = 3/4; the image is a reduction." } },
+        { display: { kind: "text", text: "k = 4/3; the image is an enlargement." }, reason: "The scale factor is the number actually multiplying x and y: 3/4, not its reciprocal." },
+        { display: { kind: "text", text: "k = 3; the image is an enlargement." }, reason: "The entire fraction 3/4 is the multiplier." },
+        { display: { kind: "text", text: "The rule describes a translation." }, reason: "Both coordinates are multiplied by the same number, which is the structure of a dilation." }
+      ],
+      explanation: "The scale factor is k = 3/4. Since it lies between 0 and 1, every image point is closer to the origin."
+    },
+    {
+      type: "Transformation Check",
+      prompt: "Which rule represents a dilation centered at the origin?",
+      visual: { kind: "compare", note: "Look for multiplication by one common factor." },
+      choices: [
+        { display: { kind: "rule", factor: "0.6" } },
+        { display: { kind: "translation", dx: 2, dy: 2 }, reason: "Adding 2 to both coordinates translates the figure." },
+        { display: { kind: "text", text: "(x, y) → (x, −y)" }, reason: "Changing y to −y reflects the figure across the x-axis." },
+        { display: { kind: "mixed", xFactor: "0.6", yFactor: "1.6" }, reason: "Different coordinate multipliers distort the figure; they do not create a dilation." }
+      ],
+      explanation: "The rule (x, y) → (0.6x, 0.6y) multiplies both coordinates by the same positive factor. It is a reduction because 0.6 is less than 1."
+    },
+    {
+      type: "Synthesis",
+      prompt: "A figure is dilated by k = 5/2 from the origin. Which statement and point mapping are both correct?",
+      visual: { kind: "distance", factor: "5/2", mode: "enlargement" },
+      choices: [
+        { display: { kind: "mappingEffect", text: "Enlargement", from: "(−2, 4)", to: "(−5, 10)" } },
+        { display: { kind: "mappingEffect", text: "Reduction", from: "(−2, 4)", to: "(−5, 10)" }, reason: "The mapping is correct, but 5/2 is greater than 1, so it creates an enlargement." },
+        { display: { kind: "mappingEffect", text: "Enlargement", from: "(−2, 4)", to: "(−0.8, 1.6)" }, reason: "Those coordinates result from multiplying by 2/5, the reciprocal scale factor." },
+        { display: { kind: "mappingEffect", text: "Translation", from: "(−2, 4)", to: "(0.5, 6.5)" }, reason: "Adding 2.5 is not the same as multiplying each coordinate by 5/2." }
+      ],
+      explanation: "Multiplying −2 and 4 by 5/2 gives −5 and 10. Since 5/2 > 1, the image is an enlargement."
+    }
+  ];
+
+  function dilationFactorMarkup(value) {
+    const textValue = String(value);
+    if (!textValue.includes("/")) return escapeHTML(textValue);
+    const [top, bottom] = textValue.split("/");
+    return `<span class="dilation-rule-fraction"><span>${escapeHTML(top)}</span><span>${escapeHTML(bottom)}</span></span>`;
+  }
+
+  function signedCoordinate(variable, amount) {
+    if (amount === 0) return variable;
+    return `${variable} ${amount > 0 ? "+" : "−"} ${Math.abs(amount)}`;
+  }
+
+  function dilationRuleChoiceMarkup(display) {
+    if (display.kind === "rule") {
+      const factor = dilationFactorMarkup(display.factor);
+      return `<span class="dilation-rule-expression">(x, y) → (${factor}x, ${factor}y)</span>`;
+    }
+    if (display.kind === "translation") {
+      return `<span class="dilation-rule-expression">(x, y) → (${signedCoordinate("x", display.dx)}, ${signedCoordinate("y", display.dy)})</span>`;
+    }
+    if (display.kind === "mixed") {
+      return `<span class="dilation-rule-expression">(x, y) → (${dilationFactorMarkup(display.xFactor)}x, ${dilationFactorMarkup(display.yFactor)}y)</span>`;
+    }
+    if (display.kind === "mappingEffect") {
+      return `<span class="dilation-mapping-effect"><strong>${escapeHTML(display.text)}</strong><span>${escapeHTML(display.from)} → ${escapeHTML(display.to)}</span></span>`;
+    }
+    return `<span>${escapeHTML(display.text)}</span>`;
+  }
+
+  function dilationPointsTable(rows, warning = false) {
+    return `<div class="dilation-point-stimulus${warning ? " is-warning" : ""}"><div class="dilation-point-key"><span class="is-original">teal · original</span><span class="is-image">purple · image</span></div><table><thead><tr><th>Point</th><th>Original</th><th>Image</th></tr></thead><tbody>${rows.map(([label, original, image]) => `<tr><th>${escapeHTML(label)} → ${escapeHTML(label)}′</th><td>${escapeHTML(original)}</td><td>${escapeHTML(image)}</td></tr>`).join("")}</tbody></table>${warning ? `<p><strong>Check:</strong> Is the same multiplier used for x and y?</p>` : ""}</div>`;
+  }
+
+  function dilationRuleGraph(visual) {
+    const origin = 210;
+    const unit = 17;
+    const toScreen = ([x, y]) => [origin + x * unit, origin - y * unit];
+    const imagePoints = visual.points.map(([x, y]) => [x * visual.factor, y * visual.factor]);
+    const originalScreen = visual.points.map(toScreen);
+    const imageScreen = imagePoints.map(toScreen);
+    const grid = Array.from({ length: 21 }, (_, index) => index - 10).map(value => {
+      const position = origin + value * unit;
+      const className = value === 0 ? " is-axis" : value % 5 === 0 ? " is-major" : "";
+      return `<line class="dilation-rule-grid${className}" x1="40" y1="${position}" x2="380" y2="${position}"></line><line class="dilation-rule-grid${className}" x1="${position}" y1="40" x2="${position}" y2="380"></line>`;
+    }).join("");
+    const labels = [-10,-5,5,10].map(value => {
+      const horizontal = origin + value * unit;
+      const vertical = origin - value * unit;
+      return `<text class="dilation-rule-tick" x="${horizontal}" y="${origin + 17}" text-anchor="middle">${value}</text><text class="dilation-rule-tick" x="${origin - 10}" y="${vertical + 4}" text-anchor="end">${value}</text>`;
+    }).join("");
+    const polygon = points => points.map(([x,y]) => `${x},${y}`).join(" ");
+    const pointMarkup = (points, coordinatePoints, prime) => {
+      const center = points.reduce((sum, [x,y]) => ({ x: sum.x + x / points.length, y: sum.y + y / points.length }), { x: 0, y: 0 });
+      return points.map(([x,y], index) => {
+        const dx = x - center.x;
+        const dy = y - center.y;
+        const distance = Math.hypot(dx, dy) || 1;
+        const labelX = Math.max(50, Math.min(370, x + dx / distance * 17));
+        const labelY = Math.max(50, Math.min(370, y + dy / distance * 17));
+        return `<circle cx="${x}" cy="${y}" r="5"></circle><text x="${labelX}" y="${labelY}" text-anchor="middle">${escapeHTML(visual.labels[index])}${prime ? "′" : ""}</text>`;
+      }).join("");
+    };
+    const coordinateLine = (points, prime) => points.map((point, index) => `${visual.labels[index]}${prime ? "′" : ""}(${point[0]}, ${point[1]})`).join(" · ");
+    return `<div class="dilation-rule-graph-wrap"><svg class="dilation-rule-graph" viewBox="0 0 420 420" role="img" aria-label="Coordinate plane showing an original figure and its dilation from the origin"><rect x="40" y="40" width="340" height="340" rx="14"></rect>${grid}${labels}<text class="dilation-rule-axis-label" x="389" y="204">x</text><text class="dilation-rule-axis-label" x="219" y="31">y</text><polygon class="dilation-rule-image" points="${polygon(imageScreen)}"></polygon><polygon class="dilation-rule-original" points="${polygon(originalScreen)}"></polygon><g class="dilation-rule-image-points">${pointMarkup(imageScreen, imagePoints, true)}</g><g class="dilation-rule-original-points">${pointMarkup(originalScreen, visual.points, false)}</g><circle class="dilation-rule-origin" cx="${origin}" cy="${origin}" r="5"></circle></svg><div class="dilation-coordinate-list"><p><span class="is-original">Original</span>${escapeHTML(coordinateLine(visual.points, false))}</p><p><span class="is-image">Image</span>${escapeHTML(coordinateLine(imagePoints, true))}</p></div></div>`;
+  }
+
+  function dilationRuleStimulusMarkup(visual) {
+    if (visual.kind === "graph") return dilationRuleGraph(visual);
+    if (visual.kind === "points") return dilationPointsTable(visual.rows, visual.warning);
+    if (visual.kind === "rule") return `<div class="dilation-large-rule">${dilationRuleChoiceMarkup(visual.display)}</div>`;
+    if (visual.kind === "words") return `<div class="dilation-word-visual"><span>${escapeHTML(visual.lead)}</span><strong>${dilationFactorMarkup(visual.factor)}</strong><span>${escapeHTML(visual.tail)}</span><i>same factor · both coordinates</i></div>`;
+    if (visual.kind === "distance") return `<div class="dilation-distance-visual is-${visual.mode}"><span class="dilation-origin-dot">origin</span><span class="dilation-distance-ray"></span><span class="dilation-distance-point is-original">P</span><span class="dilation-distance-point is-image">P′</span><strong>k = ${dilationFactorMarkup(visual.factor)}</strong><small>${visual.mode === "reduction" ? "Image points move closer to the origin" : "Image points move farther from the origin"}</small></div>`;
+    return `<div class="dilation-compare-visual"><span>+ or − constants</span><b>translation</b><i>versus</i><span>× one common factor</span><b>dilation</b><p>${escapeHTML(visual.note)}</p></div>`;
+  }
+
+  function renderLab83C() {
+    if (!labRuntime.data) {
+      const desiredPositions = [1,3,0,2,1,0,3,2,0,1,2,3,1,0,2];
+      labRuntime.data = {
+        index: 0,
+        selected: null,
+        wrong: null,
+        answered: false,
+        orders: DILATION_RULE_QUESTIONS.map((question, index) => similarityChoiceOrder(question.choices.length, 0, desiredPositions[index]))
+      };
+    }
+    const data = labRuntime.data;
+    const question = DILATION_RULE_QUESTIONS[data.index];
+    const completed = data.index + (data.answered ? 1 : 0);
+    setLabProgress(completed, DILATION_RULE_QUESTIONS.length, `${question.type} · Question ${data.index + 1} of 15`);
+
+    const choices = data.orders[data.index].map((choiceIndex, displayedIndex) => {
+      const choice = question.choices[choiceIndex];
+      const classes = ["dilation-rule-choice"];
+      if (data.selected === choiceIndex) classes.push("is-selected");
+      if (data.wrong === choiceIndex) classes.push("is-incorrect");
+      if (data.answered && choiceIndex === 0) classes.push("is-correct");
+      return `<button type="button" class="${classes.join(" ")}" data-dilation-rule-choice="${choiceIndex}" ${data.answered ? "disabled" : ""}><span class="dilation-choice-letter">${String.fromCharCode(65 + displayedIndex)}</span><span class="dilation-choice-content">${dilationRuleChoiceMarkup(choice.display)}</span></button>`;
+    }).join("");
+
+    const connection = data.answered ? `<div class="dilation-rule-connection"><strong>Connection</strong><p>${escapeHTML(question.explanation)}</p></div>` : "";
+    $("#standardsLabBody").innerHTML = `<section class="dilation-rule-shell"><header class="dilation-rule-header"><div><p class="lab-mini-title">${escapeHTML(question.type)} · Question ${data.index + 1} of 15</p><h4>${escapeHTML(question.prompt)}</h4></div><span class="dilation-rule-chip">k connects both coordinates</span></header><div class="dilation-rule-layout"><article class="dilation-rule-stimulus">${dilationRuleStimulusMarkup(question.visual)}</article><article class="dilation-rule-response"><p class="dilation-response-prompt">Choose the best answer.</p><div class="dilation-rule-choice-grid">${choices}</div>${connection}<div class="dilation-rule-actions"><button type="button" class="lab-action" id="checkDilationRule" ${data.selected === null || data.answered ? "hidden" : ""}>Check answer</button><button type="button" class="lab-next" id="nextDilationRule" ${data.answered ? "" : "hidden"}>${data.index === DILATION_RULE_QUESTIONS.length - 1 ? "Finish lab" : "Next connection →"}</button></div></article></div></section>`;
+
+    document.querySelectorAll("[data-dilation-rule-choice]").forEach(button => button.addEventListener("click", () => {
+      data.selected = Number(button.dataset.dilationRuleChoice);
+      data.wrong = null;
+      renderLab83C();
+      setLabFeedback("Answer selected. Check it when you are ready.");
+    }));
+
+    const check = $("#checkDilationRule");
+    if (check) check.addEventListener("click", () => {
+      if (data.selected === 0) {
+        data.answered = true;
+        data.wrong = null;
+        renderLab83C();
+        setLabFeedback(question.explanation, "correct");
+      } else {
+        data.wrong = data.selected;
+        const reason = question.choices[data.selected].reason || "Use one common multiplier for both coordinates and compare the rule with every point.";
+        renderLab83C();
+        setLabFeedback(reason, "incorrect");
+      }
+    });
+
+    const next = $("#nextDilationRule");
+    if (next) next.addEventListener("click", () => {
+      if (data.index === DILATION_RULE_QUESTIONS.length - 1) {
+        setLabProgress(15, 15, "All algebraic dilation connections complete.");
+        showLabCompletion("8.3C");
+        return;
+      }
+      data.index += 1;
+      data.selected = null;
+      data.wrong = null;
+      data.answered = false;
+      renderLab83C();
+      setLabFeedback("New representation ready. Look for one common multiplier on both coordinates.");
+    });
+  }
+
+  function renderLab82A() {
+    const cards = [
+      { id: "root25", display: "√25", plain: "the square root of 25", answer: "natural", explain: "√25 = 5, so its most specific home is Natural.", hint: "Simplify the square root first. Is the result a counting number?" },
+      { id: "eighteenThirds", display: "18⁄3", plain: "18 divided by 3", answer: "natural", explain: "18⁄3 = 6, so its most specific home is Natural.", hint: "Simplify the fraction before you classify it." },
+      { id: "zero", display: "0", plain: "zero", answer: "whole", explain: "Zero is a whole number, but it is not a natural number in this course.", hint: "Zero is the first value added when natural numbers expand to whole numbers." },
+      { id: "negativeDecimal", display: "−6.0000", plain: "negative 6 point 0000", answer: "integer", explain: "−6.0000 equals −6, so its most specific home is Integer.", hint: "Ending zeros do not change the value. Rewrite the number without them." },
+      { id: "negativeFraction", display: "−20⁄5", plain: "negative 20 divided by 5", answer: "integer", explain: "−20⁄5 = −4, so its most specific home is Integer.", hint: "Simplify the negative fraction before you classify it." },
+      { id: "sevenTwelfths", display: "7⁄12", plain: "7 twelfths", answer: "rational", explain: "7⁄12 is a ratio of two integers and is not an integer, so it belongs in Rational.", hint: "A fraction made from two integers is rational when its denominator is not zero." },
+      { id: "terminating", display: "2.375", plain: "2 point 375", answer: "rational", explain: "2.375 terminates, so it is rational but not an integer.", hint: "A terminating decimal can be written as a fraction." },
+      { id: "repeating", display: "0.<span class=\"repeat-digits\">36</span>", plain: "zero point 36 repeating", answer: "rational", explain: "A repeating decimal can be written as a fraction, so it is Rational.", hint: "A nonterminating decimal is rational when a digit or group of digits repeats." },
+      { id: "root7", display: "√7", plain: "the square root of 7", answer: "irrational", explain: "Seven is not a perfect square, so √7 is Irrational.", hint: "Ask whether the number under the radical is a perfect square." },
+      { id: "pi", display: "π", plain: "pi", answer: "irrational", explain: "π is nonterminating and nonrepeating, so it is Irrational.", hint: "This constant cannot be written as a ratio of two integers." }
+    ];
+    const zones = [
+      { id: "rational", symbol: "Q", title: "Rational", note: "Not an integer" },
+      { id: "integer", symbol: "Z", title: "Integer", note: "Not whole" },
+      { id: "whole", symbol: "W", title: "Whole", note: "Not natural" },
+      { id: "natural", symbol: "N", title: "Natural", note: "Counting numbers" },
+      { id: "irrational", symbol: "I", title: "Irrational", note: "Nonterminating, nonrepeating" }
+    ];
+    if (!labRuntime.data) {
+      labRuntime.data = { phase: "sort", placed: {}, selected: null, visualIndex: 0, visualSelected: null, visualAnswered: false };
+    }
+    const data = labRuntime.data;
+
+    const pairInside = (inner, outer) => `<span class="mini-set pair-inside"><span class="mini-set-label">${outer}</span><span class="mini-set inner"><span class="mini-set-label">${inner}</span></span></span>`;
+    const pairSeparate = (first, second, universe = "") => `<span class="mini-set pair-universe"><span class="mini-set-label">${universe}</span><span class="mini-bubble first">${first}</span><span class="mini-bubble second">${second}</span></span>`;
+    const pairOverlap = (first, second, universe = "") => `<span class="mini-set pair-universe overlap"><span class="mini-set-label">${universe}</span><span class="mini-bubble first">${first}</span><span class="mini-bubble second">${second}</span></span>`;
+    const oneOutside = (inside, outside) => `<span class="outside-diagram"><span class="mini-set"><span class="mini-set-label">R</span><span class="mini-bubble first">${inside}</span></span><span class="mini-bubble outside">${outside}</span></span>`;
+    const fullSystem = mode => {
+      if (mode === "correct") return `<span class="full-set real"><b>R</b><span class="full-set rational"><b>Q</b><span class="full-set integer"><b>Z</b><span class="full-set whole"><b>W</b><span class="full-set natural"><b>N</b></span></span></span></span><span class="full-irrational">I</span></span>`;
+      if (mode === "reverse") return `<span class="full-set real"><b>R</b><span class="full-set natural reverse"><b>N</b><span class="full-set whole"><b>W</b><span class="full-set integer"><b>Z</b><span class="full-set rational"><b>Q</b></span></span></span></span><span class="full-irrational">I</span></span>`;
+      if (mode === "irrational-in-q") return `<span class="full-set real"><b>R</b><span class="full-set rational wide"><b>Q</b><span class="full-set integer"><b>Z</b><span class="full-set whole"><b>W</b><span class="full-set natural"><b>N</b></span></span></span><span class="full-irrational inside">I</span></span></span>`;
+      return `<span class="full-set real"><b>R</b><span class="split-bubbles"><i>N</i><i>W</i><i>Z</i><i>Q</i></span><span class="full-irrational">I</span></span>`;
+    };
+    const visualQuestions = [
+      {
+        prompt: "Which visual correctly shows the relationship between natural numbers N and whole numbers W?",
+        explanation: "Every natural number is a whole number, so N must be completely inside W.",
+        correct: 1,
+        options: [pairSeparate("N", "W"), pairInside("N", "W"), pairInside("W", "N"), pairOverlap("N", "W")]
+      },
+      {
+        prompt: "Which visual correctly shows the relationship between whole numbers W and integers Z?",
+        explanation: "Every whole number is an integer, so W must be completely inside Z.",
+        correct: 3,
+        options: [pairOverlap("W", "Z"), pairInside("Z", "W"), pairSeparate("W", "Z"), pairInside("W", "Z")]
+      },
+      {
+        prompt: "Which visual correctly shows the relationship between integers Z and rational numbers Q?",
+        explanation: "Every integer can be written as a fraction, so Z must be completely inside Q.",
+        correct: 0,
+        options: [pairInside("Z", "Q"), pairInside("Q", "Z"), pairSeparate("Z", "Q"), pairOverlap("Z", "Q")]
+      },
+      {
+        prompt: "Which visual correctly places rational numbers Q and irrational numbers I inside the real numbers R?",
+        explanation: "Rational and irrational numbers are separate sets, but both belong inside the real numbers.",
+        correct: 2,
+        options: [pairInside("Q", "I"), pairOverlap("Q", "I", "R"), pairSeparate("Q", "I", "R"), oneOutside("Q", "I")]
+      },
+      {
+        prompt: "Which visual correctly represents the complete real-number system?",
+        explanation: "N is inside W, W is inside Z, Z is inside Q, and both Q and I are inside R without overlapping.",
+        correct: 1,
+        options: [fullSystem("reverse"), fullSystem("correct"), fullSystem("split"), fullSystem("irrational-in-q")]
+      }
+    ];
+
+    function placedChip(card) {
+      return `<span class="placed-number" aria-label="${card.plain}">${formatNumberDisplay(card.display)}</span>`;
+    }
+
+    function numberCard(card) {
+      const selected = data.selected === card.id;
+      return `<button type="button" class="number-card${selected ? " is-selected" : ""}" data-82-card="${card.id}" draggable="true" aria-label="Select ${card.plain}"><strong>${formatNumberDisplay(card.display)}</strong><span>Drag or tap</span></button>`;
+    }
+
+    function placeCard(cardId, zoneId) {
+      const card = cards.find(item => item.id === cardId);
+      if (!card || data.placed[cardId]) return;
+      if (card.answer !== zoneId) {
+        data.selected = cardId;
+        renderLab82A();
+        setLabFeedback(`Not there yet. ${card.hint}`, "incorrect");
+        return;
+      }
+      data.placed[cardId] = zoneId;
+      data.selected = null;
+      const completed = Object.keys(data.placed).length;
+      renderLab82A();
+      setLabFeedback(completed === cards.length ? "Excellent classification. All 10 numbers are in their most specific homes. Continue to the visual relationships." : `Correct! ${card.explain}`, "correct");
+    }
+
+    if (data.phase === "sort") {
+      const placedCount = Object.keys(data.placed).length;
+      const remaining = cards.filter(card => !data.placed[card.id]);
+      setLabProgress(placedCount, 15, "Place each number in its most specific category.");
+      $("#standardsLabBody").innerHTML = `
+        <div class="number-sort-layout">
+          <section class="real-number-map" aria-label="Real number system sorting map">
+            <header><strong>Real Numbers <span>R</span></strong><small>Every card in this lab belongs somewhere inside R.</small></header>
+            <div class="number-map-grid">
+              <div class="rational-family">
+                <div class="family-heading"><strong>Rational Numbers <span>Q</span></strong><small>Q ⊃ Z ⊃ W ⊃ N</small></div>
+                <div class="rational-zone-grid">
+                  ${zones.slice(0, 4).map(zone => `<section class="number-drop-zone" data-82-zone="${zone.id}" data-kind="${zone.id}" role="button" tabindex="0" aria-label="Place selected number in ${zone.title}"><header><b>${zone.symbol}</b><span><strong>${zone.title}</strong><small>${zone.note}</small></span></header><div class="placed-number-list">${cards.filter(card => data.placed[card.id] === zone.id).map(placedChip).join("")}</div></section>`).join("")}
+                </div>
+              </div>
+              ${zones.slice(4).map(zone => `<section class="number-drop-zone irrational-zone" data-82-zone="${zone.id}" data-kind="${zone.id}" role="button" tabindex="0" aria-label="Place selected number in ${zone.title}"><header><b>${zone.symbol}</b><span><strong>${zone.title}</strong><small>${zone.note}</small></span></header><div class="placed-number-list">${cards.filter(card => data.placed[card.id] === zone.id).map(placedChip).join("")}</div></section>`).join("")}
+            </div>
+          </section>
+          <aside class="number-bank-card">
+            <p class="lab-mini-title">Number cards</p>
+            <h4>${remaining.length ? `${remaining.length} left to classify` : "All cards classified"}</h4>
+            <p>Drag a card to the map. On a touch screen, tap a card and then tap its category.</p>
+            <div class="number-card-bank">${remaining.map(numberCard).join("") || `<div class="bank-complete">✓ Part 1 complete</div>`}</div>
+            <button type="button" class="lab-next continue-visuals" id="continue82Visuals" ${placedCount === cards.length ? "" : "hidden"}>Continue to visual relationships →</button>
+          </aside>
+        </div>`;
+
+      document.querySelectorAll("[data-82-card]").forEach(button => {
+        button.addEventListener("click", () => {
+          data.selected = button.getAttribute("data-82-card");
+          renderLab82A();
+          const card = cards.find(item => item.id === data.selected);
+          setLabFeedback(`${card.display.replace(/<[^>]+>/g, "")} selected. Now choose its most specific category.`);
+        });
+        button.addEventListener("dragstart", event => {
+          event.dataTransfer.setData("text/plain", button.getAttribute("data-82-card"));
+          event.dataTransfer.effectAllowed = "move";
+        });
+      });
+      document.querySelectorAll("[data-82-zone]").forEach(zone => {
+        const assignSelected = () => { if (data.selected) placeCard(data.selected, zone.getAttribute("data-82-zone")); };
+        zone.addEventListener("click", assignSelected);
+        zone.addEventListener("keydown", event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); assignSelected(); } });
+        zone.addEventListener("dragover", event => { event.preventDefault(); event.dataTransfer.dropEffect = "move"; });
+        zone.addEventListener("dragenter", event => { event.preventDefault(); zone.classList.add("is-ready"); });
+        zone.addEventListener("dragleave", () => zone.classList.remove("is-ready"));
+        zone.addEventListener("drop", event => {
+          event.preventDefault();
+          zone.classList.remove("is-ready");
+          placeCard(event.dataTransfer.getData("text/plain"), zone.getAttribute("data-82-zone"));
+        });
+      });
+      const continueButton = $("#continue82Visuals");
+      if (continueButton) continueButton.addEventListener("click", () => {
+        data.phase = "visual";
+        data.visualIndex = 0;
+        data.visualSelected = null;
+        data.visualAnswered = false;
+        renderLab82A();
+        setLabFeedback("Part 2: choose the diagram that shows the correct relationship between the number sets.");
+      });
+      return;
+    }
+
+    const question = visualQuestions[data.visualIndex];
+    const completedVisuals = data.visualIndex + (data.visualAnswered ? 1 : 0);
+    setLabProgress(10 + completedVisuals, 15, `Visual relationship ${data.visualIndex + 1} of 5.`);
+    $("#standardsLabBody").innerHTML = `
+      <section class="visual-question-card">
+        <div class="set-key" aria-label="Number set key"><span><b>N</b> Natural</span><span><b>W</b> Whole</span><span><b>Z</b> Integer</span><span><b>Q</b> Rational</span><span><b>I</b> Irrational</span><span><b>R</b> Real</span></div>
+        <p class="lab-mini-title">Visual relationship ${data.visualIndex + 1} of 5</p>
+        <h4>${question.prompt}</h4>
+        <div class="visual-answer-grid">
+          ${question.options.map((option, index) => `<button type="button" class="visual-choice${data.visualSelected === index ? " is-selected" : ""}${data.visualAnswered && index === question.correct ? " is-correct" : ""}" data-82-visual="${index}" aria-label="Diagram option ${index + 1}" ${data.visualAnswered ? "disabled" : ""}><span class="option-number">${index + 1}</span><span class="diagram-stage">${option}</span></button>`).join("")}
+        </div>
+        <div class="visual-actions"><button type="button" class="lab-action" id="check82Visual" ${data.visualAnswered ? "disabled" : ""}>Check visual</button><button type="button" class="lab-next" id="next82Visual" ${data.visualAnswered ? "" : "hidden"}>${data.visualIndex === visualQuestions.length - 1 ? "Finish lab" : "Next relationship →"}</button></div>
+      </section>`;
+    document.querySelectorAll("[data-82-visual]").forEach(button => button.addEventListener("click", () => {
+      data.visualSelected = Number(button.getAttribute("data-82-visual"));
+      renderLab82A();
+      setLabFeedback("Diagram selected. Check the visual when you are ready.");
+    }));
+    $("#check82Visual").addEventListener("click", () => {
+      if (data.visualSelected === null) return setLabFeedback("Choose one of the four diagrams first.", "incorrect");
+      if (data.visualSelected !== question.correct) return setLabFeedback("Look again: which set contains every member of the smaller set?", "incorrect");
+      data.visualAnswered = true;
+      renderLab82A();
+      setLabFeedback(`Correct! ${question.explanation}`, "correct");
+    });
+    const nextVisual = $("#next82Visual");
+    if (nextVisual) nextVisual.addEventListener("click", () => {
+      if (data.visualIndex === visualQuestions.length - 1) {
+        setLabProgress(15, 15, "All classifications and visual relationships complete.");
+        showLabCompletion("8.2A");
+        return;
+      }
+      data.visualIndex += 1;
+      data.visualSelected = null;
+      data.visualAnswered = false;
+      renderLab82A();
+      setLabFeedback("Study the containment carefully, then choose the next visual.");
+    });
+  }
+
+  function renderLab82B() {
+    const lineQuestions = [
+      {
+        min: 2, max: 6,
+        roots: [
+          { id: "r8", radicand: 8, answer: "high-2" },
+          { id: "r9", radicand: 9, answer: "exact-3" },
+          { id: "r13", radicand: 13, answer: "high-3" },
+          { id: "r26", radicand: 26, answer: "low-5" }
+        ]
+      },
+      {
+        min: 4, max: 8,
+        roots: [
+          { id: "r25", radicand: 25, answer: "exact-5" },
+          { id: "r30", radicand: 30, answer: "low-5" },
+          { id: "r31", radicand: 31, answer: "high-5" },
+          { id: "r50", radicand: 50, answer: "low-7" }
+        ]
+      },
+      {
+        min: 6, max: 10,
+        roots: [
+          { id: "r41", radicand: 41, answer: "low-6" },
+          { id: "r49", radicand: 49, answer: "exact-7" },
+          { id: "r57", radicand: 57, answer: "high-7" },
+          { id: "r82", radicand: 82, answer: "low-9" }
+        ]
+      },
+      {
+        min: 8, max: 12,
+        roots: [
+          { id: "r81", radicand: 81, answer: "exact-9" },
+          { id: "r90", radicand: 90, answer: "low-9" },
+          { id: "r91", radicand: 91, answer: "high-9" },
+          { id: "r118", radicand: 118, answer: "high-10" }
+        ]
+      },
+      {
+        min: 10, max: 14,
+        roots: [
+          { id: "r121", radicand: 121, answer: "exact-11" },
+          { id: "r133", radicand: 133, answer: "high-11" },
+          { id: "r152", radicand: 152, answer: "low-12" },
+          { id: "r168", radicand: 168, answer: "high-12" }
+        ]
+      }
+    ];
+    const applicationQuestions = [
+      {
+        prompt: "A square community garden has an area of 72 square meters. Which measurement is closest to the length of one side?",
+        choices: ["8.5 m", "18 m", "36 m", "7.2 m"], correct: 0,
+        explanation: "The side length is √72. Since 64 < 72 < 81, the answer is between 8 and 9 meters; √72 ≈ 8.49, so 8.5 m is closest."
+      },
+      {
+        prompt: "A square mosaic floor insert covers 210 square feet. Which measurement is closest to one side length?",
+        choices: ["52.5 ft", "14.5 ft", "105 ft", "15.8 ft"], correct: 1,
+        explanation: "The side length is √210. Since 196 < 210 < 225, the answer is between 14 and 15 feet; √210 ≈ 14.49, so 14.5 ft is closest."
+      },
+      {
+        prompt: "A square solar-panel array covers 95 square meters. Which measurement is closest to one side length?",
+        choices: ["47.5 m", "23.8 m", "10.5 m", "9.7 m"], correct: 3,
+        explanation: "The side length is √95. Since 81 < 95 < 100, the answer is between 9 and 10 meters; √95 ≈ 9.747, which is about 9.7 m to the nearest tenth."
+      },
+      {
+        prompt: "A square stage platform has an area of 320 square feet. Which measurement is closest to the length of one side?",
+        choices: ["17.9 ft", "80 ft", "160 ft", "18.6 ft"], correct: 0,
+        explanation: "The side length is √320. Since 289 < 320 < 324, the answer is between 17 and 18 feet and very close to 18; √320 ≈ 17.89, so 17.9 ft is closest."
+      },
+      {
+        prompt: "A square wildlife observation deck has an area of 156.25 square meters. What is the length of one side?",
+        choices: ["25 m", "39.06 m", "12.5 m", "78.125 m"], correct: 2,
+        explanation: "The side length is √156.25 = 12.5 meters because 12.5 × 12.5 = 156.25."
+      }
+    ];
+
+    if (!labRuntime.data) {
+      labRuntime.data = { phase: "numberLine", lineIndex: 0, placed: {}, selected: null, applicationIndex: 0, applicationSelected: null, applicationAnswered: false };
+    }
+    const data = labRuntime.data;
+
+    const radicalPlainLabel = root => `√${root.radicand}`;
+    const radicalSpokenLabel = root => `square root of ${root.radicand}`;
+    const radicalLabel = root => formatMathText(radicalPlainLabel(root));
+    const rootApproximation = root => Math.sqrt(root.radicand).toFixed(2);
+    const percentPosition = (root, question) => ((Math.sqrt(root.radicand) - question.min) / (question.max - question.min)) * 100;
+    const rootHint = root => {
+      const value = Math.sqrt(root.radicand);
+      if (Number.isInteger(value)) return `${root.radicand} is a perfect square. Which integer multiplied by itself equals ${root.radicand}?`;
+      const lower = Math.floor(value);
+      const upper = Math.ceil(value);
+      return `${lower * lower} < ${root.radicand} < ${upper * upper}, so ${radicalPlainLabel(root)} is between ${lower} and ${upper}. Now compare it with the midpoint.`;
+    };
+
+    function placeRoot(rootId, targetId) {
+      const question = lineQuestions[data.lineIndex];
+      const root = question.roots.find(item => item.id === rootId);
+      if (!root || data.placed[rootId]) return;
+      if (root.answer !== targetId) {
+        data.selected = rootId;
+        renderLab82B();
+        setLabFeedback(`Not there yet. ${rootHint(root)}`, "incorrect");
+        return;
+      }
+      data.placed[rootId] = targetId;
+      data.selected = null;
+      const placedCount = Object.keys(data.placed).length;
+      renderLab82B();
+      setLabFeedback(placedCount === question.roots.length ? "All four roots are correctly placed. Notice how the midpoint separates estimates below and above the halfway value." : `Correct! ${radicalPlainLabel(root)} ≈ ${rootApproximation(root)}.`, "correct");
+    }
+
+    if (data.phase === "numberLine") {
+      const question = lineQuestions[data.lineIndex];
+      const remaining = question.roots.filter(root => !data.placed[root.id]);
+      const placedCount = question.roots.length - remaining.length;
+      const completedQuestions = data.lineIndex + (placedCount === question.roots.length ? 1 : 0);
+      setLabProgress(completedQuestions, 10, `Number line ${data.lineIndex + 1} of 5 • ${placedCount} of 4 square roots placed.`);
+      const integerTicks = Array.from({ length: question.max - question.min + 1 }, (_, index) => question.min + index);
+      const midpointTicks = Array.from({ length: question.max - question.min }, (_, index) => question.min + index + .5);
+      const intervalTargets = Array.from({ length: question.max - question.min }, (_, index) => question.min + index).flatMap(integer => [
+        { id: `low-${integer}`, left: ((integer - question.min) / (question.max - question.min)) * 100, width: (0.5 / (question.max - question.min)) * 100, label: `between ${integer} and the midpoint` },
+        { id: `high-${integer}`, left: ((integer + .5 - question.min) / (question.max - question.min)) * 100, width: (0.5 / (question.max - question.min)) * 100, label: `between the midpoint and ${integer + 1}` }
+      ]);
+      const placedRoots = question.roots.filter(root => data.placed[root.id]);
+      setLabFeedback(data.selected ? `${radicalPlainLabel(question.roots.find(root => root.id === data.selected))} selected. Tap the part of the number line where it belongs.` : "Drag a radical to the number line. On a touch screen, tap the radical and then tap its location.");
+      $("#standardsLabBody").innerHTML = `
+        <div class="root-line-layout">
+          <section class="root-line-card">
+            <header><div><p class="lab-mini-title">Number line ${data.lineIndex + 1} of 5</p><h4>Place each square root in the correct half-interval.</h4></div><span class="midpoint-key"><i></i> midpoint tick</span></header>
+            <p class="root-line-direction">Integer ticks are labeled. Midpoint ticks are intentionally unlabeled.</p>
+            <div class="root-line-scroll">
+              <div class="root-line-stage" aria-label="Number line from ${question.min} to ${question.max}">
+                <div class="root-placed-layer">
+                  ${placedRoots.map((root, index) => `<span class="root-placed-chip" style="--root-left:${percentPosition(root, question)}%;--root-top:${15 + index * 45}px;--root-stem:${168 - index * 45}px" aria-label="${radicalSpokenLabel(root)} is approximately ${rootApproximation(root)}"><strong>${radicalLabel(root)}</strong><small>≈ ${rootApproximation(root)}</small></span>`).join("")}
+                </div>
+                <div class="root-axis" aria-hidden="true"></div>
+                ${intervalTargets.map(target => `<button type="button" class="root-interval-target" data-root-target="${target.id}" style="left:${target.left}%;width:${target.width}%" aria-label="Place selected value ${target.label}"></button>`).join("")}
+                ${integerTicks.map(integer => {
+                  const left = ((integer - question.min) / (question.max - question.min)) * 100;
+                  return `<button type="button" class="root-tick root-integer-tick" data-root-target="exact-${integer}" style="left:${left}%" aria-label="Place selected value exactly at ${integer}"><i></i><b>${integer}</b></button>`;
+                }).join("")}
+                ${midpointTicks.map(midpoint => {
+                  const left = ((midpoint - question.min) / (question.max - question.min)) * 100;
+                  return `<span class="root-tick root-midpoint-tick" style="left:${left}%" aria-hidden="true"><i></i></span>`;
+                }).join("")}
+              </div>
+            </div>
+          </section>
+          <aside class="root-bank-card">
+            <p class="lab-mini-title">Square-root cards</p>
+            <h4>${remaining.length ? `${remaining.length} left to place` : "Number line complete"}</h4>
+            <p>Use the perfect squares on either side of the radicand. Then decide whether the root belongs before or after the midpoint.</p>
+            <div class="root-card-bank">${remaining.map(root => `<button type="button" class="number-card root-card${data.selected === root.id ? " is-selected" : ""}" data-root-card="${root.id}" draggable="true" aria-label="Select ${radicalSpokenLabel(root)}"><strong>${radicalLabel(root)}</strong><span>Drag or tap</span></button>`).join("") || `<div class="bank-complete">✓ All four placed</div>`}</div>
+            <button type="button" class="lab-next root-next" id="nextRootLine" ${placedCount === question.roots.length ? "" : "hidden"}>${data.lineIndex === lineQuestions.length - 1 ? "Continue to real-world problems →" : "Next number line →"}</button>
+          </aside>
+        </div>`;
+
+      document.querySelectorAll("[data-root-card]").forEach(button => {
+        button.addEventListener("click", () => {
+          data.selected = button.getAttribute("data-root-card");
+          renderLab82B();
+        });
+        button.addEventListener("dragstart", event => {
+          event.dataTransfer.setData("text/plain", button.getAttribute("data-root-card"));
+          event.dataTransfer.effectAllowed = "move";
+        });
+      });
+      document.querySelectorAll("[data-root-target]").forEach(target => {
+        const assign = rootId => { if (rootId) placeRoot(rootId, target.getAttribute("data-root-target")); };
+        target.addEventListener("click", () => assign(data.selected));
+        target.addEventListener("dragover", event => { event.preventDefault(); event.dataTransfer.dropEffect = "move"; });
+        target.addEventListener("dragenter", event => { event.preventDefault(); target.classList.add("is-ready"); });
+        target.addEventListener("dragleave", () => target.classList.remove("is-ready"));
+        target.addEventListener("drop", event => {
+          event.preventDefault();
+          target.classList.remove("is-ready");
+          assign(event.dataTransfer.getData("text/plain"));
+        });
+      });
+      const nextLine = $("#nextRootLine");
+      if (nextLine) nextLine.addEventListener("click", () => {
+        if (data.lineIndex === lineQuestions.length - 1) {
+          data.phase = "application";
+          data.applicationIndex = 0;
+          data.applicationSelected = null;
+          data.applicationAnswered = false;
+          data.placed = {};
+          renderLab82B();
+          setLabFeedback("Now connect area to side length. Remember: if A = s², then s = √A.");
+          return;
+        }
+        data.lineIndex += 1;
+        data.placed = {};
+        data.selected = null;
+        renderLab82B();
+        setLabFeedback("New number line ready. Use the labeled integers and the unlabeled midpoint ticks.");
+      });
+      return;
+    }
+
+    const question = applicationQuestions[data.applicationIndex];
+    const completed = 5 + data.applicationIndex + (data.applicationAnswered ? 1 : 0);
+    setLabProgress(completed, 10, `Real-world problem ${data.applicationIndex + 1} of 5 • Find a square side length from its area.`);
+    $("#standardsLabBody").innerHTML = `
+      <section class="square-application-card">
+        <div class="square-situation-visual" aria-hidden="true">
+          <span class="square-area-symbol"><i>A</i><b>= s²</b></span>
+          <span class="square-root-bridge">Find one side</span>
+          <span class="square-side-symbol"><i>s</i><b>= ${formatMathText("√A")}</b></span>
+        </div>
+        <div class="square-question-panel">
+          <p class="lab-mini-title">Application ${data.applicationIndex + 1} of 5</p>
+          <h4>${question.prompt}</h4>
+          <div class="square-choice-grid">
+            ${question.choices.map((choice, index) => `<button type="button" class="lab-choice${data.applicationSelected === index ? " is-selected" : ""}${data.applicationAnswered && index === question.correct ? " is-correct" : ""}" data-square-choice="${index}" ${data.applicationAnswered ? "disabled" : ""}><span>${String.fromCharCode(65 + index)}</span><strong>${choice}</strong></button>`).join("")}
+          </div>
+          ${data.applicationAnswered ? `<div class="square-explanation"><strong>Why it works</strong><p>${formatMathText(question.explanation)}</p></div>` : ""}
+          <div class="visual-actions"><button type="button" class="lab-action" id="checkSquareApplication" ${data.applicationAnswered ? "disabled" : ""}>Check answer</button><button type="button" class="lab-next" id="nextSquareApplication" ${data.applicationAnswered ? "" : "hidden"}>${data.applicationIndex === applicationQuestions.length - 1 ? "Finish lab" : "Next problem →"}</button></div>
+        </div>
+      </section>`;
+    document.querySelectorAll("[data-square-choice]").forEach(button => button.addEventListener("click", () => {
+      data.applicationSelected = Number(button.getAttribute("data-square-choice"));
+      renderLab82B();
+      setLabFeedback("Answer selected. Check it when you are ready.");
+    }));
+    $("#checkSquareApplication").addEventListener("click", () => {
+      if (data.applicationSelected === null) return setLabFeedback("Choose one of the four side lengths first.", "incorrect");
+      if (data.applicationSelected !== question.correct) return setLabFeedback("Try again. A square's area is s², so use s = √A and estimate between nearby perfect squares.", "incorrect");
+      data.applicationAnswered = true;
+      renderLab82B();
+      setLabFeedback(`Correct! ${question.explanation}`, "correct");
+    });
+    const nextApplication = $("#nextSquareApplication");
+    if (nextApplication) nextApplication.addEventListener("click", () => {
+      if (data.applicationIndex === applicationQuestions.length - 1) {
+        setLabProgress(10, 10, "All number-line and square-area challenges complete.");
+        showLabCompletion("8.2B");
+        return;
+      }
+      data.applicationIndex += 1;
+      data.applicationSelected = null;
+      data.applicationAnswered = false;
+      renderLab82B();
+      setLabFeedback("Use the square root of the area to find the next side length.");
+    });
+  }
+
+  function renderLab82C() {
+    const questions = [
+      {
+        section: "Small → Scientific", mode: "toScientific", display: "0.0000003004", coefficient: "3.004", exponent: "-7",
+        prompt: "Write this number in scientific notation.",
+        hint: "Start at the first nonzero digit. Keep both zeros between 3 and 4 in the coefficient, then count the decimal moves.",
+        explanation: "The decimal moves 7 places right to make 3.004. Because the original value is between 0 and 1, the exponent is −7."
+      },
+      {
+        section: "Small → Scientific", mode: "toScientific", display: "0.004072", coefficient: "4.072", exponent: "-3",
+        prompt: "Write this number in scientific notation.",
+        hint: "The coefficient begins with 4. Preserve the zero between 4 and 7, and use a negative exponent.",
+        explanation: "The decimal moves 3 places right to make 4.072, so the number is 4.072 × 10⁻³."
+      },
+      {
+        section: "Small → Scientific", mode: "toScientific", display: "0.0000895", coefficient: "8.95", exponent: "-5",
+        prompt: "Write this number in scientific notation.",
+        hint: "Move the decimal until exactly one nonzero digit is on its left. A number between 0 and 1 needs a negative exponent.",
+        explanation: "The decimal moves 5 places right to make 8.95, so the number is 8.95 × 10⁻⁵."
+      },
+      {
+        section: "Scientific → Small", mode: "toStandard", display: "6.02 × 10<sup>−5</sup>", spoken: "6 point 02 times 10 to the negative fifth power", answer: "0.0000602",
+        prompt: "Write this value in standard notation.",
+        hint: "A negative exponent moves the decimal left. Move it 5 places and keep the zero between 6 and 2.",
+        explanation: "Moving the decimal 5 places left gives 0.0000602. The zero in 6.02 remains between the 6 and 2."
+      },
+      {
+        section: "Scientific → Small", mode: "toStandard", display: "9.007 × 10<sup>−4</sup>", spoken: "9 point 007 times 10 to the negative fourth power", answer: "0.0009007",
+        prompt: "Write this value in standard notation.",
+        hint: "Move the decimal 4 places left. The two zeros already inside 9.007 must stay in the same order.",
+        explanation: "Moving the decimal 4 places left gives 0.0009007. Internal zeros remain part of the number."
+      },
+      {
+        section: "Scientific → Small", mode: "toStandard", display: "2.5 × 10<sup>−7</sup>", spoken: "2 point 5 times 10 to the negative seventh power", answer: "0.00000025",
+        prompt: "Write this value in standard notation.",
+        hint: "The exponent is negative 7, so move the decimal 7 places to the left and fill empty places with zeros.",
+        explanation: "Moving the decimal 7 places left gives 0.00000025."
+      },
+      {
+        section: "Large → Scientific", mode: "toScientific", display: "4,000,560,000,000", coefficient: "4.00056", exponent: "12",
+        prompt: "Write this number in scientific notation.",
+        hint: "Place the decimal after the 4. Keep all three zeros between 4 and 5 in the coefficient, then count the moves.",
+        explanation: "The decimal moves 12 places left to make 4.00056. The zeros between 4 and 5 are significant placeholders, so the answer is 4.00056 × 10¹²."
+      },
+      {
+        section: "Large → Scientific", mode: "toScientific", display: "78,340,000", coefficient: "7.834", exponent: "7",
+        prompt: "Write this number in scientific notation.",
+        hint: "The coefficient must be at least 1 but less than 10. Count from the original decimal position to the new one.",
+        explanation: "The decimal moves 7 places left to make 7.834, so the number is 7.834 × 10⁷."
+      },
+      {
+        section: "Large → Scientific", mode: "toScientific", display: "6,050,200", coefficient: "6.0502", exponent: "6",
+        prompt: "Write this number in scientific notation.",
+        hint: "Keep the zero between 6 and 5 and the zero between 5 and 2. Remove only ending zeros after the last nonzero digit.",
+        explanation: "The decimal moves 6 places left to make 6.0502, so the number is 6.0502 × 10⁶."
+      },
+      {
+        section: "Scientific → Large", mode: "toStandard", display: "4.00056 × 10<sup>12</sup>", spoken: "4 point 00056 times 10 to the twelfth power", answer: "4000560000000",
+        prompt: "Write this value in standard notation.",
+        hint: "A positive exponent moves the decimal right. Move it 12 places without deleting the zeros between 4 and 5.",
+        explanation: "Moving the decimal 12 places right gives 4,000,560,000,000. The three internal zeros remain between 4 and 5."
+      },
+      {
+        section: "Scientific → Large", mode: "toStandard", display: "7.205 × 10<sup>9</sup>", spoken: "7 point 205 times 10 to the ninth power", answer: "7205000000",
+        prompt: "Write this value in standard notation.",
+        hint: "Move the decimal 9 places right. Keep the zero between 2 and 5 before adding any ending zeros.",
+        explanation: "Moving the decimal 9 places right gives 7,205,000,000."
+      },
+      {
+        section: "Scientific → Large", mode: "toStandard", display: "3.09 × 10<sup>6</sup>", spoken: "3 point 09 times 10 to the sixth power", answer: "3090000",
+        prompt: "Write this value in standard notation.",
+        hint: "Move the decimal 6 places right. The zero between 3 and 9 must remain.",
+        explanation: "Moving the decimal 6 places right gives 3,090,000."
+      },
+      {
+        section: "Identify the Parts", mode: "identify", display: "0.0000000641", spoken: "zero point 0000000641", coefficient: "6.41", exponent: "-8",
+        prompt: "If this number is written in scientific notation, what are its coefficient and exponent?",
+        hint: "Move the decimal to make a coefficient between 1 and 10. Because the original number is less than 1, the exponent will be negative.",
+        explanation: "The decimal moves 8 places right to make 6.41, so the coefficient is 6.41 and the exponent is −8."
+      },
+      {
+        section: "Identify the Parts", mode: "identify", display: "900,300,000,000", spoken: "900 billion 300 million", coefficient: "9.003", exponent: "11",
+        prompt: "If this number is written in scientific notation, what are its coefficient and exponent?",
+        hint: "Place the decimal after 9 and preserve the two zeros between 9 and 3. Count how many places the decimal moves left.",
+        explanation: "The decimal moves 11 places left to make 9.003, so the coefficient is 9.003 and the exponent is 11."
+      },
+      {
+        section: "Identify the Parts", mode: "identify", display: "1.2", spoken: "1 point 2", coefficient: "1.2", exponent: "0",
+        prompt: "If this number is written in scientific notation, what are its coefficient and exponent?",
+        hint: "This number is already between 1 and 10, so the decimal does not move. An exponent can be zero.",
+        explanation: "The coefficient is already 1.2 and the decimal moves 0 places, so the exponent is 0: 1.2 × 10⁰."
+      },
+      {
+        section: "Identify the Parts", mode: "identify", display: "0.0040705", spoken: "zero point 0040705", coefficient: "4.0705", exponent: "-3",
+        prompt: "If this number is written in scientific notation, what are its coefficient and exponent?",
+        hint: "Move the decimal to the right until it follows the 4. Keep the zero inside the coefficient and use a negative exponent.",
+        explanation: "The decimal moves 3 places right to make 4.0705, so the coefficient is 4.0705 and the exponent is −3."
+      }
+    ];
+    const sectionCounts = [
+      ["Small → Scientific", 3],
+      ["Scientific → Small", 3],
+      ["Large → Scientific", 3],
+      ["Scientific → Large", 3],
+      ["Identify the Parts", 4]
+    ];
+    if (!labRuntime.data) labRuntime.data = { index: 0, answered: false };
+    const data = labRuntime.data;
+    const question = questions[data.index];
+    const completed = data.index + (data.answered ? 1 : 0);
+    const normalizeCoefficient = value => String(value).trim().replace(/,/g, "").replace(/−/g, "-");
+    const normalizeStandard = value => String(value).trim().replace(/[,$\s]/g, "").replace(/^\+/, "");
+    const currentSectionIndex = sectionCounts.findIndex(([name]) => name === question.section);
+    setLabProgress(completed, questions.length, `${question.section} • Challenge ${data.index + 1} of ${questions.length}`);
+    setLabFeedback(data.answered ? `Correct! ${question.explanation}` : "Enter your response, then check your work.", data.answered ? "correct" : "");
+
+    const sectionRail = sectionCounts.map(([name, count], index) => {
+      const start = sectionCounts.slice(0, index).reduce((sum, item) => sum + item[1], 0);
+      const end = start + count;
+      const status = data.index >= end ? " is-complete" : index === currentSectionIndex ? " is-current" : "";
+      return `<li class="${status}"><span>${data.index >= end ? "✓" : index + 1}</span><div><strong>${name}</strong><small>${count} ${count === 1 ? "challenge" : "challenges"}</small></div></li>`;
+    }).join("");
+
+    let responseMarkup = "";
+    if (question.mode === "toStandard") {
+      responseMarkup = `<label class="standard-entry"><span>Standard notation</span><input id="scientificStandardAnswer" type="text" inputmode="decimal" autocomplete="off" placeholder="Type the complete number" ${data.answered ? "disabled" : ""}></label>`;
+    } else {
+      const labels = question.mode === "identify" ? ["Coefficient", "Exponent"] : ["Coefficient", "Exponent on 10"];
+      responseMarkup = `<div class="scientific-entry-row"><label><span>${labels[0]}</span><input id="scientificCoefficient" type="text" inputmode="decimal" autocomplete="off" placeholder="Example: 3.5" ${data.answered ? "disabled" : ""}></label><span class="times-ten" aria-hidden="true">× 10</span><label class="exponent-entry"><span>${labels[1]}</span><input id="scientificExponent" type="text" inputmode="numeric" autocomplete="off" placeholder="± n" ${data.answered ? "disabled" : ""}></label></div>`;
+    }
+
+    $("#standardsLabBody").innerHTML = `
+      <div class="scientific-lab-layout">
+        <aside class="scientific-section-rail"><p class="lab-mini-title">Lab pathway</p><ol>${sectionRail}</ol></aside>
+        <section class="scientific-challenge-card">
+          <header><span>${question.section}</span><b>${data.index + 1} / ${questions.length}</b></header>
+          <div class="scientific-problem-body">
+            <p class="scientific-prompt">${question.prompt}</p>
+            <div class="scientific-number-display" role="img" aria-label="${question.spoken || question.display}"><span class="scientific-expression">${question.display}</span></div>
+            <div class="scientific-response-card">
+              ${question.mode === "toScientific" ? `<span class="response-label">Build (a × 10ⁿ)</span>` : question.mode === "identify" ? `<span class="response-label">Write its scientific-notation parts</span>` : `<span class="response-label">Move the decimal</span>`}
+              ${data.answered ? `<div class="scientific-correct-answer">${question.mode === "toStandard" ? Number(question.answer).toLocaleString("en-US", { useGrouping: true, maximumFractionDigits: 12 }) : `<span>${question.coefficient}</span><b>× 10<sup>${question.exponent.replace("-", "−")}</sup></b>`}</div>` : responseMarkup}
+            </div>
+            ${data.answered ? `<div class="scientific-explanation"><strong>Place-value connection</strong><p>${question.explanation}</p></div>` : ""}
+            <div class="scientific-actions"><button type="button" class="lab-action" id="checkScientificAnswer" ${data.answered ? "hidden" : ""}>Check answer</button><button type="button" class="lab-next" id="nextScientificQuestion" ${data.answered ? "" : "hidden"}>${data.index === questions.length - 1 ? "Finish lab" : "Next challenge →"}</button></div>
+          </div>
+        </section>
+      </div>`;
+
+    const checkButton = $("#checkScientificAnswer");
+    if (checkButton) checkButton.addEventListener("click", () => {
+      let correct = false;
+      if (question.mode === "toStandard") {
+        const answer = normalizeStandard($("#scientificStandardAnswer").value);
+        if (!answer) return setLabFeedback("Enter the complete standard-form number first.", "incorrect");
+        correct = Number(answer) === Number(question.answer);
+      } else {
+        const coefficient = normalizeCoefficient($("#scientificCoefficient").value);
+        const exponent = normalizeCoefficient($("#scientificExponent").value);
+        if (!coefficient || exponent === "") return setLabFeedback("Enter both the coefficient and the exponent first.", "incorrect");
+        correct = Number(coefficient) === Number(question.coefficient) && Number(exponent) === Number(question.exponent);
+      }
+      if (!correct) return setLabFeedback(`Check the place values again. ${question.hint}`, "incorrect");
+      data.answered = true;
+      renderLab82C();
+    });
+    document.querySelectorAll(".scientific-response-card input").forEach(input => input.addEventListener("keydown", event => {
+      if (event.key === "Enter") checkButton?.click();
+    }));
+
+    const nextButton = $("#nextScientificQuestion");
+    if (nextButton) nextButton.addEventListener("click", () => {
+      if (data.index === questions.length - 1) {
+        setLabProgress(questions.length, questions.length, "All scientific-notation challenges complete.");
+        showLabCompletion("8.2C");
+        return;
+      }
+      data.index += 1;
+      data.answered = false;
+      renderLab82C();
+    });
+  }
+
+  function renderLab82D() {
+    const orderingQuestions = [
+      {
+        mode: "line", min: -4, max: 4, direction: "ascending",
+        prompt: "Place all five real numbers on the number line.",
+        hint: "Estimate each square root, simplify the fraction, and remember that the number line increases from left to right.",
+        values: [
+          { id: "q1-root10", display: "−√10", spoken: "negative square root of 10", value: -Math.sqrt(10), reveal: "≈ −3.162 · irrational" },
+          { id: "q1-frac", display: "−5⁄2", spoken: "negative five halves", value: -2.5, reveal: "= −2.5 · rational" },
+          { id: "q1-zero", display: "0", spoken: "zero", value: 0, reveal: "whole number" },
+          { id: "q1-root5", display: "√5", spoken: "square root of 5", value: Math.sqrt(5), reveal: "≈ 2.236 · irrational" },
+          { id: "q1-decimal", display: "3.25", spoken: "3 point 25", value: 3.25, reveal: "rational" }
+        ]
+      },
+      {
+        mode: "line", min: 0, max: 6, direction: "ascending",
+        prompt: "Place all five real numbers on the number line.",
+        hint: "Rewrite the fractions as decimals and estimate each non-perfect square root before placing the values.",
+        values: [
+          { id: "q2-frac", display: "3⁄4", spoken: "three fourths", value: .75, reveal: "= 0.75 · rational" },
+          { id: "q2-root2", display: "√2", spoken: "square root of 2", value: Math.sqrt(2), reveal: "≈ 1.414 · irrational" },
+          { id: "q2-two", display: "2", spoken: "two", value: 2, reveal: "natural number" },
+          { id: "q2-root11", display: "√11", spoken: "square root of 11", value: Math.sqrt(11), reveal: "≈ 3.317 · irrational" },
+          { id: "q2-eleven-halves", display: "11⁄2", spoken: "eleven halves", value: 5.5, reveal: "= 5.5 · rational" }
+        ]
+      },
+      {
+        mode: "line", min: -6, max: 2, direction: "ascending",
+        prompt: "Place all five real numbers on the number line.",
+        hint: "Watch the negative signs. Among negative numbers, the value with the greater absolute value lies farther left.",
+        values: [
+          { id: "q3-five", display: "−5", spoken: "negative five", value: -5, reveal: "integer" },
+          { id: "q3-root20", display: "−√20", spoken: "negative square root of 20", value: -Math.sqrt(20), reveal: "≈ −4.472 · irrational" },
+          { id: "q3-decimal", display: "−3.75", spoken: "negative 3 point 75", value: -3.75, reveal: "rational" },
+          { id: "q3-root7", display: "−√7", spoken: "negative square root of 7", value: -Math.sqrt(7), reveal: "≈ −2.646 · irrational" },
+          { id: "q3-positive", display: "1.25", spoken: "1 point 25", value: 1.25, reveal: "rational" }
+        ]
+      },
+      {
+        mode: "sequence", direction: "ascending",
+        prompt: "Arrange the values from least to greatest. Compare to the thousandths place.",
+        hint: "√10 ≈ 3.1623. With negative values, a slightly greater absolute value makes the number smaller.",
+        values: [
+          { id: "q4-root10", display: "−√10", spoken: "negative square root of 10", value: -Math.sqrt(10), reveal: "≈ −3.1623 · irrational" },
+          { id: "q4-a", display: "−3.16", spoken: "negative 3 point 16", value: -3.16, reveal: "= −3.160 · rational" },
+          { id: "q4-b", display: "−3.159", spoken: "negative 3 point 159", value: -3.159, reveal: "rational" },
+          { id: "q4-c", display: "−3", spoken: "negative three", value: -3, reveal: "integer" },
+          { id: "q4-d", display: "0", spoken: "zero", value: 0, reveal: "whole number" }
+        ]
+      },
+      {
+        mode: "sequence", direction: "descending",
+        prompt: "Arrange the values from greatest to least. Compare to the thousandths place.",
+        hint: "√50 ≈ 7.071067. Compare it carefully with 7.071 before deciding which is greater.",
+        values: [
+          { id: "q5-a", display: "7.08", spoken: "7 point 08", value: 7.08, reveal: "= 7.080 · rational" },
+          { id: "q5-root50", display: "√50", spoken: "square root of 50", value: Math.sqrt(50), reveal: "≈ 7.071067 · irrational" },
+          { id: "q5-b", display: "7.071", spoken: "7 point 071", value: 7.071, reveal: "rational" },
+          { id: "q5-c", display: "7.005", spoken: "7 point 005", value: 7.005, reveal: "rational" },
+          { id: "q5-d", display: "7", spoken: "seven", value: 7, reveal: "natural number" }
+        ]
+      },
+      {
+        mode: "sequence", direction: "ascending",
+        prompt: "Arrange the values from least to greatest.",
+        hint: "Convert the fraction and square roots to decimals. Be especially careful when comparing negative values.",
+        values: [
+          { id: "q6-frac", display: "−1⁄2", spoken: "negative one half", value: -.5, reveal: "= −0.5 · rational" },
+          { id: "q6-root", display: "−√0.20", spoken: "negative square root of 0 point 20", value: -Math.sqrt(.2), reveal: "≈ −0.447 · irrational" },
+          { id: "q6-decimal", display: "−0.44", spoken: "negative 0 point 44", value: -.44, reveal: "rational" },
+          { id: "q6-zero", display: "0", spoken: "zero", value: 0, reveal: "whole number" },
+          { id: "q6-positive", display: "√0.25", spoken: "square root of 0 point 25", value: .5, reveal: "= 0.5 · rational" }
+        ]
+      },
+      {
+        mode: "sequence", direction: "descending",
+        prompt: "Arrange the values from greatest to least. Compare to the thousandths place.",
+        hint: "√18 ≈ 4.24264. Compare the digits through the thousandths place before ordering.",
+        values: [
+          { id: "q7-frac", display: "17⁄4", spoken: "seventeen fourths", value: 4.25, reveal: "= 4.25 · rational" },
+          { id: "q7-a", display: "4.243", spoken: "4 point 243", value: 4.243, reveal: "rational" },
+          { id: "q7-root18", display: "√18", spoken: "square root of 18", value: Math.sqrt(18), reveal: "≈ 4.24264 · irrational" },
+          { id: "q7-b", display: "4.24", spoken: "4 point 24", value: 4.24, reveal: "= 4.240 · rational" },
+          { id: "q7-c", display: "4.2", spoken: "4 point 2", value: 4.2, reveal: "= 4.200 · rational" }
+        ]
+      }
+    ];
+    const betweenQuestions = [
+      {
+        left: "√7", right: "2.7", spoken: "square root of 7 is less than x, and x is less than 2 point 7", prompt: "Which value could be x?", correct: 1,
+        choices: [{ display: "2.64", value: 2.64 }, { display: "2.65", value: 2.65 }, { display: "2.71", value: 2.71 }, { display: "√8", value: Math.sqrt(8) }],
+        explanation: "√7 ≈ 2.646. The value 2.65 is greater than 2.646 and less than 2.7, so it lies between the endpoints."
+      },
+      {
+        left: "−3.142", right: "−π", spoken: "negative 3 point 142 is less than x, and x is less than negative pi", prompt: "Which value could be x?", correct: 2,
+        choices: [{ display: "−3.143", value: -3.143 }, { display: "−3.1415", value: -3.1415 }, { display: "−3.1417", value: -3.1417 }, { display: "3.1417", value: 3.1417 }],
+        explanation: "−π ≈ −3.14159. The value −3.1417 is greater than −3.142 but less than −3.14159, so it lies between the endpoints."
+      },
+      {
+        left: "5⁄8", right: "√0.4", spoken: "five eighths is less than x, and x is less than the square root of 0 point 4", prompt: "Which value could be x?", correct: 1,
+        choices: [{ display: "0.62", value: .62 }, { display: "0.63", value: .63 }, { display: "0.635", value: .635 }, { display: "0.64", value: .64 }],
+        explanation: "5⁄8 = 0.625 and √0.4 ≈ 0.632. The value 0.63 is greater than 0.625 and less than about 0.632."
+      }
+    ];
+    const totalQuestions = orderingQuestions.length + betweenQuestions.length;
+    if (!labRuntime.data) labRuntime.data = { index: 0, placed: {}, selected: null, choice: null, answered: false };
+    const data = labRuntime.data;
+    const supportMarkup = `<section class="calculator-practice-strip"><div><span>Calculator support</span><strong>Open a tip without leaving your practice.</strong></div><div>${LABS["8.2D"].videos.map((video, index) => `<button type="button" data-82d-video="${index}">▶ ${video[1]}</button>`).join("")}</div></section>`;
+    const attachSupportVideos = () => document.querySelectorAll("[data-82d-video]").forEach(button => button.addEventListener("click", () => {
+      const [url, title] = LABS["8.2D"].videos[Number(button.getAttribute("data-82d-video"))];
+      openVideo({ url, title });
+    }));
+    const nextQuestion = () => {
+      if (data.index === totalQuestions - 1) {
+        setLabProgress(totalQuestions, totalQuestions, "All ordering and between-number challenges complete.");
+        showLabCompletion("8.2D");
+        return;
+      }
+      data.index += 1;
+      data.placed = {};
+      data.selected = null;
+      data.choice = null;
+      data.answered = false;
+      renderLab82D();
+    };
+
+    if (data.index < orderingQuestions.length) {
+      const question = orderingQuestions[data.index];
+      const sorted = [...question.values].sort((a, b) => question.direction === "descending" ? b.value - a.value : a.value - b.value);
+      const placedCount = Object.keys(data.placed).length;
+      const questionComplete = placedCount === question.values.length;
+      setLabProgress(data.index + (questionComplete ? 1 : 0), totalQuestions, `Ordering challenge ${data.index + 1} of 7 • ${placedCount} of 5 values placed.`);
+      const placeValue = (itemId, targetIndex) => {
+        const item = question.values.find(value => value.id === itemId);
+        if (!item || data.placed[itemId] !== undefined) return;
+        const correctIndex = sorted.findIndex(value => value.id === itemId);
+        if (correctIndex !== Number(targetIndex)) {
+          data.selected = itemId;
+          setLabFeedback(`Not in that position yet. ${question.hint}`, "incorrect");
+          return;
+        }
+        data.placed[itemId] = correctIndex;
+        data.selected = null;
+        renderLab82D();
+        setLabFeedback(Object.keys(data.placed).length === question.values.length ? "All five values are correctly ordered." : `Correct placement. ${item.display} ${item.reveal}.`, "correct");
+      };
+      const remaining = question.values.filter(value => data.placed[value.id] === undefined);
+      const cardBank = `<aside class="ordering-card-bank"><p class="lab-mini-title">Real-number cards</p><h4>${remaining.length ? `${remaining.length} left to place` : "Ordering complete"}</h4><p>Drag a card to its position. On a touch screen, tap a card and then tap a location.</p><div class="ordering-cards">${remaining.map(item => `<button type="button" class="number-card ordering-card${data.selected === item.id ? " is-selected" : ""}" data-ordering-card="${item.id}" draggable="true" aria-label="Select ${item.spoken}"><strong>${formatMathText(item.display)}</strong><span>Drag or tap</span></button>`).join("") || `<div class="bank-complete">✓ All five placed</div>`}</div><button type="button" class="lab-next ordering-next" id="nextOrderingQuestion" ${questionComplete ? "" : "hidden"}>${data.index === orderingQuestions.length - 1 ? "Continue to values between →" : "Next ordering challenge →"}</button></aside>`;
+      let activityMarkup = "";
+      if (question.mode === "line") {
+        const ticks = Array.from({ length: question.max - question.min + 1 }, (_, index) => question.min + index);
+        activityMarkup = `<div class="ordering-line-layout"><section class="ordering-line-card"><header><div><p class="lab-mini-title">Number line ${data.index + 1} of 3</p><h4>${question.prompt}</h4></div><span>least → greatest</span></header><div class="ordering-line-scroll"><div class="ordering-line-stage" aria-label="Number line from ${question.min} to ${question.max}"><div class="ordering-axis" aria-hidden="true"></div>${ticks.map(tick => `<span class="ordering-tick" style="left:${((tick - question.min) / (question.max - question.min)) * 100}%"><i></i><b>${tick}</b></span>`).join("")}${sorted.map((item, index) => {
+          const left = ((item.value - question.min) / (question.max - question.min)) * 100;
+          const placed = data.placed[item.id] !== undefined;
+          const laneTop = 40 + (index % 2) * 58;
+          const stemHeight = 117 - (index % 2) * 58;
+          return `<button type="button" class="ordering-line-target${placed ? " is-filled" : ""}" data-ordering-target="${index}" style="left:${left}%;--order-top:${laneTop}px;--order-stem:${stemHeight}px" aria-label="Place selected value at position ${index + 1}">${placed ? `<span><strong>${formatMathText(item.display)}</strong><small>${item.reveal}</small></span>` : `<i></i>`}</button>`;
+        }).join("")}</div></div></section>${cardBank}</div>`;
+      } else {
+        const directionLabel = question.direction === "ascending" ? "Least → Greatest" : "Greatest → Least";
+        activityMarkup = `<div class="ordering-sequence-layout"><section class="ordering-sequence-card"><header><p class="lab-mini-title">Sequence ${data.index - 2} of 4</p><h4>${question.prompt}</h4><span>${directionLabel}</span></header><div class="sequence-scroll"><div class="ordering-sequence-slots" data-direction="${question.direction}">${sorted.map((item, index) => {
+          const placed = data.placed[item.id] !== undefined;
+          return `<button type="button" class="ordering-sequence-slot${placed ? " is-filled" : ""}" data-ordering-target="${index}" aria-label="Position ${index + 1}"><b>${index + 1}</b>${placed ? `<strong>${formatMathText(item.display)}</strong><small>${item.reveal}</small>` : `<span>Drop here</span>`}</button>`;
+        }).join("")}</div></div></section>${cardBank}</div>`;
+      }
+      $("#standardsLabBody").innerHTML = `${supportMarkup}${activityMarkup}`;
+      setLabFeedback(data.selected ? `${question.values.find(value => value.id === data.selected).display} selected. Choose its correct position.` : question.hint);
+      attachSupportVideos();
+      document.querySelectorAll("[data-ordering-card]").forEach(button => {
+        button.addEventListener("click", () => { data.selected = button.getAttribute("data-ordering-card"); renderLab82D(); });
+        button.addEventListener("dragstart", event => { event.dataTransfer.setData("text/plain", button.getAttribute("data-ordering-card")); event.dataTransfer.effectAllowed = "move"; });
+      });
+      document.querySelectorAll("[data-ordering-target]").forEach(target => {
+        const assign = itemId => { if (itemId) placeValue(itemId, target.getAttribute("data-ordering-target")); };
+        target.addEventListener("click", () => assign(data.selected));
+        target.addEventListener("dragover", event => { event.preventDefault(); event.dataTransfer.dropEffect = "move"; });
+        target.addEventListener("dragenter", event => { event.preventDefault(); target.classList.add("is-ready"); });
+        target.addEventListener("dragleave", () => target.classList.remove("is-ready"));
+        target.addEventListener("drop", event => { event.preventDefault(); target.classList.remove("is-ready"); assign(event.dataTransfer.getData("text/plain")); });
+      });
+      const next = $("#nextOrderingQuestion");
+      if (next) next.addEventListener("click", nextQuestion);
+      return;
+    }
+
+    const betweenIndex = data.index - orderingQuestions.length;
+    const question = betweenQuestions[betweenIndex];
+    setLabProgress(data.index + (data.answered ? 1 : 0), totalQuestions, `Between-number challenge ${betweenIndex + 1} of 3 • Find a value that makes the inequality true.`);
+    $("#standardsLabBody").innerHTML = `${supportMarkup}<section class="between-number-card"><header><p class="lab-mini-title">Value between ${betweenIndex + 1} of 3</p><h4>${question.prompt}</h4></header><div class="between-inequality" role="img" aria-label="${question.spoken}"><span>${formatMathText(question.left)}</span><b>&lt; x &lt;</b><span>${formatMathText(question.right)}</span></div><div class="between-choice-grid">${question.choices.map((choice, index) => `<button type="button" class="lab-choice${data.choice === index ? " is-selected" : ""}${data.answered && index === question.correct ? " is-correct" : ""}" data-between-choice="${index}" ${data.answered ? "disabled" : ""}><span>${String.fromCharCode(65 + index)}</span><div class="between-choice-value">${formatMathText(choice.display)}</div></button>`).join("")}</div>${data.answered ? `<div class="between-explanation"><strong>Why it works</strong><p>${formatMathText(question.explanation)}</p></div>` : ""}<div class="scientific-actions"><button type="button" class="lab-action" id="checkBetweenAnswer" ${data.answered ? "hidden" : ""}>Check answer</button><button type="button" class="lab-next" id="nextBetweenQuestion" ${data.answered ? "" : "hidden"}>${data.index === totalQuestions - 1 ? "Finish lab" : "Next challenge →"}</button></div></section>`;
+    setLabFeedback(data.answered ? `Correct! ${question.explanation}` : "Choose the value that is greater than the left endpoint and less than the right endpoint.", data.answered ? "correct" : "");
+    attachSupportVideos();
+    document.querySelectorAll("[data-between-choice]").forEach(button => button.addEventListener("click", () => {
+      data.choice = Number(button.getAttribute("data-between-choice"));
+      renderLab82D();
+    }));
+    $("#checkBetweenAnswer").addEventListener("click", () => {
+      if (data.choice === null) return setLabFeedback("Choose one of the four possible values first.", "incorrect");
+      if (data.choice !== question.correct) return setLabFeedback("That value is not strictly between both endpoints. Convert each endpoint to a decimal and compare again.", "incorrect");
+      data.answered = true;
+      renderLab82D();
+    });
+    const next = $("#nextBetweenQuestion");
+    if (next) next.addEventListener("click", nextQuestion);
+  }
+
+  function applyTransformation(points, spec) {
+    return points.map(point => {
+      if (spec.kind === "translation") return { x: point.x + spec.dx, y: point.y + spec.dy };
+      if (spec.kind === "dilation") return { x: point.x * spec.k, y: point.y * spec.k };
+      if (spec.kind === "reflection") return spec.axis === "y" ? { x: -point.x, y: point.y } : { x: point.x, y: -point.y };
+      if (spec.kind === "rotation") {
+        const radians = (spec.direction === "cw" ? -spec.degrees : spec.degrees) * Math.PI / 180;
+        return {
+          x: Math.round((point.x * Math.cos(radians) - point.y * Math.sin(radians)) * 1000) / 1000,
+          y: Math.round((point.x * Math.sin(radians) + point.y * Math.cos(radians)) * 1000) / 1000
+        };
+      }
+      return { ...point };
+    });
+  }
+
+  function screenPoint(point) {
+    return { x: LAB_ORIGIN + point.x * LAB_SCALE, y: LAB_ORIGIN - point.y * LAB_SCALE };
+  }
+
+  function svgPointString(points) {
+    return points.map(point => {
+      const screen = screenPoint(point);
+      return `${screen.x},${screen.y}`;
+    }).join(" ");
+  }
+
+  function coordinateGraphMarkup(points, transformedPoints, transformedId = "") {
+    const grid = Array.from({ length: 17 }, (_, index) => {
+      const position = LAB_ORIGIN - 8 * LAB_SCALE + index * LAB_SCALE;
+      return `<line x1="${position}" y1="12" x2="${position}" y2="588"></line><line x1="12" y1="${position}" x2="588" y2="${position}"></line>`;
+    }).join("");
+    const labels = ["A", "B", "C", "D", "E", "F"];
+    const pointLabels = (vertices, prime, className) => vertices.map((point, index) => {
+      const screen = screenPoint(point);
+      return `<text class="${className}" data-vertex-index="${index}" x="${screen.x + (prime ? 10 : -22)}" y="${screen.y + (prime ? 20 : -10)}">${labels[index]}${prime ? "′" : ""}</text>`;
+    }).join("");
+    return `<svg class="coordinate-lab-svg" viewBox="0 0 600 600" role="img" aria-label="Coordinate plane showing an original figure and its transformation">
+      <g class="coordinate-grid">${grid}</g>
+      <g class="coordinate-axes"><line x1="12" y1="300" x2="588" y2="300"></line><line x1="300" y1="12" x2="300" y2="588"></line><text x="567" y="286">x</text><text x="311" y="28">y</text><circle cx="300" cy="300" r="5"></circle><text x="310" y="321">origin</text></g>
+      <polygon class="coordinate-source-shape" points="${svgPointString(points)}"></polygon>
+      <g class="coordinate-original-labels">${pointLabels(points, false, "coordinate-original-label")}</g>
+      <polygon class="coordinate-result-shape" ${transformedId ? `id="${transformedId}"` : ""} points="${svgPointString(transformedPoints)}"></polygon>
+      <g class="coordinate-transformed-labels">${pointLabels(transformedPoints, true, "coordinate-transformed-label")}</g>
+    </svg>`;
+  }
+
+  function renderLabA() {
+    const transforms = [
+      { name: "Translation", spec: { kind: "translation", dx: 3, dy: -1 }, orientation: "same", congruent: "yes", exact: "right3down1", exactLabel: "3 right and 1 down", options: [["right3down1", "3 right and 1 down"], ["right1down3", "1 right and 3 down"]], rule: "(x, y) → (x + 3, y − 1)", note: "The figure slides without turning or changing size." },
+      { name: "Rotation", spec: { kind: "rotation", degrees: 90, direction: "cw" }, orientation: "changes", congruent: "yes", exact: "90cw", exactLabel: "90° clockwise about the origin", options: [["90cw", "90° clockwise"], ["90ccw", "90° counterclockwise"]], rule: "(x, y) → (y, −x)", note: "The figure makes a quarter-turn about the origin while every side length and angle measure stays the same." },
+      { name: "Reflection", spec: { kind: "reflection", axis: "y" }, orientation: "changes", congruent: "yes", exact: "yaxis", exactLabel: "reflection over the y-axis", options: [["yaxis", "Over the y-axis"], ["xaxis", "Over the x-axis"]], rule: "(x, y) → (−x, y)", note: "The figure flips across the y-axis and keeps the same size and shape." },
+      { name: "Dilation", spec: { kind: "dilation", k: 1.4 }, orientation: "same", congruent: "no", exact: "k1.4", exactLabel: "dilation with k = 1.4", options: [["k1.4", "k = 1.4"], ["k0.7", "k = 0.7"]], rule: "(x, y) → (1.4x, 1.4y)", note: "The figure moves farther from the origin and grows, so the figures are similar but not congruent." }
+    ];
+    if (!labRuntime.data) labRuntime.data = { index: 0, completed: new Set(), orientation: null, congruent: null, exact: null };
+    const data = labRuntime.data;
+    const item = transforms[data.index];
+    const transformedPoints = applyTransformation(BASE_TRIANGLE, item.spec);
+    setLabProgress(data.completed.size, transforms.length, "Name the exact transformation, then test orientation and congruence.");
+    $("#standardsLabBody").innerHTML = `
+      <div class="transform-selector">${transforms.map((entry, index) => `<button type="button" data-a-index="${index}" class="${index === data.index ? "is-active" : ""}">${data.completed.has(index) ? "✓ " : ""}${entry.name}</button>`).join("")}</div>
+      <div class="lab-grid">
+        <div class="lab-stage-card"><p class="lab-mini-title">Coordinate plane</p>${coordinateGraphMarkup(BASE_TRIANGLE, transformedPoints)}</div>
+        <div class="lab-task-card">
+          <p class="lab-mini-title">${item.name}</p><h4>What happened to the figure?</h4><p>${item.note}</p>
+          <div class="property-question"><strong>Exact transformation</strong><div class="lab-choice-row">${item.options.map(([value, label]) => `<button type="button" class="lab-choice ${data.exact === value ? "is-selected" : ""}" data-a-exact="${value}">${label}</button>`).join("")}</div></div>
+          <div class="property-question"><strong>Orientation</strong><div class="lab-choice-row"><button type="button" class="lab-choice ${data.orientation === "same" ? "is-selected" : ""}" data-a-orientation="same">Stays the same</button><button type="button" class="lab-choice ${data.orientation === "changes" ? "is-selected" : ""}" data-a-orientation="changes">Changes</button></div></div>
+          <div class="property-question"><strong>Congruence</strong><div class="lab-choice-row"><button type="button" class="lab-choice ${data.congruent === "yes" ? "is-selected" : ""}" data-a-congruent="yes">Preserved</button><button type="button" class="lab-choice ${data.congruent === "no" ? "is-selected" : ""}" data-a-congruent="no">Not preserved</button></div></div>
+          <div class="rule-reveal"><span>Algebraic rule</span><strong>${item.rule}</strong></div>
+          <button type="button" class="lab-action" id="checkLabA">Check all three ideas</button><button type="button" class="lab-next" id="nextLabA" ${data.completed.has(data.index) ? "" : "hidden"}>Next transformation →</button>
+        </div>
+      </div>`;
+    document.querySelectorAll("[data-a-index]").forEach(button => button.addEventListener("click", () => { data.index = Number(button.dataset.aIndex); data.orientation = null; data.congruent = null; data.exact = null; renderLabA(); setLabFeedback("Use the origin and corresponding vertices as evidence."); }));
+    document.querySelectorAll("[data-a-exact]").forEach(button => button.addEventListener("click", () => { data.exact = button.dataset.aExact; renderLabA(); }));
+    document.querySelectorAll("[data-a-orientation]").forEach(button => button.addEventListener("click", () => { data.orientation = button.dataset.aOrientation; renderLabA(); }));
+    document.querySelectorAll("[data-a-congruent]").forEach(button => button.addEventListener("click", () => { data.congruent = button.dataset.aCongruent; renderLabA(); }));
+    $("#checkLabA").addEventListener("click", () => {
+      if (!data.exact || !data.orientation || !data.congruent) return setLabFeedback("Choose the exact transformation, orientation result, and congruence result.", "incorrect");
+      if (data.exact !== item.exact || data.orientation !== item.orientation || data.congruent !== item.congruent) return setLabFeedback("Use corresponding points: check the axis or center first, then compare size and facing direction.", "incorrect");
+      data.completed.add(data.index); renderLabA(); setLabFeedback(`Correct: ${item.exactLabel}. ${item.note}`, "correct");
+      if (data.completed.size === transforms.length) showLabCompletion("8.10A");
+    });
+    const next = $("#nextLabA");
+    if (next) next.addEventListener("click", () => { const nextIndex = transforms.findIndex((_, index) => !data.completed.has(index)); if (nextIndex === -1) return showLabCompletion("8.10A"); data.index = nextIndex; data.orientation = null; data.congruent = null; data.exact = null; renderLabA(); setLabFeedback("New transformation ready."); });
+  }
+
+  function renderLabB() {
+    const cards = [
+      { id: "translation", name: "Translation", icon: "→", detail: "(x, y) → (x + 4, y − 2)", answer: "preserves" },
+      { id: "rotation", name: "Rotation", icon: "↻", detail: "(x, y) → (y, −x)", answer: "preserves" },
+      { id: "reflection", name: "Reflection", icon: "⇄", detail: "(x, y) → (−x, y)", answer: "preserves" },
+      { id: "dilation", name: "Dilation", icon: "⤢", detail: "(x, y) → (2x, 2y)", answer: "not" }
+    ];
+    if (!labRuntime.data) labRuntime.data = { placed: {}, selected: null };
+    const data = labRuntime.data;
+    const placedCount = Object.keys(data.placed).length;
+    const correctCount = cards.filter(card => data.placed[card.id] === card.answer).length;
+    setLabProgress(correctCount, cards.length, "Move every card into the category supported by its evidence.");
+    const cardMarkup = card => `<button type="button" draggable="true" data-b-card="${card.id}" class="sort-card ${data.selected === card.id ? "is-selected" : ""} ${data.placed[card.id] ? (data.placed[card.id] === card.answer ? "is-correct" : "is-incorrect") : ""}"><i>${card.icon}</i><span><strong>${card.name}</strong><small>${card.detail}</small></span></button>`;
+    $("#standardsLabBody").innerHTML = `
+      <div class="sort-board">
+        <section class="sort-zone" data-b-zone="preserves"><h4>Preserves congruence</h4><p>Same size and same shape</p><div class="sort-stack">${cards.filter(card => data.placed[card.id] === "preserves").map(cardMarkup).join("")}</div></section>
+        <section class="sort-zone" data-b-zone="not"><h4>Does not preserve congruence</h4><p>Size or shape changes</p><div class="sort-stack">${cards.filter(card => data.placed[card.id] === "not").map(cardMarkup).join("")}</div></section>
+      </div>
+      <div class="sort-pool"><strong>Choose or drag a transformation</strong><div class="sort-stack">${cards.filter(card => !data.placed[card.id]).map(cardMarkup).join("")}</div></div>`;
+    function place(id, zone) {
+      const card = cards.find(entry => entry.id === id); if (!card) return;
+      data.placed[id] = zone; data.selected = null; renderLabB();
+      if (zone === card.answer) setLabFeedback(`Correct. ${card.name} ${zone === "preserves" ? "keeps the same size and shape." : "changes size when the scale factor is not 1."}`, "correct");
+      else setLabFeedback(`Not yet. Recheck what ${card.name.toLowerCase()} does to side lengths and angle measures, then move it.`, "incorrect");
+      if (Object.keys(data.placed).length === cards.length && cards.every(entry => data.placed[entry.id] === entry.answer)) showLabCompletion("8.10B");
+    }
+    document.querySelectorAll("[data-b-card]").forEach(button => {
+      button.addEventListener("click", event => { event.stopPropagation(); data.selected = button.dataset.bCard; renderLabB(); setLabFeedback("Now choose one of the two congruence categories."); });
+      button.addEventListener("dragstart", event => event.dataTransfer.setData("text/plain", button.dataset.bCard));
+    });
+    document.querySelectorAll("[data-b-zone]").forEach(zone => {
+      zone.addEventListener("click", () => { if (data.selected) place(data.selected, zone.dataset.bZone); });
+      zone.addEventListener("dragover", event => event.preventDefault());
+      zone.addEventListener("drop", event => { event.preventDefault(); place(event.dataTransfer.getData("text/plain"), zone.dataset.bZone); });
+    });
+    if (placedCount === 0) setLabFeedback("Drag a card into a category, or tap a card and then tap a category.");
+  }
+
+  const TRANSFORMATION_CHALLENGES = [
+    { exact: "Translate 4 right and 2 down", rule: "(x, y) → (x + 4, y − 2)", spec: { kind: "translation", dx: 4, dy: -2 }, clue: "Every vertex moves 4 units right and 2 units down." },
+    { exact: "Translate 5 right and 1 up", rule: "(x, y) → (x + 5, y + 1)", spec: { kind: "translation", dx: 5, dy: 1 }, clue: "Every vertex moves 5 units right and 1 unit up." },
+    { exact: "Translate 2 left and 3 down", rule: "(x, y) → (x − 2, y − 3)", spec: { kind: "translation", dx: -2, dy: -3 }, clue: "Every vertex moves 2 units left and 3 units down." },
+    { exact: "Translate 3 right and 3 up", rule: "(x, y) → (x + 3, y + 3)", spec: { kind: "translation", dx: 3, dy: 3 }, clue: "The same pair of changes is added to every ordered pair." },
+    { exact: "Rotate 90° clockwise", rule: "(x, y) → (y, −x)", spec: { kind: "rotation", degrees: 90, direction: "cw" }, clue: "The figure makes a quarter-turn clockwise about the origin." },
+    { exact: "Rotate 180°", rule: "(x, y) → (−x, −y)", spec: { kind: "rotation", degrees: 180, direction: "cw" }, clue: "The figure makes a half-turn about the origin." },
+    { exact: "Rotate 270° clockwise", rule: "(x, y) → (−y, x)", spec: { kind: "rotation", degrees: 270, direction: "cw" }, clue: "This is also a 90° counterclockwise rotation." },
+    { exact: "Rotate 90° counterclockwise", rule: "(x, y) → (−y, x)", spec: { kind: "rotation", degrees: 90, direction: "ccw" }, clue: "The figure makes a quarter-turn counterclockwise about the origin." },
+    { exact: "Reflect over the y-axis", rule: "(x, y) → (−x, y)", spec: { kind: "reflection", axis: "y" }, clue: "Only the x-coordinate changes sign." },
+    { exact: "Reflect over the x-axis", rule: "(x, y) → (x, −y)", spec: { kind: "reflection", axis: "x" }, clue: "Only the y-coordinate changes sign." },
+    { exact: "Reflect over the y-axis", rule: "(x, y) → (−x, y)", spec: { kind: "reflection", axis: "y" }, clue: "Corresponding points are equally far from the vertical axis." },
+    { exact: "Reflect over the x-axis", rule: "(x, y) → (x, −y)", spec: { kind: "reflection", axis: "x" }, clue: "Corresponding points are equally far from the horizontal axis." },
+    { exact: "Dilate by k = 2", rule: "(x, y) → (2x, 2y)", spec: { kind: "dilation", k: 2 }, points: [{ x: -3, y: 1 }, { x: -1, y: 1 }, { x: -2, y: 3 }], clue: "Each distance from the origin doubles." },
+    { exact: "Dilate by k = 1/2", rule: "(x, y) → (½x, ½y)", spec: { kind: "dilation", k: .5 }, clue: "Each distance from the origin is cut in half." },
+    { exact: "Dilate by k = 3/2", rule: "(x, y) → (1.5x, 1.5y)", spec: { kind: "dilation", k: 1.5 }, points: [{ x: -4, y: 1 }, { x: -2, y: 1 }, { x: -3, y: 3 }], clue: "Every coordinate is multiplied by 1.5." },
+    { exact: "Dilate by k = 3", rule: "(x, y) → (3x, 3y)", spec: { kind: "dilation", k: 3 }, points: [{ x: -2, y: 1 }, { x: -1, y: 1 }, { x: -1.5, y: 2 }], clue: "Each distance from the origin triples." },
+    { mode: "rule", exact: "Translate 3 left and 2 up", rule: "(x, y) → (x − 3, y + 2)", spec: { kind: "translation", dx: -3, dy: 2 }, clue: "Read what is added to x and y." },
+    { mode: "rule", exact: "Rotate 90° counterclockwise", rule: "(x, y) → (−y, x)", spec: { kind: "rotation", degrees: 90, direction: "ccw" }, clue: "The coordinates swap, and the new x is the opposite of y." },
+    { mode: "rule", exact: "Reflect over the x-axis", rule: "(x, y) → (x, −y)", spec: { kind: "reflection", axis: "x" }, clue: "The x-coordinate stays the same." },
+    { mode: "rule", exact: "Dilate by k = 1/2", rule: "(x, y) → (½x, ½y)", spec: { kind: "dilation", k: .5 }, clue: "Both coordinates are multiplied by the same factor." }
+  ];
+
+  const EXACT_OPTIONS = ["Translate 4 right and 2 down", "Translate 5 right and 1 up", "Translate 2 left and 3 down", "Translate 3 right and 3 up", "Translate 3 left and 2 up", "Rotate 90° clockwise", "Rotate 180°", "Rotate 270° clockwise", "Rotate 90° counterclockwise", "Reflect over the y-axis", "Reflect over the x-axis", "Dilate by k = 2", "Dilate by k = 1/2", "Dilate by k = 3/2", "Dilate by k = 3"];
+  const RULE_OPTIONS = ["(x, y) → (x + 4, y − 2)", "(x, y) → (x + 5, y + 1)", "(x, y) → (x − 2, y − 3)", "(x, y) → (x + 3, y + 3)", "(x, y) → (y, −x)", "(x, y) → (−x, −y)", "(x, y) → (−y, x)", "(x, y) → (−x, y)", "(x, y) → (x, −y)", "(x, y) → (2x, 2y)", "(x, y) → (½x, ½y)", "(x, y) → (1.5x, 1.5y)", "(x, y) → (3x, 3y)"];
+
+  function optionSet(correct, bank, index) {
+    const alternatives = bank.filter(value => value !== correct);
+    const offset = (index * 3) % alternatives.length;
+    return [correct, alternatives[offset], alternatives[(offset + 2) % alternatives.length], alternatives[(offset + 5) % alternatives.length]].sort((a, b) => ((a.length + index) % 7) - ((b.length + index) % 7));
+  }
+
+  function renderLabC() {
+    if (!labRuntime.data) labRuntime.data = { index: 0, played: false, correct: false, exact: null, rule: null };
+    const data = labRuntime.data;
+    if (data.index >= TRANSFORMATION_CHALLENGES.length) {
+      setLabProgress(TRANSFORMATION_CHALLENGES.length, TRANSFORMATION_CHALLENGES.length, "All sixteen observations and four rule exemplars complete.");
+      return showLabCompletion("8.10C");
+    }
+    const item = TRANSFORMATION_CHALLENGES[data.index];
+    const points = item.points || BASE_TRIANGLE;
+    const finalPoints = applyTransformation(points, item.spec);
+    const ruleMode = item.mode === "rule";
+    const exactOptions = optionSet(item.exact, EXACT_OPTIONS, data.index);
+    const ruleOptions = optionSet(item.rule, RULE_OPTIONS, data.index);
+    setLabProgress(data.index, TRANSFORMATION_CHALLENGES.length, ruleMode ? `Rule exemplar ${data.index - 15}: use the rule to predict the transformation.` : `Observation ${data.index + 1}: watch, name the exact transformation, and match its rule.`);
+    $("#standardsLabBody").innerHTML = `
+      <div class="lab-grid">
+        <div class="lab-stage-card">
+          <div class="round-dots">${TRANSFORMATION_CHALLENGES.map((_, index) => `<span class="${index < data.index ? "is-done" : index === data.index ? "is-current" : ""}"></span>`).join("")}</div>
+          <p class="lab-mini-title">Coordinate plane</p>
+          ${coordinateGraphMarkup(points, points, "challengeResult")}
+          <div class="challenge-toolbar">
+            <button type="button" class="lab-action" id="playChallenge">▶ Play</button>
+            <button type="button" class="lab-action secondary" id="replayChallenge" ${data.played ? "" : "disabled"}>↺ Replay</button>
+          </div>
+        </div>
+        <div class="lab-task-card">
+          <p class="lab-mini-title">${ruleMode ? "Rule-to-graph exemplar" : "Identify the movement and rule"}</p>
+          <h4>${ruleMode ? "Which exact transformation matches this rule?" : "What exactly happened?"}</h4>
+          ${ruleMode ? `<div class="given-rule"><span>Given rule</span><strong>${item.rule}</strong></div>` : ""}
+          <p id="challengeClue">${ruleMode ? item.clue : (data.played ? item.clue : "Press Play to reveal the movement. The choices unlock when the animation begins.")}</p>
+          <div class="property-question"><strong>Exact transformation</strong><div class="challenge-options">${exactOptions.map(value => `<button type="button" class="lab-choice ${data.exact === value ? "is-selected" : ""}" data-c-exact="${value}" ${data.played || ruleMode ? "" : "disabled"}>${value}</button>`).join("")}</div></div>
+          ${ruleMode ? "" : `<div class="property-question"><strong>Algebraic rule</strong><div class="challenge-options rule-options">${ruleOptions.map(value => `<button type="button" class="lab-choice ${data.rule === value ? "is-selected" : ""}" data-c-rule="${value}" ${data.played ? "" : "disabled"}>${value}</button>`).join("")}</div></div>`}
+          <button type="button" class="lab-action" id="checkChallenge" ${data.played || ruleMode ? "" : "disabled"}>Check answer</button>
+          <button type="button" class="lab-next" id="nextChallenge" ${data.correct ? "" : "hidden"}>Next example →</button>
+        </div>
+      </div>`;
+    function animate() {
+      data.played = true;
+      const shape = $("#challengeResult");
+      const duration = matchMedia("(prefers-reduced-motion: reduce)").matches ? 1 : 900;
+      const started = performance.now();
+      cancelAnimationFrame(labRuntime.animationFrame || 0);
+      function frame(now) {
+        const progress = Math.min(1, (now - started) / duration);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = item.spec.kind === "rotation"
+          ? applyTransformation(points, { ...item.spec, degrees: item.spec.degrees * eased })
+          : points.map((point, index) => ({ x: point.x + (finalPoints[index].x - point.x) * eased, y: point.y + (finalPoints[index].y - point.y) * eased }));
+        shape.setAttribute("points", svgPointString(current));
+        document.querySelectorAll(".coordinate-transformed-label").forEach((label, index) => {
+          const screen = screenPoint(current[index]);
+          label.setAttribute("x", screen.x + 10);
+          label.setAttribute("y", screen.y + 20);
+        });
+        if (progress < 1) labRuntime.animationFrame = requestAnimationFrame(frame);
+      }
+      labRuntime.animationFrame = requestAnimationFrame(frame);
+      document.querySelectorAll("[data-c-exact], [data-c-rule]").forEach(button => button.disabled = false);
+      $("#checkChallenge").disabled = false;
+      $("#challengeClue").textContent = item.clue;
+      $("#replayChallenge").disabled = false;
+      setLabFeedback("Watch the position, size, and orientation. Then choose the transformation.");
+    }
+    $("#playChallenge").addEventListener("click", animate);
+    $("#replayChallenge").addEventListener("click", animate);
+    document.querySelectorAll("[data-c-exact]").forEach(button => button.addEventListener("click", () => { data.exact = button.dataset.cExact; document.querySelectorAll("[data-c-exact]").forEach(option => option.classList.toggle("is-selected", option === button)); }));
+    document.querySelectorAll("[data-c-rule]").forEach(button => button.addEventListener("click", () => { data.rule = button.dataset.cRule; document.querySelectorAll("[data-c-rule]").forEach(option => option.classList.toggle("is-selected", option === button)); }));
+    $("#checkChallenge").addEventListener("click", () => {
+      if (!data.exact || (!ruleMode && !data.rule)) return setLabFeedback(ruleMode ? "Choose the exact transformation that matches the rule." : "Choose both the exact transformation and its algebraic rule.", "incorrect");
+      if (data.exact !== item.exact || (!ruleMode && data.rule !== item.rule)) return setLabFeedback(`Not quite. ${item.clue} Replay the movement and compare one vertex at a time.`, "incorrect");
+      data.correct = true; $("#nextChallenge").hidden = false; setLabFeedback(`Correct: ${item.exact}. The rule is ${item.rule}.`, "correct");
+    });
+    $("#nextChallenge").addEventListener("click", () => { data.index += 1; data.played = false; data.correct = false; data.exact = null; data.rule = null; renderLabC(); setLabFeedback(data.index >= 16 ? "Use the given algebraic rule to predict the exact transformation." : "New figure ready. Press Play when you are ready to observe."); });
+  }
+
+  const DILATION_PROBLEMS = [
+    { k: "2", kValue: 2, area: "4", before: "3 × 5", after: "6 × 10", points: [{ x: 1, y: 1 }, { x: 3, y: 1 }, { x: 3, y: 2.5 }, { x: 1, y: 2.5 }], chips: ["2","4","6","8"] },
+    { k: "3", kValue: 3, area: "9", before: "2 × 4", after: "6 × 12", points: [{ x: .8, y: .8 }, { x: 2, y: .8 }, { x: 2, y: 1.8 }, { x: .8, y: 1.8 }], chips: ["3","6","9","12"] },
+    { k: "1/2", kValue: .5, area: "1/4", before: "8 × 6", after: "4 × 3", points: [{ x: 2, y: 2 }, { x: 6, y: 2 }, { x: 6, y: 5 }, { x: 2, y: 5 }], chips: ["1/2","1/4","2","4"] },
+    { k: "1.5", kValue: 1.5, area: "2.25", before: "4 × 6", after: "6 × 9", points: [{ x: 1, y: 1 }, { x: 4, y: 1 }, { x: 4, y: 3 }, { x: 1, y: 3 }], chips: ["1.5","2.25","3","4.5"] }
+  ];
+
+  function renderLabD() {
+    if (!labRuntime.data) labRuntime.data = { index: 0, selected: null, answers: {}, solved: false };
+    const data = labRuntime.data;
+    if (data.index >= DILATION_PROBLEMS.length) {
+      setLabProgress(DILATION_PROBLEMS.length, DILATION_PROBLEMS.length, "All four dilation comparisons solved.");
+      return showLabCompletion("8.10D");
+    }
+    const item = DILATION_PROBLEMS[data.index];
+    setLabProgress(data.index, DILATION_PROBLEMS.length, `Problem ${data.index + 1}: place one factor for perimeter and one for area.`);
+    const zoneClass = kind => data.answers[kind] ? `is-filled ${data.answers[kind] === (kind === "perimeter" ? item.k : item.area) ? "is-correct" : "is-incorrect"}` : "";
+    $("#standardsLabBody").innerHTML = `
+      <div class="dilation-problem">
+        <div class="dilation-visual"><div><p class="lab-mini-title">Coordinate plane</p>${coordinateGraphMarkup(item.points, applyTransformation(item.points, { kind: "dilation", k: item.kValue }))}<div class="measure-pair"><span>Figure ABCD: ${item.before}</span><span>Figure A′B′C′D′: ${item.after}</span></div></div></div>
+        <div class="lab-task-card">
+          <p class="lab-mini-title">Scale factor k = ${item.k}</p>
+          <h4>How did each measurement change?</h4>
+          <p>Drag a factor into each target. On a touch screen, tap a factor and then tap the target.</p>
+          <div class="factor-bank"><strong>Factor bank</strong><div class="factor-chips">${item.chips.map(value => `<button type="button" draggable="true" class="factor-chip ${data.selected === value ? "is-selected" : ""}" data-d-factor="${value}">×${value}</button>`).join("")}</div></div>
+          <div class="drop-grid">
+            <button type="button" class="drop-zone ${zoneClass("perimeter")}" data-d-zone="perimeter"><strong>${data.answers.perimeter ? `×${data.answers.perimeter}` : "Drop factor"}</strong><span>Perimeter change</span></button>
+            <button type="button" class="drop-zone ${zoneClass("area")}" data-d-zone="area"><strong>${data.answers.area ? `×${data.answers.area}` : "Drop factor"}</strong><span>Area change</span></button>
+          </div>
+          <button type="button" class="lab-action" id="checkLabD">Check both factors</button>
+          <button type="button" class="lab-next" id="nextLabD" ${data.solved ? "" : "hidden"}>Next problem →</button>
+        </div>
+      </div>`;
+    function assign(kind, value) { if (!value) return; data.answers[kind] = value; data.selected = null; renderLabD(); setLabFeedback(`Placed ×${value} for ${kind}. Add the other factor, then check both.`); }
+    document.querySelectorAll("[data-d-factor]").forEach(button => {
+      button.addEventListener("click", () => { data.selected = button.dataset.dFactor; renderLabD(); setLabFeedback(`Factor ×${data.selected} selected. Now choose perimeter or area.`); });
+      button.addEventListener("dragstart", event => event.dataTransfer.setData("text/plain", button.dataset.dFactor));
+    });
+    document.querySelectorAll("[data-d-zone]").forEach(zone => {
+      zone.addEventListener("click", () => assign(zone.dataset.dZone, data.selected));
+      zone.addEventListener("dragover", event => event.preventDefault());
+      zone.addEventListener("drop", event => { event.preventDefault(); assign(zone.dataset.dZone, event.dataTransfer.getData("text/plain")); });
+    });
+    $("#checkLabD").addEventListener("click", () => {
+      if (!data.answers.perimeter || !data.answers.area) return setLabFeedback("Place a factor in both targets before checking.", "incorrect");
+      if (data.answers.perimeter !== item.k || data.answers.area !== item.area) return setLabFeedback(`Not yet. Perimeter changes by k, while area changes by k². Here k = ${item.k}.`, "incorrect");
+      data.solved = true; $("#nextLabD").hidden = false; setLabFeedback(`Correct. Perimeter changed by ×${item.k}, and area changed by ×${item.area}.`, "correct");
+    });
+    $("#nextLabD").addEventListener("click", () => { data.index += 1; data.selected = null; data.answers = {}; data.solved = false; renderLabD(); setLabFeedback("New dilation ready. Compare the figures and place both factors."); });
+  }
+
+  function skipCurrentLabProblem() {
+    const standard = state.labStandard;
+    const data = labRuntime.data;
+    if (!standard || !data || $("#skipLabProblem").disabled) return;
+    labRuntime.skipped += 1;
+
+    if (standard === "8.4A") {
+      if (data.index >= SLOPE_LAB_TASKS.length - 1) return showLabCompletion(standard);
+      data.index += 1;
+      resetSlopeTask(data);
+      renderLab84A();
+    } else if (standard === "8.3A") {
+      if (data.index >= SIMILARITY_TASKS.length - 1) return showLabCompletion(standard);
+      data.index += 1;
+      resetSimilarityTask(data);
+      renderLab83A();
+    } else if (standard === "8.3B") {
+      if (data.index >= DILATION_ATTRIBUTE_TASKS.length - 1) return showLabCompletion(standard);
+      data.index += 1;
+      resetDilationAttributeTask(data);
+      renderLab83B();
+    } else if (standard === "8.3C") {
+      if (data.index >= DILATION_RULE_QUESTIONS.length - 1) return showLabCompletion(standard);
+      data.index += 1;
+      data.selected = null;
+      data.wrong = null;
+      data.answered = false;
+      renderLab83C();
+    } else if (standard === "8.2A") {
+      if (data.phase === "sort") {
+        data.phase = "visual";
+        data.visualIndex = 0;
+      } else if (data.visualIndex >= 4) {
+        return showLabCompletion(standard);
+      } else {
+        data.visualIndex += 1;
+      }
+      data.visualSelected = null;
+      data.visualAnswered = false;
+      renderLab82A();
+    } else if (standard === "8.2B") {
+      if (data.phase === "numberLine") {
+        if (data.lineIndex >= 4) {
+          data.phase = "application";
+          data.applicationIndex = 0;
+        } else {
+          data.lineIndex += 1;
+        }
+        data.placed = {};
+        data.selected = null;
+      } else if (data.applicationIndex >= 4) {
+        return showLabCompletion(standard);
+      } else {
+        data.applicationIndex += 1;
+        data.applicationSelected = null;
+        data.applicationAnswered = false;
+      }
+      renderLab82B();
+    } else if (standard === "8.2C") {
+      if (data.index >= 15) return showLabCompletion(standard);
+      data.index += 1;
+      data.answered = false;
+      renderLab82C();
+    } else if (standard === "8.2D") {
+      if (data.index >= 9) return showLabCompletion(standard);
+      data.index += 1;
+      data.placed = {};
+      data.selected = null;
+      data.choice = null;
+      data.answered = false;
+      renderLab82D();
+    } else if (standard === "8.10A") {
+      data.completed.add(data.index);
+      const nextIndex = Array.from({ length: 4 }, (_, index) => index).find(index => !data.completed.has(index));
+      if (nextIndex === undefined) return showLabCompletion(standard);
+      data.index = nextIndex;
+      data.orientation = null;
+      data.congruent = null;
+      data.exact = null;
+      renderLabA();
+    } else if (standard === "8.10B") {
+      return showLabCompletion(standard);
+    } else if (standard === "8.10C") {
+      data.index += 1;
+      data.played = false;
+      data.correct = false;
+      data.exact = null;
+      data.rule = null;
+      renderLabC();
+    } else if (standard === "8.10D") {
+      data.index += 1;
+      data.selected = null;
+      data.answers = {};
+      data.solved = false;
+      renderLabD();
+    }
+
+    if (!$("#standardsLabCompletion").hidden) return;
+    setLabFeedback("Problem skipped. You can keep moving and return by restarting the lab at any time.");
+  }
+
+  function initializeTransformationLab() {
+    const svgNS = "http://www.w3.org/2000/svg";
+    const origin = 300;
+    const scale = 25;
+    const basePoints = [
+      { name: "A", x: -4, y: 1 },
+      { name: "B", x: -1, y: 1 },
+      { name: "C", x: -2, y: 4 }
+    ];
+    let currentPoints = basePoints.map(point => ({ ...point }));
+    let animationFrame = 0;
+
+    const toScreen = point => ({ x: origin + point.x * scale, y: origin - point.y * scale });
+    const pointString = points => points.map(point => {
+      const screen = toScreen(point);
+      return `${screen.x},${screen.y}`;
+    }).join(" ");
+
+    function svgElement(name, attrs = {}) {
+      const element = document.createElementNS(svgNS, name);
+      Object.entries(attrs).forEach(([key, value]) => element.setAttribute(key, value));
+      return element;
+    }
+
+    function buildGrid() {
+      const grid = $("#gridLayer");
+      const axes = $("#axisLayer");
+      for (let value = -10; value <= 10; value++) {
+        const position = origin + value * scale;
+        grid.append(svgElement("line", { x1: position, y1: 50, x2: position, y2: 550, class: `grid-line${value % 5 === 0 ? " major" : ""}` }));
+        grid.append(svgElement("line", { x1: 50, y1: position, x2: 550, y2: position, class: `grid-line${value % 5 === 0 ? " major" : ""}` }));
+        if (value !== 0 && value % 2 === 0) {
+          const xNumber = svgElement("text", { x: position, y: 322, class: "axis-number" });
+          xNumber.textContent = value;
+          axes.append(xNumber);
+          const yNumber = svgElement("text", { x: 278, y: origin - value * scale + 5, class: "axis-number" });
+          yNumber.textContent = value;
+          axes.append(yNumber);
+        }
+      }
+      axes.append(svgElement("line", { x1: 50, y1: origin, x2: 550, y2: origin, class: "axis-line" }));
+      axes.append(svgElement("line", { x1: origin, y1: 50, x2: origin, y2: 550, class: "axis-line" }));
+      const xName = svgElement("text", { x: 559, y: 292, class: "axis-name" }); xName.textContent = "x"; axes.append(xName);
+      const yName = svgElement("text", { x: 310, y: 43, class: "axis-name" }); yName.textContent = "y"; axes.append(yName);
+    }
+
+    function drawLabels(layerSelector, points, prime) {
+      const layer = $(layerSelector);
+      layer.innerHTML = "";
+      points.forEach(point => {
+        const screen = toScreen(point);
+        const text = svgElement("text", { x: screen.x + 10, y: screen.y - 12 });
+        text.textContent = `${point.name}${prime ? "′" : ""}`;
+        layer.append(text);
+      });
+    }
+
+    function drawCoordinates(points) {
+      $("#coordinateRows").innerHTML = basePoints.map((point, index) => {
+        const image = points[index];
+        return `<div class="coordinate-row"><strong>${point.name} → ${point.name}′</strong><span>(${point.x}, ${point.y}) → (${image.x}, ${image.y})</span></div>`;
+      }).join("");
+    }
+
+    function draw(points) {
+      $("#originalShape").setAttribute("points", pointString(basePoints));
+      $("#imageShape").setAttribute("points", pointString(points));
+      drawLabels("#originalLabels", basePoints, false);
+      drawLabels("#imageLabels", points, true);
+    }
+
+    function animateTo(target, rule, explanation) {
+      cancelAnimationFrame(animationFrame);
+      clearRotationFocus();
+      const startPoints = basePoints.map(point => ({ ...point }));
+      currentPoints = startPoints;
+      draw(currentPoints);
+      drawCoordinates(target);
+      $("#ruleText").textContent = rule;
+      $("#ruleExplanation").textContent = explanation;
+      const started = performance.now();
+      const duration = 850;
+      function frame(now) {
+        const raw = Math.min(1, (now - started) / duration);
+        const ease = 1 - Math.pow(1 - raw, 3);
+        currentPoints = startPoints.map((point, index) => ({
+          name: point.name,
+          x: point.x + (target[index].x - point.x) * ease,
+          y: point.y + (target[index].y - point.y) * ease
+        }));
+        draw(currentPoints);
+        if (raw < 1) animationFrame = requestAnimationFrame(frame);
+        else { currentPoints = target; draw(currentPoints); }
+      }
+      animationFrame = requestAnimationFrame(frame);
+    }
+
+    function resetLab() {
+      cancelAnimationFrame(animationFrame);
+      clearRotationFocus();
+      currentPoints = basePoints.map(point => ({ ...point }));
+      draw(currentPoints);
+      drawCoordinates(currentPoints);
+      $("#ruleText").textContent = "(x, y) → (x, y)";
+      $("#ruleExplanation").textContent = "The image is resting directly on the pre-image. Choose a transformation to move it.";
+    }
+
+    function signedTerm(value, variable) {
+      if (value === 0) return variable;
+      return `${variable} ${value > 0 ? "+" : "−"} ${Math.abs(value)}`;
+    }
+
+    const rotationLessons = {
+      90: {
+        counterclockwise: 270,
+        rule: "(x, y) → (y, −x)",
+        explanation: "A 90° clockwise turn is the same final rotation as 270° counterclockwise. Switch the coordinates and change the sign of the new y-value."
+      },
+      180: {
+        counterclockwise: 180,
+        rule: "(x, y) → (−x, −y)",
+        explanation: "A half turn reaches the same place in either direction. Both coordinates change signs."
+      },
+      270: {
+        counterclockwise: 90,
+        rule: "(x, y) → (−y, x)",
+        explanation: "A 270° clockwise turn is the same final rotation as 90° counterclockwise. Switch the coordinates and change the sign of the new x-value."
+      },
+      360: {
+        counterclockwise: 360,
+        rule: "(x, y) → (x, y)",
+        explanation: "A 360° turn makes one complete circle and returns every point to its starting location. It is equivalent to 360° counterclockwise—and to a 0° turn."
+      }
+    };
+
+    function rotatePoints(degrees, round = false) {
+      const radians = -degrees * Math.PI / 180;
+      const cosine = Math.cos(radians);
+      const sine = Math.sin(radians);
+      return basePoints.map(point => {
+        const x = point.x * cosine - point.y * sine;
+        const y = point.x * sine + point.y * cosine;
+        return { ...point, x: round ? Math.round(x) : x, y: round ? Math.round(y) : y };
+      });
+    }
+
+    function clearRotationFocus() {
+      $("#turnMeter").hidden = true;
+      document.querySelectorAll("[data-rotate-degrees], [data-equivalence-degrees]").forEach(button => button.classList.remove("is-active"));
+    }
+
+    function updateRotationFocus(degrees) {
+      const lesson = rotationLessons[degrees];
+      document.querySelectorAll("[data-rotate-degrees]").forEach(button => button.classList.toggle("is-active", Number(button.dataset.rotateDegrees) === degrees));
+      document.querySelectorAll("[data-equivalence-degrees]").forEach(button => button.classList.toggle("is-active", Number(button.dataset.equivalenceDegrees) === degrees));
+      $("#clockwiseMatch").textContent = `${degrees}° clockwise`;
+      $("#counterclockwiseMatch").textContent = degrees === 360 ? "360° counterclockwise (or 0°)" : `${lesson.counterclockwise}° counterclockwise`;
+      $("#equivalenceExplanation").textContent = degrees === 360
+        ? "One full turn in either direction returns every point to its starting location. A 0° turn also has the same final position."
+        : `Turning ${degrees}° clockwise or ${lesson.counterclockwise}° counterclockwise takes every point to the same final position.`;
+    }
+
+    function animateRotation(degrees) {
+      cancelAnimationFrame(animationFrame);
+      const lesson = rotationLessons[degrees];
+      const target = rotatePoints(degrees, true);
+      const meter = $("#turnMeter");
+      meter.hidden = false;
+      updateRotationFocus(degrees);
+      currentPoints = basePoints.map(point => ({ ...point }));
+      draw(currentPoints);
+      drawCoordinates(target);
+      $("#ruleText").textContent = lesson.rule;
+      $("#ruleExplanation").textContent = lesson.explanation;
+      const started = performance.now();
+      const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+      const duration = reduceMotion ? 1 : Math.max(900, degrees * 3.5);
+      function frame(now) {
+        const raw = Math.min(1, (now - started) / duration);
+        const ease = 1 - Math.pow(1 - raw, 3);
+        const traveled = degrees * ease;
+        currentPoints = rotatePoints(traveled);
+        draw(currentPoints);
+        $("#turnDegrees").textContent = `${Math.round(traveled)}°`;
+        if (raw < 1) animationFrame = requestAnimationFrame(frame);
+        else {
+          currentPoints = target;
+          draw(currentPoints);
+          $("#turnDegrees").textContent = `${degrees}°`;
+        }
+      }
+      animationFrame = requestAnimationFrame(frame);
+    }
+
+    buildGrid();
+    resetLab();
+
+    document.querySelectorAll("[data-transform-tab]").forEach(button => {
+      button.addEventListener("click", () => {
+        const type = button.dataset.transformTab;
+        document.querySelectorAll("[data-transform-tab]").forEach(tab => {
+          const active = tab === button;
+          tab.classList.toggle("is-active", active);
+          tab.setAttribute("aria-selected", String(active));
+        });
+        document.querySelectorAll("[data-transform-panel]").forEach(panel => panel.classList.toggle("is-active", panel.dataset.transformPanel === type));
+      });
+    });
+
+    $("#playTranslation").addEventListener("click", () => {
+      const dx = Math.max(-5, Math.min(5, Number($("#translateX").value) || 0));
+      const dy = Math.max(-5, Math.min(5, Number($("#translateY").value) || 0));
+      $("#translateX").value = dx;
+      $("#translateY").value = dy;
+      animateTo(
+        basePoints.map(point => ({ ...point, x: point.x + dx, y: point.y + dy })),
+        `(x, y) → (${signedTerm(dx, "x")}, ${signedTerm(dy, "y")})`,
+        `Every x-value ${dx === 0 ? "stays the same" : `${dx > 0 ? "increases" : "decreases"} by ${Math.abs(dx)}`}. Every y-value ${dy === 0 ? "stays the same" : `${dy > 0 ? "increases" : "decreases"} by ${Math.abs(dy)}`}.`
+      );
+    });
+
+    document.querySelectorAll("[data-reflect]").forEach(button => {
+      button.addEventListener("click", () => {
+        const axis = button.dataset.reflect;
+        if (axis === "x") {
+          animateTo(basePoints.map(point => ({ ...point, y: -point.y })), "(x, y) → (x, −y)", "The x-value stays the same. The y-value changes sign.");
+        } else {
+          animateTo(basePoints.map(point => ({ ...point, x: -point.x })), "(x, y) → (−x, y)", "The y-value stays the same. The x-value changes sign.");
+        }
+      });
+    });
+
+    document.querySelectorAll("[data-rotate-degrees]").forEach(button => {
+      button.addEventListener("click", () => animateRotation(Number(button.dataset.rotateDegrees)));
+    });
+
+    document.querySelectorAll("[data-equivalence-degrees]").forEach(button => {
+      button.addEventListener("click", () => animateRotation(Number(button.dataset.equivalenceDegrees)));
+    });
+
+    $("#labReset").addEventListener("click", resetLab);
+
+    const labVideos = Object.entries(VIDEO_TITLES).map(([url, title]) => ({ url, title }));
+    const videoList = $("#labVideoList");
+    labVideos.forEach(video => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = `▶ ${video.title}`;
+      button.addEventListener("click", () => openVideo(video));
+      videoList.append(button);
+    });
+  }
+
+  function initializeWhiteboard() {
+    document.querySelectorAll("[data-whiteboard-tool]").forEach(button => button.addEventListener("click", () => updateWhiteboardTool(button.dataset.whiteboardTool)));
+    document.querySelectorAll("[data-whiteboard-color]").forEach(button => button.addEventListener("click", () => {
+      whiteboardState.color = button.dataset.whiteboardColor;
+      $("#whiteboardCustomColor").value = whiteboardState.color;
+      document.querySelectorAll("[data-whiteboard-color]").forEach(option => option.classList.toggle("is-active", option === button));
+    }));
+    $("#whiteboardCustomColor").addEventListener("input", event => {
+      whiteboardState.color = event.target.value;
+      document.querySelectorAll("[data-whiteboard-color]").forEach(option => option.classList.remove("is-active"));
+    });
+    $("#whiteboardWidth").addEventListener("input", event => { whiteboardState.width = Number(event.target.value); });
+    $("#whiteboardTextSize").addEventListener("change", event => { whiteboardState.textSize = Number(event.target.value); });
+
+    whiteboardCanvas.addEventListener("pointerdown", event => {
+      if (event.button !== 0 && event.pointerType === "mouse") return;
+      if (whiteboardState.tool === "pointer") return;
+      event.preventDefault();
+      if (whiteboardState.tool === "text") return showWhiteboardTextEntry(event);
+      whiteboardState.drawing = true;
+      whiteboardCanvas.setPointerCapture(event.pointerId);
+      const point = whiteboardPoint(event);
+      if (whiteboardState.tool === "line") {
+        whiteboardState.draft = { tool: "line", color: whiteboardState.color, width: whiteboardState.width, start: point, end: point };
+      } else {
+        whiteboardState.draft = {
+          tool: whiteboardState.tool,
+          color: whiteboardState.color,
+          width: whiteboardState.tool === "highlighter" ? whiteboardState.width * 3 : whiteboardState.width,
+          points: [point]
+        };
+      }
+      renderWhiteboard();
+    });
+
+    whiteboardCanvas.addEventListener("pointermove", event => {
+      if (!whiteboardState.drawing || !whiteboardState.draft) return;
+      event.preventDefault();
+      const point = whiteboardPoint(event);
+      if (whiteboardState.draft.tool === "line") {
+        whiteboardState.draft.end = point;
+      } else {
+        const last = whiteboardState.draft.points[whiteboardState.draft.points.length - 1];
+        const rect = whiteboardCanvas.getBoundingClientRect();
+        const distance = Math.hypot((point.x - last.x) * rect.width, (point.y - last.y) * rect.height);
+        if (distance > 1.6) whiteboardState.draft.points.push(point);
+      }
+      renderWhiteboard();
+    });
+
+    const finishStroke = event => {
+      if (!whiteboardState.drawing) return;
+      event.preventDefault();
+      whiteboardState.drawing = false;
+      if (whiteboardCanvas.hasPointerCapture(event.pointerId)) whiteboardCanvas.releasePointerCapture(event.pointerId);
+      const operation = whiteboardState.draft;
+      whiteboardState.draft = null;
+      commitWhiteboardOperation(operation);
+    };
+    whiteboardCanvas.addEventListener("pointerup", finishStroke);
+    whiteboardCanvas.addEventListener("pointercancel", finishStroke);
+
+    whiteboardTextEntry.addEventListener("keydown", event => {
+      if (event.key === "Enter") { event.preventDefault(); commitWhiteboardText(); }
+      if (event.key === "Escape") { event.preventDefault(); whiteboardTextEntry.hidden = true; whiteboardState.textPoint = null; whiteboardCanvas.focus(); }
+    });
+    whiteboardTextEntry.addEventListener("blur", commitWhiteboardText);
+
+    $("#whiteboardUndo").addEventListener("click", () => {
+      const operation = whiteboardState.operations.pop();
+      if (!operation) return;
+      whiteboardState.redo.push(operation);
+      saveWhiteboard();
+      renderWhiteboard();
+    });
+    $("#whiteboardRedo").addEventListener("click", () => {
+      const operation = whiteboardState.redo.pop();
+      if (!operation) return;
+      whiteboardState.operations.push(operation);
+      saveWhiteboard();
+      renderWhiteboard();
+    });
+    $("#whiteboardClear").addEventListener("click", () => {
+      if (!whiteboardState.operations.length || window.confirm("Clear every mark from this question?")) {
+        whiteboardState.operations = [];
+        whiteboardState.redo = [];
+        saveWhiteboard();
+        renderWhiteboard();
+      }
+    });
+    openWhiteboardButton.addEventListener("click", () => whiteboardState.open ? closeWhiteboard() : openWhiteboard());
+    $("#closeWhiteboard").addEventListener("click", closeWhiteboard);
+    $("#skipLabProblem").addEventListener("click", skipCurrentLabProblem);
+    $("#whiteboardSkipProblem").addEventListener("click", () => { updateWhiteboardTool("pointer"); skipCurrentLabProblem(); });
+    let whiteboardSyncFrame = 0;
+    new MutationObserver(() => {
+      if (!whiteboardState.open) return;
+      cancelAnimationFrame(whiteboardSyncFrame);
+      whiteboardSyncFrame = requestAnimationFrame(syncWhiteboardQuestion);
+    }).observe($("#standardsLabBody"), { childList: true, subtree: true });
+    if (window.ResizeObserver) new ResizeObserver(() => { if (whiteboardState.open) renderWhiteboard(); }).observe(whiteboardStage);
+    else window.addEventListener("resize", () => { if (whiteboardState.open) renderWhiteboard(); });
+  }
+
+  search.addEventListener("input", event => renderDashboard(event.target.value));
+  $("#previousPage").addEventListener("click", () => setPage(state.pageIndex - 1));
+  $("#nextPage").addEventListener("click", () => setPage(state.pageIndex + 1));
+  $("#showOverview").addEventListener("click", () => {
+    state.activeStandard = null;
+    setPage(Number.isInteger(state.group.entryPageIndex) ? state.group.entryPageIndex : Math.min(1, state.group.pages.length - 1));
+  });
+  $("#backToMap").addEventListener("click", goHome);
+  $("#homeButton").addEventListener("click", goHome);
+  $("#standardsLabReset").addEventListener("click", () => {
+    if (!state.labStandard) return;
+    labRuntime.data = null;
+    renderStandardsLab(state.labStandard, true);
+    setLabFeedback("Lab reset. Begin again when you are ready.");
+  });
+  $("#closeVideo").addEventListener("click", closeVideo);
+  $("#expandVideo").addEventListener("click", () => {
+    const expanded = videoDialogShell.classList.toggle("is-expanded");
+    $("#expandVideo span").textContent = expanded ? "Reduce" : "Expand";
+  });
+  videoDialog.addEventListener("cancel", event => { event.preventDefault(); closeVideo(); });
+  videoDialog.addEventListener("click", event => { if (event.target === videoDialog) closeVideo(); });
+  $("#helpButton").addEventListener("click", () => $("#helpDialog").showModal());
+  $("#closeHelp").addEventListener("click", () => $("#helpDialog").close());
+  $("#helpDialog").addEventListener("click", event => { if (event.target === $("#helpDialog")) $("#helpDialog").close(); });
+  document.addEventListener("keydown", event => {
+    if (whiteboardState.open) {
+      if (event.key === "Escape" && whiteboardTextEntry.hidden) closeWhiteboard();
+      return;
+    }
+    if (!workspaceView.classList.contains("is-active") || videoDialog.open) return;
+    if (event.key === "ArrowLeft") setPage(state.pageIndex - 1);
+    if (event.key === "ArrowRight") setPage(state.pageIndex + 1);
+  });
+
+  renderDashboard();
+  renderHotspots();
+  updateContinueCard();
+  initializeTransformationLab();
+  initializeWhiteboard();
+})();

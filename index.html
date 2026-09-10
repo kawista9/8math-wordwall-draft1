@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Interactive 8th grade math standards system with visual anchor charts, calculator support, and embedded video lessons.">
+  <title>8th Grade Math Digital Word Wall</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-bar">
+    <button class="brand" id="homeButton" type="button" aria-label="Return to all standards">
+      <span class="brand-mark" aria-hidden="true">🧠</span>
+      <span><strong>Myelinated Melanin</strong><small>8th Grade Math</small></span>
+    </button>
+    <div class="header-actions">
+      <span class="quiet-label" id="locationLabel">Standards map</span>
+      <button class="icon-button" id="helpButton" type="button" aria-label="Show navigation help">?</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="view dashboard-view is-active" id="dashboardView" aria-labelledby="dashboardTitle">
+      <div class="dashboard-heading">
+        <div>
+          <p class="eyebrow">Interactive Standard System</p>
+          <h1 id="dashboardTitle">Choose what you’re learning.</h1>
+          <p class="lede">Select a glowing point on the neural map or choose a clearly labeled standard group.</p>
+        </div>
+        <label class="search-box">
+          <span aria-hidden="true">⌕</span>
+          <span class="sr-only">Find a standard or topic</span>
+          <input id="standardSearch" type="search" placeholder="Find 8.5G, functions, slope…">
+        </label>
+      </div>
+
+      <button class="continue-card" id="continueCard" type="button" hidden>
+        <span class="continue-icon" aria-hidden="true">▶</span>
+        <span><small>Continue learning</small><strong id="continueText"></strong></span>
+        <span aria-hidden="true">→</span>
+      </button>
+
+      <div class="dashboard-grid">
+        <div class="map-column">
+          <div class="map-frame">
+            <img src="assets/hub.png" alt="Myelinated Melanin neural map connecting nine 8th grade math standard groups">
+            <div id="mapHotspots" class="map-hotspots"></div>
+          </div>
+          <p class="map-note"><span class="tap-dot" aria-hidden="true"></span> Each glowing point opens one connected group of standards.</p>
+        </div>
+        <nav class="group-panel" aria-label="Standard groups">
+          <div class="panel-label">
+            <span>Standard groups</span>
+            <span id="groupCount">9 groups</span>
+          </div>
+          <div class="group-list" id="groupList"></div>
+          <div class="empty-state" id="emptyState" hidden>No standard groups match that search.</div>
+        </nav>
+      </div>
+    </section>
+
+    <section class="view workspace-view" id="workspaceView" aria-labelledby="groupTitle">
+      <div class="workspace-heading">
+        <button class="back-button" id="backToMap" type="button">← All standards</button>
+        <div class="workspace-title">
+          <span class="group-number" id="groupNumber"></span>
+          <div><p class="eyebrow" id="groupCode"></p><h1 id="groupTitle"></h1></div>
+        </div>
+        <div class="progress-wrap" aria-label="Pages viewed in this standard group">
+          <div><span>Explored</span><strong id="progressText">0%</strong></div>
+          <div class="progress-track"><span id="progressFill"></span></div>
+        </div>
+      </div>
+
+      <div class="workspace-grid">
+        <aside class="standard-sidebar">
+          <p class="sidebar-title">Jump to a standard</p>
+          <div class="standard-list" id="standardList"></div>
+          <button class="overview-button" id="showOverview" type="button">View group overview</button>
+        </aside>
+
+        <section class="lesson-area" aria-label="Learning resource">
+          <div class="lesson-toolbar">
+            <div>
+              <span class="page-kicker" id="pageKicker">Overview</span>
+              <h2 id="pageTitle">Welcome</h2>
+            </div>
+            <span class="page-count" id="pageCount">Page 1 of 1</span>
+          </div>
+
+          <div class="resource-tabs" id="resourceTabs" aria-label="Resources for this standard"></div>
+
+          <div class="viewer-frame" id="lessonViewer">
+            <img id="lessonImage" src="" alt="">
+            <div class="lesson-hotspots" id="lessonHotspots"></div>
+            <div class="video-overlays" id="videoOverlays"></div>
+          </div>
+
+          <section class="standards-lab" id="standardsLab" hidden aria-labelledby="standardsLabTitle">
+            <header class="standards-lab-header">
+              <div>
+                <span class="lab-badge" id="standardsLabBadge">8.10 Lab</span>
+                <h3 id="standardsLabTitle">Transformation Lab</h3>
+                <p id="standardsLabDescription"></p>
+              </div>
+              <div class="standards-lab-actions">
+                <button class="lab-skip" id="skipLabProblem" type="button">Skip problem →</button>
+                <button class="lab-whiteboard-toggle" id="openWhiteboard" type="button" aria-expanded="false">✎ Writing tools</button>
+                <button class="lab-reset" id="standardsLabReset" type="button">↺ Start over</button>
+              </div>
+            </header>
+
+            <div class="lab-progress-row">
+              <div class="lab-progress-copy"><strong id="standardsLabProgress">Ready</strong><span id="standardsLabInstruction">Choose an activity to begin.</span></div>
+              <div class="lab-progress-track" aria-hidden="true"><span id="standardsLabProgressFill"></span></div>
+            </div>
+
+            <div class="standards-lab-body" id="standardsLabBody"></div>
+            <div class="lab-feedback" id="standardsLabFeedback" aria-live="polite"></div>
+
+            <section class="lab-completion" id="standardsLabCompletion" hidden aria-labelledby="labCompletionTitle">
+              <span class="completion-spark" aria-hidden="true">✦</span>
+              <div>
+                <p class="eyebrow">Lab complete</p>
+                <h4 id="labCompletionTitle">Your transformation connection is stronger.</h4>
+                <p id="labCompletionText"></p>
+              </div>
+            </section>
+
+            <footer class="lab-video-coach standards-lab-videos">
+              <div><span>Need another look?</span><strong>Open a connected video lesson without leaving the lab.</strong></div>
+              <div class="lab-video-list" id="standardsLabVideoList"></div>
+            </footer>
+          </section>
+
+          <section class="whiteboard-overlay" id="whiteboardOverlay" hidden aria-label="Write on the current question">
+            <div class="whiteboard-toolbar" role="toolbar" aria-label="Writing tools">
+              <strong class="whiteboard-ribbon-label">Write on question</strong>
+              <div class="whiteboard-tool-group" aria-label="Drawing tools">
+                <button class="whiteboard-tool is-active whiteboard-pointer" data-whiteboard-tool="pointer" type="button" aria-pressed="true" title="Use the mouse to click and drag on the question">↖ Mouse</button>
+                <button class="whiteboard-tool" data-whiteboard-tool="pen" type="button" aria-pressed="false">✎ Pen</button>
+                <button class="whiteboard-tool" data-whiteboard-tool="highlighter" type="button" aria-pressed="false">▰ Highlight</button>
+                <button class="whiteboard-tool" data-whiteboard-tool="line" type="button" aria-pressed="false">╱ Line</button>
+                <button class="whiteboard-tool" data-whiteboard-tool="text" type="button" aria-pressed="false">T Text</button>
+                <button class="whiteboard-tool" data-whiteboard-tool="eraser" type="button" aria-pressed="false">▱ Eraser</button>
+              </div>
+              <div class="whiteboard-color-group" aria-label="Ink colors">
+                <button class="whiteboard-color is-active" data-whiteboard-color="#10223d" type="button" aria-label="Navy ink" style="--swatch:#10223d"></button>
+                <button class="whiteboard-color" data-whiteboard-color="#008f92" type="button" aria-label="Teal ink" style="--swatch:#008f92"></button>
+                <button class="whiteboard-color" data-whiteboard-color="#7040b5" type="button" aria-label="Purple ink" style="--swatch:#7040b5"></button>
+                <button class="whiteboard-color" data-whiteboard-color="#ed7b2d" type="button" aria-label="Orange ink" style="--swatch:#ed7b2d"></button>
+                <button class="whiteboard-color" data-whiteboard-color="#d43d5c" type="button" aria-label="Red ink" style="--swatch:#d43d5c"></button>
+                <button class="whiteboard-color" data-whiteboard-color="#198754" type="button" aria-label="Green ink" style="--swatch:#198754"></button>
+                <label class="whiteboard-custom-color" title="Choose a custom color"><span>Custom</span><input id="whiteboardCustomColor" type="color" value="#10223d" aria-label="Choose a custom ink color"></label>
+              </div>
+              <div class="whiteboard-setting-group">
+                <label class="whiteboard-width"><span>Size</span><input id="whiteboardWidth" type="range" min="2" max="20" value="5" aria-label="Ink or eraser size"></label>
+                <label class="whiteboard-text-size"><span>Text</span><select id="whiteboardTextSize" aria-label="Text size"><option value="22">S</option><option value="30" selected>M</option><option value="42">L</option></select></label>
+              </div>
+              <div class="whiteboard-command-group">
+                <button id="whiteboardUndo" type="button" disabled>↶ Undo</button>
+                <button id="whiteboardRedo" type="button" disabled>↷ Redo</button>
+                <button id="whiteboardClear" type="button">Clear</button>
+                <button id="whiteboardSkipProblem" type="button">Skip →</button>
+                <button id="closeWhiteboard" type="button">× Close tools</button>
+              </div>
+            </div>
+            <div class="whiteboard-stage" id="whiteboardStage">
+              <canvas id="whiteboardCanvas" tabindex="0" aria-label="Transparent writing layer over the current math question. Use the toolbar to draw, add lines, type, highlight, or erase."></canvas>
+              <input class="whiteboard-text-entry" id="whiteboardTextEntry" type="text" autocomplete="off" placeholder="Type, then press Enter" hidden aria-label="Text to place on the whiteboard">
+              <p class="whiteboard-hint" id="whiteboardHint">Draw anywhere. Your work stays here when you return to the lab.</p>
+            </div>
+          </section>
+
+          <section class="transform-lab" id="transformLab" hidden aria-labelledby="labTitle">
+            <div class="lab-heading">
+              <div>
+                <span class="lab-badge">8.10C Play Lab</span>
+                <h3 id="labTitle">Move it. See it. Say the rule.</h3>
+                <p>Choose a transformation, watch the figure move, and compare every coordinate.</p>
+              </div>
+              <button class="lab-reset" id="labReset" type="button">↺ Reset figure</button>
+            </div>
+
+            <div class="lab-layout">
+              <div class="graph-card">
+                <svg id="transformationGraph" viewBox="0 0 600 600" role="img" aria-labelledby="graphTitle graphDescription">
+                  <title id="graphTitle">Interactive coordinate plane showing a pre-image and its transformed image</title>
+                  <desc id="graphDescription">A triangle with points A, B, and C transforms when the learner selects a translation, reflection, or rotation.</desc>
+                  <g id="gridLayer" aria-hidden="true"></g>
+                  <g id="axisLayer" aria-hidden="true"></g>
+                  <polygon id="originalShape" class="original-shape" points=""></polygon>
+                  <polygon id="imageShape" class="image-shape" points=""></polygon>
+                  <g id="originalLabels" class="point-labels original-labels" aria-hidden="true"></g>
+                  <g id="imageLabels" class="point-labels image-labels" aria-hidden="true"></g>
+                </svg>
+                <div class="graph-legend">
+                  <span><i class="legend-original"></i>Pre-image</span>
+                  <span><i class="legend-image"></i>Image</span>
+                </div>
+                <div class="turn-meter" id="turnMeter" hidden aria-live="polite">
+                  <span class="turn-arrow" aria-hidden="true">↻</span>
+                  <span><strong id="turnDegrees">0°</strong><small>clockwise</small></span>
+                </div>
+              </div>
+
+              <div class="lab-controls">
+                <div class="transformation-tabs" role="tablist" aria-label="Transformation types">
+                  <button class="transform-tab is-active" type="button" role="tab" aria-selected="true" data-transform-tab="translate">Translate</button>
+                  <button class="transform-tab" type="button" role="tab" aria-selected="false" data-transform-tab="reflect">Reflect</button>
+                  <button class="transform-tab" type="button" role="tab" aria-selected="false" data-transform-tab="rotate">Rotate</button>
+                </div>
+
+                <div class="transform-panel is-active" data-transform-panel="translate">
+                  <p class="control-prompt">How should the figure slide?</p>
+                  <div class="number-controls">
+                    <label>Horizontal change <span>x</span><input id="translateX" type="number" min="-5" max="5" value="3"></label>
+                    <label>Vertical change <span>y</span><input id="translateY" type="number" min="-5" max="5" value="-2"></label>
+                  </div>
+                  <button class="play-transform" id="playTranslation" type="button"><span aria-hidden="true">▶</span> Play translation</button>
+                </div>
+
+                <div class="transform-panel" data-transform-panel="reflect">
+                  <p class="control-prompt">Choose the mirror line.</p>
+                  <div class="choice-grid">
+                    <button type="button" data-reflect="x">Reflect over the x-axis</button>
+                    <button type="button" data-reflect="y">Reflect over the y-axis</button>
+                  </div>
+                </div>
+
+                <div class="transform-panel" data-transform-panel="rotate">
+                  <p class="control-prompt">Choose a clockwise turn around the origin.</p>
+                  <div class="choice-grid rotation-choice-grid">
+                    <button type="button" data-rotate-degrees="90"><strong>90°</strong><span>¼ turn clockwise</span></button>
+                    <button type="button" data-rotate-degrees="180"><strong>180°</strong><span>½ turn clockwise</span></button>
+                    <button type="button" data-rotate-degrees="270"><strong>270°</strong><span>¾ turn clockwise</span></button>
+                    <button type="button" data-rotate-degrees="360"><strong>360°</strong><span>1 full turn clockwise</span></button>
+                  </div>
+                </div>
+
+                <div class="rule-card" aria-live="polite">
+                  <span>Algebraic rule</span>
+                  <strong id="ruleText">(x, y) → (x + 3, y − 2)</strong>
+                  <p id="ruleExplanation">Every x-value increases by 3. Every y-value decreases by 2.</p>
+                </div>
+
+                <div class="coordinate-card">
+                  <div class="coordinate-heading"><strong>Track the coordinates</strong><span>Before → After</span></div>
+                  <div id="coordinateRows"></div>
+                </div>
+
+                <section class="equivalence-card" aria-labelledby="equivalenceTitle">
+                  <div class="equivalence-heading">
+                    <span>Same landing place</span>
+                    <strong id="equivalenceTitle">Clockwise and counterclockwise partners</strong>
+                  </div>
+                  <div class="equivalence-display" aria-live="polite">
+                    <div class="direction-token clockwise-token"><span aria-hidden="true">↻</span><strong id="clockwiseMatch">90° clockwise</strong></div>
+                    <span class="equals-sign" aria-hidden="true">=</span>
+                    <div class="direction-token counter-token"><span aria-hidden="true">↺</span><strong id="counterclockwiseMatch">270° counterclockwise</strong></div>
+                  </div>
+                  <p id="equivalenceExplanation">They turn in opposite directions but every point finishes in the same location.</p>
+                  <div class="equivalence-grid" aria-label="Equivalent rotations">
+                    <button type="button" data-equivalence-degrees="90">↻ 90° = ↺ 270°</button>
+                    <button type="button" data-equivalence-degrees="180">↻ 180° = ↺ 180°</button>
+                    <button type="button" data-equivalence-degrees="270">↻ 270° = ↺ 90°</button>
+                    <button type="button" data-equivalence-degrees="360">↻ 360° = ↺ 360° = 0°</button>
+                  </div>
+                </section>
+              </div>
+            </div>
+
+            <div class="lab-video-coach">
+              <div><span>Need a mini-lesson?</span><strong>Watch exactly the skill you need.</strong></div>
+              <div class="lab-video-list" id="labVideoList"></div>
+            </div>
+          </section>
+
+          <div class="video-shelf" id="videoShelf" hidden>
+            <div>
+              <strong>Video support on this page</strong>
+              <span>Opens here without leaving your lesson.</span>
+            </div>
+            <div class="video-list" id="videoList"></div>
+          </div>
+
+          <div class="lesson-navigation" id="lessonNavigation">
+            <button id="previousPage" type="button">← Previous</button>
+            <div class="page-dots" id="pageDots" aria-label="Group pages"></div>
+            <button id="nextPage" type="button">Next →</button>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <dialog class="video-dialog" id="videoDialog" aria-labelledby="videoTitle">
+    <div class="video-dialog-shell" id="videoDialogShell">
+      <div class="video-toolbar">
+        <div><span class="playing-label">Now playing</span><strong id="videoTitle">Video lesson</strong></div>
+        <div>
+          <button class="dialog-button" id="expandVideo" type="button" aria-label="Expand video">⛶ <span>Expand</span></button>
+          <button class="close-button" id="closeVideo" type="button" aria-label="Close video">×</button>
+        </div>
+      </div>
+      <div class="video-frame-wrap">
+        <iframe id="videoFrame" title="Math video lesson" src="about:blank" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog class="help-dialog" id="helpDialog" aria-labelledby="helpTitle">
+    <button class="help-close" id="closeHelp" type="button" aria-label="Close help">×</button>
+    <p class="eyebrow">How to explore</p>
+    <h2 id="helpTitle">Everything stays connected.</h2>
+    <ol>
+      <li>Choose a standard group from the map or list.</li>
+      <li>Jump directly to the standard you need.</li>
+      <li>Move through the Anchor Chart, Calculator Tips, and Interactive Lab.</li>
+      <li>Select any play marker to open the video here without losing your place.</li>
+    </ol>
+  </dialog>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
