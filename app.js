@@ -752,6 +752,12 @@
       summary: "You compared linear relationships across tables, graphs, equations, and real-world situations. Proportional relationships have a constant ratio, pass through the origin, can be written y = kx, and have no starting amount. Non-proportional linear relationships have a nonzero starting value. You identified the odd relationship without relying on the representation type.",
       videos: []
     },
+    "8.5I": {
+      title: "Build the Equation: Find m, Find b, Write y = mx + b",
+      description: "Write linear equations from fifteen different representations: verbal situations, ordered pairs, real-world situations that hide coordinate pairs inside the context, graphs, and tables. For every problem, type the slope and y-intercept first, then place those values into y = mx + b.",
+      summary: "You wrote linear equations from verbal, numerical, tabular, graphical, and real-world representations. You identified slope as the rate of change, found the y-intercept as the value when x = 0, and used hidden coordinate pairs when the situation did not state the rate or starting value directly. Then you transferred m and b into y = mx + b.",
+      videos: []
+    },
     "8.4A": {
       title: "Slope: Do It With Me",
       description: "Choose four exact points on each line. The lab groups them into two pairs, and you complete the rise-first, run-second process for both pairs to prove that the slope stays the same. Pay attention to the value of each axis interval: the first five problems coach every move, and the final ten ask you to determine and enter both sets of signed changes yourself.",
@@ -994,6 +1000,7 @@
     if (standard === "8.5F") renderLab85F();
     if (standard === "8.5G") renderLab85G();
     if (standard === "8.5H") renderLab85H();
+    if (standard === "8.5I") renderLab85I();
     if (standard === "8.10A") renderLabA();
     if (standard === "8.10B") renderLabB();
     if (standard === "8.10C") renderLabC();
@@ -3333,6 +3340,222 @@
     });
   }
 
+
+  const EQUATION_WRITING_TASKS = [
+    {
+      type:"situation", title:"Music lessons",
+      text:"A music teacher charges a one-time registration fee of $24 and then charges $18 for each lesson.",
+      xLabel:"number of lessons", yLabel:"total cost ($)", m:18, b:24,
+      slopeMeaning:"$18 per lesson", interceptMeaning:"$24 before any lessons are taken"
+    },
+    {
+      type:"situation", title:"Water tank",
+      text:"A water tank contains 275 gallons at the beginning. The amount of water decreases by 15 gallons each week.",
+      xLabel:"weeks", yLabel:"gallons of water", m:-15, b:275,
+      slopeMeaning:"−15 gallons per week", interceptMeaning:"275 gallons at week 0"
+    },
+    {
+      type:"situation", title:"Cookie delivery",
+      text:"A bakery charges a $5 delivery fee and $1.25 for each cookie delivered.",
+      xLabel:"number of cookies", yLabel:"total delivery charge ($)", m:1.25, b:5,
+      slopeMeaning:"$1.25 per cookie", interceptMeaning:"$5 delivery fee"
+    },
+    {
+      type:"pairs", title:"Ordered pairs",
+      pairs:[[-2,7],[4,19]], xLabel:"x", yLabel:"y", m:2, b:11,
+      slopeMeaning:"y increases by 2 for every increase of 1 in x", interceptMeaning:"11"
+    },
+    {
+      type:"pairs", title:"Ordered pairs with a fractional rate",
+      pairs:[[3,1],[9,-8]], xLabel:"x", yLabel:"y", m:-1.5, b:5.5,
+      slopeMeaning:"−3/2", interceptMeaning:"11/2"
+    },
+    {
+      type:"pairs", title:"Ordered pairs with a negative intercept",
+      pairs:[[2,-1],[6,5]], xLabel:"x", yLabel:"y", m:1.5, b:-4,
+      slopeMeaning:"3/2", interceptMeaning:"−4"
+    },
+    {
+      type:"storypoints", title:"Driving pay",
+      text:"Rhonda is paid according to the number of miles she drives. In July, she drove 640 miles and was paid $3,502. In August, she drove 820 miles and was paid $3,601.",
+      pointLabels:["(640, 3502)","(820, 3601)"], xLabel:"miles driven", yLabel:"total pay ($)", m:.55, b:3150,
+      slopeMeaning:"$0.55 per mile", interceptMeaning:"$3,150 base pay"
+    },
+    {
+      type:"storypoints", title:"Bakery delivery totals",
+      text:"A bakery charges a linear total for cookie deliveries. Delivering 12 cookies costs $20.00, while delivering 18 cookies costs $27.50.",
+      pointLabels:["(12, 20)","(18, 27.5)"], xLabel:"cookies", yLabel:"total charge ($)", m:1.25, b:5,
+      slopeMeaning:"$1.25 per cookie", interceptMeaning:"$5 starting delivery charge"
+    },
+    {
+      type:"storypoints", title:"Taxi fare",
+      text:"A taxi fare changes linearly with miles traveled. A 5-mile ride costs $13.50, and a 14-mile ride costs $33.30.",
+      pointLabels:["(5, 13.5)","(14, 33.3)"], xLabel:"miles", yLabel:"fare ($)", m:2.2, b:2.5,
+      slopeMeaning:"$2.20 per mile", interceptMeaning:"$2.50 starting fare"
+    },
+    {
+      type:"graph", title:"Graph",
+      m:1.5, b:2, xLabel:"x", yLabel:"y",
+      slopeMeaning:"3/2", interceptMeaning:"2"
+    },
+    {
+      type:"graph", title:"Graph",
+      m:-.5, b:3, xLabel:"x", yLabel:"y",
+      slopeMeaning:"−1/2", interceptMeaning:"3"
+    },
+    {
+      type:"graph", title:"Graph",
+      m:2, b:-4, xLabel:"x", yLabel:"y",
+      slopeMeaning:"2", interceptMeaning:"−4"
+    },
+    {
+      type:"table", title:"Table",
+      rows:[[-4,-1],[4,5],[8,8],[12,11]], xLabel:"x", yLabel:"y", m:.75, b:2,
+      slopeMeaning:"3/4", interceptMeaning:"2"
+    },
+    {
+      type:"table", title:"Car rental charge",
+      rows:[[5,30.5],[10,31],[15,31.5],[20,32]], xLabel:"miles driven", yLabel:"total charged ($)", m:.1, b:30,
+      slopeMeaning:"$0.10 per mile", interceptMeaning:"$30 base charge"
+    },
+    {
+      type:"table", title:"Concert tickets remaining",
+      rows:[[1,9000],[2,6000],[3,3000],[4,0]], xLabel:"hours since sales began", yLabel:"tickets remaining", m:-3000, b:12000,
+      slopeMeaning:"−3,000 tickets per hour", interceptMeaning:"12,000 tickets at time 0"
+    }
+  ];
+
+  function equationLabNear(value,expected){
+    const parsed=parseRelationNumber(value);
+    return Number.isFinite(parsed) && Math.abs(parsed-expected)<.001;
+  }
+
+  function equationLabNumber(value){
+    const rounded=Math.round((Number(value)+Number.EPSILON)*1000)/1000;
+    return Math.abs(rounded)<.0001 ? 0 : rounded;
+  }
+
+  function equationLabEquationPreview(m,b){
+    if(!Number.isFinite(m)||!Number.isFinite(b)) return "y = mx + b";
+    const mText=equationLabNumber(m);
+    if(b===0) return "y = "+mText+"x";
+    return "y = "+mText+"x "+(b<0?"− ":"+ ")+Math.abs(equationLabNumber(b));
+  }
+
+  function equationLabTableMarkup(task){
+    const rows=task.rows.map(row=>"<tr><td>"+escapeHTML(row[0])+"</td><td>"+escapeHTML(row[1])+"</td></tr>").join("");
+    return "<div class='eqwrite-table-wrap'><table class='eqwrite-table'><thead><tr><th>x<br><small>"+escapeHTML(task.xLabel)+"</small></th><th>y<br><small>"+escapeHTML(task.yLabel)+"</small></th></tr></thead><tbody>"+rows+"</tbody></table></div>";
+  }
+
+  function equationLabPairsMarkup(task){
+    return "<div class='eqwrite-pairs'>{"+task.pairs.map(pair=>"<span>("+escapeHTML(pair[0])+", "+escapeHTML(pair[1])+")</span>").join("")+"}</div>";
+  }
+
+  function equationLabGraphMarkup(task){
+    const width=420,height=310,pad=38,min=-6,max=6;
+    const px=x=>pad+((x-min)/(max-min))*(width-pad*2);
+    const py=y=>height-pad-((y-min)/(max-min))*(height-pad*2);
+    let marks="";
+    for(let n=-5;n<=5;n++){
+      marks+="<line x1='"+px(n)+"' y1='"+pad+"' x2='"+px(n)+"' y2='"+(height-pad)+"' class='eqwrite-grid'/>";
+      marks+="<line x1='"+pad+"' y1='"+py(n)+"' x2='"+(width-pad)+"' y2='"+py(n)+"' class='eqwrite-grid'/>";
+      if(n!==0){
+        marks+="<text x='"+px(n)+"' y='"+(py(0)+16)+"' text-anchor='middle' class='eqwrite-tick'>"+n+"</text>";
+        marks+="<text x='"+(px(0)-8)+"' y='"+(py(n)+4)+"' text-anchor='end' class='eqwrite-tick'>"+n+"</text>";
+      }
+    }
+    marks+="<line x1='"+pad+"' y1='"+py(0)+"' x2='"+(width-pad)+"' y2='"+py(0)+"' class='eqwrite-axis'/>";
+    marks+="<line x1='"+px(0)+"' y1='"+pad+"' x2='"+px(0)+"' y2='"+(height-pad)+"' class='eqwrite-axis'/>";
+    const x1=-6,x2=6,y1=task.m*x1+task.b,y2=task.m*x2+task.b;
+    marks+="<line x1='"+px(x1)+"' y1='"+py(y1)+"' x2='"+px(x2)+"' y2='"+py(y2)+"' class='eqwrite-line'/>";
+    const qualityXs=[-4,-2,0,2,4].filter(x=>{const y=task.m*x+task.b;return y>=min&&y<=max;}).slice(0,3);
+    marks+=qualityXs.map(x=>"<circle cx='"+px(x)+"' cy='"+py(task.m*x+task.b)+"' r='4.5' class='eqwrite-point'/>").join("");
+    marks+="<text x='"+(width-pad+8)+"' y='"+(py(0)+4)+"' class='eqwrite-axis-label'>x</text><text x='"+(px(0)+8)+"' y='"+(pad-10)+"' class='eqwrite-axis-label'>y</text>";
+    return "<svg class='eqwrite-graph' viewBox='0 0 "+width+" "+height+"' role='img' aria-label='Coordinate graph of a linear relationship'>"+marks+"</svg>";
+  }
+
+  function equationLabRepresentation(task){
+    if(task.type==="table") return equationLabTableMarkup(task);
+    if(task.type==="pairs") return equationLabPairsMarkup(task);
+    if(task.type==="graph") return equationLabGraphMarkup(task);
+    if(task.type==="storypoints"){
+      return "<div class='eqwrite-story'><p>"+escapeHTML(task.text)+"</p><div class='eqwrite-implied-points'><span>Think of the information as coordinate points:</span>"+task.pointLabels.map(point=>"<strong>"+escapeHTML(point)+"</strong>").join("")+"</div></div>";
+    }
+    return "<div class='eqwrite-story'><p>"+escapeHTML(task.text)+"</p></div>";
+  }
+
+  function resetEquationWritingTask(data){
+    data.responses={};
+    data.checked=false;
+    data.solved=false;
+  }
+
+  function renderLab85I(){
+    if(!labRuntime.data) labRuntime.data={index:0,responses:{},checked:false,solved:false};
+    const data=labRuntime.data;
+    const task=EQUATION_WRITING_TASKS[data.index];
+    if(!task) return showLabCompletion("8.5I");
+    const r=data.responses||(data.responses={});
+    const body=$("#standardsLabBody");
+    const completed=data.index+(data.solved?1:0);
+    setLabProgress(completed,EQUATION_WRITING_TASKS.length,"Problem "+(data.index+1)+" of "+EQUATION_WRITING_TASKS.length+": find m, find b, then write y = mx + b.");
+
+    const previewM=parseRelationNumber(r.eqM);
+    const previewB=parseRelationNumber(r.eqB);
+    const typeLabel=task.type==="storypoints"?"Real-world coordinate information":task.type==="pairs"?"Coordinate pairs":task.type==="situation"?"Verbal situation":task.type.charAt(0).toUpperCase()+task.type.slice(1);
+
+    body.innerHTML="<section class='eqwrite-shell'>"+
+      "<header class='eqwrite-header'><div><p class='lab-mini-title'>8.5I · Write the equation</p><h4>"+escapeHTML(task.title)+"</h4><p>"+escapeHTML(typeLabel)+"</p></div><span>Problem "+(data.index+1)+" / "+EQUATION_WRITING_TASKS.length+"</span></header>"+
+      "<div class='eqwrite-layout'>"+
+        "<section class='eqwrite-representation'><div class='eqwrite-rep-label'>Study the representation</div>"+equationLabRepresentation(task)+"</section>"+
+        "<section class='eqwrite-work'>"+
+          "<div class='eqwrite-step'><span>1</span><div><h5>Find the slope</h5><p>What is the rate of change?</p><label>m = <input data-eqwrite='m' value='"+escapeHTML(r.m||"")+"' inputmode='decimal' placeholder='slope'></label></div></div>"+
+          "<div class='eqwrite-step'><span>2</span><div><h5>Find the y-intercept</h5><p>What is the value of y when x = 0?</p><label>b = <input data-eqwrite='b' value='"+escapeHTML(r.b||"")+"' inputmode='decimal' placeholder='y-intercept'></label></div></div>"+
+          "<div class='eqwrite-step is-equation'><span>3</span><div><h5>Write y = mx + b</h5><div class='eqwrite-equation-builder'><strong>y =</strong><input data-eqwrite='eqM' value='"+escapeHTML(r.eqM||"")+"' inputmode='decimal' aria-label='slope in equation'><strong>x +</strong><input data-eqwrite='eqB' value='"+escapeHTML(r.eqB||"")+"' inputmode='decimal' aria-label='y-intercept in equation'></div><div class='eqwrite-preview'>"+escapeHTML(equationLabEquationPreview(previewM,previewB))+"</div></div></div>"+
+        "</section>"+
+      "</div>"+
+      (task.type==="storypoints"?"<div class='eqwrite-hintbar'><strong>These situations do not hand you m or b.</strong> Use the two implied coordinate points to calculate slope first, then substitute one point into y = mx + b to solve for b.</div>":"")+
+      "<div class='relation-submit-row'><button class='lab-action' id='checkEqWrite' type='button'>Check my equation</button>"+
+      (data.solved?"<button class='lab-next' id='nextEqWrite' type='button'>"+(data.index===EQUATION_WRITING_TASKS.length-1?"Finish lab →":"Next problem →")+"</button>":"")+
+      "</div></section>";
+
+    body.querySelectorAll("[data-eqwrite]").forEach(input=>{
+      input.addEventListener("input",()=>{
+        data.responses[input.dataset.eqwrite]=input.value;
+        if(input.dataset.eqwrite==="eqM"||input.dataset.eqwrite==="eqB"){
+          const preview=body.querySelector(".eqwrite-preview");
+          if(preview) preview.textContent=equationLabEquationPreview(parseRelationNumber(data.responses.eqM),parseRelationNumber(data.responses.eqB));
+        }
+      });
+    });
+
+    $("#checkEqWrite").addEventListener("click",()=>{
+      body.querySelectorAll("[data-eqwrite]").forEach(input=>{data.responses[input.dataset.eqwrite]=input.value;});
+      const missing=["m","b","eqM","eqB"].filter(key=>String(r[key]??"").trim()==="");
+      if(missing.length) return setLabFeedback("Complete the slope, y-intercept, and both equation boxes before checking.","incorrect");
+      const slopeOk=equationLabNear(r.m,task.m);
+      const interceptOk=equationLabNear(r.b,task.b);
+      const equationSlopeOk=equationLabNear(r.eqM,task.m);
+      const equationInterceptOk=equationLabNear(r.eqB,task.b);
+      if(!slopeOk) return setLabFeedback("Recheck the slope. Use change in y divided by change in x. In a real-world situation, ask how much the dependent quantity changes for one unit of the independent quantity.","incorrect");
+      if(!interceptOk) return setLabFeedback("Your slope is correct. Now find b. If x = 0 is not shown, substitute a known point and your slope into y = mx + b, then solve for b.","incorrect");
+      if(!equationSlopeOk||!equationInterceptOk) return setLabFeedback("You found m and b correctly. Transfer those exact values into the equation: m multiplies x and b is the constant term.","incorrect");
+      data.solved=true;
+      renderLab85I();
+      setLabFeedback("Correct. "+equationLabEquationPreview(task.m,task.b)+". The slope means "+task.slopeMeaning+", and the y-intercept represents "+task.interceptMeaning+".","correct");
+    });
+
+    const next=$("#nextEqWrite");
+    if(next) next.addEventListener("click",()=>{
+      if(data.index===EQUATION_WRITING_TASKS.length-1) return showLabCompletion("8.5I");
+      data.index+=1;
+      resetEquationWritingTask(data);
+      renderLab85I();
+      syncWhiteboardQuestion();
+      setLabFeedback("New representation ready. Find m first, then b, then write the equation.");
+    });
+  }
+
   const TREND_LAB_TASKS = [
     {
       title:"Study time and quiz scores", context:"A teacher compared students' weekly study time with their quiz scores.",
@@ -5621,6 +5844,11 @@
       data.index += 1;
       resetWdbTask(data);
       renderLab85H();
+    } else if (standard === "8.5I") {
+      if (data.index >= EQUATION_WRITING_TASKS.length - 1) return showLabCompletion(standard);
+      data.index += 1;
+      resetEquationWritingTask(data);
+      renderLab85I();
     } else if (standard === "8.3A") {
       if (data.index >= SIMILARITY_TASKS.length - 1) return showLabCompletion(standard);
       data.index += 1;
