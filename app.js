@@ -734,6 +734,12 @@
       summary: "You connected the language of direct variation to the equation y = kx. In every problem, x was the independent variable, y was the dependent variable, and k = y/x described how much y there is for one unit of x. Once k was known, the same constant was used to solve a new value in the situation.",
       videos: []
     },
+    "8.5F": {
+      title: "Proportional or Non-Proportional? Sort the Evidence",
+      description: "Work through seven sets of six representations. Categorize tables, graphs, equations, real-world descriptions, and mathematical verbal descriptions as proportional or non-proportional. The number in each category changes from round to round, so use the mathematics instead of looking for a pattern.",
+      summary: "You distinguished proportional from non-proportional relationships across tables, graphs, equations, and verbal descriptions. Proportional relationships can be written y = kx and pass through (0, 0). Non-proportional linear relationships have a nonzero starting value. For tables that do not show x = 0, you used the y/x ratios instead of guessing from a constant rate of change.",
+      videos: []
+    },
     "8.4A": {
       title: "Slope: Do It With Me",
       description: "Choose four exact points on each line. The lab groups them into two pairs, and you complete the rise-first, run-second process for both pairs to prove that the slope stays the same. Pay attention to the value of each axis interval: the first five problems coach every move, and the final ten ask you to determine and enter both sets of signed changes yourself.",
@@ -973,6 +979,7 @@
     if (standard === "8.5C") renderLab85C();
     if (standard === "8.5D") renderLab85D();
     if (standard === "8.5E") renderLab85E();
+    if (standard === "8.5F") renderLab85F();
     if (standard === "8.10A") renderLabA();
     if (standard === "8.10B") renderLabB();
     if (standard === "8.10C") renderLabC();
@@ -2644,6 +2651,194 @@
       renderLab85E();
       syncWhiteboardQuestion();
       setLabFeedback("New direct-variation situation ready. Start by naming x and y.");
+    });
+  }
+
+
+  const PROPORTIONAL_SORT_ROUNDS = [
+    {
+      title:"Round 1: Read every representation",
+      items:[
+        {id:"r1t1",type:"table",title:"Table A",answer:"proportional",rows:[[0,0],[1,3],[2,6],[4,12]],tableNote:"The table includes (0, 0), and every nonzero row has the same y/x ratio: 3."},
+        {id:"r1t2",type:"table",title:"Table B",answer:"non-proportional",rows:[[0,4],[1,6],[2,8],[4,12]],tableNote:"When x = 0, y = 4, so the relationship does not pass through the origin."},
+        {id:"r1g",type:"graph",title:"Graph",answer:"proportional",m:.6,b:0},
+        {id:"r1e",type:"equation",title:"Equation",answer:"proportional",text:"y = -3x"},
+        {id:"r1w",type:"realworld",title:"Real-world situation",answer:"proportional",text:"A store charges $6 for each notebook. There is no additional fee."},
+        {id:"r1v",type:"verbal",title:"Mathematical description",answer:"proportional",text:"y is the product of -5 and x."}
+      ]
+    },
+    {
+      title:"Round 2: Do not count the categories",
+      items:[
+        {id:"r2t1",type:"table",title:"Table A",answer:"proportional",rows:[[0,0],[-2,5],[2,-5],[4,-10]],tableNote:"The table includes (0, 0), and y/x is -2.5 for every nonzero x-value."},
+        {id:"r2t2",type:"table",title:"Table B",answer:"non-proportional",rows:[[0,-3],[2,1],[4,5],[6,9]],tableNote:"When x = 0, y = -3. The nonzero y-intercept makes the relationship non-proportional."},
+        {id:"r2g",type:"graph",title:"Graph",answer:"non-proportional",m:-.5,b:2},
+        {id:"r2e",type:"equation",title:"Equation",answer:"non-proportional",text:"y = 4x + 7"},
+        {id:"r2w",type:"realworld",title:"Real-world situation",answer:"non-proportional",text:"A taxi ride costs $4 to start plus $2.50 for each mile traveled."},
+        {id:"r2v",type:"verbal",title:"Mathematical description",answer:"non-proportional",text:"y is 5 less than the quotient of x and 7."}
+      ]
+    },
+    {
+      title:"Round 3: Mix the forms",
+      items:[
+        {id:"r3t1",type:"table",title:"Table A",answer:"proportional",rows:[[0,0],[2,1],[6,3],[10,5]],tableNote:"The table includes (0, 0), and each nonzero row has y/x = 1/2."},
+        {id:"r3t2",type:"table",title:"Table B",answer:"non-proportional",rows:[[0,5],[3,11],[6,17],[9,23]],tableNote:"The table starts at (0, 5), not (0, 0), so it is non-proportional."},
+        {id:"r3g",type:"graph",title:"Graph",answer:"proportional",m:-.7,b:0},
+        {id:"r3e",type:"equation",title:"Equation",answer:"proportional",text:"y = (3/4)x"},
+        {id:"r3w",type:"realworld",title:"Real-world situation",answer:"non-proportional",text:"A streaming service charges a $12 monthly fee plus $3 for each movie rented."},
+        {id:"r3v",type:"verbal",title:"Mathematical description",answer:"proportional",text:"y is one-third of x."}
+      ]
+    },
+    {
+      title:"Round 4: Tables without x = 0",
+      items:[
+        {id:"r4t1",type:"table",title:"Table A — x = 0 is hidden",answer:"proportional",challenge:true,rows:[[2,6],[5,15],[8,24],[11,33]],tableNote:"x = 0 is not shown. Check y/x instead: 6/2 = 3, 15/5 = 3, 24/8 = 3, and 33/11 = 3. The constant ratio shows y = 3x."},
+        {id:"r4t2",type:"table",title:"Table B — x = 0 is hidden",answer:"non-proportional",challenge:true,rows:[[2,7],[5,16],[8,25],[11,34]],tableNote:"x = 0 is not shown. The table has a constant rate of change, but y/x is not constant: 7/2, 16/5, 25/8, and 34/11 are different. It follows y = 3x + 1, so it is non-proportional."},
+        {id:"r4g",type:"graph",title:"Graph",answer:"non-proportional",m:.45,b:-2},
+        {id:"r4e",type:"equation",title:"Equation",answer:"non-proportional",text:"y = -2x + 5"},
+        {id:"r4w",type:"realworld",title:"Real-world situation",answer:"proportional",text:"A machine fills bottles at 18 ounces per bottle with no starting amount already in the container."},
+        {id:"r4v",type:"verbal",title:"Mathematical description",answer:"non-proportional",text:"y is 8 more than 4 times x."}
+      ]
+    },
+    {
+      title:"Round 5: Same idea, different language",
+      items:[
+        {id:"r5t1",type:"table",title:"Table A",answer:"proportional",rows:[[0,0],[3,-6],[5,-10],[9,-18]],tableNote:"The table includes (0, 0), and y/x = -2 for every nonzero x-value."},
+        {id:"r5t2",type:"table",title:"Table B",answer:"non-proportional",rows:[[0,6],[2,10],[4,14],[7,20]],tableNote:"At x = 0, y = 6. That starting value keeps the relationship from being proportional."},
+        {id:"r5g",type:"graph",title:"Graph",answer:"proportional",m:.35,b:0},
+        {id:"r5e",type:"equation",title:"Equation",answer:"proportional",text:"y = 1.25x"},
+        {id:"r5w",type:"realworld",title:"Real-world situation",answer:"proportional",text:"A recipe uses 2.5 cups of flour for each batch. No flour is used before any batches are made."},
+        {id:"r5v",type:"verbal",title:"Mathematical description",answer:"proportional",text:"y equals the quotient of x and -4."}
+      ]
+    },
+    {
+      title:"Round 6: Watch the starting value",
+      items:[
+        {id:"r6t1",type:"table",title:"Table A",answer:"proportional",rows:[[0,0],[4,10],[8,20],[12,30]],tableNote:"The table includes (0, 0), and y/x = 2.5 for every nonzero x-value."},
+        {id:"r6t2",type:"table",title:"Table B",answer:"non-proportional",rows:[[0,-4],[1,-1],[3,5],[5,11]],tableNote:"When x = 0, y = -4, so the relationship has a nonzero y-intercept."},
+        {id:"r6g",type:"graph",title:"Graph",answer:"non-proportional",m:.55,b:2},
+        {id:"r6e",type:"equation",title:"Equation",answer:"non-proportional",text:"y = (2/3)x - 1"},
+        {id:"r6w",type:"realworld",title:"Real-world situation",answer:"proportional",text:"Workers earn $16 for every hour worked, with no signing bonus or starting payment."},
+        {id:"r6v",type:"verbal",title:"Mathematical description",answer:"non-proportional",text:"y is 9 less than twice x."}
+      ]
+    },
+    {
+      title:"Round 7: Final classification",
+      items:[
+        {id:"r7t1",type:"table",title:"Table A",answer:"proportional",rows:[[0,0],[-4,-6],[2,3],[8,12]],tableNote:"The table contains (0, 0), and y/x = 1.5 for every nonzero x-value."},
+        {id:"r7t2",type:"table",title:"Table B",answer:"non-proportional",rows:[[0,2],[2,-2],[5,-8],[9,-16]],tableNote:"The point (0, 2) shows a nonzero starting value, so the relationship is non-proportional."},
+        {id:"r7g",type:"graph",title:"Graph",answer:"non-proportional",m:-.4,b:-2},
+        {id:"r7e",type:"equation",title:"Equation",answer:"non-proportional",text:"y = -7x + 3"},
+        {id:"r7w",type:"realworld",title:"Real-world situation",answer:"non-proportional",text:"A theater charges $8 for each ticket plus a one-time $5 online service fee."},
+        {id:"r7v",type:"verbal",title:"Mathematical description",answer:"non-proportional",text:"y is 6 more than the product of -3 and x."}
+      ]
+    }
+  ];
+
+  function proportionalGraphMarkup(item) {
+    const width=260, height=180, pad=28, min=-5, max=5;
+    const px=x => pad + ((x-min)/(max-min))*(width-pad*2);
+    const py=y => height-pad - ((y-min)/(max-min))*(height-pad*2);
+    const xAxis=py(0), yAxis=px(0);
+    const lines=[];
+    for (let n=-4;n<=4;n+=2) {
+      lines.push("<line x1='"+px(n)+"' y1='"+pad+"' x2='"+px(n)+"' y2='"+(height-pad)+"' class='prop-grid-line'/>");
+      lines.push("<line x1='"+pad+"' y1='"+py(n)+"' x2='"+(width-pad)+"' y2='"+py(n)+"' class='prop-grid-line'/>");
+    }
+    const x1=-5, x2=5, y1=item.m*x1+item.b, y2=item.m*x2+item.b;
+    return "<svg class='prop-mini-graph' viewBox='0 0 "+width+" "+height+"' role='img' aria-label='Line graph with y-intercept "+item.b+"'>"+
+      lines.join("")+
+      "<line x1='"+pad+"' y1='"+xAxis+"' x2='"+(width-pad)+"' y2='"+xAxis+"' class='prop-axis'/>"+
+      "<line x1='"+yAxis+"' y1='"+pad+"' x2='"+yAxis+"' y2='"+(height-pad)+"' class='prop-axis'/>"+
+      "<line x1='"+px(x1)+"' y1='"+py(y1)+"' x2='"+px(x2)+"' y2='"+py(y2)+"' class='prop-line'/>"+
+      "<circle cx='"+px(0)+"' cy='"+py(item.b)+"' r='5.5' class='prop-intercept-dot'/>"+
+      "<text x='"+(px(0)+8)+"' y='"+(py(item.b)-7)+"' class='prop-intercept-label'>(0, "+item.b+")</text>"+
+      "<text x='"+(width-pad+5)+"' y='"+(xAxis+4)+"' class='prop-axis-label'>x</text>"+
+      "<text x='"+(yAxis+6)+"' y='"+(pad-7)+"' class='prop-axis-label'>y</text>"+
+      "</svg>";
+  }
+
+  function proportionalTableMarkup(item) {
+    const rows=item.rows.map(row => "<tr><td>"+row[0]+"</td><td>"+row[1]+"</td></tr>").join("");
+    return "<div class='prop-table-wrap"+(item.challenge?" is-challenge":"")+"'>"+
+      (item.challenge?"<span class='prop-table-challenge'>x = 0 is not shown</span>":"")+
+      "<table class='prop-sort-table'><thead><tr><th>x</th><th>y</th></tr></thead><tbody>"+rows+"</tbody></table></div>";
+  }
+
+  function proportionalItemContent(item) {
+    if (item.type === "table") return proportionalTableMarkup(item);
+    if (item.type === "graph") return proportionalGraphMarkup(item);
+    if (item.type === "equation") return "<div class='prop-equation-display'>"+escapeHTML(item.text)+"</div>";
+    return "<p class='prop-verbal-display'>"+escapeHTML(item.text)+"</p>";
+  }
+
+  function renderLab85F() {
+    if (!labRuntime.data) labRuntime.data={index:0,choices:{},checked:false,solved:false};
+    const data=labRuntime.data;
+    const round=PROPORTIONAL_SORT_ROUNDS[data.index];
+    if (!round) return showLabCompletion("8.5F");
+    const body=$("#standardsLabBody");
+    const completed=data.index+(data.solved?1:0);
+    setLabProgress(completed,PROPORTIONAL_SORT_ROUNDS.length,"Question "+(data.index+1)+" of "+PROPORTIONAL_SORT_ROUNDS.length+": categorize all six representations.");
+
+    const cards=round.items.map((item,index) => {
+      const choice=data.choices[item.id]||"";
+      const isWrong=data.checked && choice && choice!==item.answer;
+      const isRight=data.checked && choice===item.answer;
+      const tableCoach=isWrong && item.type==="table" ? "<div class='prop-table-coach'><strong>Table check:</strong> "+escapeHTML(item.tableNote)+"</div>" : "";
+      return "<article class='prop-sort-card"+(isWrong?" is-wrong":"")+(isRight?" is-right":"")+"'>"+
+        "<div class='prop-sort-card-top'><span class='prop-card-number'>"+(index+1)+"</span><div><small>"+escapeHTML(item.title)+"</small><strong>"+(item.type==="realworld"?"Real-world description":item.type==="verbal"?"Mathematical verbal description":item.type.charAt(0).toUpperCase()+item.type.slice(1))+"</strong></div></div>"+
+        "<div class='prop-card-content'>"+proportionalItemContent(item)+"</div>"+
+        tableCoach+
+        "<div class='prop-choice-row' role='group' aria-label='Classify item "+(index+1)+"'>"+
+          "<button type='button' data-prop-item='"+item.id+"' data-prop-choice='proportional' class='"+(choice==="proportional"?"is-selected":"")+"'>Proportional</button>"+
+          "<button type='button' data-prop-item='"+item.id+"' data-prop-choice='non-proportional' class='"+(choice==="non-proportional"?"is-selected":"")+"'>Non-Proportional</button>"+
+        "</div>"+
+      "</article>";
+    }).join("");
+
+    body.innerHTML=
+      "<section class='prop-sort-shell'>"+
+        "<header class='prop-sort-header'><div><p class='lab-mini-title'>8.5F classification set</p><h4>"+escapeHTML(round.title)+"</h4><p>Sort each item from its mathematics. The category totals change from round to round.</p></div><span class='prop-round-count'>"+(data.index+1)+" / "+PROPORTIONAL_SORT_ROUNDS.length+"</span></header>"+
+        "<div class='prop-sort-key'><span><i class='prop-key-origin'></i><strong>Proportional:</strong> y = kx</span><span><i class='prop-key-start'></i><strong>Non-Proportional:</strong> y = mx + b, b ≠ 0</span></div>"+
+        "<div class='prop-sort-grid'>"+cards+"</div>"+
+        "<div class='relation-submit-row'><button class='lab-action' id='checkPropSort' type='button'>Check all 6</button>"+
+        (data.solved?"<button class='lab-next' id='nextPropSort' type='button'>"+(data.index===PROPORTIONAL_SORT_ROUNDS.length-1?"Finish lab →":"Next set →")+"</button>":"")+
+        "</div>"+
+      "</section>";
+
+    body.querySelectorAll("[data-prop-choice]").forEach(button => button.addEventListener("click",() => {
+      if (data.solved) return;
+      data.choices[button.dataset.propItem]=button.dataset.propChoice;
+      data.checked=false;
+      renderLab85F();
+      setLabFeedback(Object.keys(data.choices).length+" of 6 items categorized.");
+    }));
+
+    $("#checkPropSort").addEventListener("click",() => {
+      if (Object.keys(data.choices).length<6) return setLabFeedback("Categorize all six items before checking.","incorrect");
+      data.checked=true;
+      const wrong=round.items.filter(item => data.choices[item.id]!==item.answer);
+      if (wrong.length) {
+        renderLab85F();
+        const tableWrong=wrong.filter(item => item.type==="table").length;
+        return setLabFeedback(wrong.length+" item"+(wrong.length===1?" needs":"s need")+" another look."+(tableWrong?" Use the table coaching only where a table was missed.":" Recheck the representation itself rather than the number of cards in each category."),"incorrect");
+      }
+      data.solved=true;
+      renderLab85F();
+      setLabFeedback("All six are correct. You classified the relationships from their structure instead of trying to balance the two categories.","correct");
+    });
+
+    const next=$("#nextPropSort");
+    if (next) next.addEventListener("click",() => {
+      if (data.index>=PROPORTIONAL_SORT_ROUNDS.length-1) return showLabCompletion("8.5F");
+      data.index+=1;
+      data.choices={};
+      data.checked=false;
+      data.solved=false;
+      renderLab85F();
+      syncWhiteboardQuestion();
+      setLabFeedback("New set ready. The proportional/non-proportional split may be completely different this time.");
     });
   }
 
