@@ -1677,3 +1677,43 @@ button.root-integer-tick:hover i, button.root-integer-tick:focus-visible i, butt
 .prop-intercept-dot{fill:#008f92;stroke:#10223d;stroke-width:2}
 .prop-intercept-label,.prop-axis-label{fill:#10223d;font:800 12px Arial,sans-serif}
 @media(max-width:820px){.prop-sort-grid{grid-template-columns:1fr}.prop-sort-header{flex-direction:column}.prop-round-count{align-self:flex-start}}
+
+
+/* 8.5G function language lab */
+.function-lab-shell{display:grid;gap:1rem;color:#10223d}
+.function-part-header{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;padding:1rem 1.1rem;border:2px solid #10223d;border-radius:18px;background:linear-gradient(112deg,#fff7f2,#fff 55%,#e9fbfb);box-shadow:5px 5px 0 #10223d}
+.function-part-header h4{margin:.1rem 0 .35rem;font-size:clamp(1.35rem,2.5vw,2rem)}
+.function-part-header p{margin:0;color:#4b5b70;line-height:1.45}
+.function-part-header .lab-mini-title{margin:0;color:#a63a19;font-weight:950;text-transform:uppercase;letter-spacing:.07em}
+.function-part-header>span{flex:0 0 auto;padding:.5rem .75rem;border:2px solid #10223d;border-radius:999px;background:#fff;font-weight:950;box-shadow:2px 2px 0 #ff815b}
+.function-focus-card{display:grid;place-items:center;min-height:280px;padding:1rem;border:2px solid #10223d;border-radius:18px;background:#fff;box-shadow:4px 4px 0 rgba(16,34,61,.14)}
+.function-language-reminder,.function-concept-note{padding:.75rem .9rem;border:2px solid #10223d;border-radius:12px;background:#f6ffff;line-height:1.45}
+.function-description-list{display:grid;gap:.7rem}
+.function-description-choice{display:grid;grid-template-columns:40px 1fr;align-items:center;gap:.75rem;width:100%;padding:.85rem 1rem;border:2px solid #10223d;border-radius:14px;background:#fff;color:#10223d;cursor:pointer;text-align:left}
+.function-description-choice>span{display:grid;place-items:center;width:32px;height:32px;border:2px solid #10223d;border-radius:50%;background:#eef6ff;font-weight:950}
+.function-description-choice strong{font-size:.96rem;line-height:1.45}
+.function-description-choice:hover,.function-description-choice.is-selected{background:#fff8f4;box-shadow:2px 2px 0 #10223d}
+.function-description-choice.is-right{border-color:#087f5b;background:#eafbf4}
+.function-description-choice.is-wrong{border-color:#b42318;background:#fff4f2}
+.function-table{border-collapse:collapse;min-width:250px;background:#fff;font-family:"STIX Two Math","Cambria Math",serif;font-size:1.05rem;text-align:center}
+.function-table th,.function-table td{padding:.55rem .9rem;border:2px solid #10223d}
+.function-table th{background:#eef6ff;font-weight:950}
+.function-table td{font-weight:800}
+.function-pairs{display:flex;flex-wrap:wrap;justify-content:center;gap:.6rem;max-width:720px;padding:1rem;font-family:"STIX Two Math","Cambria Math",serif;font-size:1.15rem;font-weight:850}
+.function-pairs span{padding:.55rem .7rem;border:2px solid #10223d;border-radius:10px;background:#f7f2ff}
+.function-map-svg{display:block;width:min(100%,480px);height:auto}
+.function-map-oval{fill:#fff;stroke:#10223d;stroke-width:2.5}
+.function-map-link{stroke:#d65d31;stroke-width:3;stroke-linecap:round}
+.function-map-value{fill:#10223d;font:900 17px Arial,sans-serif}
+.function-map-label{fill:#006b6e;font:900 12px Arial,sans-serif;letter-spacing:.08em}
+.function-graph-svg{display:block;width:min(100%,430px);height:auto;background:#fff;border:2px solid #10223d;border-radius:12px}
+.function-grid-line{stroke:#dce4ee;stroke-width:1}
+.function-axis{stroke:#10223d;stroke-width:2}
+.function-graph-point{fill:#d65d31;stroke:#10223d;stroke-width:1.5}
+.function-graph-path{stroke:#d65d31;stroke-width:4;stroke-linecap:round}
+.function-graph-shape{fill:none;stroke:#d65d31;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+.function-axis-label{fill:#10223d;font:900 12px Arial,sans-serif}
+.function-statement-builder{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.55rem;padding:1.1rem;border:2px solid #10223d;border-radius:16px;background:#f7f2ff;font-weight:850;line-height:1.6}
+.function-statement-builder select{max-width:260px;padding:.62rem .7rem;border:2px solid #008f92;border-radius:10px;background:#fff;color:#10223d;font:inherit;font-weight:900}
+.function-concept-note{background:#fff9df;border-color:#c48a00}
+@media(max-width:760px){.function-part-header{flex-direction:column}.function-part-header>span{align-self:flex-start}.function-statement-builder{justify-content:flex-start}.function-focus-card{min-height:220px}}
