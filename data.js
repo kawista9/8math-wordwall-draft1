@@ -428,330 +428,263 @@ window.WORD_WALL_DATA = [
       "8.5H",
       "8.5I"
     ],
-    "accent": "purple",
+    "accent": "coral",
     "pos": [
       64.7,
       69
     ],
     "id": "8-5",
+    "entryPageIndex": 0,
     "pages": [
       {
         "page": 1,
-        "image": "assets/8-5-p01.png",
+        "image": "assets/prototype-8-5-hub.webp",
         "videos": [],
-        "resource": "Welcome"
+        "resource": "Standards",
+        "substandardHotspots": [
+          { "standard": "8.5A", "label": "Proportional relationships", "left": 2.0, "top": 18.7, "width": 31.0, "height": 20.7 },
+          { "standard": "8.5B", "label": "Non-proportional relationships", "left": 34.9, "top": 18.7, "width": 30.7, "height": 20.7 },
+          { "standard": "8.5C", "label": "Bivariate data", "left": 67.2, "top": 18.7, "width": 30.9, "height": 20.7 },
+          { "standard": "8.5D", "label": "Trend lines and predictions", "left": 2.0, "top": 41.0, "width": 31.0, "height": 20.0 },
+          { "standard": "8.5E", "label": "Direct variation", "left": 67.2, "top": 41.0, "width": 30.9, "height": 20.0 },
+          { "standard": "8.5F", "label": "Compare linear relationships", "left": 2.0, "top": 63.0, "width": 31.0, "height": 20.5 },
+          { "standard": "8.5G", "label": "Identifying functions", "left": 34.9, "top": 63.0, "width": 30.7, "height": 20.5 },
+          { "standard": "8.5H", "label": "Proportional or non-proportional", "left": 67.2, "top": 63.0, "width": 30.9, "height": 20.5 },
+          { "standard": "8.5I", "label": "Writing y equals mx plus b", "left": 10.8, "top": 85.2, "width": 78.6, "height": 12.8 }
+        ]
       },
       {
         "page": 2,
-        "image": "assets/8-5-p02.png",
-        "videos": [],
-        "resource": "Overview"
+        "image": "assets/prototype-8.5a-anchor-chart.webp",
+        "videos": [
+          { "title": "Proportional Relationships and Equations", "url": "https://somup.com/cOefFGWNaN" },
+          { "title": "Graphing a Proportional Candle-Cost Relationship", "url": "https://somup.com/cOefFfWNyn" },
+          { "title": "Creating a Proportional Table", "url": "https://somup.com/cOefF2WNyC" }
+        ],
+        "videoHotspots": [
+          { "title": "Proportional Relationships and Equations", "url": "https://somup.com/cOefFGWNaN", "left": 20.4, "top": 45.3, "width": 5.6, "height": 9.9 },
+          { "title": "Graphing a Proportional Candle-Cost Relationship", "url": "https://somup.com/cOefFfWNyn", "left": 53.6, "top": 45.3, "width": 5.6, "height": 9.9 },
+          { "title": "Creating a Proportional Table", "url": "https://somup.com/cOefF2WNyC", "left": 85.8, "top": 45.3, "width": 5.6, "height": 9.9 }
+        ],
+        "standard": "8.5A",
+        "resource": "Anchor chart"
       },
       {
         "page": 3,
-        "image": "assets/8-5-p03.png",
-        "videos": [],
+        "image": "assets/prototype-8.5a-calculator-tips.webp",
+        "videos": [
+          { "title": "Using the Calculator to Create a Proportional Table", "url": "https://somup.com/cOefqlWNAR" }
+        ],
+        "videoHotspots": [
+          { "title": "Using the Calculator to Create a Proportional Table", "url": "https://somup.com/cOefqlWNAR", "left": 24.9, "top": 15.8, "width": 7.0, "height": 13.0 },
+          { "title": "Using the Calculator to Create a Proportional Table", "url": "https://somup.com/cOefqlWNAR", "left": 57.6, "top": 15.8, "width": 7.0, "height": 13.0 },
+          { "title": "Using the Calculator to Create a Proportional Table", "url": "https://somup.com/cOefqlWNAR", "left": 91.1, "top": 15.8, "width": 7.0, "height": 13.0 }
+        ],
         "standard": "8.5A",
-        "resource": "Start"
+        "resource": "Calculator tips"
       },
       {
         "page": 4,
-        "image": "assets/8-5-p04.png",
+        "image": "assets/prototype-8.5b-anchor-chart.webp",
         "videos": [
-          {
-            "title": "Watch lesson 1",
-            "url": "https://somup.com/cOefFfWNyn"
-          },
-          {
-            "title": "Watch lesson 2",
-            "url": "https://somup.com/cOefF2WNyC"
-          },
-          {
-            "title": "Watch lesson 3",
-            "url": "https://somup.com/cOefFGWNaN"
-          }
+          { "title": "Graphing Non-Proportional Situations", "url": "https://go.screenpal.com/watch/cOefYvnZ2DB" },
+          { "title": "Converting Non-Proportional Situations into Tables", "url": "https://go.screenpal.com/watch/cOehIvnZDRZ" },
+          { "title": "Converting Non-Proportional Situations into Equations", "url": "https://somup.com/cOefq8WNpX" }
         ],
-        "standard": "8.5A",
+        "videoHotspots": [
+          { "title": "Graphing Non-Proportional Situations", "url": "https://go.screenpal.com/watch/cOefYvnZ2DB", "left": 5.9, "top": 45.4, "width": 5.1, "height": 10.4 },
+          { "title": "Converting Non-Proportional Situations into Tables", "url": "https://go.screenpal.com/watch/cOehIvnZDRZ", "left": 40.3, "top": 45.4, "width": 5.1, "height": 10.4 },
+          { "title": "Converting Non-Proportional Situations into Equations", "url": "https://somup.com/cOefq8WNpX", "left": 63.9, "top": 45.4, "width": 5.1, "height": 10.4 }
+        ],
+        "standard": "8.5B",
         "resource": "Anchor chart"
       },
       {
         "page": 5,
-        "image": "assets/8-5-p05.png",
+        "image": "assets/prototype-8.5b-calculator-tips.webp",
         "videos": [
-          {
-            "title": "Watch lesson 1",
-            "url": "https://somup.com/cOefqlWNAR"
-          }
+          { "title": "Graphing a Non-Proportional Situation with the Calculator", "url": "https://go.screenpal.com/watch/cOefYvnZ2DB" }
         ],
-        "standard": "8.5A",
+        "videoHotspots": [
+          { "title": "Graphing a Non-Proportional Situation with the Calculator", "url": "https://go.screenpal.com/watch/cOefYvnZ2DB", "left": 70.5, "top": 79.8, "width": 8.0, "height": 14.5 }
+        ],
+        "standard": "8.5B",
         "resource": "Calculator tips"
       },
       {
         "page": 6,
-        "image": "assets/8-5-p06.png",
-        "videos": [],
-        "standard": "8.5B",
-        "resource": "Start"
-      },
-      {
-        "page": 7,
-        "image": "assets/8-5-p07.png",
+        "image": "assets/prototype-8.5c-anchor-chart.webp",
         "videos": [
-          {
-            "title": "Watch lesson 1",
-            "url": "https://somup.com/cOefq8WNpX"
-          },
-          {
-            "title": "Watch lesson 2",
-            "url": "https://go.screenpal.com/watch/cOefYvnZ2DB"
-          },
-          {
-            "title": "Watch lesson 3",
-            "url": "https://go.screenpal.com/watch/cOehIvnZDRZ"
-          }
+          { "title": "Understanding Bivariate Data", "url": "https://somup.com/cOeh2oWPZP" },
+          { "title": "Types of Associations in Bivariate Data", "url": "https://go.screenpal.com/watch/cOeh2OnZbiF" }
         ],
-        "standard": "8.5B",
+        "videoHotspots": [
+          { "title": "Understanding Bivariate Data", "url": "https://somup.com/cOeh2oWPZP", "left": 75.0, "top": 4.6, "width": 6.5, "height": 12.0 },
+          { "title": "Positive Association", "url": "https://go.screenpal.com/watch/cOeh2OnZbiF", "left": 23.4, "top": 24.5, "width": 9.5, "height": 17.5 },
+          { "title": "Negative Association", "url": "https://go.screenpal.com/watch/cOeh2OnZbiF", "left": 55.9, "top": 24.5, "width": 9.5, "height": 17.5 },
+          { "title": "No Association", "url": "https://go.screenpal.com/watch/cOeh2OnZbiF", "left": 88.7, "top": 24.5, "width": 9.5, "height": 17.5 }
+        ],
+        "standard": "8.5C",
         "resource": "Anchor chart"
       },
       {
-        "page": 8,
-        "image": "assets/8-5-p08.png",
+        "page": 7,
+        "image": "assets/prototype-8.5c-calculator-tips.webp",
         "videos": [],
-        "standard": "8.5B",
+        "standard": "8.5C",
         "resource": "Calculator tips"
       },
       {
+        "page": 8,
+        "image": "assets/prototype-8.5d-anchor-chart.webp",
+        "videos": [
+          { "title": "Understanding and Creating Quality Trend Lines", "url": "https://go.screenpal.com/watch/cOeh2AnZbQk" },
+          { "title": "Using Trend Lines for Predictions", "url": "https://go.screenpal.com/watch/cOehoQnZbDb" }
+        ],
+        "videoHotspots": [
+          { "title": "Understanding and Creating Quality Trend Lines", "url": "https://go.screenpal.com/watch/cOeh2AnZbQk", "left": 69.0, "top": 44.2, "width": 5.6, "height": 11.0 },
+          { "title": "Using Trend Lines for Predictions", "url": "https://go.screenpal.com/watch/cOehoQnZbDb", "left": 90.7, "top": 70.8, "width": 5.8, "height": 11.5 }
+        ],
+        "standard": "8.5D",
+        "resource": "Anchor chart"
+      },
+      {
         "page": 9,
-        "image": "assets/8-5-p09.png",
+        "image": "assets/prototype-8.5d-calculator-tips.webp",
         "videos": [],
-        "standard": "8.5C",
-        "resource": "Start"
+        "standard": "8.5D",
+        "resource": "Calculator tips"
       },
       {
         "page": 10,
-        "image": "assets/8-5-p10.png",
+        "image": "assets/prototype-8.5e-anchor-chart.webp",
         "videos": [
-          {
-            "title": "Watch lesson 1",
-            "url": "https://go.screenpal.com/watch/cTfn31niLZE"
-          },
-          {
-            "title": "Watch lesson 2",
-            "url": "https://somup.com/cOeh2oWPZP"
-          },
-          {
-            "title": "Watch lesson 3",
-            "url": "https://go.screenpal.com/watch/cOeh2OnZbiF"
-          }
+          { "title": "Direct Variation Overview", "url": "https://go.screenpal.com/watch/cOehoonZbb2" },
+          { "title": "Understanding Dependent Variables", "url": "https://somup.com/cOehowWPxw" },
+          { "title": "Understanding Independent Variables", "url": "https://somup.com/cOehoZWPwR" },
+          { "title": "Calculating the Constant of Proportionality", "url": "https://somup.com/cOehoYWPwv" }
         ],
-        "standard": "8.5C",
+        "videoHotspots": [
+          { "title": "Direct Variation Overview", "url": "https://go.screenpal.com/watch/cOehoonZbb2", "left": 59.5, "top": 16.0, "width": 5.8, "height": 10.5 },
+          { "title": "Understanding Dependent Variables", "url": "https://somup.com/cOehowWPxw", "left": 12.7, "top": 47.0, "width": 5.5, "height": 10.5 },
+          { "title": "Understanding Independent Variables", "url": "https://somup.com/cOehoZWPwR", "left": 34.5, "top": 47.0, "width": 5.5, "height": 10.5 },
+          { "title": "Calculating the Constant of Proportionality", "url": "https://somup.com/cOehoYWPwv", "left": 79.6, "top": 47.0, "width": 5.5, "height": 10.5 }
+        ],
+        "standard": "8.5E",
         "resource": "Anchor chart"
       },
       {
         "page": 11,
-        "image": "assets/8-5-p11.png",
-        "videos": [],
-        "standard": "8.5C",
+        "image": "assets/prototype-8.5e-calculator-tips.webp",
+        "videos": [
+          { "title": "Using the Unit Rate to Solve a Direct-Variation Problem", "url": "https://somup.com/cOehoYWPwv" }
+        ],
+        "videoHotspots": [
+          { "title": "Using the Unit Rate to Solve a Direct-Variation Problem", "url": "https://somup.com/cOehoYWPwv", "left": 87.8, "top": 1.8, "width": 11.0, "height": 21.5 }
+        ],
+        "standard": "8.5E",
         "resource": "Calculator tips"
       },
       {
         "page": 12,
-        "image": "assets/8-5-p12.png",
-        "videos": [],
-        "standard": "8.5D",
-        "resource": "Start"
-      },
-      {
-        "page": 13,
-        "image": "assets/8-5-p13.png",
+        "image": "assets/prototype-8.5f-anchor-chart.webp",
         "videos": [
-          {
-            "title": "Watch lesson 1",
-            "url": "https://go.screenpal.com/watch/cOeh2AnZbQk"
-          },
-          {
-            "title": "Watch lesson 2",
-            "url": "https://go.screenpal.com/watch/cOehoQnZbDb"
-          }
+          { "title": "Proportional and Non-Proportional Equations", "url": "https://somup.com/cOehoPWP4G" },
+          { "title": "Proportional and Non-Proportional Graphs", "url": "https://somup.com/cOehDcWPan" },
+          { "title": "Proportional and Non-Proportional Tables", "url": "https://somup.com/cOehrDW9c7" }
         ],
-        "standard": "8.5D",
+        "videoHotspots": [
+          { "title": "Proportional and Non-Proportional Equations", "url": "https://somup.com/cOehoPWP4G", "left": 35.0, "top": 10.7, "width": 5.0, "height": 9.2 },
+          { "title": "Proportional and Non-Proportional Graphs", "url": "https://somup.com/cOehDcWPan", "left": 10.8, "top": 67.0, "width": 4.5, "height": 8.5 },
+          { "title": "Proportional and Non-Proportional Tables", "url": "https://somup.com/cOehrDW9c7", "left": 60.3, "top": 67.0, "width": 4.5, "height": 8.5 }
+        ],
+        "standard": "8.5F",
         "resource": "Anchor chart"
       },
       {
-        "page": 14,
-        "image": "assets/8-5-p14.png",
+        "page": 13,
+        "image": "assets/prototype-8.5f-calculator-tips.webp",
         "videos": [
-          {
-            "title": "Watch lesson 1",
-            "url": "https://go.screenpal.com/watch/cTfn31niLZE"
-          }
+          { "title": "Using a Calculator to Compare Proportional and Non-Proportional Tables", "url": "https://somup.com/cOehrDW9c7" }
         ],
-        "standard": "8.5D",
+        "videoHotspots": [
+          { "title": "Using a Calculator to Compare Proportional and Non-Proportional Tables", "url": "https://somup.com/cOehrDW9c7", "left": 80.4, "top": 22.0, "width": 6.4, "height": 12.5 }
+        ],
+        "standard": "8.5F",
         "resource": "Calculator tips"
       },
       {
+        "page": 14,
+        "image": "assets/prototype-8.5g-anchor-chart.webp",
+        "videos": [
+          { "title": "Understanding Functions in Mathematics", "url": "https://somup.com/cOehrGW9nM" },
+          { "title": "Functions from Ordered Pairs", "url": "https://go.screenpal.com/watch/cOehr7nZFT1" },
+          { "title": "Functions from Mapping Diagrams", "url": "https://somup.com/cOehrNW9ez" },
+          { "title": "Functions from Tables", "url": "https://somup.com/cOehrRW9eK" },
+          { "title": "Functions from Graphs", "url": "https://somup.com/cOeh3QW9f3" }
+        ],
+        "videoHotspots": [
+          { "title": "Understanding Functions in Mathematics", "url": "https://somup.com/cOehrGW9nM", "left": 43.5, "top": 46.6, "width": 13.0, "height": 8.8 },
+          { "title": "Functions from Ordered Pairs", "url": "https://go.screenpal.com/watch/cOehr7nZFT1", "left": 43.5, "top": 55.2, "width": 13.0, "height": 8.8 },
+          { "title": "Functions from Mapping Diagrams", "url": "https://somup.com/cOehrNW9ez", "left": 43.5, "top": 63.8, "width": 13.0, "height": 8.8 },
+          { "title": "Functions from Tables", "url": "https://somup.com/cOehrRW9eK", "left": 43.5, "top": 72.3, "width": 13.0, "height": 8.8 },
+          { "title": "Functions from Graphs", "url": "https://somup.com/cOeh3QW9f3", "left": 43.5, "top": 80.8, "width": 13.0, "height": 8.8 }
+        ],
+        "standard": "8.5G",
+        "resource": "Anchor chart"
+      },
+      {
         "page": 15,
-        "image": "assets/8-5-p15.png",
+        "image": "assets/prototype-8.5g-calculator-tips.webp",
         "videos": [],
-        "standard": "8.5E",
-        "resource": "Start"
+        "standard": "8.5G",
+        "resource": "Calculator tips"
       },
       {
         "page": 16,
-        "image": "assets/8-5-p16.png",
+        "image": "assets/prototype-8.5h-anchor-chart.webp",
         "videos": [
-          {
-            "title": "Watch lesson 1",
-            "url": "https://somup.com/cOehoYWPwv"
-          },
-          {
-            "title": "Watch lesson 2",
-            "url": "https://somup.com/cOehoZWPwR"
-          },
-          {
-            "title": "Watch lesson 3",
-            "url": "https://somup.com/cOehowWPxw"
-          },
-          {
-            "title": "Watch lesson 4",
-            "url": "https://go.screenpal.com/watch/cOehoonZbb2"
-          }
+          { "title": "Identifying Proportional and Non-Proportional Situations", "url": "https://go.screenpal.com/watch/cOeh3qnZFvu" }
         ],
-        "standard": "8.5E",
+        "videoHotspots": [
+          { "title": "Identifying Proportional Situations", "url": "https://go.screenpal.com/watch/cOeh3qnZFvu", "left": 36.6, "top": 34.7, "width": 6.8, "height": 13.0 },
+          { "title": "Identifying Non-Proportional Situations", "url": "https://go.screenpal.com/watch/cOeh3qnZFvu", "left": 87.1, "top": 34.7, "width": 6.8, "height": 13.0 }
+        ],
+        "standard": "8.5H",
         "resource": "Anchor chart"
       },
       {
         "page": 17,
-        "image": "assets/8-5-p17.png",
+        "image": "assets/prototype-8.5h-calculator-tips.webp",
         "videos": [],
-        "standard": "8.5E",
+        "standard": "8.5H",
         "resource": "Calculator tips"
       },
       {
         "page": 18,
-        "image": "assets/8-5-p18.png",
-        "videos": [],
-        "standard": "8.5F",
-        "resource": "Start"
+        "image": "assets/prototype-8.5i-anchor-chart.webp",
+        "videos": [
+          { "title": "Determining Slope and y-Intercept in Word Problems", "url": "https://somup.com/cOeh3yW9hE" },
+          { "title": "Finding Slope and y-Intercept with a Calculator Table", "url": "https://go.screenpal.com/watch/cOnOf8n0Nr2" }
+        ],
+        "videoHotspots": [
+          { "title": "Determining Slope and y-Intercept in Word Problems", "url": "https://somup.com/cOeh3yW9hE", "left": 34.6, "top": 43.0, "width": 5.2, "height": 10.3 },
+          { "title": "Finding Slope and y-Intercept with a Calculator Table", "url": "https://go.screenpal.com/watch/cOnOf8n0Nr2", "left": 54.0, "top": 43.0, "width": 5.2, "height": 10.3 }
+        ],
+        "standard": "8.5I",
+        "resource": "Anchor chart"
       },
       {
         "page": 19,
-        "image": "assets/8-5-p19.png",
+        "image": "assets/prototype-8.5i-calculator-tips.webp",
         "videos": [
-          {
-            "title": "Watch lesson 1",
-            "url": "https://somup.com/cOehoPWP4G"
-          },
-          {
-            "title": "Watch lesson 2",
-            "url": "https://somup.com/cOehDcWPan"
-          },
-          {
-            "title": "Watch lesson 3",
-            "url": "https://somup.com/cOehrDW9c7"
-          }
+          { "title": "Finding Slope and y-Intercept from a Table", "url": "https://go.screenpal.com/watch/cOnOf8n0Nr2" },
+          { "title": "Finding Slope and y-Intercept from a Graph", "url": "https://go.screenpal.com/watch/cOnOhTn0NTU" }
         ],
-        "standard": "8.5F",
-        "resource": "Anchor chart"
-      },
-      {
-        "page": 20,
-        "image": "assets/8-5-p20.png",
-        "videos": [],
-        "standard": "8.5F",
-        "resource": "Calculator tips"
-      },
-      {
-        "page": 21,
-        "image": "assets/8-5-p21.png",
-        "videos": [],
-        "standard": "8.5G",
-        "resource": "Start"
-      },
-      {
-        "page": 22,
-        "image": "assets/8-5-p22.png",
-        "videos": [
-          {
-            "title": "Watch lesson 1",
-            "url": "https://somup.com/cOehrGW9nM"
-          },
-          {
-            "title": "Watch lesson 2",
-            "url": "https://somup.com/cOehrNW9ez"
-          },
-          {
-            "title": "Watch lesson 3",
-            "url": "https://somup.com/cOehrRW9eK"
-          },
-          {
-            "title": "Watch lesson 4",
-            "url": "https://somup.com/cOeh3QW9f3"
-          },
-          {
-            "title": "Watch lesson 5",
-            "url": "https://go.screenpal.com/watch/cOehr7nZFT1"
-          }
+        "videoHotspots": [
+          { "title": "Finding Slope and y-Intercept from a Table", "url": "https://go.screenpal.com/watch/cOnOf8n0Nr2", "left": 36.0, "top": 22.0, "width": 7.2, "height": 16.2 },
+          { "title": "Finding Slope and y-Intercept from a Graph", "url": "https://go.screenpal.com/watch/cOnOhTn0NTU", "left": 88.0, "top": 22.0, "width": 7.2, "height": 16.2 }
         ],
-        "standard": "8.5G",
-        "resource": "Anchor chart"
-      },
-      {
-        "page": 23,
-        "image": "assets/8-5-p23.png",
-        "videos": [],
-        "standard": "8.5G",
-        "resource": "Calculator tips"
-      },
-      {
-        "page": 24,
-        "image": "assets/8-5-p24.png",
-        "videos": [],
-        "standard": "8.5H",
-        "resource": "Start"
-      },
-      {
-        "page": 25,
-        "image": "assets/8-5-p25.png",
-        "videos": [
-          {
-            "title": "Watch lesson 1",
-            "url": "https://go.screenpal.com/watch/cOeh3qnZFvu"
-          }
-        ],
-        "standard": "8.5H",
-        "resource": "Anchor chart"
-      },
-      {
-        "page": 26,
-        "image": "assets/8-5-p26.png",
-        "videos": [],
-        "standard": "8.5H",
-        "resource": "Calculator tips"
-      },
-      {
-        "page": 27,
-        "image": "assets/8-5-p27.png",
-        "videos": [],
-        "standard": "8.5I",
-        "resource": "Start"
-      },
-      {
-        "page": 28,
-        "image": "assets/8-5-p28.png",
-        "videos": [
-          {
-            "title": "Watch lesson 1",
-            "url": "https://somup.com/cOeh3yW9hE"
-          }
-        ],
-        "standard": "8.5I",
-        "resource": "Anchor chart"
-      },
-      {
-        "page": 29,
-        "image": "assets/8-5-p29.png",
-        "videos": [],
         "standard": "8.5I",
         "resource": "Calculator tips"
       }

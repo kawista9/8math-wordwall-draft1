@@ -686,6 +686,28 @@
   }
 
   const LABS = {
+    "8.5A": {
+      title: "One Relationship, Four Representations",
+      description: "Work through twelve proportional relationships. Each problem begins with a graph, equation, table, or real-world situation, and you build the other three representations. Use two quality points when graphing, complete every missing table value, and write each equation in the form y = kx + b.",
+      summary: "You connected proportional graphs, equations, tables, and real-world situations. In every representation, the slope k is the constant of proportionality: it tells how much y changes for each increase of 1 in x. Every proportional graph is a straight line through the origin, every table includes the pair (0, 0), and every equation can be written as y = kx + 0. That is why all twelve y-intercepts were zero.",
+      videos: [
+        ["https://somup.com/cOefFGWNaN", "Proportional Relationships and Equations"],
+        ["https://somup.com/cOefFfWNyn", "Graphing a Proportional Relationship"],
+        ["https://somup.com/cOefF2WNyC", "Creating a Proportional Table"],
+        ["https://somup.com/cOefqlWNAR", "Creating a Proportional Table with a Calculator"]
+      ]
+    },
+    "8.5B": {
+      title: "Non-Proportional: One Relationship, Four Representations",
+      description: "Work through twelve non-proportional linear relationships. Each problem begins with a graph, equation, table, or real-world situation, and you build the other three representations. Use two quality points when graphing, complete every missing table value, and connect the rate of change m and initial value b in y = mx + b.",
+      summary: "You connected non-proportional graphs, equations, tables, and real-world situations. The slope m tells how much y changes for each increase of 1 in x, while the y-intercept b tells the value of y when x = 0. Every relationship in this lab had a nonzero starting value, so its graph crossed the y-axis above zero and did not pass through the origin. You also learned that a table may not show x = 0 directly—you can use the constant rate of change to work backward and identify b.",
+      videos: [
+        ["https://go.screenpal.com/watch/cOefYvnZ2DB", "Graphing Non-Proportional Situations"],
+        ["https://go.screenpal.com/watch/cOehIvnZDRZ", "Converting Non-Proportional Situations into Tables"],
+        ["https://somup.com/cOefq8WNpX", "Converting Non-Proportional Situations into Equations"],
+        ["https://go.screenpal.com/watch/cOefYvnZ2DB", "Graphing a Non-Proportional Situation with the Calculator"]
+      ]
+    },
     "8.4A": {
       title: "Slope: Do It With Me",
       description: "Choose four exact points on each line. The lab groups them into two pairs, and you complete the rise-first, run-second process for both pairs to prove that the slope stays the same. Pay attention to the value of each axis interval: the first five problems coach every move, and the final ten ask you to determine and enter both sets of signed changes yourself.",
@@ -694,6 +716,17 @@
         ["https://go.screenpal.com/watch/cOnXVbn01bd", "Finding the Rise"],
         ["https://go.screenpal.com/watch/cOnXVun01FG", "Finding the Run"],
         ["https://go.screenpal.com/watch/cOnXVCn01qR", "Finding Slope from a Graph"]
+      ]
+    },
+    "8.4B": {
+      title: "Proportional Relationships: Read It, Match It, Graph It",
+      description: "Connect ten real-world proportional situations to their graphs. First, match five situations to the correct graph; then build five graphs by choosing two quality points, drawing the line, and submitting it for coaching. Every graph names the quantities on both axes and states what one interval represents so you can turn the unit rate into a reliable rise-and-run move.",
+      summary: "You matched proportional situations to graphs and constructed graphs from two points of your choice. A proportional relationship has a constant unit rate, so its graph is a straight line through the origin and its slope equals the unit rate. Reading each axis interval before plotting helps you convert the rate into a grid move; multiply the rise and run by the same amount until both coordinates land on exact grid intersections. Two accurate points determine the line, and choosing points farther apart makes the relationship easier to verify.",
+      videos: [
+        ["https://go.screenpal.com/watch/cOnDo4n03Pu", "Understanding Proportional Relationships"],
+        ["https://somup.com/cOnDDfWOU8", "Understanding Unit Rate"],
+        ["https://somup.com/cOnb2iWu3R", "Reading Proportional Graphs"],
+        ["https://somup.com/cOnTbFW5aB", "Graphing Proportional Equations with the Calculator"]
       ]
     },
     "8.3A": {
@@ -908,6 +941,9 @@
     if (standard === "8.3B") renderLab83B();
     if (standard === "8.3C") renderLab83C();
     if (standard === "8.4A") renderLab84A();
+    if (standard === "8.4B") renderLab84B();
+    if (standard === "8.5A") renderLab85A();
+    if (standard === "8.5B") renderLab85B();
     if (standard === "8.10A") renderLabA();
     if (standard === "8.10B") renderLabB();
     if (standard === "8.10C") renderLabC();
@@ -1348,6 +1384,788 @@
       setLabFeedback(data.index < 5 ? "New coached line ready. Identify four exact points and calculate slope twice." : "Your turn. Identify four exact points, then determine both sets of signed rise and run.");
     });
   }
+
+  const PROPORTION_LAB_TASKS = [
+    {
+      phase: "match", title: "Smoothies for a study group",
+      situation: "A smoothie shop charges $18 for 3 smoothies. The total cost y is proportional to the number of smoothies x.",
+      xLabel: "number of smoothies", yLabel: "total cost ($)", xStep: 1, yStep: 3, rate: 6,
+      options: [
+        { slope: 3, intercept: 0, feedback: "This line represents $3 per smoothie. Divide $18 by 3 to find the unit rate." },
+        { slope: 6, intercept: 6, feedback: "The rate is right, but this graph begins at $6. A proportional cost is $0 when 0 smoothies are purchased." },
+        { slope: 6, intercept: 0 },
+        { slope: 12, intercept: 0, feedback: "This line is twice as steep as the situation. Use $18 ÷ 3 to find the cost of one smoothie." }
+      ], correct: 2,
+      explanation: "$18 ÷ 3 = $6 per smoothie, so the graph passes through (0, 0), (1, 6), and (3, 18)."
+    },
+    {
+      phase: "match", title: "Pages from a classroom printer",
+      situation: "A classroom printer produces 4 pages in 2 minutes at a constant rate. The number of pages y is proportional to time x.",
+      xLabel: "time (minutes)", yLabel: "number of pages", xStep: 1, yStep: 2, rate: 2,
+      options: [
+        { slope: 2, intercept: 0 },
+        { slope: 1, intercept: 0, feedback: "This shows only 1 page per minute. Simplify 4 pages in 2 minutes to a unit rate." },
+        { slope: 2, intercept: 2, feedback: "This graph already has 2 pages at 0 minutes, so it is not proportional." },
+        { slope: 4, intercept: 0, feedback: "Four is the page count after 2 minutes, not the number of pages produced in 1 minute." }
+      ], correct: 0,
+      explanation: "4 ÷ 2 = 2 pages per minute, so y = 2x and the line passes through the origin."
+    },
+    {
+      phase: "match", title: "Cycling at a steady pace",
+      situation: "A cyclist travels 15 miles each hour. Distance y is proportional to riding time x.",
+      xLabel: "time (hours)", yLabel: "distance (miles)", xStep: 1, yStep: 10, rate: 15,
+      options: [
+        { slope: 30, intercept: 0, feedback: "This graph shows 30 miles each hour. Use the distance traveled in exactly 1 hour." },
+        { slope: 7.5, intercept: 0, feedback: "This rate is half of the stated rate. One hour corresponds to 15 miles." },
+        { slope: 15, intercept: 15, feedback: "The slope matches, but a proportional trip begins at 0 miles when time is 0." },
+        { slope: 15, intercept: 0 }
+      ], correct: 3,
+      explanation: "The unit rate is 15 miles per hour, so the graph contains (1, 15), (2, 30), and the origin."
+    },
+    {
+      phase: "match", title: "Flour for several batches",
+      situation: "A baker uses 3 cups of flour for 2 batches of muffins. Flour y is proportional to batches x.",
+      xLabel: "number of batches", yLabel: "flour (cups)", xStep: 1, yStep: 1, rate: 1.5,
+      options: [
+        { slope: 3, intercept: 0, feedback: "Three cups are used for 2 batches, not for 1 batch. Find 3 ÷ 2." },
+        { slope: 1.5, intercept: 0 },
+        { slope: 1.5, intercept: 1.5, feedback: "This line begins with 1.5 cups before any batches are made. A proportional graph begins at the origin." },
+        { slope: .75, intercept: 0, feedback: "This reverses part of the comparison. The graph needs cups per batch: 3 ÷ 2." }
+      ], correct: 1,
+      explanation: "3 ÷ 2 = 1.5 cups per batch, so y = 1.5x and the line passes through (0, 0)."
+    },
+    {
+      phase: "match", title: "Filling a portable water tank",
+      situation: "A hose adds 12 gallons to a tank in 3 minutes. Gallons y is proportional to time x.",
+      xLabel: "time (minutes)", yLabel: "water (gallons)", xStep: 1, yStep: 5, rate: 4,
+      options: [
+        { slope: 3, intercept: 0, feedback: "Three is the number of minutes, not the gallons added each minute. Divide 12 by 3." },
+        { slope: 12, intercept: 0, feedback: "Twelve gallons are added over 3 minutes, not every minute." },
+        { slope: 4, intercept: 0 },
+        { slope: 4, intercept: 4, feedback: "The rate is right, but this line starts with 4 gallons at time 0 and is not proportional." }
+      ], correct: 2,
+      explanation: "12 ÷ 3 = 4 gallons per minute, giving y = 4x through the origin."
+    },
+    {
+      phase: "build", title: "Beads for friendship bracelets",
+      situation: "Each friendship bracelet uses 8 beads. The total number of beads y is proportional to the number of bracelets x.",
+      xLabel: "bracelets", yLabel: "beads", xStep: 2, yStep: 8, rate: 8,
+      rateText: "8 beads per 1 bracelet", gridHint: "One bracelet is not a labeled x-value. Multiply both parts of the rate by the same number until x and y land on labeled ticks."
+    },
+    {
+      phase: "build", title: "Walking a nature trail",
+      situation: "A hiker walks ¾ mile every 10 minutes. Distance y is proportional to time x.",
+      xLabel: "time (minutes)", yLabel: "distance (miles)", xStep: 4, yStep: .3, rate: .075,
+      rateText: "0.075 mile per 1 minute", gridHint: "Neither 10 minutes nor ¾ mile is labeled on this graph. Use the unit rate to build an equivalent pair that lands on both sets of ticks."
+    },
+    {
+      phase: "build", title: "Buying fruit by the pound",
+      situation: "Two pounds of fruit cost $5. Total cost y is proportional to the number of pounds x.",
+      xLabel: "fruit (pounds)", yLabel: "total cost ($)", xStep: 4, yStep: 5, rate: 2.5,
+      rateText: "$2.50 per 1 pound", gridHint: "The given pair, 2 pounds and $5, is not a selectable grid intersection. Scale the unit rate to a different equivalent pair shown by the axes."
+    },
+    {
+      phase: "build", title: "Filling reusable bottles",
+      situation: "A dispenser fills 1.5 liters every 3 minutes. Liters y is proportional to time x.",
+      xLabel: "time (minutes)", yLabel: "water (liters)", xStep: 2, yStep: 1, rate: .5,
+      rateText: "0.5 liter per 1 minute", gridHint: "The stated pair, 3 minutes and 1.5 liters, falls between the labeled ticks. Build a new equivalent pair from the unit rate."
+    },
+    {
+      phase: "build", title: "Reading distance on a map",
+      situation: "Four centimeters on a map represent 10 kilometers. Actual distance y is proportional to map distance x.",
+      xLabel: "map distance (cm)", yLabel: "actual distance (km)", xStep: 3, yStep: 7.5, rate: 2.5,
+      rateText: "2.5 kilometers per 1 centimeter", gridHint: "The given pair, 4 centimeters and 10 kilometers, does not appear on these ticks. Multiply the unit rate to create a different equivalent pair."
+    }
+  ];
+
+  const PROPORTION_VIEW = { width: 580, height: 500, left: 78, top: 34, plotWidth: 450, plotHeight: 390, cols: 5, rows: 5 };
+
+  function proportionNumber(value) {
+    const rounded = Math.round((Number(value) + Number.EPSILON) * 1000) / 1000;
+    if (Math.abs(rounded) < .0001) return "0";
+    return String(rounded);
+  }
+
+  function resetProportionTask(data) {
+    data.selected = null;
+    data.answered = false;
+    data.points = [];
+    data.graphed = false;
+    data.solved = false;
+  }
+
+  function proportionScreenPoint(gx, gy, view = PROPORTION_VIEW) {
+    return {
+      x: view.left + gx * (view.plotWidth / view.cols),
+      y: view.top + view.plotHeight - gy * (view.plotHeight / view.rows)
+    };
+  }
+
+  function proportionLineEnds(slope, intercept, task) {
+    const xMax = PROPORTION_VIEW.cols * task.xStep;
+    const yMax = PROPORTION_VIEW.rows * task.yStep;
+    const candidates = [];
+    const add = (x, y) => {
+      if (x < -1e-6 || x > xMax + 1e-6 || y < -1e-6 || y > yMax + 1e-6) return;
+      if (!candidates.some(point => Math.abs(point.x - x) < .001 && Math.abs(point.y - y) < .001)) candidates.push({ x, y });
+    };
+    add(0, intercept);
+    add(xMax, slope * xMax + intercept);
+    if (Math.abs(slope) > 1e-8) {
+      add(-intercept / slope, 0);
+      add((yMax - intercept) / slope, yMax);
+    }
+    if (candidates.length < 2) return null;
+    let best = [candidates[0], candidates[1]];
+    let distance = -1;
+    candidates.forEach((first, i) => candidates.slice(i + 1).forEach(second => {
+      const next = Math.hypot(second.x - first.x, second.y - first.y);
+      if (next > distance) { distance = next; best = [first, second]; }
+    }));
+    return best.map(point => proportionScreenPoint(point.x / task.xStep, point.y / task.yStep));
+  }
+
+  function proportionGridMarkup(task, interactive = false, compact = false) {
+    const view = compact ? { width: 300, height: 238, left: 62, top: 20, plotWidth: 210, plotHeight: 160, cols: 5, rows: 5 } : PROPORTION_VIEW;
+    let markup = `<rect class="proportion-plot-bg" x="${view.left}" y="${view.top}" width="${view.plotWidth}" height="${view.plotHeight}" rx="12"></rect>`;
+    for (let gx = 0; gx <= view.cols; gx += 1) {
+      const point = proportionScreenPoint(gx, 0, view);
+      markup += `<line class="proportion-grid-line${gx === 0 ? " is-axis" : ""}" x1="${point.x}" y1="${view.top}" x2="${point.x}" y2="${view.top + view.plotHeight}"></line>`;
+      markup += `<text class="proportion-tick" x="${point.x}" y="${view.top + view.plotHeight + (compact ? 16 : 22)}" text-anchor="middle">${proportionNumber(gx * task.xStep)}</text>`;
+    }
+    for (let gy = 0; gy <= view.rows; gy += 1) {
+      const point = proportionScreenPoint(0, gy, view);
+      markup += `<line class="proportion-grid-line${gy === 0 ? " is-axis" : ""}" x1="${view.left}" y1="${point.y}" x2="${view.left + view.plotWidth}" y2="${point.y}"></line>`;
+      if (gy !== 0) markup += `<text class="proportion-tick" x="${view.left - 10}" y="${point.y + 4}" text-anchor="end">${proportionNumber(gy * task.yStep)}</text>`;
+    }
+    if (compact) {
+      markup += `<text class="proportion-mini-axis-letter" x="${view.left + view.plotWidth + 10}" y="${view.top + view.plotHeight + 4}">x</text>`;
+      markup += `<text class="proportion-mini-axis-letter" x="${view.left - 2}" y="${view.top - 7}">y</text>`;
+      markup += `<text class="proportion-mini-axis-label" x="${view.left + view.plotWidth / 2}" y="225" text-anchor="middle">${task.xLabel}</text>`;
+      markup += `<text class="proportion-mini-axis-label" transform="translate(15 ${view.top + view.plotHeight / 2}) rotate(-90)" text-anchor="middle">${task.yLabel}</text>`;
+    } else {
+      markup += `<text class="proportion-axis-label" x="${view.left + view.plotWidth / 2}" y="492" text-anchor="middle">${task.xLabel}</text>`;
+      markup += `<text class="proportion-axis-label" transform="translate(20 ${view.top + view.plotHeight / 2}) rotate(-90)" text-anchor="middle">${task.yLabel}</text>`;
+      markup += `<circle class="proportion-origin" cx="${view.left}" cy="${view.top + view.plotHeight}" r="5"></circle>`;
+    }
+    if (interactive) {
+      for (let gx = 0; gx <= view.cols; gx += 1) for (let gy = 0; gy <= view.rows; gy += 1) {
+        const point = proportionScreenPoint(gx, gy, view);
+        markup += `<circle class="proportion-point-hit" tabindex="0" role="button" aria-label="Select (${proportionNumber(gx * task.xStep)}, ${proportionNumber(gy * task.yStep)})" data-proportion-gx="${gx}" data-proportion-gy="${gy}" cx="${point.x}" cy="${point.y}" r="16"></circle>`;
+      }
+    }
+    return { markup, view };
+  }
+
+  function proportionLineMarkup(task, slope, intercept, className = "proportion-choice-line") {
+    const ends = proportionLineEnds(slope, intercept, task);
+    if (!ends) return "";
+    return `<line class="${className}" x1="${ends[0].x}" y1="${ends[0].y}" x2="${ends[1].x}" y2="${ends[1].y}"></line>`;
+  }
+
+  function compactProportionGraph(task, option, index) {
+    const view = { width: 300, height: 238, left: 62, top: 20, plotWidth: 210, plotHeight: 160, cols: 5, rows: 5 };
+    const grid = proportionGridMarkup(task, false, true).markup;
+    const xMax = view.cols * task.xStep;
+    const yMax = view.rows * task.yStep;
+    const candidates = [];
+    const add = (x, y) => {
+      if (x >= 0 && x <= xMax && y >= 0 && y <= yMax && !candidates.some(p => Math.abs(p.x-x)<.001 && Math.abs(p.y-y)<.001)) candidates.push({x,y});
+    };
+    add(0, option.intercept); add(xMax, option.slope*xMax+option.intercept);
+    if (option.slope) { add(-option.intercept/option.slope,0); add((yMax-option.intercept)/option.slope,yMax); }
+    let line = "";
+    if (candidates.length >= 2) {
+      const points = candidates.map(p => proportionScreenPoint(p.x/task.xStep,p.y/task.yStep,view));
+      line = `<line class="proportion-choice-line" x1="${points[0].x}" y1="${points[0].y}" x2="${points[1].x}" y2="${points[1].y}"></line>`;
+    }
+    return `<svg class="proportion-mini-graph" viewBox="0 0 ${view.width} ${view.height}" aria-label="Graph ${String.fromCharCode(65 + index)}">${grid}${line}</svg>`;
+  }
+
+  function renderProportionMatch(data, task) {
+    const axisMessage = `x-axis: 1 interval = ${proportionNumber(task.xStep)} ${task.xLabel} • y-axis: 1 interval = ${proportionNumber(task.yStep)} ${task.yLabel}`;
+    return `
+      <div class="proportion-task-shell">
+        <header class="proportion-task-header"><div><p class="lab-mini-title">Match the situation • ${data.index + 1} of 5</p><h4>${task.title}</h4></div><span class="proportion-phase-chip">Read → Match</span></header>
+        <section class="proportion-situation-card"><strong>Situation</strong><p>${task.situation}</p><div class="proportion-axis-brief"><span><b>x</b> = ${task.xLabel}</span><span><b>y</b> = ${task.yLabel}</span></div></section>
+        <div class="proportion-interval-banner">Before choosing, read the scales: ${axisMessage}.</div>
+        <div class="proportion-match-grid">
+          ${task.options.map((option, index) => `<button type="button" class="proportion-graph-choice ${data.selected === index ? "is-selected" : ""} ${data.answered && index === task.correct ? "is-correct" : ""}" data-proportion-choice="${index}" ${data.answered ? "disabled" : ""}><span>Graph ${String.fromCharCode(65 + index)}</span>${compactProportionGraph(task, option, index)}</button>`).join("")}
+        </div>
+        <div class="proportion-actions"><button type="button" class="lab-action" id="checkProportionMatch" ${data.selected === null || data.answered ? "disabled" : ""}>Check match</button><button type="button" class="lab-next" id="nextProportionTask" ${data.answered ? "" : "hidden"}>Next situation →</button></div>
+      </div>`;
+  }
+
+  function proportionSelectedMarkup(data, task) {
+    let markup = "";
+    (data.points || []).forEach((point, index) => {
+      const screen = proportionScreenPoint(point.gx, point.gy);
+      markup += `<g class="proportion-selected-point"><circle cx="${screen.x}" cy="${screen.y}" r="11"></circle><text x="${screen.x + 14}" y="${screen.y - 12}">P${index + 1} (${proportionNumber(point.x)}, ${proportionNumber(point.y)})</text></g>`;
+    });
+    if (data.graphed && data.points.length === 2) {
+      const [first, second] = data.points;
+      const run = second.x - first.x;
+      if (Math.abs(run) > .0001) {
+        const slope = (second.y - first.y) / run;
+        const intercept = first.y - slope * first.x;
+        markup = proportionLineMarkup(task, slope, intercept, "proportion-student-line") + markup;
+      }
+    }
+    return markup;
+  }
+
+  function renderProportionBuild(data, task) {
+    const grid = proportionGridMarkup(task, true, false).markup;
+    const pointReadout = data.points.length ? data.points.map((point, index) => `P${index + 1} = (${proportionNumber(point.x)}, ${proportionNumber(point.y)})`).join(" • ") : "No points selected yet";
+    return `
+      <div class="proportion-task-shell">
+        <header class="proportion-task-header"><div><p class="lab-mini-title">Build the graph • ${data.index - 4} of 5</p><h4>${task.title}</h4></div><span class="proportion-phase-chip build">Choose → Graph → Submit</span></header>
+        <section class="proportion-situation-card"><strong>Situation</strong><p>${task.situation}</p><div class="proportion-axis-brief"><span><b>x</b> = ${task.xLabel}</span><span><b>y</b> = ${task.yLabel}</span></div></section>
+        <div class="proportion-build-layout">
+          <div class="proportion-graph-card">
+            <div class="proportion-axis-scale"><span><b>x-axis:</b> 1 interval = ${proportionNumber(task.xStep)} ${task.xLabel}</span><span><b>y-axis:</b> 1 interval = ${proportionNumber(task.yStep)} ${task.yLabel}</span></div>
+            <svg class="proportion-build-graph" viewBox="0 0 ${PROPORTION_VIEW.width} ${PROPORTION_VIEW.height}" aria-label="Interactive graph for ${task.title}">${grid}${proportionSelectedMarkup(data, task)}</svg>
+            <div class="proportion-point-readout">${pointReadout}</div>
+          </div>
+          <aside class="proportion-coach-card">
+            <div class="proportion-rate-card"><span>Unit rate / slope</span><strong>${task.rateText}</strong><p>${task.gridHint}</p></div>
+            <ol class="proportion-coach-steps">
+              <li><b>Start at (0, 0).</b> No input means no output in a proportional relationship.</li>
+              <li><b>Turn the rate into a grid move.</b> Read what one interval means on each axis.</li>
+              <li><b>Scale both parts together.</b> Repeat the same move to choose a second exact point farther away.</li>
+            </ol>
+            <p class="proportion-quality-note"><b>Quality points:</b> exact grid intersections on the relationship, separated by at least two grid intervals.</p>
+            <div class="proportion-build-actions"><button type="button" class="lab-action" id="graphProportionLine" ${data.points.length === 2 ? "" : "disabled"}>Graph my line</button><button type="button" class="lab-action secondary" id="submitProportionGraph" ${data.graphed ? "" : "disabled"}>Submit graph</button><button type="button" class="lab-choice" id="clearProportionPoints">Clear points</button></div>
+            <button type="button" class="lab-next" id="nextProportionTask" ${data.solved ? "" : "hidden"}>Next situation →</button>
+          </aside>
+        </div>
+      </div>`;
+  }
+
+  function checkProportionGraph(data, task) {
+    if (data.points.length !== 2) return setLabFeedback("Choose two exact grid points before submitting.", "incorrect");
+    const [first, second] = data.points;
+    const run = second.x - first.x;
+    const rise = second.y - first.y;
+    const gridDistance = Math.hypot(second.gx - first.gx, second.gy - first.gy);
+    if (Math.abs(run) < .0001) return setLabFeedback(`Your two points have the same x-value, so the run is 0. Choose a second point to the right. Remember: 1 x-interval represents ${proportionNumber(task.xStep)} ${task.xLabel}.`, "incorrect");
+    const slope = rise / run;
+    const intercept = first.y - slope * first.x;
+    const bothOnTarget = data.points.every(point => Math.abs(point.y - task.rate * point.x) < .001);
+    if (Math.abs(intercept) > .001) return setLabFeedback(`Your line does not pass through (0, 0). A proportional relationship must include the origin because 0 ${task.xLabel} corresponds to 0 ${task.yLabel}.`, "incorrect");
+    if (!bothOnTarget || Math.abs(slope - task.rate) > .001) return setLabFeedback(`Recheck the grid move. The x-axis changes by ${proportionNumber(task.xStep)} ${task.xLabel} per interval, while the y-axis changes by ${proportionNumber(task.yStep)} ${task.yLabel} per interval. ${task.gridHint}`, "incorrect");
+    if (gridDistance < 2) return setLabFeedback("Both points are on the relationship, but they are too close together to be strong graphing points. Keep one point and choose another at least two grid intervals away.", "incorrect");
+    data.solved = true;
+    const next = $("#nextProportionTask");
+    if (next) next.hidden = false;
+    setLabFeedback(`Correct. Your points give rise ${proportionNumber(rise)} and run ${proportionNumber(run)}, so slope = ${proportionNumber(rise)} ÷ ${proportionNumber(run)} = ${proportionNumber(task.rate)}. The line passes through (0, 0) and models the situation.`, "correct");
+  }
+
+  function renderLab84B() {
+    if (!labRuntime.data) labRuntime.data = { index: 0, selected: null, answered: false, points: [], graphed: false, solved: false };
+    const data = labRuntime.data;
+    if (data.index >= PROPORTION_LAB_TASKS.length) {
+      setLabProgress(PROPORTION_LAB_TASKS.length, PROPORTION_LAB_TASKS.length, "All ten proportional situations completed.");
+      return showLabCompletion("8.4B");
+    }
+    const task = PROPORTION_LAB_TASKS[data.index];
+    const completed = data.index + (data.answered || data.solved ? 1 : 0);
+    const phaseText = task.phase === "match" ? "Match a real-world situation to its proportional graph." : "Use the unit rate and axis intervals to construct the graph from two points.";
+    setLabProgress(completed, PROPORTION_LAB_TASKS.length, phaseText);
+    $("#standardsLabBody").innerHTML = task.phase === "match" ? renderProportionMatch(data, task) : renderProportionBuild(data, task);
+
+    const nextTask = () => {
+      if (data.index >= PROPORTION_LAB_TASKS.length - 1) return showLabCompletion("8.4B");
+      data.index += 1;
+      resetProportionTask(data);
+      renderLab84B();
+      setLabFeedback(data.index < 5 ? "Read the new situation, calculate its unit rate, and compare the four graphs." : "Choose two quality points. Read both axis intervals before turning the rate into a grid move.");
+    };
+
+    if (task.phase === "match") {
+      document.querySelectorAll("[data-proportion-choice]").forEach(button => button.addEventListener("click", () => {
+        data.selected = Number(button.dataset.proportionChoice);
+        renderLab84B();
+        setLabFeedback(`Graph ${String.fromCharCode(65 + data.selected)} selected. Check the origin, the axis scales, and the unit rate.`);
+      }));
+      $("#checkProportionMatch").addEventListener("click", () => {
+        if (data.selected === task.correct) {
+          data.answered = true;
+          renderLab84B();
+          setLabFeedback(`Correct. ${task.explanation}`, "correct");
+        } else {
+          setLabFeedback(task.options[data.selected].feedback, "incorrect");
+        }
+      });
+      const next = $("#nextProportionTask");
+      if (next) next.addEventListener("click", nextTask);
+      return;
+    }
+
+    document.querySelectorAll("[data-proportion-gx]").forEach(hit => {
+      const choose = () => {
+        if (data.solved) return;
+        const gx = Number(hit.dataset.proportionGx);
+        const gy = Number(hit.dataset.proportionGy);
+        const existing = data.points.findIndex(point => point.gx === gx && point.gy === gy);
+        if (existing >= 0) data.points.splice(existing, 1);
+        else {
+          const point = { gx, gy, x: cleanSlopeNumber(gx * task.xStep), y: cleanSlopeNumber(gy * task.yStep) };
+          if (data.points.length >= 2) data.points.shift();
+          data.points.push(point);
+        }
+        data.graphed = false;
+        renderLab84B();
+        setLabFeedback(data.points.length === 2 ? "Two points selected. Click Graph my line to extend the line through the entire coordinate plane." : "Choose one more exact grid intersection.");
+      };
+      hit.addEventListener("click", choose);
+      hit.addEventListener("keydown", event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); choose(); } });
+    });
+    $("#graphProportionLine").addEventListener("click", () => {
+      if (data.points.length !== 2) return;
+      data.graphed = true;
+      renderLab84B();
+      setLabFeedback("Your line now extends through both selected points. Check whether it passes through the origin and whether its rise/run matches the unit rate, then submit.");
+    });
+    $("#submitProportionGraph").addEventListener("click", () => checkProportionGraph(data, task));
+    $("#clearProportionPoints").addEventListener("click", () => {
+      data.points = [];
+      data.graphed = false;
+      data.solved = false;
+      renderLab84B();
+      setLabFeedback("Points cleared. Start with (0, 0), then use the coached grid move to locate another point.");
+    });
+    const next = $("#nextProportionTask");
+    if (next) next.addEventListener("click", nextTask);
+  }
+
+  const RELATION_LAB_TASKS = [
+    {
+      kind: "graph", title: "Notebooks at the school store", rate: 2.5, xStep: 1, yStep: 5,
+      xLabel: "notebooks", yLabel: "total cost ($)", equation: "y = 2.5x",
+      stimulus: "The graph shows the total cost y for x notebooks.",
+      storyParts: ["At the school store, the cost increases by", "for each notebook. The cost of 0 notebooks is", "."],
+      rateChoices: [[5,"$5.00"],[1.5,"$1.50"],[2.5,"$2.50"],[0.4,"$0.40"]],
+      startChoices: [[2.5,"$2.50"],[0,"$0"],[5,"$5"],[-2.5,"-$2.50"]],
+      table: [{x:0,y:0},{x:2,y:null,yAnswer:5},{x:null,xAnswer:4,y:10},{x:6,y:15}]
+    },
+    {
+      kind: "graph", title: "Water flowing into garden beds", rate: .75, xStep: 2, yStep: 1.5,
+      xLabel: "time (minutes)", yLabel: "water (liters)", equation: "y = 0.75x",
+      stimulus: "The graph shows the liters of water y delivered in x minutes.",
+      storyParts: ["The hose delivers", "for each minute. At 0 minutes, it has delivered", "."],
+      rateChoices: [[1.5,"1.5 liters"],[.5,"0.5 liter"],[.75,"0.75 liter"],[3,"3 liters"]],
+      startChoices: [[.75,"0.75 liter"],[1.5,"1.5 liters"],[-.75,"-0.75 liter"],[0,"0 liters"]],
+      table: [{x:0,y:0},{x:4,y:3},{x:8,y:null,yAnswer:6},{x:null,xAnswer:12,y:9}]
+    },
+    {
+      kind: "graph", title: "Pages printed over time", rate: 6, xStep: 1, yStep: 3,
+      xLabel: "time (minutes)", yLabel: "pages printed", equation: "y = 6x",
+      stimulus: "The graph shows the number of pages y printed in x minutes.",
+      storyParts: ["The printer produces", "for each minute. Before printing begins, the number of pages printed is", "."],
+      rateChoices: [[3,"3 pages"],[12,"12 pages"],[1/6,"1/6 page"],[6,"6 pages"]],
+      startChoices: [[6,"6 pages"],[0,"0 pages"],[-6,"-6 pages"],[3,"3 pages"]],
+      table: [{x:0,y:0},{x:1,y:6},{x:null,xAnswer:2,y:12},{x:3,y:null,yAnswer:18}]
+    },
+    {
+      kind: "equation", title: "Beads used for bracelets", rate: 4, xStep: 1, yStep: 4,
+      xLabel: "bracelets", yLabel: "beads", equation: "y = 4x",
+      stimulus: "In the equation, x is the number of bracelets and y is the number of beads.",
+      storyParts: ["A crafter uses", "for each bracelet. Before making any bracelets, the number of beads used is", "."],
+      rateChoices: [[8,"8 beads"],[.25,"1/4 bead"],[0,"0 beads"],[4,"4 beads"]],
+      startChoices: [[4,"4 beads"],[-4,"-4 beads"],[0,"0 beads"],[1,"1 bead"]],
+      table: [{x:0,y:0},{x:2,y:null,yAnswer:8},{x:null,xAnswer:3,y:12},{x:5,y:20}]
+    },
+    {
+      kind: "equation", title: "Fruit sold by weight", rate: 1.2, xStep: 2, yStep: 1.2,
+      xLabel: "fruit (pounds)", yLabel: "total cost ($)", equation: "y = 1.2x",
+      stimulus: "In the equation, x is the number of pounds and y is the total cost.",
+      storyParts: ["The fruit costs", "for each pound. The cost of 0 pounds is", "."],
+      rateChoices: [[2.4,"$2.40"],[1.2,"$1.20"],[.12,"$0.12"],[12,"$12.00"]],
+      startChoices: [[1.2,"$1.20"],[2.4,"$2.40"],[-1.2,"-$1.20"],[0,"$0"]],
+      table: [{x:0,y:0},{x:2,y:2.4},{x:4,y:null,yAnswer:4.8},{x:null,xAnswer:6,y:7.2}]
+    },
+    {
+      kind: "equation", title: "Tickets for a school performance", rate: 7.5, xStep: 1, yStep: 15,
+      xLabel: "tickets", yLabel: "total cost ($)", equation: "y = 7.5x",
+      stimulus: "In the equation, x is the number of tickets and y is the total cost.",
+      storyParts: ["Each ticket costs", ". If no tickets are purchased, the total cost is", "."],
+      rateChoices: [[15,"$15.00"],[.75,"$0.75"],[7.5,"$7.50"],[75,"$75.00"]],
+      startChoices: [[7.5,"$7.50"],[15,"$15"],[0,"$0"],[-7.5,"-$7.50"]],
+      table: [{x:0,y:0},{x:2,y:15},{x:null,xAnswer:4,y:30},{x:6,y:null,yAnswer:45}]
+    },
+    {
+      kind: "table", title: "Bundles of flower stems", rate: 3, xStep: 2, yStep: 3,
+      xLabel: "bundles", yLabel: "flower stems", equation: "y = 3x",
+      stimulus: "The table shows the number of stems y in x equal bundles.",
+      storyParts: ["Each bundle contains", ". With 0 bundles, there are", "."],
+      rateChoices: [[6,"6 stems"],[1/3,"1/3 stem"],[3,"3 stems"],[9,"9 stems"]],
+      startChoices: [[3,"3 stems"],[-3,"-3 stems"],[6,"6 stems"],[0,"0 stems"]],
+      table: [{x:0,y:0},{x:2,y:6},{x:4,y:12},{x:6,y:18}]
+    },
+    {
+      kind: "table", title: "Trail distance on a map", rate: 2.5, xStep: 2, yStep: 5,
+      xLabel: "map distance (cm)", yLabel: "actual distance (km)", equation: "y = 2.5x",
+      stimulus: "The table compares map distance x to actual trail distance y.",
+      storyParts: ["Each centimeter on the map represents", ". A map distance of 0 centimeters represents", "."],
+      rateChoices: [[5,"5 kilometers"],[2.5,"2.5 kilometers"],[.4,"0.4 kilometer"],[10,"10 kilometers"]],
+      startChoices: [[2.5,"2.5 kilometers"],[5,"5 kilometers"],[0,"0 kilometers"],[-2.5,"-2.5 kilometers"]],
+      table: [{x:0,y:0},{x:2,y:5},{x:4,y:10},{x:6,y:15}]
+    },
+    {
+      kind: "table", title: "Distance during walking intervals", rate: .75, xStep: 2, yStep: 3,
+      xLabel: "10-minute intervals", yLabel: "distance (miles)", equation: "y = 0.75x",
+      stimulus: "The table shows distance y after x ten-minute intervals.",
+      storyParts: ["The walker travels", "during each 10-minute interval. Before the first interval, the distance traveled is", "."],
+      rateChoices: [[1.5,"1.5 miles"],[.75,"0.75 mile"],[7.5,"7.5 miles"],[.075,"0.075 mile"]],
+      startChoices: [[.75,"0.75 mile"],[1.5,"1.5 miles"],[-.75,"-0.75 mile"],[0,"0 miles"]],
+      table: [{x:0,y:0},{x:2,y:1.5},{x:4,y:3},{x:6,y:4.5}]
+    },
+    {
+      kind: "situation", title: "Buying oranges by the pound", rate: 2.5, xStep: 2, yStep: 5,
+      xLabel: "oranges (pounds)", yLabel: "total cost ($)", equation: "y = 2.5x",
+      stimulus: "Five pounds of oranges cost $12.50. The total cost y is proportional to the number of pounds x.",
+      table: [{x:0,y:0},{x:2,y:null,yAnswer:5},{x:null,xAnswer:4,y:10},{x:8,y:20}]
+    },
+    {
+      kind: "situation", title: "Filling a rain barrel", rate: 6, xStep: 2, yStep: 6,
+      xLabel: "time (minutes)", yLabel: "water (gallons)", equation: "y = 6x",
+      stimulus: "A hose adds 18 gallons to an empty rain barrel in 3 minutes at a constant rate. The amount of water y is proportional to time x.",
+      table: [{x:0,y:0},{x:2,y:12},{x:4,y:null,yAnswer:24},{x:null,xAnswer:6,y:36}]
+    },
+    {
+      kind: "situation", title: "Admission to a community event", rate: 7.5, xStep: 3, yStep: 22.5,
+      xLabel: "tickets", yLabel: "total cost ($)", equation: "y = 7.5x",
+      stimulus: "Four admission tickets cost $30. The total cost y is proportional to the number of tickets x.",
+      table: [{x:0,y:0},{x:3,y:22.5},{x:null,xAnswer:6,y:45},{x:9,y:null,yAnswer:67.5}]
+    }
+  ];
+
+  const NONPROPORTIONAL_RELATION_LAB_TASKS = [
+    {
+      kind: "graph", title: "Taxi ride with a starting fee", rate: 2, intercept: 4, xStep: 2, yStep: 4,
+      xLabel: "distance (miles)", yLabel: "total fare ($)", equation: "y = 2x + 4",
+      stimulus: "The graph shows the total taxi fare y after traveling x miles.",
+      storyParts: ["The taxi fare increases by", "for each mile. Before any miles are traveled, the fare is", "."],
+      rateChoices: [[4,"$4 per mile"],[1,"$1 per mile"],[2,"$2 per mile"],[.5,"$0.50 per mile"]],
+      startChoices: [[2,"$2"],[8,"$8"],[0,"$0"],[4,"$4"]],
+      table: [{x:2,y:8},{x:4,y:null,yAnswer:12},{x:null,xAnswer:6,y:16},{x:8,y:20}]
+    },
+    {
+      kind: "graph", title: "Skate rental with an equipment fee", rate: 3, intercept: 6, xStep: 2, yStep: 6,
+      xLabel: "time (hours)", yLabel: "total cost ($)", equation: "y = 3x + 6",
+      stimulus: "The graph shows the total cost y to rent skates for x hours.",
+      storyParts: ["The rental cost increases by", "for each hour. The equipment fee at 0 hours is", "."],
+      rateChoices: [[6,"$6 per hour"],[3,"$3 per hour"],[2,"$2 per hour"],[9,"$9 per hour"]],
+      startChoices: [[0,"$0"],[3,"$3"],[6,"$6"],[12,"$12"]],
+      table: [{x:2,y:12},{x:null,xAnswer:4,y:18},{x:6,y:null,yAnswer:24},{x:8,y:30}]
+    },
+    {
+      kind: "graph", title: "Ice pops remaining in a cooler", rate: -1, intercept: 10, xStep: 2, yStep: 2,
+      xLabel: "time (hours)", yLabel: "ice pops remaining", equation: "y = -x + 10",
+      stimulus: "The graph shows the number of ice pops y remaining after x hours.",
+      storyParts: ["The number of ice pops changes by", "each hour. At 0 hours, the cooler contains", "."],
+      rateChoices: [[1,"1 more ice pop"],[-2,"2 fewer ice pops"],[-1,"1 fewer ice pop"],[10,"10 fewer ice pops"]],
+      startChoices: [[8,"8 ice pops"],[0,"0 ice pops"],[10,"10 ice pops"],[1,"1 ice pop"]],
+      table: [{x:2,y:null,yAnswer:8},{x:4,y:6},{x:null,xAnswer:6,y:4},{x:8,y:2}]
+    },
+    {
+      kind: "equation", title: "Community garden membership", rate: .5, intercept: 2, xStep: 2, yStep: 1,
+      xLabel: "seed packets", yLabel: "total cost ($)", equation: "y = 0.5x + 2",
+      stimulus: "In the equation, x is the number of seed packets and y is the total cost, including a membership fee.",
+      storyParts: ["Each seed packet adds", "to the cost. The membership fee when 0 packets are purchased is", "."],
+      rateChoices: [[2,"$2.00"],[.5,"$0.50"],[1,"$1.00"],[.25,"$0.25"]],
+      startChoices: [[.5,"$0.50"],[0,"$0"],[4,"$4"],[2,"$2"]],
+      table: [{x:2,y:3},{x:4,y:null,yAnswer:4},{x:null,xAnswer:6,y:5},{x:8,y:6}]
+    },
+    {
+      kind: "equation", title: "Museum audio guide rental", rate: 4, intercept: 8, xStep: 1, yStep: 4,
+      xLabel: "time (hours)", yLabel: "total charge ($)", equation: "y = 4x + 8",
+      stimulus: "In the equation, x is the number of rental hours and y is the total audio-guide charge.",
+      storyParts: ["The charge increases by", "for each hour. The checkout fee before any rental time is", "."],
+      rateChoices: [[8,"$8 per hour"],[2,"$2 per hour"],[4,"$4 per hour"],[12,"$12 per hour"]],
+      startChoices: [[4,"$4"],[8,"$8"],[0,"$0"],[16,"$16"]],
+      table: [{x:2,y:16},{x:null,xAnswer:4,y:24},{x:6,y:null,yAnswer:32},{x:8,y:40}]
+    },
+    {
+      kind: "equation", title: "Water draining from a display tank", rate: -.5, intercept: 5, xStep: 2, yStep: 1,
+      xLabel: "time (minutes)", yLabel: "water remaining (liters)", equation: "y = -0.5x + 5",
+      stimulus: "In the equation, x is elapsed time and y is the water remaining in a small display tank.",
+      storyParts: ["The amount of water changes by", "each minute. At 0 minutes, the tank contains", "."],
+      rateChoices: [[.5,"0.5 liter more"],[-1,"1 liter less"],[5,"5 liters less"],[-.5,"0.5 liter less"]],
+      startChoices: [[.5,"0.5 liter"],[5,"5 liters"],[0,"0 liters"],[10,"10 liters"]],
+      table: [{x:2,y:4},{x:4,y:null,yAnswer:3},{x:null,xAnswer:6,y:2},{x:8,y:1}]
+    },
+    {
+      kind: "table", title: "Art studio reservation", rate: 1.5, intercept: 3, xStep: 2, yStep: 3,
+      xLabel: "paint colors", yLabel: "total cost ($)", equation: "y = 1.5x + 3",
+      stimulus: "The table shows the total studio cost y for x paint colors. Notice that x = 0 is not shown.",
+      storyParts: ["Each paint color adds", "to the cost. Working backward to x = 0 shows a reservation fee of", "."],
+      rateChoices: [[3,"$3.00"],[.5,"$0.50"],[1.5,"$1.50"],[6,"$6.00"]],
+      startChoices: [[6,"$6"],[3,"$3"],[0,"$0"],[1.5,"$1.50"]],
+      table: [{x:2,y:6},{x:4,y:9},{x:6,y:12},{x:8,y:15}]
+    },
+    {
+      kind: "table", title: "Delivery order with a service charge", rate: 2.5, intercept: 5, xStep: 2, yStep: 5,
+      xLabel: "items ordered", yLabel: "total charge ($)", equation: "y = 2.5x + 5",
+      stimulus: "The table shows the total delivery charge y for x items. The row containing the y-intercept is not displayed.",
+      storyParts: ["Each item adds", "to the charge. Extending the pattern back to x = 0 gives a service charge of", "."],
+      rateChoices: [[5,"$5.00"],[2.5,"$2.50"],[1.25,"$1.25"],[10,"$10.00"]],
+      startChoices: [[2.5,"$2.50"],[10,"$10"],[5,"$5"],[0,"$0"]],
+      table: [{x:2,y:10},{x:4,y:15},{x:6,y:20},{x:8,y:25}]
+    },
+    {
+      kind: "table", title: "Plant growth after transplanting", rate: .75, intercept: 1.5, xStep: 2, yStep: 1.5,
+      xLabel: "time (weeks)", yLabel: "plant height (cm)", equation: "y = 0.75x + 1.5",
+      stimulus: "The table shows the plant height y after x weeks. The plant already had height when the observations began.",
+      storyParts: ["The plant grows", "each week. Extending the pattern to week 0 gives a starting height of", "."],
+      rateChoices: [[1.5,"1.5 centimeters"],[.75,"0.75 centimeter"],[3,"3 centimeters"],[.375,"0.375 centimeter"]],
+      startChoices: [[.75,"0.75 centimeter"],[0,"0 centimeters"],[3,"3 centimeters"],[1.5,"1.5 centimeters"]],
+      table: [{x:2,y:3},{x:4,y:4.5},{x:6,y:6},{x:8,y:7.5}]
+    },
+    {
+      kind: "situation", title: "Dog-walking appointment", rate: 6, intercept: 12, xStep: 1, yStep: 6,
+      xLabel: "dogs", yLabel: "total charge ($)", equation: "y = 6x + 12",
+      stimulus: "A dog walker charges a $12 appointment fee plus $6 for each dog. The total charge is y dollars for x dogs.",
+      table: [{x:2,y:null,yAnswer:24},{x:null,xAnswer:4,y:36},{x:6,y:48},{x:8,y:null,yAnswer:60}]
+    },
+    {
+      kind: "situation", title: "Bike rental with an unlock fee", rate: 1, intercept: 4, xStep: 2, yStep: 2,
+      xLabel: "time (hours)", yLabel: "total cost ($)", equation: "y = x + 4",
+      stimulus: "A bike-share company charges a $4 unlock fee and $1 for each hour. The total rental cost is y dollars after x hours.",
+      table: [{x:2,y:6},{x:4,y:null,yAnswer:8},{x:null,xAnswer:6,y:10},{x:8,y:12}]
+    },
+    {
+      kind: "situation", title: "Poster order with a setup charge", rate: 1.25, intercept: 2.5, xStep: 2, yStep: 2.5,
+      xLabel: "posters", yLabel: "total cost ($)", equation: "y = 1.25x + 2.5",
+      stimulus: "A print shop charges a $2.50 setup fee plus $1.25 for each poster. The total cost is y dollars for x posters.",
+      table: [{x:2,y:null,yAnswer:5},{x:null,xAnswer:4,y:7.5},{x:6,y:10},{x:8,y:null,yAnswer:12.5}]
+    }
+  ];
+
+  function resetRelationTask(data) {
+    data.responses = {};
+    data.points = [];
+    data.graphed = false;
+    data.graphCorrect = false;
+    data.solved = false;
+  }
+
+  function relationInputValue(data, key) {
+    return escapeHTML(data.responses?.[key] ?? "");
+  }
+
+  function parseRelationNumber(value) {
+    const text = String(value ?? "").trim().replace(/\$/g, "");
+    if (!text) return NaN;
+    if (/^-?\d+(?:\.\d+)?\s*\/\s*-?\d+(?:\.\d+)?$/.test(text)) {
+      const [numerator, denominator] = text.split("/").map(Number);
+      return denominator ? numerator / denominator : NaN;
+    }
+    return Number(text);
+  }
+
+  function relationNearlyEqual(first, second) {
+    return Number.isFinite(first) && Math.abs(first - second) < .001;
+  }
+
+  function relationSelectMarkup(data, key, choices, label) {
+    const current = String(data.responses?.[key] ?? "");
+    return `<label class="relation-inline-select"><span class="sr-only">${label}</span><select data-relation-field="${key}"><option value="">Choose...</option>${choices.map(([value,text]) => `<option value="${value}" ${current === String(value) ? "selected" : ""}>${text}</option>`).join("")}</select></label>`;
+  }
+
+  function relationTableMarkup(data, task, editable) {
+    return `<div class="relation-table-wrap"><table class="relation-table"><thead><tr><th scope="col">x<br><small>${task.xLabel}</small></th><th scope="col">y<br><small>${task.yLabel}</small></th></tr></thead><tbody>${task.table.map((row,index) => `<tr><td>${editable && row.x === null ? `<input data-relation-field="table-${index}-x" value="${relationInputValue(data,`table-${index}-x`)}" inputmode="decimal" aria-label="Missing x-value in row ${index + 1}">` : proportionNumber(row.x)}</td><td>${editable && row.y === null ? `<input data-relation-field="table-${index}-y" value="${relationInputValue(data,`table-${index}-y`)}" inputmode="decimal" aria-label="Missing y-value in row ${index + 1}">` : proportionNumber(row.y)}</td></tr>`).join("")}</tbody></table></div>`;
+  }
+
+  function relationEquationMarkup(data, task, editable) {
+    if (!editable) return `<div class="relation-equation-display" aria-label="${task.equation}">${task.equation}</div>`;
+    const coefficient = Object.hasOwn(task,"intercept") ? "m" : "k";
+    return `<div class="relation-equation-builder"><span>y =</span><input data-relation-field="equation-k" value="${relationInputValue(data,"equation-k")}" inputmode="decimal" aria-label="Slope or coefficient ${coefficient}" placeholder="${coefficient}"><span>x +</span><input data-relation-field="equation-b" value="${relationInputValue(data,"equation-b")}" inputmode="decimal" aria-label="y-intercept b" placeholder="b"></div>`;
+  }
+
+  function relationStoryMarkup(data, task) {
+    return `<p class="relation-story-fill">${task.storyParts[0]} ${relationSelectMarkup(data,"story-rate",task.rateChoices,"Choose the unit rate")} ${task.storyParts[1]} ${relationSelectMarkup(data,"story-start",task.startChoices,"Choose the starting value")} ${task.storyParts[2]}</p>`;
+  }
+
+  function relationSelectedGraphMarkup(data, task) {
+    let markup = "";
+    if (data.graphed && data.points.length === 2) {
+      const [first,second] = data.points;
+      const run = second.x - first.x;
+      if (Math.abs(run) > .0001) {
+        const slope = (second.y - first.y) / run;
+        const intercept = first.y - slope * first.x;
+        markup += proportionLineMarkup(task,slope,intercept,`relation-student-line ${data.graphCorrect ? "is-correct" : "is-checking"}`);
+      }
+    }
+    data.points.forEach((point,index) => {
+      const screen = proportionScreenPoint(point.gx,point.gy);
+      markup += `<g class="relation-selected-point"><circle cx="${screen.x}" cy="${screen.y}" r="10"></circle><text x="${screen.x + 13}" y="${screen.y - 12}">P${index + 1} (${proportionNumber(point.x)}, ${proportionNumber(point.y)})</text></g>`;
+    });
+    return markup;
+  }
+
+  function relationGraphMarkup(data, task, interactive) {
+    const grid = proportionGridMarkup(task,interactive,false).markup;
+    const target = interactive ? "" : proportionLineMarkup(task,task.rate,task.intercept ?? 0,"relation-target-line");
+    return `<div class="relation-graph-wrap"><div class="proportion-axis-scale"><span><b>x-axis:</b> 1 interval = ${proportionNumber(task.xStep)}</span><span><b>y-axis:</b> 1 interval = ${proportionNumber(task.yStep)}</span></div><svg class="relation-graph" viewBox="0 0 ${PROPORTION_VIEW.width} ${PROPORTION_VIEW.height}" aria-label="${interactive ? "Interactive" : "Given"} graph for ${task.title}">${grid}${target}${interactive ? relationSelectedGraphMarkup(data,task) : ""}</svg>${interactive ? `<p class="relation-point-readout">${data.points.length ? data.points.map((point,index) => `P${index + 1} = (${proportionNumber(point.x)}, ${proportionNumber(point.y)})`).join(" • ") : "Choose two points on the relationship."}</p><div class="relation-graph-actions"><button type="button" class="lab-action" id="checkRelationGraph" ${data.points.length === 2 ? "" : "disabled"}>Draw and check my line</button><button type="button" class="lab-choice" id="clearRelationGraph">Clear points</button></div>` : ""}</div>`;
+  }
+
+  function relationStimulusMarkup(data, task) {
+    if (task.kind === "graph") return relationGraphMarkup(data,task,false);
+    if (task.kind === "equation") return `<div class="relation-stimulus-copy"><p>${task.stimulus}</p>${relationEquationMarkup(data,task,false)}</div>`;
+    if (task.kind === "table") return `<div class="relation-stimulus-copy"><p>${task.stimulus}</p>${relationTableMarkup(data,task,false)}</div>`;
+    return `<div class="relation-situation-stimulus"><span>Real-world situation</span><p>${task.stimulus}</p></div>`;
+  }
+
+  function bindRelationFields(data) {
+    document.querySelectorAll("[data-relation-field]").forEach(field => {
+      const save = () => { data.responses[field.dataset.relationField] = field.value; };
+      field.addEventListener("input",save);
+      field.addEventListener("change",save);
+    });
+  }
+
+  function checkRelationGraph(data, task, standard) {
+    if (data.points.length !== 2) return setLabFeedback("Choose two exact grid points before drawing the line.","incorrect");
+    data.graphed = true;
+    const [first,second] = data.points;
+    const run = second.x - first.x;
+    const rise = second.y - first.y;
+    const gridDistance = Math.hypot(second.gx-first.gx,second.gy-first.gy);
+    if (Math.abs(run) < .0001) {
+      data.graphCorrect = false;
+      renderRelationLab(standard);
+      return setLabFeedback("Those points make a vertical line. Choose two points whose x-values are different.","incorrect");
+    }
+    const slope = rise/run;
+    const intercept = first.y - slope*first.x;
+    const targetIntercept = task.intercept ?? 0;
+    const bothOnTarget = data.points.every(point => relationNearlyEqual(point.y,task.rate*point.x + targetIntercept));
+    data.graphCorrect = bothOnTarget && relationNearlyEqual(slope,task.rate) && relationNearlyEqual(intercept,targetIntercept) && gridDistance >= 2;
+    renderRelationLab(standard);
+    if (!bothOnTarget || !relationNearlyEqual(slope,task.rate)) return setLabFeedback("The line is visible now, but at least one point is not on the relationship. Use the rate and both axis intervals to locate equivalent ordered pairs.","incorrect");
+    if (!relationNearlyEqual(intercept,targetIntercept)) return setLabFeedback(`Your points create the right rate, but the starting value is not ${proportionNumber(targetIntercept)}. Trace the pattern back to x = 0.`,"incorrect");
+    if (gridDistance < 2) return setLabFeedback("Both points work, but choose quality points at least two grid intervals apart so the line is reliable.","incorrect");
+    setLabFeedback(`Graph correct. The line through your points has slope ${proportionNumber(task.rate)} and y-intercept ${proportionNumber(targetIntercept)}. Complete the remaining representations.`,"correct");
+  }
+
+  function relationTableIsCorrect(data,task) {
+    return task.table.every((row,index) => {
+      if (row.x === null && !relationNearlyEqual(parseRelationNumber(data.responses[`table-${index}-x`]),row.xAnswer)) return false;
+      if (row.y === null && !relationNearlyEqual(parseRelationNumber(data.responses[`table-${index}-y`]),row.yAnswer)) return false;
+      return true;
+    });
+  }
+
+  function renderRelationLab(standard) {
+    if (!labRuntime.data) {
+      labRuntime.data = { index:0 };
+      resetRelationTask(labRuntime.data);
+    }
+    const data = labRuntime.data;
+    const tasks = standard === "8.5B" ? NONPROPORTIONAL_RELATION_LAB_TASKS : RELATION_LAB_TASKS;
+    const relationshipType = standard === "8.5B" ? "non-proportional" : "proportional";
+    const tableDirections = standard === "8.5B"
+      ? "Use equal changes in x and y to find the rate of change. The x-values count by 2, and the y-intercept may not be shown in the table."
+      : "Use the constant rate in both directions. You may enter fractions or decimals.";
+    const equationDirections = standard === "8.5B"
+      ? "Enter both the rate of change m and the nonzero y-intercept b."
+      : "Keep the y-intercept space visible, even when its value is zero.";
+    if (data.index >= tasks.length) {
+      setLabProgress(tasks.length,tasks.length,`All twelve ${relationshipType} relationships completed.`);
+      return showLabCompletion(standard);
+    }
+    const task = tasks[data.index];
+    const kindLabel = task.kind === "graph" ? "Graph stimulus" : task.kind === "equation" ? "Equation stimulus" : task.kind === "table" ? "Table stimulus" : "Situation stimulus";
+    const completed = data.index + (data.solved ? 1 : 0);
+    setLabProgress(completed,tasks.length,`Question ${data.index + 1}: translate the ${task.kind} into the other three representations.`);
+    const graphEditable = task.kind !== "graph";
+    const tableEditable = task.kind !== "table";
+    const equationEditable = task.kind !== "equation";
+    const storyEditable = task.kind !== "situation";
+    $("#standardsLabBody").innerHTML = `
+      <section class="relation-lab-shell">
+        <header class="relation-task-header"><div><p class="lab-mini-title">Question ${data.index + 1} of ${tasks.length}</p><h4>${task.title}</h4></div><span>${kindLabel}</span></header>
+        <article class="relation-stimulus-card"><div class="relation-card-label">Start here: ${task.kind}</div>${relationStimulusMarkup(data,task)}${task.kind === "graph" ? `<p class="relation-stimulus-note">${task.stimulus}</p>` : ""}</article>
+        <div class="relation-representation-grid">
+          ${graphEditable ? `<article class="relation-work-card relation-graph-card"><h5><span>1</span> Graph it</h5><p>Select any two quality points. The line appears only after you submit the points.</p>${relationGraphMarkup(data,task,true)}</article>` : ""}
+          ${tableEditable ? `<article class="relation-work-card"><h5><span>${graphEditable ? "2" : "1"}</span> Complete the table</h5><p>${tableDirections}</p>${relationTableMarkup(data,task,true)}</article>` : ""}
+          ${equationEditable ? `<article class="relation-work-card"><h5><span>${graphEditable ? (tableEditable ? "3" : "2") : "2"}</span> Build the equation</h5><p>${equationDirections}</p>${relationEquationMarkup(data,task,true)}</article>` : ""}
+          ${storyEditable ? `<article class="relation-work-card"><h5><span>3</span> Complete the situation</h5><p>Choose the statement that matches both the slope and the starting value.</p>${relationStoryMarkup(data,task)}</article>` : ""}
+        </div>
+        <div class="relation-submit-row"><button type="button" class="lab-action" id="checkRelationTask" ${data.solved ? "disabled" : ""}>Check all representations</button><button type="button" class="lab-next" id="nextRelationTask" ${data.solved ? "" : "hidden"}>${data.index === tasks.length - 1 ? "Finish lab" : "Next relationship →"}</button></div>
+      </section>`;
+    bindRelationFields(data);
+
+    if (graphEditable) {
+      document.querySelectorAll("[data-proportion-gx]").forEach(hit => {
+        const choose = () => {
+          if (data.solved) return;
+          const gx = Number(hit.dataset.proportionGx);
+          const gy = Number(hit.dataset.proportionGy);
+          const existing = data.points.findIndex(point => point.gx === gx && point.gy === gy);
+          if (existing >= 0) data.points.splice(existing,1);
+          else {
+            if (data.points.length >= 2) data.points.shift();
+            data.points.push({gx,gy,x:cleanSlopeNumber(gx*task.xStep),y:cleanSlopeNumber(gy*task.yStep)});
+          }
+          data.graphed = false;
+          data.graphCorrect = false;
+          renderRelationLab(standard);
+          setLabFeedback(data.points.length === 2 ? "Two points selected. Submit them to draw the full line." : "Choose one more point on the relationship.");
+        };
+        hit.addEventListener("click",choose);
+        hit.addEventListener("keydown",event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); choose(); } });
+      });
+      $("#checkRelationGraph").addEventListener("click",() => checkRelationGraph(data,task,standard));
+      $("#clearRelationGraph").addEventListener("click",() => {
+        data.points = [];
+        data.graphed = false;
+        data.graphCorrect = false;
+        renderRelationLab(standard);
+        setLabFeedback("Graph points cleared. Use the relationship to choose two new ordered pairs.");
+      });
+    }
+
+    $("#checkRelationTask").addEventListener("click",() => {
+      document.querySelectorAll("[data-relation-field]").forEach(field => { data.responses[field.dataset.relationField] = field.value; });
+      const missed = [];
+      if (graphEditable && !data.graphCorrect) missed.push("graph");
+      if (tableEditable && !relationTableIsCorrect(data,task)) missed.push("table");
+      if (equationEditable) {
+        const k = parseRelationNumber(data.responses["equation-k"]);
+        const b = parseRelationNumber(data.responses["equation-b"]);
+        if (!relationNearlyEqual(k,task.rate) || !relationNearlyEqual(b,task.intercept ?? 0)) missed.push("equation");
+      }
+      if (storyEditable) {
+        const storyRate = parseRelationNumber(data.responses["story-rate"]);
+        const storyStart = parseRelationNumber(data.responses["story-start"]);
+        if (!relationNearlyEqual(storyRate,task.rate) || !relationNearlyEqual(storyStart,task.intercept ?? 0)) missed.push("real-world sentence");
+      }
+      if (missed.length) {
+        const details = missed.map(item => item === "equation" ? "In y = mx + b, m is the rate of change and b is the output when x = 0." : item === "table" ? "Compare equal changes in x and y to find m, then work backward to x = 0 to check b." : item === "graph" ? "Submit two correct points before checking the whole problem." : "The sentence must name both the per-one change and the value when the input is zero.").join(" ");
+        return setLabFeedback(`Recheck the ${missed.join(", ")}. ${details}`,"incorrect");
+      }
+      data.solved = true;
+      renderRelationLab(standard);
+      setLabFeedback(`All four representations agree: slope = ${proportionNumber(task.rate)}, y-intercept = ${proportionNumber(task.intercept ?? 0)}, and ${task.equation}.`,"correct");
+    });
+
+    const next = $("#nextRelationTask");
+    if (next) next.addEventListener("click",() => {
+      if (data.index >= tasks.length - 1) return showLabCompletion(standard);
+      data.index += 1;
+      resetRelationTask(data);
+      renderRelationLab(standard);
+      syncWhiteboardQuestion();
+      setLabFeedback("New relationship ready. Start with the given representation and connect it to the other three.");
+    });
+  }
+
+  function renderLab85A() { renderRelationLab("8.5A"); }
+  function renderLab85B() { renderRelationLab("8.5B"); }
 
   const SIMILARITY_SHAPES = {
     triangle: [[28, 168], [105, 28], [188, 168]],
@@ -3352,6 +4170,17 @@
       data.index += 1;
       resetSlopeTask(data);
       renderLab84A();
+    } else if (standard === "8.4B") {
+      if (data.index >= PROPORTION_LAB_TASKS.length - 1) return showLabCompletion(standard);
+      data.index += 1;
+      resetProportionTask(data);
+      renderLab84B();
+    } else if (standard === "8.5A" || standard === "8.5B") {
+      const tasks = standard === "8.5B" ? NONPROPORTIONAL_RELATION_LAB_TASKS : RELATION_LAB_TASKS;
+      if (data.index >= tasks.length - 1) return showLabCompletion(standard);
+      data.index += 1;
+      resetRelationTask(data);
+      renderRelationLab(standard);
     } else if (standard === "8.3A") {
       if (data.index >= SIMILARITY_TASKS.length - 1) return showLabCompletion(standard);
       data.index += 1;
@@ -3439,6 +4268,7 @@
     }
 
     if (!$("#standardsLabCompletion").hidden) return;
+    syncWhiteboardQuestion();
     setLabFeedback("Problem skipped. You can keep moving and return by restarting the lab at any time.");
   }
 

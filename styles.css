@@ -148,6 +148,7 @@ h1 { margin-bottom: .5rem; font-size: clamp(2rem, 4vw, 4rem); line-height: .96; 
 .group-card[data-accent="purple"] .group-index { background: #c7aaf2; }
 .group-card[data-accent="teal"] .group-index { background: #70e0d2; }
 .group-card[data-accent="gold"] .group-index { background: var(--lemon); }
+.group-card[data-accent="coral"] .group-index { background: #ff8468; }
 .group-card strong, .group-card small { display: block; }
 .group-card strong { margin-bottom: .18rem; font-size: 1rem; }
 .group-card small { color: #666978; font-size: .82rem; }
@@ -1238,8 +1239,118 @@ button.root-integer-tick:hover i, button.root-integer-tick:focus-visible i, butt
 .slope-ratio-label, .slope-ratio-equals { font-weight: 800; }
 .slope-next { align-self: stretch; margin-top: auto; padding-top: .72rem; }
 
+.proportion-task-shell { display: grid; gap: 1rem; }
+.proportion-task-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .85rem 1rem; border: 2px solid #10223d; border-radius: 16px; background: linear-gradient(100deg,#f8ffe8,#ecffd0 58%,#d8ff55); box-shadow: 4px 4px 0 #10223d; }
+.proportion-task-header h4 { margin: 0; color: #10223d; font-size: clamp(1.25rem,2.3vw,1.85rem); line-height: 1.2; }
+.proportion-task-header .lab-mini-title { margin-bottom: .25rem; color: #496400; }
+.proportion-phase-chip { flex: 0 0 auto; padding: .52rem .75rem; border: 2px solid #10223d; border-radius: 999px; background: #10223d; color: #d8ff55; font-size: .75rem; font-weight: 950; letter-spacing: .04em; text-transform: uppercase; }
+.proportion-phase-chip.build { background: #d8ff55; color: #10223d; }
+.proportion-situation-card { display: grid; gap: .45rem; padding: 1rem 1.1rem; border-left: 7px solid #00969a; border-radius: 14px; background: linear-gradient(120deg,#ecffff,#fff); box-shadow: 0 12px 28px rgba(16,34,61,.09); }
+.proportion-situation-card > strong { color: #007377; font-size: .72rem; font-weight: 950; letter-spacing: .1em; text-transform: uppercase; }
+.proportion-situation-card p { margin: 0; color: #10223d; font-size: 1.04rem; font-weight: 750; line-height: 1.48; }
+.proportion-axis-brief { display: flex; flex-wrap: wrap; gap: .5rem; }
+.proportion-axis-brief span { padding: .38rem .62rem; border: 1px solid #9ac91b; border-radius: 999px; background: #f4ffd3; color: #405500; font-size: .78rem; font-weight: 850; }
+.proportion-axis-brief b { color: #10223d; font-family: "STIX Two Math","Cambria Math",serif; font-size: .95rem; }
+.proportion-interval-banner { padding: .72rem .9rem; border: 2px solid #10223d; border-radius: 12px; background: #10223d; color: white; font-size: .84rem; font-weight: 850; text-align: center; }
+.proportion-interval-banner::before { content: "Check the intervals  →  "; color: #d8ff55; font-weight: 950; }
+.proportion-match-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .85rem; }
+.proportion-graph-choice { overflow: hidden; padding: .6rem; border: 2px solid #bccbd2; border-radius: 16px; background: white; color: #10223d; cursor: pointer; box-shadow: 0 8px 22px rgba(16,34,61,.08); transition: transform .16s ease,border-color .16s ease,box-shadow .16s ease; }
+.proportion-graph-choice:hover:not(:disabled), .proportion-graph-choice:focus-visible { border-color: #008f92; outline: none; transform: translateY(-2px); box-shadow: 4px 5px 0 #10223d; }
+.proportion-graph-choice.is-selected { border-color: #7040b5; background: #f7f1ff; box-shadow: 4px 5px 0 #7040b5; }
+.proportion-graph-choice.is-correct { border-color: #6aa300; background: #f4ffd3; box-shadow: 4px 5px 0 #466100; }
+.proportion-graph-choice > span { display: inline-block; padding: .3rem .55rem; border-radius: 999px; background: #10223d; color: #d8ff55; font-size: .72rem; font-weight: 950; text-transform: uppercase; }
+.proportion-mini-graph { display: block; width: min(100%,360px); height: auto; margin: .25rem auto 0; }
+.proportion-plot-bg { fill: #fbfffd; stroke: #10223d; stroke-width: 2; }
+.proportion-grid-line { stroke: #d6e4e7; stroke-width: 1; }
+.proportion-grid-line.is-axis { stroke: #10223d; stroke-width: 2.5; }
+.proportion-tick { fill: #68778a; font-size: 12px; font-weight: 850; paint-order: stroke; stroke: white; stroke-width: 3; }
+.proportion-axis-label { fill: #10223d; font-size: 13px; font-weight: 950; }
+.proportion-mini-axis-letter { fill: #10223d; font-family: "STIX Two Math","Cambria Math",serif; font-size: 15px; font-style: italic; font-weight: 950; }
+.proportion-mini-axis-label { fill: #10223d; font-size: 12px; font-weight: 900; }
+.proportion-origin { fill: #10223d; }
+.proportion-choice-line { stroke: #00969a; stroke-width: 6; stroke-linecap: round; }
+.proportion-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .65rem; }
+.proportion-build-layout { display: grid; grid-template-columns: minmax(500px,1.1fr) minmax(340px,.9fr); gap: 1rem; align-items: stretch; }
+.proportion-graph-card, .proportion-coach-card { border: 1px solid rgba(16,34,61,.18); border-radius: 18px; background: rgba(255,255,255,.97); box-shadow: 0 14px 35px rgba(35,55,89,.11); }
+.proportion-graph-card { overflow: hidden; padding: .8rem; }
+.proportion-axis-scale { display: flex; flex-wrap: wrap; justify-content: center; gap: .45rem; }
+.proportion-axis-scale span { padding: .38rem .58rem; border: 1px solid #9dc52c; border-radius: 999px; background: #f4ffd3; color: #405500; font-size: .75rem; font-weight: 850; }
+.proportion-axis-scale b { color: #10223d; }
+.proportion-build-graph { display: block; width: min(100%,580px); height: auto; margin: .2rem auto 0; user-select: none; touch-action: none; }
+.proportion-point-hit { fill: transparent; cursor: crosshair; outline: none; }
+.proportion-point-hit:hover, .proportion-point-hit:focus-visible { fill: rgba(216,255,85,.45); stroke: #567500; stroke-width: 2; }
+.proportion-selected-point circle { fill: #d8ff55; stroke: #10223d; stroke-width: 4; filter: drop-shadow(0 2px 3px rgba(16,34,61,.25)); }
+.proportion-selected-point text { fill: #56358b; font-size: 13px; font-weight: 950; paint-order: stroke; stroke: white; stroke-width: 5; stroke-linejoin: round; }
+.proportion-student-line { stroke: #7040b5; stroke-width: 7; stroke-linecap: round; opacity: .9; }
+.proportion-point-readout { min-height: 39px; padding: .55rem .7rem; border-radius: 10px; background: #10223d; color: white; font-family: "STIX Two Math","Cambria Math",serif; font-size: .84rem; font-weight: 750; text-align: center; }
+.proportion-coach-card { display: flex; flex-direction: column; gap: .75rem; padding: 1rem; border-top: 7px solid #9cd615; }
+.proportion-rate-card { padding: .82rem; border: 2px solid #10223d; border-radius: 13px; background: linear-gradient(135deg,#10223d,#17375d); color: white; box-shadow: 3px 3px 0 #75b700; }
+.proportion-rate-card > span { display: block; color: #bde8eb; font-size: .67rem; font-weight: 950; letter-spacing: .08em; text-transform: uppercase; }
+.proportion-rate-card strong { display: block; margin-top: .22rem; color: #d8ff55; font-size: 1.2rem; }
+.proportion-rate-card p { margin: .4rem 0 0; color: white; font-size: .82rem; font-weight: 750; line-height: 1.4; }
+.proportion-coach-steps { display: grid; gap: .55rem; margin: 0; padding: 0; list-style: none; counter-reset: proportion-step; }
+.proportion-coach-steps li { position: relative; padding: .65rem .65rem .65rem 2.65rem; border-radius: 11px; background: #effcfc; color: #4a5a6f; font-size: .82rem; line-height: 1.4; counter-increment: proportion-step; }
+.proportion-coach-steps li::before { content: counter(proportion-step); position: absolute; left: .62rem; top: .58rem; display: grid; place-items: center; width: 1.55rem; height: 1.55rem; border-radius: 50%; background: #008f92; color: white; font-weight: 950; }
+.proportion-coach-steps b { color: #10223d; }
+.proportion-quality-note { margin: 0; padding: .62rem .7rem; border-left: 5px solid #7040b5; border-radius: 9px; background: #f6f0ff; color: #4f3c70; font-size: .8rem; line-height: 1.4; }
+.proportion-build-actions { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
+.proportion-build-actions .lab-action, .proportion-build-actions .lab-choice { width: 100%; margin: 0; }
+.proportion-build-actions .secondary { background: #7040b5; color: white; }
+.proportion-build-actions .lab-choice { grid-column: 1 / -1; padding: .68rem; border: 2px solid #10223d; border-radius: 10px; background: white; color: #10223d; font-weight: 900; }
+.proportion-coach-card > .lab-next { margin-top: auto; }
+
+.relation-lab-shell { display: grid; gap: 1rem; }
+.relation-task-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .9rem 1rem; border: 2px solid #10223d; border-radius: 16px; background: linear-gradient(102deg,#fff7f1,#fff 52%,#ffd9c9); box-shadow: 4px 4px 0 #10223d; }
+.relation-task-header h4 { margin: 0; color: #10223d; font-size: clamp(1.3rem,2.4vw,1.95rem); line-height: 1.18; }
+.relation-task-header .lab-mini-title { margin-bottom: .22rem; color: #a73d18; }
+.relation-task-header > span { flex: 0 0 auto; padding: .5rem .75rem; border: 2px solid #10223d; border-radius: 999px; background: #10223d; color: #ff9b75; font-size: .75rem; font-weight: 950; letter-spacing: .04em; text-transform: uppercase; }
+.relation-stimulus-card { overflow: hidden; padding: 1rem; border: 2px solid #f06f43; border-radius: 18px; background: linear-gradient(135deg,#fff,#fff8f5); box-shadow: 0 13px 30px rgba(16,34,61,.1); }
+.relation-card-label { display: inline-block; margin-bottom: .7rem; padding: .34rem .62rem; border-radius: 999px; background: #f06f43; color: white; font-size: .72rem; font-weight: 950; letter-spacing: .06em; text-transform: uppercase; }
+.relation-stimulus-note { margin: .5rem 0 0; color: #53627a; font-weight: 750; text-align: center; }
+.relation-stimulus-copy { display: grid; justify-items: center; gap: .8rem; }
+.relation-stimulus-copy > p { margin: 0; color: #42516a; font-size: 1rem; font-weight: 750; text-align: center; }
+.relation-equation-display { padding: .75rem 1.35rem; border: 3px solid #10223d; border-radius: 15px; background: #10223d; color: #ff9b75; font-family: "STIX Two Math","Cambria Math",serif; font-size: clamp(2rem,5vw,3.5rem); font-weight: 850; box-shadow: 5px 5px 0 #f06f43; }
+.relation-situation-stimulus { padding: .85rem 1rem; border-left: 7px solid #008f92; border-radius: 13px; background: #edffff; }
+.relation-situation-stimulus span { display: block; margin-bottom: .25rem; color: #007377; font-size: .72rem; font-weight: 950; letter-spacing: .08em; text-transform: uppercase; }
+.relation-situation-stimulus p { margin: 0; color: #10223d; font-size: 1.08rem; font-weight: 780; line-height: 1.5; }
+.relation-representation-grid { display: grid; grid-template-columns: minmax(490px,1.12fr) minmax(340px,.88fr); gap: 1rem; align-items: stretch; }
+.relation-work-card { padding: 1rem; border: 1px solid rgba(16,34,61,.2); border-radius: 18px; background: rgba(255,255,255,.97); box-shadow: 0 13px 30px rgba(16,34,61,.1); }
+.relation-work-card h5 { display: flex; align-items: center; gap: .55rem; margin: 0 0 .4rem; color: #10223d; font-size: 1.08rem; }
+.relation-work-card h5 span { display: grid; place-items: center; width: 1.75rem; height: 1.75rem; border-radius: 50%; background: #008f92; color: white; font-size: .8rem; }
+.relation-work-card > p { margin: 0 0 .75rem; color: #5a687c; line-height: 1.45; }
+.relation-graph-card { grid-row: span 2; border-top: 7px solid #f06f43; }
+.relation-graph-wrap { display: grid; gap: .55rem; }
+.relation-graph { display: block; width: min(100%,590px); height: auto; margin: 0 auto; user-select: none; touch-action: none; }
+.relation-target-line { stroke: #008f92; stroke-width: 8; stroke-linecap: round; filter: drop-shadow(0 2px 2px rgba(0,73,77,.2)); }
+.relation-student-line { stroke: #7040b5; stroke-width: 7; stroke-linecap: round; }
+.relation-student-line.is-correct { stroke: #198754; }
+.relation-student-line.is-checking { stroke: #ed7b2d; }
+.relation-selected-point circle { fill: #ffb392; stroke: #10223d; stroke-width: 4; }
+.relation-selected-point text { fill: #10223d; font-size: 13px; font-weight: 950; paint-order: stroke; stroke: white; stroke-width: 5; stroke-linejoin: round; }
+.relation-point-readout { min-height: 40px; margin: 0 !important; padding: .55rem .7rem; border-radius: 10px; background: #10223d; color: white !important; font-family: "STIX Two Math","Cambria Math",serif; font-size: .86rem; font-weight: 800; text-align: center; }
+.relation-graph-actions { display: grid; grid-template-columns: 1fr .55fr; gap: .55rem; }
+.relation-graph-actions .lab-action, .relation-graph-actions .lab-choice { width: 100%; margin: 0; }
+.relation-graph-actions .lab-choice { padding: .7rem; border: 2px solid #10223d; border-radius: 10px; background: white; color: #10223d; font-weight: 900; }
+.relation-table-wrap { overflow-x: auto; }
+.relation-table { width: 100%; border-collapse: separate; border-spacing: 0; overflow: hidden; border: 2px solid #10223d; border-radius: 13px; background: white; }
+.relation-table th, .relation-table td { width: 50%; padding: .62rem; border-right: 1px solid #9badb9; border-bottom: 1px solid #9badb9; text-align: center; }
+.relation-table tr > *:last-child { border-right: 0; }
+.relation-table tbody tr:last-child td { border-bottom: 0; }
+.relation-table th { background: #10223d; color: #ffaf8f; font-family: "STIX Two Math","Cambria Math",serif; font-size: 1.05rem; }
+.relation-table th small { display: block; color: white; font-family: Inter,system-ui,sans-serif; font-size: .68rem; font-weight: 750; line-height: 1.25; }
+.relation-table td { color: #10223d; font-family: "STIX Two Math","Cambria Math",serif; font-size: 1.05rem; font-weight: 850; }
+.relation-table input { width: min(100%,110px); padding: .48rem; border: 2px solid #008f92; border-radius: 9px; background: #efffff; color: #10223d; font: inherit; text-align: center; }
+.relation-equation-builder { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .45rem; padding: .85rem; border: 2px solid #10223d; border-radius: 13px; background: #f5f1ff; color: #10223d; font-family: "STIX Two Math","Cambria Math",serif; font-size: clamp(1.5rem,3.2vw,2.15rem); font-weight: 850; }
+.relation-equation-builder input { width: 82px; padding: .42rem; border: 2px solid #7040b5; border-radius: 9px; background: white; color: #10223d; font: inherit; text-align: center; }
+.relation-story-fill { margin: 0 !important; color: #10223d !important; font-size: 1rem; font-weight: 780; line-height: 2.25 !important; }
+.relation-inline-select { display: inline; }
+.relation-inline-select select { max-width: 190px; padding: .46rem .55rem; border: 2px solid #008f92; border-radius: 9px; background: #edffff; color: #10223d; font-weight: 900; }
+.relation-submit-row { display: flex; justify-content: flex-end; gap: .65rem; }
+.relation-submit-row .lab-action, .relation-submit-row .lab-next { width: auto; min-width: 220px; margin: 0; }
+
 @media (max-width: 900px) {
-  .lab-grid, .dilation-problem, .number-sort-layout, .root-line-layout, .square-application-card, .scientific-lab-layout, .ordering-line-layout, .ordering-sequence-layout, .sim-world-layout, .dilation-attribute-layout, .dilation-rule-layout, .slope-lab-layout { grid-template-columns: 1fr; }
+  .lab-grid, .dilation-problem, .number-sort-layout, .root-line-layout, .square-application-card, .scientific-lab-layout, .ordering-line-layout, .ordering-sequence-layout, .sim-world-layout, .dilation-attribute-layout, .dilation-rule-layout, .slope-lab-layout, .proportion-build-layout, .relation-representation-grid { grid-template-columns: 1fr; }
+  .relation-graph-card { grid-row: auto; }
   .scientific-section-rail ol { grid-template-columns: repeat(5,minmax(130px,1fr)); overflow-x: auto; padding-bottom: .35rem; }
   .sort-pool .sort-stack { grid-template-columns: repeat(2,1fr); }
   .challenge-options { grid-template-columns: repeat(2,1fr); }
@@ -1360,6 +1471,20 @@ button.root-integer-tick:hover i, button.root-integer-tick:focus-visible i, butt
   .slope-lab-graph { min-width: 590px; }
   .slope-answer-fields { grid-template-columns: 1fr; }
   .slope-pair-proof-grid { grid-template-columns: 1fr; }
+  .proportion-task-header { align-items: stretch; flex-direction: column; }
+  .proportion-phase-chip { align-self: flex-start; }
+  .proportion-match-grid { grid-template-columns: 1fr; }
+  .proportion-graph-card { overflow-x: auto; }
+  .proportion-build-graph { min-width: 540px; }
+  .proportion-build-actions { grid-template-columns: 1fr; }
+  .proportion-build-actions .lab-choice { grid-column: auto; }
+  .relation-task-header { align-items: stretch; flex-direction: column; }
+  .relation-task-header > span { align-self: flex-start; }
+  .relation-graph-card { overflow-x: auto; }
+  .relation-graph { min-width: 540px; }
+  .relation-graph-actions, .relation-submit-row { grid-template-columns: 1fr; display: grid; }
+  .relation-submit-row .lab-action, .relation-submit-row .lab-next { width: 100%; min-width: 0; }
+  .relation-equation-builder { font-size: 1.45rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
