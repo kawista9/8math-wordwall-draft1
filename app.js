@@ -2564,9 +2564,14 @@
           <section class="variation-step-card">
             <span class="variation-step-number">3</span>
             <h5>Substitute and find k</h5>
-            <p class="variation-known-ratio">k = ${task.yValue} ÷ ${task.xValue}</p>
-            <label>k = <input data-variation-field="k" inputmode="decimal" value="${escapeHTML(r.k || "")}" placeholder="constant of variation"></label>
-            <small>k tells how much y there is for 1 unit of x.</small>
+            <p>Now replace the words in your ratio with the numbers from the situation.</p>
+            <div class="variation-fraction" aria-label="numeric ratio for k">
+              <input data-variation-field="numericTop" inputmode="decimal" value="${escapeHTML(r.numericTop || "")}" placeholder="value of y" aria-label="numerator, value of y">
+              <span></span>
+              <input data-variation-field="numericBottom" inputmode="decimal" value="${escapeHTML(r.numericBottom || "")}" placeholder="value of x" aria-label="denominator, value of x">
+            </div>
+            <label>k = <input data-variation-field="k" inputmode="decimal" value="${escapeHTML(r.k || "")}" placeholder="solve for k"></label>
+            <small>Use the values from the situation. Then divide y by x to find the constant of variation.</small>
           </section>
 
           <section class="variation-step-card">
@@ -2608,6 +2613,7 @@
       const missed = [];
       if (r.xLabel !== task.xLabel || r.yLabel !== task.yLabel) missed.push("variables");
       if (r.ratioTop !== task.yLabel || r.ratioBottom !== task.xLabel) missed.push("word ratio");
+      if (!directVariationNear(r.numericTop,task.yValue) || !directVariationNear(r.numericBottom,task.xValue)) missed.push("number substitution");
       if (!directVariationNear(r.k,task.k)) missed.push("k");
       if (!directVariationNear(r.equationK,task.k)) missed.push("equation");
       if (!directVariationNear(r.answer,task.answer)) missed.push("final answer");
@@ -2616,8 +2622,10 @@
           ? "Ask which quantity is chosen or changed first; that is x. The quantity that responds is y."
           : missed.includes("word ratio")
             ? "Build k as y/x: put the dependent variable on top and the independent variable on the bottom."
+            : missed.includes("number substitution")
+              ? "Use the numbers from the situation in the same order as your word ratio: the known y-value goes on top and the known x-value goes on the bottom."
             : missed.includes("k")
-              ? "Divide the known y-value by the known x-value to find k."
+              ? "Now divide the number you placed on top by the number you placed on the bottom to find k."
               : missed.includes("equation")
                 ? "Write y = kx using the exact k you found."
                 : "Substitute the new x-value into y = kx and calculate y.";
