@@ -708,6 +708,17 @@
         ["https://go.screenpal.com/watch/cOefYvnZ2DB", "Graphing a Non-Proportional Situation with the Calculator"]
       ]
     },
+    "8.5C": {
+      title: "Bivariate Data Pattern Lab",
+      description: "Create three original 10-point scatterplots, then sort twenty-eight more scatterplots by the kind of pattern they show. Look at the overall shape of the data: a linear relationship follows a straight-line trend, even when the points do not land perfectly on one line.",
+      summary: "You created positive, negative, and no-association scatterplots and classified twenty-eight additional bivariate data sets. A positive linear association rises from left to right, while a negative linear association falls from left to right. The points do not have to form a perfect line; they must cluster around a straight-line trend. Curved patterns and data with no clear direction do not suggest a linear relationship.",
+      videos: [
+        ["https://somup.com/cOeh2oWPZP", "Understanding Bivariate Sets of Data"],
+        ["https://go.screenpal.com/watch/cOeh2OnZbiF", "Positive Linear Association"],
+        ["https://go.screenpal.com/watch/cOeh2OnZbiF", "Negative Linear Association"],
+        ["https://go.screenpal.com/watch/cOeh2OnZbiF", "No Association"]
+      ]
+    },
     "8.4A": {
       title: "Slope: Do It With Me",
       description: "Choose four exact points on each line. The lab groups them into two pairs, and you complete the rise-first, run-second process for both pairs to prove that the slope stays the same. Pay attention to the value of each axis interval: the first five problems coach every move, and the final ten ask you to determine and enter both sets of signed changes yourself.",
@@ -944,6 +955,7 @@
     if (standard === "8.4B") renderLab84B();
     if (standard === "8.5A") renderLab85A();
     if (standard === "8.5B") renderLab85B();
+    if (standard === "8.5C") renderLab85C();
     if (standard === "8.10A") renderLabA();
     if (standard === "8.10B") renderLabB();
     if (standard === "8.10C") renderLabC();
@@ -2166,6 +2178,260 @@
 
   function renderLab85A() { renderRelationLab("8.5A"); }
   function renderLab85B() { renderRelationLab("8.5B"); }
+
+  const SCATTER_BUILD_TASKS = [
+    { goal:"positive", title:"Create a positive linear association", prompt:"Plot exactly 10 points that generally rise from left to right and cluster around a straight-line trend." },
+    { goal:"negative", title:"Create a negative linear association", prompt:"Plot exactly 10 points that generally fall from left to right and cluster around a straight-line trend." },
+    { goal:"none", title:"Create a scatterplot with no association", prompt:"Plot exactly 10 points with no clear upward, downward, or curved pattern." }
+  ];
+
+  const SCATTER_PATTERN_LIBRARY = {
+    posStrong: { answer:"linear", direction:"positive", points:[[1,1.4],[2,2.5],[3,2.8],[4,4.2],[5,4.7],[6,6.1],[7,6.4],[8,7.9],[9,8.6],[10,9.4]], explanation:"The points cluster around a straight line that rises from left to right, so the data suggest a positive linear relationship." },
+    posModerate: { answer:"linear", direction:"positive", points:[[1,2.1],[2,1.8],[3,3.7],[4,3.1],[5,5.2],[6,4.8],[7,6.7],[8,6.1],[9,8.2],[10,7.7]], explanation:"The points have some scatter, but their overall pattern still follows a straight rising trend." },
+    posShallow: { answer:"linear", direction:"positive", points:[[1,3.0],[2,3.6],[3,3.4],[4,4.1],[5,4.2],[6,5.0],[7,4.8],[8,5.6],[9,5.7],[10,6.3]], explanation:"The rise is gentle, but the data still cluster around a straight line with a positive direction." },
+    posSteep: { answer:"linear", direction:"positive", points:[[1,.8],[2,1.9],[3,3.1],[4,3.8],[5,5.4],[6,5.9],[7,7.5],[8,8.0],[9,9.4]], explanation:"The steepness does not change the category; the points follow one straight rising trend." },
+    negStrong: { answer:"linear", direction:"negative", points:[[1,9.2],[2,8.4],[3,7.6],[4,6.3],[5,5.7],[6,4.9],[7,3.6],[8,3.0],[9,1.7],[10,1.1]], explanation:"The points cluster around a straight line that falls from left to right, so the data suggest a negative linear relationship." },
+    negModerate: { answer:"linear", direction:"negative", points:[[1,8.4],[2,9.0],[3,7.1],[4,7.6],[5,5.7],[6,6.1],[7,4.2],[8,4.8],[9,2.7],[10,3.1]], explanation:"The points are not perfectly aligned, but their overall pattern follows a straight falling trend." },
+    negShallow: { answer:"linear", direction:"negative", points:[[1,7.1],[2,6.8],[3,6.9],[4,6.0],[5,6.2],[6,5.4],[7,5.3],[8,4.8],[9,4.4],[10,4.2]], explanation:"This is a shallow negative trend. The points still cluster around a straight line." },
+    negSteep: { answer:"linear", direction:"negative", points:[[1,9.5],[2,8.6],[3,7.5],[4,6.1],[5,5.3],[6,4.0],[7,3.2],[8,1.8],[9,.9]], explanation:"The points follow one straight downward trend, so the relationship is linear and negative." },
+    uCurve: { answer:"not-linear", points:[[1,8.5],[2,6.2],[3,4.4],[4,3.0],[5,2.5],[6,2.8],[7,4.0],[8,6.0],[9,8.3]], explanation:"The points form a U-shaped curve. A clear relationship exists, but it is not linear." },
+    arch: { answer:"not-linear", points:[[1,2.0],[2,4.2],[3,6.4],[4,7.8],[5,8.5],[6,8.0],[7,6.6],[8,4.5],[9,2.1]], explanation:"The points form an arch instead of clustering around one straight line, so the relationship is not linear." },
+    exp: { answer:"not-linear", points:[[1,1.1],[2,1.3],[3,1.5],[4,1.9],[5,2.4],[6,3.2],[7,4.4],[8,6.2],[9,8.8]], explanation:"The rate of increase becomes steeper. The curved pattern does not suggest a linear relationship." },
+    decay: { answer:"not-linear", points:[[1,9.2],[2,6.5],[3,4.7],[4,3.6],[5,2.8],[6,2.3],[7,1.9],[8,1.6],[9,1.4]], explanation:"The data decrease quickly and then level off. That curve is not a straight-line trend." },
+    circle: { answer:"not-linear", points:[[3,5],[3.6,7],[5,8],[6.5,7.4],[7.3,5.5],[7,3.4],[5.5,2.3],[4,3]], explanation:"The points loop around a center and do not follow one straight-line trend." },
+    wave: { answer:"not-linear", points:[[1,5],[2,7.4],[3,8.2],[4,6.4],[5,4.1],[6,2.2],[7,2.8],[8,5.1],[9,7.3]], explanation:"The direction changes more than once, creating a curved wave rather than a linear pattern." },
+    randomA: { answer:"not-linear", points:[[1,7.5],[2,2.0],[3,5.8],[4,8.5],[5,3.2],[6,6.7],[7,1.8],[8,8.0],[9,4.6],[10,6.0]], explanation:"The points are spread without a clear straight upward or downward trend, so they show no linear relationship." },
+    randomB: { answer:"not-linear", points:[[1,3.0],[2,8.2],[3,1.6],[4,6.7],[5,4.5],[6,9.0],[7,2.7],[8,5.9],[9,7.6],[10,3.8]], explanation:"The data move up and down without clustering around a straight line, so they show no linear relationship." }
+  };
+
+  const SCATTER_CLASSIFY_ROUNDS = [
+    { title:"Straight trend or curve?", plots:["posStrong","uCurve","negStrong","posModerate"] },
+    { title:"Look beyond the direction", plots:["randomA","negModerate","arch","circle"] },
+    { title:"Linear can have different slopes", plots:["posShallow","negShallow","posSteep","negSteep"] },
+    { title:"Relationships that are not linear", plots:["uCurve","randomB","wave","arch"] },
+    { title:"Separate straight trends from other patterns", plots:["posModerate","circle","randomA","negStrong"] },
+    { title:"Scatter does not erase a linear trend", plots:["exp","negModerate","posStrong","negShallow"] },
+    { title:"One straight-line pattern", plots:["randomB","posShallow","decay","uCurve"] }
+  ];
+
+  const SCATTER_TOTAL_TASKS = SCATTER_BUILD_TASKS.length + SCATTER_CLASSIFY_ROUNDS.length;
+
+  function resetScatterTask(data) {
+    data.points = [];
+    data.choices = {};
+    data.checked = false;
+    data.solved = false;
+    data.analysis = null;
+  }
+
+  function scatterCoordinates(point) {
+    return Array.isArray(point)
+      ? { x:Number(point[0]), y:Number(point[1]) }
+      : { x:Number(point.x), y:Number(point.y) };
+  }
+
+  function scatterPointKey(point) {
+    const coordinates = scatterCoordinates(point);
+    return `${coordinates.x},${coordinates.y}`;
+  }
+
+  function scatterCorrelation(points, xAccessor = point => point.x, yAccessor = point => point.y) {
+    if (points.length < 2) return 0;
+    const xs = points.map(xAccessor);
+    const ys = points.map(yAccessor);
+    const meanX = xs.reduce((sum,value) => sum + value,0) / xs.length;
+    const meanY = ys.reduce((sum,value) => sum + value,0) / ys.length;
+    let numerator = 0;
+    let xSquares = 0;
+    let ySquares = 0;
+    points.forEach((point,index) => {
+      const dx = xs[index] - meanX;
+      const dy = ys[index] - meanY;
+      numerator += dx * dy;
+      xSquares += dx * dx;
+      ySquares += dy * dy;
+    });
+    const denominator = Math.sqrt(xSquares * ySquares);
+    return denominator ? numerator / denominator : 0;
+  }
+
+  function analyzeCreatedScatter(points, goal) {
+    const xs = points.map(point => point.x);
+    const ys = points.map(point => point.y);
+    const xRange = Math.max(...xs) - Math.min(...xs);
+    const yRange = Math.max(...ys) - Math.min(...ys);
+    const distinctX = new Set(xs).size;
+    const r = scatterCorrelation(points);
+    const meanX = xs.reduce((sum,value) => sum + value,0) / xs.length;
+    const curveR = scatterCorrelation(points, point => (point.x - meanX) ** 2, point => point.y);
+    if (xRange < 6 || yRange < 4 || distinctX < 7) {
+      return { correct:false, r, curveR, message:"Spread the points across more of both axes. A useful scatterplot needs enough horizontal and vertical range for its overall pattern to be visible." };
+    }
+    if (goal === "positive") {
+      if (r >= .75 && Math.abs(curveR) < .62) return { correct:true, r, curveR, message:"Your points form a clear straight trend that rises from left to right: a positive linear association." };
+      if (r < 0) return { correct:false, r, curveR, message:"This pattern falls overall. For a positive association, higher x-values should generally be paired with higher y-values." };
+      if (Math.abs(curveR) >= .62) return { correct:false, r, curveR, message:"Your points show a noticeable curve. Rearrange a few points so they cluster around one straight rising path." };
+      return { correct:false, r, curveR, message:"The upward direction is not clear enough yet. Move a few points so the cloud follows a stronger straight rising trend." };
+    }
+    if (goal === "negative") {
+      if (r <= -.75 && Math.abs(curveR) < .62) return { correct:true, r, curveR, message:"Your points form a clear straight trend that falls from left to right: a negative linear association." };
+      if (r > 0) return { correct:false, r, curveR, message:"This pattern rises overall. For a negative association, higher x-values should generally be paired with lower y-values." };
+      if (Math.abs(curveR) >= .62) return { correct:false, r, curveR, message:"Your points show a noticeable curve. Rearrange a few points so they cluster around one straight falling path." };
+      return { correct:false, r, curveR, message:"The downward direction is not clear enough yet. Move a few points so the cloud follows a stronger straight falling trend." };
+    }
+    if (Math.abs(r) <= .25 && Math.abs(curveR) <= .45) return { correct:true, r, curveR, message:"Your points have no clear upward, downward, or curved pattern, so they show no association." };
+    if (Math.abs(curveR) > .45 && Math.abs(r) <= .4) return { correct:false, r, curveR, message:"The straight-line direction is weak, but the points still form a curve. Mix the high and low points more randomly to show no association." };
+    return { correct:false, r, curveR, message:"A direction is still visible. Mix the high and low y-values across the x-axis so the data do not rise or fall overall." };
+  }
+
+  function scatterDirectionLabel(r) {
+    const strength = Math.abs(r) >= .75 ? "strong" : Math.abs(r) >= .45 ? "moderate" : Math.abs(r) >= .25 ? "weak" : "little";
+    const direction = r > .08 ? "positive" : r < -.08 ? "negative" : "no clear";
+    return `${strength} ${direction} straight-line trend`;
+  }
+
+  function scatterPlotMarkup(points, options = {}) {
+    const interactive = Boolean(options.interactive);
+    const selected = new Set(points.map(scatterPointKey));
+    const width = 520;
+    const height = 420;
+    const left = 62;
+    const right = 482;
+    const top = 28;
+    const bottom = 364;
+    const sx = value => left + (value / 10) * (right - left);
+    const sy = value => bottom - (value / 10) * (bottom - top);
+    let grid = "";
+    for (let value = 0; value <= 10; value += 1) {
+      const x = sx(value);
+      const y = sy(value);
+      grid += `<line class="scatter-grid-line ${value === 0 ? "is-axis" : ""}" x1="${x}" y1="${top}" x2="${x}" y2="${bottom}"></line>`;
+      grid += `<line class="scatter-grid-line ${value === 0 ? "is-axis" : ""}" x1="${left}" y1="${y}" x2="${right}" y2="${y}"></line>`;
+      if (value % 2 === 0) {
+        grid += `<text class="scatter-tick" x="${x}" y="${bottom + 24}" text-anchor="middle">${value}</text>`;
+        grid += `<text class="scatter-tick" x="${left - 14}" y="${y + 5}" text-anchor="end">${value}</text>`;
+      }
+    }
+    const dots = points.map(point => {
+      const coordinates = scatterCoordinates(point);
+      return `<circle class="scatter-dot ${interactive ? "is-created" : ""}" cx="${sx(coordinates.x)}" cy="${sy(coordinates.y)}" r="${interactive ? 7 : 6}"></circle>`;
+    }).join("");
+    let hits = "";
+    if (interactive) {
+      for (let x = 0; x <= 10; x += 1) {
+        for (let y = 0; y <= 10; y += 1) {
+          const chosen = selected.has(`${x},${y}`);
+          hits += `<circle class="scatter-hit ${chosen ? "is-selected" : ""}" cx="${sx(x)}" cy="${sy(y)}" r="11" tabindex="0" role="button" aria-label="${chosen ? "Remove" : "Plot"} point ${x}, ${y}" data-scatter-x="${x}" data-scatter-y="${y}"></circle>`;
+        }
+      }
+    }
+    return `<svg class="scatter-plot ${interactive ? "is-interactive" : ""}" viewBox="0 0 ${width} ${height}" role="img" aria-label="${interactive ? "Interactive coordinate plane for building a scatterplot" : "Scatterplot of bivariate data"}">${grid}${dots}${hits}<text class="scatter-axis-label" x="${(left + right) / 2}" y="410" text-anchor="middle">x variable</text><text class="scatter-axis-label" x="18" y="${(top + bottom) / 2}" text-anchor="middle" transform="rotate(-90 18 ${(top + bottom) / 2})">y variable</text></svg>`;
+  }
+
+  function renderScatterBuilder(data, task) {
+    const count = data.points.length;
+    const statusMarkup = data.analysis ? `<div class="scatter-pattern-readout ${data.analysis.correct ? "is-correct" : "is-recheck"}"><span>Pattern check</span><strong>${scatterDirectionLabel(data.analysis.r)}</strong></div>` : "";
+    $("#standardsLabBody").innerHTML = `
+      <section class="scatter-lab-shell">
+        <header class="scatter-task-header"><div><p class="lab-mini-title">Investigation ${data.index + 1} of ${SCATTER_TOTAL_TASKS}</p><h4>${task.title}</h4><p>${task.prompt}</p></div><span class="scatter-count ${count === 10 ? "is-ready" : ""}">${count}/10 points</span></header>
+        <div class="scatter-builder-grid">
+          <article class="scatter-graph-card"><div class="scatter-graph-wrap">${scatterPlotMarkup(data.points,{interactive:true})}</div><p class="scatter-tap-note">Tap a grid intersection to add a point. Tap a selected point to remove it.</p></article>
+          <aside class="scatter-coach-card">
+            <p class="lab-mini-title">Build, look, adjust</p>
+            <ol><li>Spread your points across the graph.</li><li>Step back and look at the entire cloud.</li><li>Submit only when the pattern matches the goal.</li></ol>
+            ${statusMarkup}
+            <div class="scatter-point-list"><strong>Your ordered pairs</strong><p>${count ? data.points.map(point => `(${point.x}, ${point.y})`).join("  ·  ") : "Your plotted points will appear here."}</p></div>
+            <div class="scatter-build-actions"><button type="button" class="lab-choice" id="undoScatterPoint" ${count ? "" : "disabled"}>Undo last point</button><button type="button" class="lab-choice" id="clearScatterPoints" ${count ? "" : "disabled"}>Clear all</button><button type="button" class="lab-action" id="checkScatterBuild" ${data.solved ? "disabled" : ""}>Check my pattern</button><button type="button" class="lab-next" id="nextScatterTask" ${data.solved ? "" : "hidden"}>Next investigation →</button></div>
+          </aside>
+        </div>
+      </section>`;
+
+    document.querySelectorAll("[data-scatter-x]").forEach(hit => {
+      const choose = () => {
+        if (data.solved) return;
+        const point = {x:Number(hit.dataset.scatterX),y:Number(hit.dataset.scatterY)};
+        const index = data.points.findIndex(candidate => scatterPointKey(candidate) === scatterPointKey(point));
+        if (index >= 0) data.points.splice(index,1);
+        else if (data.points.length >= 10) return setLabFeedback("You already have 10 points. Remove one before choosing a different location.","incorrect");
+        else data.points.push(point);
+        data.analysis = null;
+        renderLab85C();
+        setLabFeedback(data.points.length === 10 ? "Ten points plotted. Look at the overall pattern, then check it." : `${data.points.length} of 10 points plotted.`);
+      };
+      hit.addEventListener("click",choose);
+      hit.addEventListener("keydown",event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); choose(); } });
+    });
+    $("#undoScatterPoint").addEventListener("click",() => { data.points.pop(); data.analysis = null; renderLab85C(); setLabFeedback("Last point removed."); });
+    $("#clearScatterPoints").addEventListener("click",() => { data.points = []; data.analysis = null; renderLab85C(); setLabFeedback("Scatterplot cleared. Build a new 10-point pattern."); });
+    $("#checkScatterBuild").addEventListener("click",() => {
+      if (data.points.length !== 10) return setLabFeedback(`Plot exactly 10 points before checking. You still need ${10 - data.points.length}.`,"incorrect");
+      data.analysis = analyzeCreatedScatter(data.points,task.goal);
+      if (!data.analysis.correct) { renderLab85C(); return setLabFeedback(data.analysis.message,"incorrect"); }
+      data.solved = true;
+      renderLab85C();
+      setLabFeedback(data.analysis.message,"correct");
+    });
+    const next = $("#nextScatterTask");
+    if (next) next.addEventListener("click",() => advanceScatterLab(data));
+  }
+
+  function scatterClassificationCardMarkup(data, plotId, index) {
+    const plot = SCATTER_PATTERN_LIBRARY[plotId];
+    const choice = data.choices[index] || "";
+    const correct = choice === plot.answer;
+    const checkedClass = data.checked ? (correct ? "is-correct" : "is-incorrect") : "";
+    const feedback = data.checked ? `<p class="scatter-card-feedback"><strong>${plot.answer === "linear" ? "Linear." : "Not linear."}</strong> ${plot.explanation}</p>` : "";
+    return `<article class="scatter-classify-card ${checkedClass}" data-scatter-card="${index}"><header><span>Plot ${String.fromCharCode(65 + index)}</span><small>${choice ? choice.replace("-"," ") : "Choose a category"}</small></header><div class="scatter-mini-wrap">${scatterPlotMarkup(plot.points)}</div><div class="scatter-category-buttons"><button type="button" class="lab-choice ${choice === "linear" ? "is-selected" : ""}" data-scatter-choice="linear" data-plot-index="${index}">Linear</button><button type="button" class="lab-choice ${choice === "not-linear" ? "is-selected" : ""}" data-scatter-choice="not-linear" data-plot-index="${index}">Not linear</button></div>${feedback}</article>`;
+  }
+
+  function renderScatterClassifier(data, round) {
+    const questionNumber = data.index + 1;
+    const answered = Object.keys(data.choices).length;
+    $("#standardsLabBody").innerHTML = `
+      <section class="scatter-lab-shell">
+        <header class="scatter-task-header"><div><p class="lab-mini-title">Investigation ${questionNumber} of ${SCATTER_TOTAL_TASKS}</p><h4>${round.title}</h4><p>Classify every scatterplot. Choose <strong>Linear</strong> when the points cluster around a straight-line trend. Choose <strong>Not linear</strong> for a curve or no clear association.</p></div><span class="scatter-count ${answered === 4 ? "is-ready" : ""}">${answered}/4 classified</span></header>
+        <div class="scatter-classify-grid">${round.plots.map((plotId,index) => scatterClassificationCardMarkup(data,plotId,index)).join("")}</div>
+        <div class="scatter-submit-row"><button type="button" class="lab-action" id="checkScatterClassify" ${data.solved ? "disabled" : ""}>Check all four</button><button type="button" class="lab-next" id="nextScatterTask" ${data.solved ? "" : "hidden"}>${data.index === SCATTER_TOTAL_TASKS - 1 ? "Finish lab" : "Next investigation →"}</button></div>
+      </section>`;
+    document.querySelectorAll("[data-scatter-choice]").forEach(button => button.addEventListener("click",() => {
+      if (data.solved) return;
+      data.choices[Number(button.dataset.plotIndex)] = button.dataset.scatterChoice;
+      data.checked = false;
+      renderLab85C();
+      setLabFeedback(`${Object.keys(data.choices).length} of 4 plots classified. Consider the entire shape of each point cloud.`);
+    }));
+    $("#checkScatterClassify").addEventListener("click",() => {
+      if (Object.keys(data.choices).length < 4) return setLabFeedback("Classify all four scatterplots before checking.","incorrect");
+      data.checked = true;
+      const incorrect = round.plots.filter((plotId,index) => data.choices[index] !== SCATTER_PATTERN_LIBRARY[plotId].answer).length;
+      if (incorrect) { renderLab85C(); return setLabFeedback(`${incorrect} ${incorrect === 1 ? "plot needs" : "plots need"} another look. Read the orange explanations, correct the categories, and check again.`,"incorrect"); }
+      data.solved = true;
+      renderLab85C();
+      setLabFeedback("All four classifications are correct. You used the overall shape of the data, not a single point.","correct");
+    });
+    const next = $("#nextScatterTask");
+    if (next) next.addEventListener("click",() => advanceScatterLab(data));
+  }
+
+  function advanceScatterLab(data) {
+    if (data.index >= SCATTER_TOTAL_TASKS - 1) return showLabCompletion("8.5C");
+    data.index += 1;
+    resetScatterTask(data);
+    renderLab85C();
+    syncWhiteboardQuestion();
+    setLabFeedback(data.index < 3 ? "New creation challenge ready. Plot exactly 10 points." : "Four new scatterplots ready. Classify each by its overall shape.");
+  }
+
+  function renderLab85C() {
+    if (!labRuntime.data) labRuntime.data = {index:0,points:[],choices:{},checked:false,solved:false,analysis:null};
+    const data = labRuntime.data;
+    if (data.index >= SCATTER_TOTAL_TASKS) return showLabCompletion("8.5C");
+    const completed = data.index + (data.solved ? 1 : 0);
+    const phaseLabel = data.index < 3 ? "Create your own point cloud" : "Classify four point clouds";
+    setLabProgress(completed,SCATTER_TOTAL_TASKS,`Question ${data.index + 1}: ${phaseLabel}.`);
+    if (data.index < SCATTER_BUILD_TASKS.length) return renderScatterBuilder(data,SCATTER_BUILD_TASKS[data.index]);
+    renderScatterClassifier(data,SCATTER_CLASSIFY_ROUNDS[data.index - SCATTER_BUILD_TASKS.length]);
+  }
 
   const SIMILARITY_SHAPES = {
     triangle: [[28, 168], [105, 28], [188, 168]],
@@ -4181,6 +4447,11 @@
       data.index += 1;
       resetRelationTask(data);
       renderRelationLab(standard);
+    } else if (standard === "8.5C") {
+      if (data.index >= SCATTER_TOTAL_TASKS - 1) return showLabCompletion(standard);
+      data.index += 1;
+      resetScatterTask(data);
+      renderLab85C();
     } else if (standard === "8.3A") {
       if (data.index >= SIMILARITY_TASKS.length - 1) return showLabCompletion(standard);
       data.index += 1;
