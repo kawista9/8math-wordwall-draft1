@@ -1717,3 +1717,34 @@ button.root-integer-tick:hover i, button.root-integer-tick:focus-visible i, butt
 .function-statement-builder select{max-width:260px;padding:.62rem .7rem;border:2px solid #008f92;border-radius:10px;background:#fff;color:#10223d;font:inherit;font-weight:900}
 .function-concept-note{background:#fff9df;border-color:#c48a00}
 @media(max-width:760px){.function-part-header{flex-direction:column}.function-part-header>span{align-self:flex-start}.function-statement-builder{justify-content:flex-start}.function-focus-card{min-height:220px}}
+
+
+/* 8.5H which does not belong game */
+.wdb-shell{display:grid;gap:1rem;color:#10223d}
+.wdb-header{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;padding:1rem 1.1rem;border:2px solid #10223d;border-radius:18px;background:linear-gradient(112deg,#fff7f2,#fff 55%,#eefafa);box-shadow:5px 5px 0 #10223d}
+.wdb-header h4{margin:.1rem 0 .35rem;font-size:clamp(1.35rem,2.5vw,2rem)}
+.wdb-header p{margin:0;color:#4b5b70;line-height:1.48}
+.wdb-header .lab-mini-title{margin:0;color:#a63a19;font-weight:950;text-transform:uppercase;letter-spacing:.07em}
+.wdb-header>span{flex:0 0 auto;padding:.5rem .75rem;border:2px solid #10223d;border-radius:999px;background:#fff;font-weight:950;box-shadow:2px 2px 0 #ff815b}
+.wdb-reminder{padding:.72rem .9rem;border:2px solid #10223d;border-radius:12px;background:#fff9df;line-height:1.45}
+.wdb-grid-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+.wdb-card{display:grid;grid-template-rows:auto 1fr auto;min-height:330px;padding:0;border:2px solid #10223d;border-radius:18px;background:#fff;color:#10223d;cursor:pointer;overflow:hidden;text-align:left;box-shadow:4px 4px 0 rgba(16,34,61,.14)}
+.wdb-card:hover,.wdb-card.is-selected{transform:translate(-1px,-1px);box-shadow:6px 6px 0 rgba(16,34,61,.18)}
+.wdb-card.is-selected{border-color:#008f92}
+.wdb-card.is-wrong{border-color:#b42318;background:#fff8f7}
+.wdb-card.is-right{border-color:#087f5b;background:#f7fffb}
+.wdb-card-head{display:flex;align-items:center;gap:.65rem;padding:.72rem .85rem;border-bottom:1px solid rgba(16,34,61,.15);background:#f8fbff}
+.wdb-card-head>span{display:grid;place-items:center;width:34px;height:34px;border:2px solid #10223d;border-radius:50%;background:#ff815b;font-weight:950}
+.wdb-card-head strong{font-size:.92rem;text-transform:uppercase;letter-spacing:.04em}
+.wdb-card-body{display:grid;place-items:center;min-height:230px;padding:1rem}
+.wdb-table{border-collapse:collapse;min-width:210px;background:#fff;font-family:"STIX Two Math","Cambria Math",serif;font-size:1rem;text-align:center}
+.wdb-table th,.wdb-table td{padding:.48rem .8rem;border:2px solid #10223d}
+.wdb-table th{background:#eef6ff;font-weight:950}.wdb-table td{font-weight:800}
+.wdb-graph{display:block;width:min(100%,340px);height:auto;background:#fff;border:2px solid #10223d;border-radius:12px;overflow:hidden}
+.wdb-grid{stroke:#dce4ee;stroke-width:1}.wdb-axis{stroke:#10223d;stroke-width:2}.wdb-line{stroke:#d65d31;stroke-width:4;stroke-linecap:round}
+.wdb-y-dot{fill:#008f92;stroke:#10223d;stroke-width:1.5}.wdb-axis-label{fill:#10223d;font:900 12px Arial,sans-serif}
+.wdb-equation{padding:1rem 1.25rem;border:2px solid #10223d;border-radius:14px;background:#f7f2ff;font-family:"STIX Two Math","Cambria Math",serif;font-size:clamp(1.5rem,3vw,2.15rem);font-weight:900;text-align:center}
+.wdb-situation{max-width:520px;margin:0;padding:.8rem;color:#10223d;font-size:1.05rem;font-weight:780;line-height:1.55;text-align:center}
+.wdb-reason{display:grid;gap:.2rem;padding:.7rem .85rem;border-top:1px solid rgba(16,34,61,.15);background:#f7fbff;font-size:.8rem;line-height:1.35}
+.wdb-reason strong{color:#006b6e;font-size:.75rem;text-transform:uppercase;letter-spacing:.05em}
+@media(max-width:820px){.wdb-grid-cards{grid-template-columns:1fr}.wdb-header{flex-direction:column}.wdb-header>span{align-self:flex-start}.wdb-card{min-height:280px}.wdb-card-body{min-height:190px}}
