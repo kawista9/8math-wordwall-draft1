@@ -1632,3 +1632,48 @@ button.root-integer-tick:hover i, button.root-integer-tick:focus-visible i, butt
 .variation-solve-work>span{font-family:"STIX Two Math","Cambria Math",serif;font-size:1.3rem;font-weight:900}
 .variation-solve-work label{display:grid;grid-template-columns:auto 1fr auto;gap:.5rem;align-items:center;font-weight:900}
 @media(max-width:780px){.variation-step-grid,.variation-solve-card{grid-template-columns:1fr}.variation-solve-work label{grid-template-columns:1fr}.variation-problem-card{grid-template-columns:1fr}.variation-problem-count{justify-self:start}}
+
+
+/* 8.5F proportional classification lab */
+.prop-sort-shell{display:grid;gap:1rem;color:#10223d}
+.prop-sort-header{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;padding:1rem 1.1rem;border:2px solid #10223d;border-radius:18px;background:linear-gradient(110deg,#fff7f2,#fff 58%,#ffe0d3);box-shadow:5px 5px 0 #10223d}
+.prop-sort-header h4{margin:.1rem 0 .35rem;font-size:clamp(1.35rem,2.5vw,2rem)}
+.prop-sort-header p{margin:0;color:#4b5b70;line-height:1.45}
+.prop-sort-header .lab-mini-title{margin:0;color:#a63a19;font-weight:950;text-transform:uppercase;letter-spacing:.07em}
+.prop-round-count{flex:0 0 auto;padding:.5rem .75rem;border:2px solid #10223d;border-radius:999px;background:#fff;font-weight:950;box-shadow:2px 2px 0 #ff815b}
+.prop-sort-key{display:flex;flex-wrap:wrap;gap:.65rem 1.2rem;padding:.75rem 1rem;border:2px solid #10223d;border-radius:14px;background:#fff}
+.prop-sort-key span{display:flex;align-items:center;gap:.4rem;font-size:.9rem}
+.prop-key-origin,.prop-key-start{width:12px;height:12px;border:2px solid #10223d;border-radius:50%;display:inline-block}
+.prop-key-origin{background:#008f92}.prop-key-start{background:#ff815b}
+.prop-sort-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+.prop-sort-card{display:grid;grid-template-rows:auto 1fr auto auto;min-height:310px;border:2px solid #10223d;border-radius:18px;background:#fff;box-shadow:4px 4px 0 rgba(16,34,61,.14);overflow:hidden}
+.prop-sort-card.is-wrong{border-color:#b42318;box-shadow:4px 4px 0 rgba(180,35,24,.2)}
+.prop-sort-card.is-right{border-color:#087f5b;box-shadow:4px 4px 0 rgba(8,127,91,.18)}
+.prop-sort-card-top{display:flex;align-items:center;gap:.7rem;padding:.8rem .9rem;border-bottom:1px solid rgba(16,34,61,.15);background:#f8fbff}
+.prop-sort-card-top small,.prop-sort-card-top strong{display:block}
+.prop-sort-card-top small{color:#66758a;font-size:.72rem;font-weight:850;text-transform:uppercase;letter-spacing:.05em}
+.prop-sort-card-top strong{margin-top:.15rem;font-size:.95rem}
+.prop-card-number{display:grid;place-items:center;width:32px;height:32px;border:2px solid #10223d;border-radius:50%;background:#ff815b;font-weight:950}
+.prop-card-content{display:grid;place-items:center;min-height:190px;padding:1rem}
+.prop-choice-row{display:grid;grid-template-columns:1fr 1fr;gap:.55rem;padding:.8rem .9rem;border-top:1px solid rgba(16,34,61,.15);background:#fbfdff}
+.prop-choice-row button{min-height:46px;padding:.55rem;border:2px solid #10223d;border-radius:11px;background:#fff;color:#10223d;cursor:pointer;font-weight:950}
+.prop-choice-row button:hover{background:#f4f8ff}
+.prop-choice-row button.is-selected[data-prop-choice="proportional"]{background:#dff7f5;border-color:#007f82;color:#006b6e;box-shadow:2px 2px 0 #10223d}
+.prop-choice-row button.is-selected[data-prop-choice="non-proportional"]{background:#fff0e9;border-color:#d65d31;color:#9d3c1c;box-shadow:2px 2px 0 #10223d}
+.prop-equation-display{padding:1rem 1.25rem;border:2px solid #10223d;border-radius:14px;background:#f7f2ff;font-family:"STIX Two Math","Cambria Math",serif;font-size:clamp(1.6rem,3vw,2.25rem);font-weight:900;text-align:center}
+.prop-verbal-display{max-width:520px;margin:0;color:#10223d;font-size:1.08rem;font-weight:780;line-height:1.55;text-align:center}
+.prop-table-wrap{display:grid;place-items:center;gap:.5rem;width:100%}
+.prop-table-challenge{padding:.35rem .55rem;border:1px solid #a63a19;border-radius:999px;background:#fff3ed;color:#8f3214;font-size:.72rem;font-weight:950;text-transform:uppercase;letter-spacing:.05em}
+.prop-sort-table{border-collapse:collapse;min-width:190px;background:#fff;font-family:"STIX Two Math","Cambria Math",serif;font-size:1rem;text-align:center}
+.prop-sort-table th,.prop-sort-table td{padding:.5rem .85rem;border:2px solid #10223d}
+.prop-sort-table th{background:#eef6ff;font-weight:950}
+.prop-sort-table td{font-weight:800}
+.prop-table-coach{margin:0 .9rem .8rem;padding:.7rem .8rem;border:2px solid #b42318;border-radius:11px;background:#fff4f2;color:#7a271a;font-size:.84rem;line-height:1.4}
+.prop-table-coach strong{display:block;margin-bottom:.2rem}
+.prop-mini-graph{display:block;width:min(100%,300px);height:auto;background:#fff;border:2px solid #10223d;border-radius:12px}
+.prop-grid-line{stroke:#dce4ee;stroke-width:1}
+.prop-axis{stroke:#10223d;stroke-width:2}
+.prop-line{stroke:#d65d31;stroke-width:4;stroke-linecap:round}
+.prop-intercept-dot{fill:#008f92;stroke:#10223d;stroke-width:2}
+.prop-intercept-label,.prop-axis-label{fill:#10223d;font:800 12px Arial,sans-serif}
+@media(max-width:820px){.prop-sort-grid{grid-template-columns:1fr}.prop-sort-header{flex-direction:column}.prop-round-count{align-self:flex-start}}
