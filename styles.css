@@ -1401,9 +1401,61 @@ button.root-integer-tick:hover i, button.root-integer-tick:focus-visible i, butt
 .scatter-submit-row { display: flex; justify-content: center; gap: .8rem; padding: .25rem 0; }
 .scatter-submit-row .lab-action, .scatter-submit-row .lab-next { min-width: 220px; }
 
+/* 8.5D trend-line prediction lab */
+.trend-lab-shell { display: grid; gap: 1rem; color: #10223d; }
+.trend-task-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 1.1rem; border: 2px solid #10223d; border-radius: 18px; background: linear-gradient(105deg,#fff 0%,#fff7f3 56%,#ffd5c5 100%); box-shadow: 5px 5px 0 #10223d; }
+.trend-task-header h4 { margin: 0; color: #10223d; font-size: clamp(1.35rem,2.5vw,2rem); line-height: 1.15; }
+.trend-task-header p:not(.lab-mini-title) { max-width: 820px; margin: .4rem 0 0; color: #4d5f76; line-height: 1.45; }
+.trend-task-header .lab-mini-title { margin-bottom: .2rem; color: #a63a19; }
+.trend-task-header > span { flex: 0 0 auto; padding: .6rem .9rem; border: 2px solid #10223d; border-radius: 999px; background: #10223d; color: #ffae8e; font-weight: 950; }
+.trend-split-layout { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 1rem; align-items: stretch; }
+.trend-investigation-card, .trend-work-paper { min-width: 0; border: 2px solid #10223d; border-radius: 18px; background: #fff; box-shadow: 5px 5px 0 rgba(16,34,61,.17); overflow: hidden; }
+.trend-investigation-card { display: flex; flex-direction: column; }
+.trend-graph-frame { padding: .65rem .7rem 0; background: #fff; }
+.trend-graph { display: block; width: 100%; height: auto; background: #fff; user-select: none; }
+.trend-grid-line { stroke: #d7e3eb; stroke-width: 1.25; vector-effect: non-scaling-stroke; }
+.trend-axis { stroke: #10223d; stroke-width: 3; vector-effect: non-scaling-stroke; }
+.trend-tick { fill: #54667d; font-size: 13px; font-weight: 780; }
+.trend-axis-label { fill: #10223d; font-size: 16px; font-weight: 950; }
+.trend-dot { fill: #10223d; stroke: #fff; stroke-width: 2; vector-effect: non-scaling-stroke; }
+.trend-candidate-line { color: #7040b5; }
+.trend-candidate-line.is-option-1 { color: #e46a26; }
+.trend-candidate-line.is-option-2 { color: #087fa6; }
+.trend-candidate-line.is-option-3 { color: #bd3f86; }
+.trend-candidate-line.is-best { color: #008e8c; }
+.trend-candidate-line line { stroke: currentColor; stroke-width: 5; stroke-linecap: round; vector-effect: non-scaling-stroke; opacity: .94; }
+.trend-candidate-line.is-best line { stroke-width: 7; filter: drop-shadow(0 2px 2px rgba(0,70,73,.22)); }
+.trend-candidate-line circle { fill: #fff; stroke: currentColor; stroke-width: 5; vector-effect: non-scaling-stroke; }
+.trend-candidate-line text { fill: currentColor; font-size: 15px; font-weight: 1000; text-anchor: middle; }
+.trend-target-guide { stroke: #f27b35; stroke-width: 2.5; stroke-dasharray: 8 7; vector-effect: non-scaling-stroke; }
+.trend-prediction-point circle { fill: #ffb290; stroke: #10223d; stroke-width: 4; vector-effect: non-scaling-stroke; }
+.trend-prediction-point.is-correct circle { fill: #60d6c4; }
+.trend-prediction-point text { fill: #10223d; font-size: 13px; font-weight: 950; paint-order: stroke; stroke: #fff; stroke-width: 5; stroke-linejoin: round; }
+.trend-line-panel, .trend-prediction-panel { display: grid; gap: .65rem; margin-top: auto; padding: 1rem; border-top: 2px solid #10223d; background: #f4fbfc; }
+.trend-line-panel p, .trend-prediction-panel p { margin: 0; color: #53647a; line-height: 1.45; }
+.trend-line-panel .lab-mini-title, .trend-prediction-panel .lab-mini-title { color: #a63a19; }
+.trend-prediction-panel h5 { margin: 0; color: #10223d; font-size: 1.08rem; line-height: 1.35; }
+.trend-line-options, .trend-prediction-options { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .6rem; }
+.trend-line-choice, .trend-prediction-choice { min-height: 50px; }
+.trend-line-choice { display: flex; align-items: center; justify-content: center; gap: .55rem; }
+.trend-choice-key { display: inline-grid; place-items: center; width: 30px; height: 30px; border: 3px solid currentColor; border-radius: 50%; color: #7040b5; background: #fff; font-weight: 1000; }
+.trend-choice-key.is-option-1 { color: #e46a26; }
+.trend-choice-key.is-option-2 { color: #087fa6; }
+.trend-choice-key.is-option-3 { color: #bd3f86; }
+.trend-line-choice.is-selected, .trend-prediction-choice.is-selected { background: #ffcfba; border-color: #10223d; color: #10223d; box-shadow: 3px 3px 0 #10223d; }
+.trend-prediction-panel .lab-action { width: 100%; margin: 0; }
+.trend-work-paper { min-height: 760px; background-color: #fff; background-image: repeating-linear-gradient(to bottom,transparent 0,transparent 39px,rgba(56,130,170,.13) 40px); }
+.trend-work-paper header { display: flex; align-items: baseline; justify-content: space-between; gap: .75rem; padding: .8rem 1rem; border-bottom: 2px solid #10223d; background: #fff; }
+.trend-work-paper header span { color: #10223d; font-size: 1rem; font-weight: 950; }
+.trend-work-paper header small { color: #68788b; font-size: .76rem; font-weight: 750; }
+.trend-paper-prompts { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .75rem; padding: 1rem; color: rgba(16,34,61,.18); font-family: "STIX Two Math","Cambria Math",serif; font-size: clamp(1rem,1.8vw,1.35rem); font-weight: 850; }
+.trend-next-row { display: flex; justify-content: flex-end; }
+.trend-next-row .lab-next { min-width: 220px; }
+
 @media (max-width: 900px) {
-  .lab-grid, .dilation-problem, .number-sort-layout, .root-line-layout, .square-application-card, .scientific-lab-layout, .ordering-line-layout, .ordering-sequence-layout, .sim-world-layout, .dilation-attribute-layout, .dilation-rule-layout, .slope-lab-layout, .proportion-build-layout, .relation-representation-grid, .scatter-builder-grid { grid-template-columns: 1fr; }
+  .lab-grid, .dilation-problem, .number-sort-layout, .root-line-layout, .square-application-card, .scientific-lab-layout, .ordering-line-layout, .ordering-sequence-layout, .sim-world-layout, .dilation-attribute-layout, .dilation-rule-layout, .slope-lab-layout, .proportion-build-layout, .relation-representation-grid, .scatter-builder-grid, .trend-split-layout { grid-template-columns: 1fr; }
   .relation-graph-card { grid-row: auto; }
+  .trend-work-paper { min-height: 520px; }
   .scientific-section-rail ol { grid-template-columns: repeat(5,minmax(130px,1fr)); overflow-x: auto; padding-bottom: .35rem; }
   .sort-pool .sort-stack { grid-template-columns: repeat(2,1fr); }
   .challenge-options { grid-template-columns: repeat(2,1fr); }
