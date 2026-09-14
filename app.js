@@ -740,6 +740,12 @@
       summary: "You distinguished proportional from non-proportional relationships across tables, graphs, equations, and verbal descriptions. Proportional relationships can be written y = kx and pass through (0, 0). Non-proportional linear relationships have a nonzero starting value. For tables that do not show x = 0, you used the y/x ratios instead of guessing from a constant rate of change.",
       videos: []
     },
+    "8.5G": {
+      title: "Function Language Lab: Read It, Explain It",
+      description: "Complete two parts. Part 1 has five questions where you choose the verbal description that correctly explains why a relation is or is not a function. Part 2 has ten mixed representations—ordered pairs, tables, mappings, and graphs—and you build the explanation yourself with dropdown statements using x/y, input/output, and independent/dependent language.",
+      summary: "You identified functions and explained the reason in precise language. A function requires every input, x-value, or independent value to correspond to exactly one output, y-value, or dependent value. Different inputs are allowed to share the same output. A relation is not a function only when at least one input corresponds to more than one output.",
+      videos: []
+    },
     "8.4A": {
       title: "Slope: Do It With Me",
       description: "Choose four exact points on each line. The lab groups them into two pairs, and you complete the rise-first, run-second process for both pairs to prove that the slope stays the same. Pay attention to the value of each axis interval: the first five problems coach every move, and the final ten ask you to determine and enter both sets of signed changes yourself.",
@@ -980,6 +986,7 @@
     if (standard === "8.5D") renderLab85D();
     if (standard === "8.5E") renderLab85E();
     if (standard === "8.5F") renderLab85F();
+    if (standard === "8.5G") renderLab85G();
     if (standard === "8.10A") renderLabA();
     if (standard === "8.10B") renderLabB();
     if (standard === "8.10C") renderLabC();
@@ -2840,6 +2847,250 @@
       syncWhiteboardQuestion();
       setLabFeedback("New set ready. The proportional/non-proportional split may be completely different this time.");
     });
+  }
+
+
+  const FUNCTION_DESCRIPTION_TASKS = [
+    {
+      type:"mapping", title:"Several inputs share one output", mapLabels:["INPUT","OUTPUT"],
+      left:[-2,0,3,5], right:[4,9], links:[[0,0],[1,1],[2,1],[3,0]], isFunction:true,
+      choices:[
+        "The relation is a function because each input corresponds to exactly one output. More than one input may share the same output.",
+        "The relation is not a function because an output corresponds to more than one input.",
+        "The relation is a function because each output corresponds to exactly one input.",
+        "The relation is not a function because there are more inputs than outputs."
+      ], correct:0
+    },
+    {
+      type:"graph", title:"Look vertically across the plotted points", graphKind:"points",
+      points:[[-3,1],[-1,3],[2,1],[2,4],[4,-2]], isFunction:false,
+      choices:[
+        "The dependent variable is a function of the independent variable because every dependent value is different.",
+        "The dependent variable is not a function of the independent variable because one independent value corresponds to more than one dependent value.",
+        "The dependent variable is a function of the independent variable because two dependent values may use the same independent value.",
+        "The dependent variable is not a function of the independent variable because some dependent values are positive and some are negative."
+      ], correct:1
+    },
+    {
+      type:"pairs", title:"Ordered pairs", pairs:[[-3,5],[0,2],[4,5],[7,-1]], isFunction:true,
+      choices:[
+        "y is not a function of x because the y-value 5 corresponds to more than one x-value.",
+        "y is a function of x because each x-value corresponds to exactly one y-value, even though two x-values share y = 5.",
+        "y is not a function of x because each y-value must correspond to only one x-value.",
+        "y is a function of x because all x-values and y-values must be different."
+      ], correct:1
+    },
+    {
+      type:"table", title:"Independent and dependent values", headers:["Independent","Dependent"],
+      rows:[[-2,6],[1,4],[2,5],[2,8],[5,1]], isFunction:false,
+      choices:[
+        "The dependent variable is not a function of the independent variable because the independent value 2 corresponds to two different dependent values.",
+        "The dependent variable is a function of the independent variable because every dependent value appears only once.",
+        "The dependent variable is a function of the independent variable because more than one dependent value may correspond to the same independent value.",
+        "The dependent variable is not a function of the independent variable because there are five ordered pairs."
+      ], correct:0
+    },
+    {
+      type:"graph", title:"A horizontal relationship", graphKind:"horizontal", yValue:2, isFunction:true,
+      choices:[
+        "The relation is not a function because the same output corresponds to many different inputs.",
+        "The relation is a function because every input corresponds to exactly one output. The same output may be paired with many inputs.",
+        "The relation is not a function because every point has the same output.",
+        "The relation is a function only because the graph is a straight line."
+      ], correct:1
+    }
+  ];
+
+  const FUNCTION_BUILD_TASKS = [
+    {type:"table",title:"Table",headers:["Input","Output"],rows:[[-3,4],[0,1],[2,4],[5,7]],isFunction:true,vocab:["output","input"]},
+    {type:"table",title:"Table",headers:["Independent","Dependent"],rows:[[-2,1],[1,3],[1,5],[4,7]],isFunction:false,vocab:["dependent value","independent value"]},
+    {type:"mapping",title:"Mapping",mapLabels:["INPUT","OUTPUT"],left:[1,2,3,4],right:[8,9],links:[[0,0],[1,0],[2,1],[3,0]],isFunction:true,vocab:["output","input"]},
+    {type:"mapping",title:"Mapping",mapLabels:["INDEPENDENT","DEPENDENT"],left:[-2,0,5],right:[1,4,7],links:[[0,0],[1,1],[1,2],[2,2]],isFunction:false,vocab:["dependent value","independent value"]},
+    {type:"pairs",title:"Ordered pairs",pairs:[[-4,6],[-1,2],[3,6],[8,0]],isFunction:true,vocab:["y-value","x-value"]},
+    {type:"pairs",title:"Ordered pairs",pairs:[[-2,5],[0,1],[3,4],[3,-1],[6,8]],isFunction:false,vocab:["y-value","x-value"]},
+    {type:"graph",title:"Graph",graphKind:"line",m:.7,b:-1,isFunction:true,vocab:["dependent value","independent value"]},
+    {type:"graph",title:"Graph",graphKind:"circle",isFunction:false,vocab:["y-value","x-value"]},
+    {type:"graph",title:"Graph",graphKind:"horizontal",yValue:-2,isFunction:true,vocab:["output","input"]},
+    {type:"graph",title:"Graph",graphKind:"sideways",isFunction:false,vocab:["output","input"]}
+  ];
+
+  function functionTableMarkup(item) {
+    const headers=item.headers||["x","y"];
+    const rows=item.rows.map(row=>"<tr><td>"+escapeHTML(row[0])+"</td><td>"+escapeHTML(row[1])+"</td></tr>").join("");
+    return "<table class='function-table'><thead><tr><th>"+escapeHTML(headers[0])+"</th><th>"+escapeHTML(headers[1])+"</th></tr></thead><tbody>"+rows+"</tbody></table>";
+  }
+
+  function functionPairsMarkup(item) {
+    return "<div class='function-pairs'>{" + item.pairs.map(pair=>"<span>("+escapeHTML(pair[0])+", "+escapeHTML(pair[1])+")</span>").join("") + "}</div>";
+  }
+
+  function functionMappingMarkup(item) {
+    const width=390,height=230,leftX=105,rightX=285;
+    const left=item.left||[], right=item.right||[];
+    const maxCount=Math.max(left.length,right.length,2);
+    const yFor=(index,count)=>55+(index*(130/Math.max(1,count-1)));
+    const labels=item.mapLabels||["x","y"];
+    const lines=(item.links||[]).map(link=>{
+      const y1=yFor(link[0],left.length), y2=yFor(link[1],right.length);
+      return "<line x1='"+(leftX+24)+"' y1='"+y1+"' x2='"+(rightX-24)+"' y2='"+y2+"' class='function-map-link'/>";
+    }).join("");
+    const leftText=left.map((value,index)=>"<text x='"+leftX+"' y='"+(yFor(index,left.length)+5)+"' text-anchor='middle' class='function-map-value'>"+escapeHTML(value)+"</text>").join("");
+    const rightText=right.map((value,index)=>"<text x='"+rightX+"' y='"+(yFor(index,right.length)+5)+"' text-anchor='middle' class='function-map-value'>"+escapeHTML(value)+"</text>").join("");
+    return "<svg class='function-map-svg' viewBox='0 0 "+width+" "+height+"' role='img' aria-label='Mapping diagram'>"+
+      "<ellipse cx='"+leftX+"' cy='120' rx='65' ry='98' class='function-map-oval'/><ellipse cx='"+rightX+"' cy='120' rx='65' ry='98' class='function-map-oval'/>"+
+      "<text x='"+leftX+"' y='23' text-anchor='middle' class='function-map-label'>"+escapeHTML(labels[0])+"</text><text x='"+rightX+"' y='23' text-anchor='middle' class='function-map-label'>"+escapeHTML(labels[1])+"</text>"+
+      lines+leftText+rightText+"</svg>";
+  }
+
+  function functionGraphMarkup(item) {
+    const width=340,height=250,pad=32,min=-5,max=5;
+    const px=x=>pad+((x-min)/(max-min))*(width-pad*2);
+    const py=y=>height-pad-((y-min)/(max-min))*(height-pad*2);
+    let marks="";
+    for(let n=-4;n<=4;n+=2){
+      marks+="<line x1='"+px(n)+"' y1='"+pad+"' x2='"+px(n)+"' y2='"+(height-pad)+"' class='function-grid-line'/>";
+      marks+="<line x1='"+pad+"' y1='"+py(n)+"' x2='"+(width-pad)+"' y2='"+py(n)+"' class='function-grid-line'/>";
+    }
+    marks+="<line x1='"+pad+"' y1='"+py(0)+"' x2='"+(width-pad)+"' y2='"+py(0)+"' class='function-axis'/>";
+    marks+="<line x1='"+px(0)+"' y1='"+pad+"' x2='"+px(0)+"' y2='"+(height-pad)+"' class='function-axis'/>";
+    if(item.graphKind==="points"){
+      marks+=(item.points||[]).map(point=>"<circle cx='"+px(point[0])+"' cy='"+py(point[1])+"' r='5.5' class='function-graph-point'/>").join("");
+    } else if(item.graphKind==="line"){
+      const x1=-5,x2=5,y1=item.m*x1+item.b,y2=item.m*x2+item.b;
+      marks+="<line x1='"+px(x1)+"' y1='"+py(y1)+"' x2='"+px(x2)+"' y2='"+py(y2)+"' class='function-graph-path'/>";
+    } else if(item.graphKind==="horizontal"){
+      marks+="<line x1='"+px(-5)+"' y1='"+py(item.yValue)+"' x2='"+px(5)+"' y2='"+py(item.yValue)+"' class='function-graph-path'/>";
+    } else if(item.graphKind==="circle"){
+      marks+="<circle cx='"+px(0)+"' cy='"+py(0)+"' r='"+(px(2.8)-px(0))+"' class='function-graph-shape'/>";
+    } else if(item.graphKind==="sideways"){
+      let points=[];
+      for(let y=-3.3;y<=3.3;y+=.3){const x=(y*y)/2-2.2;points.push(px(x)+","+py(y));}
+      marks+="<polyline points='"+points.join(" ")+"' class='function-graph-shape'/>";
+    }
+    marks+="<text x='"+(width-pad+7)+"' y='"+(py(0)+4)+"' class='function-axis-label'>x</text><text x='"+(px(0)+7)+"' y='"+(pad-8)+"' class='function-axis-label'>y</text>";
+    return "<svg class='function-graph-svg' viewBox='0 0 "+width+" "+height+"' role='img' aria-label='Coordinate graph'>"+marks+"</svg>";
+  }
+
+  function functionRepresentationMarkup(item) {
+    if(item.type==="table") return functionTableMarkup(item);
+    if(item.type==="mapping") return functionMappingMarkup(item);
+    if(item.type==="pairs") return functionPairsMarkup(item);
+    return functionGraphMarkup(item);
+  }
+
+  function functionVocabulary(item) {
+    const target=item.vocab ? item.vocab[0] : "output";
+    const source=item.vocab ? item.vocab[1] : "input";
+    return {target,source};
+  }
+
+  function resetFunctionTask(data) {
+    data.selected=null;
+    data.checked=false;
+    data.solved=false;
+    data.statement={status:"",source:"",count:""};
+  }
+
+  function renderFunctionDescriptionPart(data) {
+    const task=FUNCTION_DESCRIPTION_TASKS[data.index];
+    const body=$("#standardsLabBody");
+    const choices=task.choices.map((choice,index)=>{
+      const selected=data.selected===index;
+      const wrong=data.checked && selected && index!==task.correct;
+      const right=data.checked && selected && index===task.correct;
+      return "<button type='button' data-function-description='"+index+"' class='function-description-choice"+(selected?" is-selected":"")+(wrong?" is-wrong":"")+(right?" is-right":"")+"'><span>"+String.fromCharCode(65+index)+"</span><strong>"+escapeHTML(choice)+"</strong></button>";
+    }).join("");
+    body.innerHTML="<section class='function-lab-shell'>"+
+      "<header class='function-part-header'><div><p class='lab-mini-title'>Part 1 · Explain the relationship</p><h4>"+escapeHTML(task.title)+"</h4><p>Choose the statement that uses the definition of a function correctly.</p></div><span>Question "+(data.index+1)+" / 5</span></header>"+
+      "<div class='function-focus-card'>"+functionRepresentationMarkup(task)+"</div>"+
+      "<div class='function-language-reminder'><strong>Read the direction:</strong> input → output &nbsp; | &nbsp; independent → dependent &nbsp; | &nbsp; x → y</div>"+
+      "<div class='function-description-list'>"+choices+"</div>"+
+      "<div class='relation-submit-row'><button class='lab-action' id='checkFunctionDescription' type='button'>Check description</button>"+
+      (data.solved?"<button class='lab-next' id='nextFunctionDescription' type='button'>"+(data.index===4?"Go to Part 2 →":"Next description →")+"</button>":"")+"</div></section>";
+
+    body.querySelectorAll("[data-function-description]").forEach(button=>button.addEventListener("click",()=>{
+      if(data.solved) return;
+      data.selected=Number(button.dataset.functionDescription);
+      data.checked=false;
+      renderFunctionDescriptionPart(data);
+    }));
+    $("#checkFunctionDescription").addEventListener("click",()=>{
+      if(data.selected===null) return setLabFeedback("Choose the verbal description that best explains the relation.","incorrect");
+      data.checked=true;
+      if(data.selected!==task.correct){
+        renderFunctionDescriptionPart(data);
+        return setLabFeedback("Trace from each input, x-value, or independent value to its output. Sharing an output is allowed; one input receiving two outputs is not.","incorrect");
+      }
+      data.solved=true;
+      renderFunctionDescriptionPart(data);
+      setLabFeedback(task.isFunction ? "Correct. Every input has exactly one output. Notice that different inputs may still share the same output." : "Correct. At least one input corresponds to more than one output, so the relation is not a function.","correct");
+    });
+    const next=$("#nextFunctionDescription");
+    if(next) next.addEventListener("click",()=>{
+      if(data.index===4){data.phase="build";data.index=0;} else data.index+=1;
+      resetFunctionTask(data);
+      renderLab85G();
+      syncWhiteboardQuestion();
+      setLabFeedback(data.phase==="build"?"Part 2: now build the explanation yourself.":"New verbal-description question ready.");
+    });
+  }
+
+  function renderFunctionBuildPart(data) {
+    const task=FUNCTION_BUILD_TASKS[data.index];
+    const words=functionVocabulary(task);
+    const body=$("#standardsLabBody");
+    const s=data.statement||{status:"",source:"",count:""};
+    const targetPhrase=words.target;
+    const sourcePhrase=words.source;
+    body.innerHTML="<section class='function-lab-shell'>"+
+      "<header class='function-part-header'><div><p class='lab-mini-title'>Part 2 · Build the statement</p><h4>"+escapeHTML(task.title)+"</h4><p>Study the representation, then complete the explanation with the dropdowns.</p></div><span>Question "+(data.index+1)+" / 10</span></header>"+
+      "<div class='function-focus-card'>"+functionRepresentationMarkup(task)+"</div>"+
+      "<div class='function-statement-builder'>"+
+        "<span>The relationship</span>"+
+        "<select data-function-statement='status'><option value=''>choose...</option><option value='does'"+(s.status==="does"?" selected":"")+">does</option><option value='does-not'"+(s.status==="does-not"?" selected":"")+">does not</option></select>"+
+        "<span>represent the "+escapeHTML(targetPhrase)+" as a function of the "+escapeHTML(sourcePhrase)+" because</span>"+
+        "<select data-function-statement='source'><option value=''>choose...</option><option value='each'"+(s.source==="each"?" selected":"")+">each "+escapeHTML(sourcePhrase)+"</option><option value='atleast'"+(s.source==="atleast"?" selected":"")+">at least one "+escapeHTML(sourcePhrase)+"</option></select>"+
+        "<span>corresponds to</span>"+
+        "<select data-function-statement='count'><option value=''>choose...</option><option value='one'"+(s.count==="one"?" selected":"")+">only one "+escapeHTML(targetPhrase)+"</option><option value='more'"+(s.count==="more"?" selected":"")+">more than one "+escapeHTML(targetPhrase)+"</option></select><span>.</span>"+
+      "</div>"+
+      "<div class='function-concept-note'>A function controls how many outputs one input may have. It does <strong>not</strong> require every output to belong to only one input.</div>"+
+      "<div class='relation-submit-row'><button class='lab-action' id='checkFunctionStatement' type='button'>Check my statement</button>"+
+      (data.solved?"<button class='lab-next' id='nextFunctionStatement' type='button'>"+(data.index===9?"Finish lab →":"Next representation →")+"</button>":"")+"</div></section>";
+
+    body.querySelectorAll("[data-function-statement]").forEach(select=>select.addEventListener("change",()=>{
+      data.statement[select.dataset.functionStatement]=select.value;
+      data.checked=false;
+    }));
+    $("#checkFunctionStatement").addEventListener("click",()=>{
+      body.querySelectorAll("[data-function-statement]").forEach(select=>{data.statement[select.dataset.functionStatement]=select.value;});
+      const expected=task.isFunction ? {status:"does",source:"each",count:"one"} : {status:"does-not",source:"atleast",count:"more"};
+      if(!data.statement.status || !data.statement.source || !data.statement.count) return setLabFeedback("Complete all three dropdowns before checking your statement.","incorrect");
+      if(data.statement.status!==expected.status || data.statement.source!==expected.source || data.statement.count!==expected.count){
+        data.checked=true;
+        return setLabFeedback("Recheck the direction from the input/independent/x side. Ask whether any single source value points to two different output/dependent/y values.","incorrect");
+      }
+      data.solved=true;
+      renderFunctionBuildPart(data);
+      setLabFeedback(task.isFunction ? "Correct. Each source value has only one corresponding target value. Repeated target values are allowed." : "Correct. At least one source value has more than one corresponding target value, so this relation is not a function.","correct");
+    });
+    const next=$("#nextFunctionStatement");
+    if(next) next.addEventListener("click",()=>{
+      if(data.index===9) return showLabCompletion("8.5G");
+      data.index+=1;
+      resetFunctionTask(data);
+      renderLab85G();
+      syncWhiteboardQuestion();
+      setLabFeedback("New representation ready. Build a complete function statement.");
+    });
+  }
+
+  function renderLab85G() {
+    if(!labRuntime.data) labRuntime.data={phase:"description",index:0,selected:null,checked:false,solved:false,statement:{status:"",source:"",count:""}};
+    const data=labRuntime.data;
+    const done=data.phase==="description" ? data.index+(data.solved?1:0) : 5+data.index+(data.solved?1:0);
+    const instruction=data.phase==="description" ? "Part 1: choose the correct verbal explanation." : "Part 2: build the explanation from dropdown statements.";
+    setLabProgress(done,15,instruction);
+    if(data.phase==="description") renderFunctionDescriptionPart(data); else renderFunctionBuildPart(data);
   }
 
   const TREND_LAB_TASKS = [
@@ -5110,6 +5361,21 @@
       data.index += 1;
       resetTrendTask(data);
       renderLab85D();
+    } else if (standard === "8.5G") {
+      if (data.phase === "description") {
+        if (data.index >= FUNCTION_DESCRIPTION_TASKS.length - 1) {
+          data.phase = "build";
+          data.index = 0;
+        } else {
+          data.index += 1;
+        }
+      } else if (data.index >= FUNCTION_BUILD_TASKS.length - 1) {
+        return showLabCompletion(standard);
+      } else {
+        data.index += 1;
+      }
+      resetFunctionTask(data);
+      renderLab85G();
     } else if (standard === "8.3A") {
       if (data.index >= SIMILARITY_TASKS.length - 1) return showLabCompletion(standard);
       data.index += 1;
