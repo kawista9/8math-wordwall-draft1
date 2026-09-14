@@ -1748,3 +1748,44 @@ button.root-integer-tick:hover i, button.root-integer-tick:focus-visible i, butt
 .wdb-reason{display:grid;gap:.2rem;padding:.7rem .85rem;border-top:1px solid rgba(16,34,61,.15);background:#f7fbff;font-size:.8rem;line-height:1.35}
 .wdb-reason strong{color:#006b6e;font-size:.75rem;text-transform:uppercase;letter-spacing:.05em}
 @media(max-width:820px){.wdb-grid-cards{grid-template-columns:1fr}.wdb-header{flex-direction:column}.wdb-header>span{align-self:flex-start}.wdb-card{min-height:280px}.wdb-card-body{min-height:190px}}
+
+
+/* 8.5I equation writing lab */
+.eqwrite-shell{display:grid;gap:1rem;color:#10223d}
+.eqwrite-header{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;padding:1rem 1.1rem;border:2px solid #10223d;border-radius:18px;background:linear-gradient(112deg,#fff7f2,#fff 55%,#eafafa);box-shadow:5px 5px 0 #10223d}
+.eqwrite-header h4{margin:.1rem 0 .35rem;font-size:clamp(1.35rem,2.5vw,2rem)}
+.eqwrite-header p{margin:0;color:#4b5b70;font-weight:750}
+.eqwrite-header .lab-mini-title{margin:0;color:#a63a19;font-weight:950;text-transform:uppercase;letter-spacing:.07em}
+.eqwrite-header>span{flex:0 0 auto;padding:.5rem .75rem;border:2px solid #10223d;border-radius:999px;background:#fff;font-weight:950;box-shadow:2px 2px 0 #ff815b}
+.eqwrite-layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(330px,.85fr);gap:1rem;align-items:stretch}
+.eqwrite-representation,.eqwrite-work{border:2px solid #10223d;border-radius:18px;background:#fff;box-shadow:4px 4px 0 rgba(16,34,61,.14)}
+.eqwrite-representation{display:grid;place-items:center;min-height:430px;padding:1.1rem;position:relative}
+.eqwrite-rep-label{position:absolute;top:.75rem;left:.85rem;padding:.35rem .55rem;border:1px solid #10223d;border-radius:999px;background:#eef6ff;font-size:.72rem;font-weight:950;text-transform:uppercase;letter-spacing:.05em}
+.eqwrite-work{display:grid;gap:.8rem;padding:1rem;background:#fbfdff}
+.eqwrite-step{display:grid;grid-template-columns:34px 1fr;gap:.75rem;padding:.85rem;border:2px solid rgba(16,34,61,.16);border-radius:14px;background:#fff}
+.eqwrite-step>span{display:grid;place-items:center;width:32px;height:32px;border:2px solid #10223d;border-radius:50%;background:#ff815b;font-weight:950}
+.eqwrite-step h5{margin:.05rem 0 .25rem;font-size:1.02rem}
+.eqwrite-step p{margin:0 0 .55rem;color:#5b697b;font-size:.88rem;line-height:1.4}
+.eqwrite-step label{display:flex;align-items:center;gap:.5rem;font-weight:950;font-family:"STIX Two Math","Cambria Math",serif;font-size:1.15rem}
+.eqwrite-step input{width:150px;max-width:100%;padding:.58rem .65rem;border:2px solid #008f92;border-radius:10px;background:#f5ffff;color:#10223d;font:inherit;font-weight:900;text-align:center}
+.eqwrite-step.is-equation{background:#f7f2ff}
+.eqwrite-equation-builder{display:flex;flex-wrap:wrap;align-items:center;gap:.45rem;font-family:"STIX Two Math","Cambria Math",serif;font-size:1.3rem}
+.eqwrite-equation-builder input{width:95px}
+.eqwrite-preview{margin-top:.7rem;padding:.65rem .8rem;border:2px dashed #10223d;border-radius:10px;background:#fff;font-family:"STIX Two Math","Cambria Math",serif;font-size:1.25rem;font-weight:900;text-align:center}
+.eqwrite-story{max-width:650px;padding:1.15rem;border:2px solid #10223d;border-radius:16px;background:#fff9f4;font-size:1.08rem;font-weight:760;line-height:1.65}
+.eqwrite-story p{margin:0}
+.eqwrite-implied-points{display:flex;flex-wrap:wrap;gap:.55rem;align-items:center;margin-top:1rem;padding-top:.8rem;border-top:1px solid rgba(16,34,61,.2)}
+.eqwrite-implied-points span{flex-basis:100%;color:#5b697b;font-size:.82rem;font-weight:850;text-transform:uppercase;letter-spacing:.04em}
+.eqwrite-implied-points strong{padding:.45rem .65rem;border:2px solid #10223d;border-radius:10px;background:#fff;font-family:"STIX Two Math","Cambria Math",serif}
+.eqwrite-pairs{display:flex;flex-wrap:wrap;justify-content:center;gap:.8rem;padding:1rem;font-family:"STIX Two Math","Cambria Math",serif;font-size:clamp(1.35rem,3vw,2rem);font-weight:900}
+.eqwrite-pairs span{padding:.75rem .9rem;border:2px solid #10223d;border-radius:12px;background:#f7f2ff;box-shadow:2px 2px 0 rgba(16,34,61,.12)}
+.eqwrite-table-wrap{width:100%;display:grid;place-items:center}
+.eqwrite-table{border-collapse:collapse;min-width:300px;background:#fff;font-family:"STIX Two Math","Cambria Math",serif;font-size:1.05rem;text-align:center}
+.eqwrite-table th,.eqwrite-table td{padding:.6rem .9rem;border:2px solid #10223d}
+.eqwrite-table th{background:#eef6ff;font-weight:950}.eqwrite-table th small{font-family:Arial,sans-serif;font-size:.68rem}.eqwrite-table td{font-weight:850}
+.eqwrite-graph{display:block;width:min(100%,520px);height:auto;background:#fff;border:2px solid #10223d;border-radius:12px;overflow:hidden}
+.eqwrite-grid{stroke:#dce4ee;stroke-width:1}.eqwrite-axis{stroke:#10223d;stroke-width:2}.eqwrite-line{stroke:#d65d31;stroke-width:4;stroke-linecap:round}
+.eqwrite-point{fill:#008f92;stroke:#10223d;stroke-width:1.5}.eqwrite-tick,.eqwrite-axis-label{fill:#10223d;font:800 10px Arial,sans-serif}.eqwrite-axis-label{font-size:12px;font-weight:950}
+.eqwrite-hintbar{padding:.75rem .9rem;border:2px solid #c48a00;border-radius:12px;background:#fff9df;line-height:1.45}
+@media(max-width:900px){.eqwrite-layout{grid-template-columns:1fr}.eqwrite-representation{min-height:330px}.eqwrite-header{flex-direction:column}.eqwrite-header>span{align-self:flex-start}}
+@media(max-width:560px){.eqwrite-step{grid-template-columns:1fr}.eqwrite-equation-builder{font-size:1.1rem}.eqwrite-table{min-width:0;width:100%}}
