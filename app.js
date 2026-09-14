@@ -728,6 +728,12 @@
         ["https://go.screenpal.com/watch/cOehoQnZbDb", "Using Trend Lines for Predictions"]
       ]
     },
+    "8.5E": {
+      title: "Direct Variation: Name It, Build It, Use It",
+      description: "Work through six direct-variation situations. For each one, identify the independent and dependent variables, build k as a word ratio, substitute the known values to find the constant of variation, write y = kx, and use the equation to solve a new question.",
+      summary: "You connected the language of direct variation to the equation y = kx. In every problem, x was the independent variable, y was the dependent variable, and k = y/x described how much y there is for one unit of x. Once k was known, the same constant was used to solve a new value in the situation.",
+      videos: []
+    },
     "8.4A": {
       title: "Slope: Do It With Me",
       description: "Choose four exact points on each line. The lab groups them into two pairs, and you complete the rise-first, run-second process for both pairs to prove that the slope stays the same. Pay attention to the value of each axis interval: the first five problems coach every move, and the final ten ask you to determine and enter both sets of signed changes yourself.",
@@ -966,6 +972,7 @@
     if (standard === "8.5B") renderLab85B();
     if (standard === "8.5C") renderLab85C();
     if (standard === "8.5D") renderLab85D();
+    if (standard === "8.5E") renderLab85E();
     if (standard === "8.10A") renderLabA();
     if (standard === "8.10B") renderLabB();
     if (standard === "8.10C") renderLabC();
@@ -2441,6 +2448,195 @@
     setLabProgress(completed,SCATTER_TOTAL_TASKS,`Question ${data.index + 1}: ${phaseLabel}.`);
     if (data.index < SCATTER_BUILD_TASKS.length) return renderScatterBuilder(data,SCATTER_BUILD_TASKS[data.index]);
     renderScatterClassifier(data,SCATTER_CLASSIFY_ROUNDS[data.index - SCATTER_BUILD_TASKS.length]);
+  }
+
+
+  const DIRECT_VARIATION_TASKS = [
+    {
+      title:"Smoothie prep",
+      situation:"A smoothie station uses 3 cups of strawberries to prepare 2 batches of smoothies.",
+      statement:"The number of cups of strawberries, y, varies directly with the number of batches, x.",
+      xLabel:"number of batches", yLabel:"cups of strawberries", xValue:2, yValue:3,
+      k:1.5, targetLabel:"batches", targetValue:5, find:"y", answer:7.5, answerUnit:"cups of strawberries"
+    },
+    {
+      title:"Lawn-mowing business",
+      situation:"Malik mows 4 lawns in 5 hours.",
+      statement:"The number of lawns mowed, y, is directly proportional to the number of hours worked, x.",
+      xLabel:"hours worked", yLabel:"lawns mowed", xValue:5, yValue:4,
+      k:0.8, targetLabel:"hours worked", targetValue:7.5, find:"y", answer:6, answerUnit:"lawns"
+    },
+    {
+      title:"Electricity cost",
+      situation:"Using 1,079 kilowatt-hours of electricity costs $129.48.",
+      statement:"The cost of electricity, y, is proportional to the number of kilowatt-hours used, x.",
+      xLabel:"kilowatt-hours used", yLabel:"cost in dollars", xValue:1079, yValue:129.48,
+      k:0.12, targetLabel:"kilowatt-hours", targetValue:908, find:"y", answer:108.96, answerUnit:"dollars"
+    },
+    {
+      title:"Dishwasher water use",
+      situation:"An electric dishwasher uses 32 gallons of water to wash 4 loads of dishes.",
+      statement:"The amount of water used, y, varies directly with the number of loads of dishes, x.",
+      xLabel:"loads of dishes", yLabel:"gallons of water", xValue:4, yValue:32,
+      k:8, targetLabel:"loads", targetValue:10, find:"y", answer:80, answerUnit:"gallons"
+    },
+    {
+      title:"Gift baskets",
+      situation:"Nikki can make 4 gift baskets in one-half hour.",
+      statement:"The number of gift baskets, y, is directly proportional to the amount of time in hours, x.",
+      xLabel:"time in hours", yLabel:"gift baskets made", xValue:0.5, yValue:4,
+      k:8, targetLabel:"hours", targetValue:5, find:"y", answer:40, answerUnit:"gift baskets"
+    },
+    {
+      title:"Direct variation with numbers",
+      situation:"When x = 1/2, y = 75.",
+      statement:"The value of y varies directly with x.",
+      xLabel:"value of x", yLabel:"value of y", xValue:0.5, yValue:75,
+      k:150, targetLabel:"x", targetValue:2.25, find:"y", answer:337.5, answerUnit:""
+    }
+  ];
+
+  function directVariationNear(value, expected) {
+    const number = parseRelationNumber ? parseRelationNumber(value) : Number(value);
+    return Number.isFinite(number) && Math.abs(number - expected) < .001;
+  }
+
+  function directVariationOptions(task, selected, field) {
+    const options = [task.xLabel, task.yLabel];
+    return options.map(option => `<option value="${escapeHTML(option)}"${selected === option ? " selected" : ""}>${escapeHTML(option)}</option>`).join("");
+  }
+
+  function resetDirectVariationTask(data) {
+    data.responses = {};
+    data.solved = false;
+  }
+
+  function renderLab85E() {
+    if (!labRuntime.data) labRuntime.data = { index:0, responses:{}, solved:false };
+    const data = labRuntime.data;
+    const task = DIRECT_VARIATION_TASKS[data.index];
+    if (!task) return showLabCompletion("8.5E");
+    const r = data.responses || (data.responses = {});
+    const body = $("#standardsLabBody");
+    const completed = data.index + (data.solved ? 1 : 0);
+    setLabProgress(completed,DIRECT_VARIATION_TASKS.length,`Problem ${data.index + 1} of ${DIRECT_VARIATION_TASKS.length}: identify → ratio → k → equation → solve.`);
+
+    body.innerHTML = `
+      <section class="variation-lab-shell">
+        <header class="variation-problem-card">
+          <div><p class="lab-mini-title">Direct variation situation</p><h4>${escapeHTML(task.title)}</h4></div>
+          <span class="variation-problem-count">${data.index + 1} / ${DIRECT_VARIATION_TASKS.length}</span>
+          <p class="variation-situation">${escapeHTML(task.situation)}</p>
+          <p class="variation-statement">${escapeHTML(task.statement)}</p>
+        </header>
+
+        <div class="variation-step-grid">
+          <section class="variation-step-card">
+            <span class="variation-step-number">1</span>
+            <h5>Name x and y</h5>
+            <p>Which quantity is independent? Which quantity depends on it?</p>
+            <label>Independent variable — x
+              <select data-variation-field="xLabel">
+                <option value="">Choose x...</option>
+                ${directVariationOptions(task,r.xLabel,"xLabel")}
+              </select>
+            </label>
+            <label>Dependent variable — y
+              <select data-variation-field="yLabel">
+                <option value="">Choose y...</option>
+                ${directVariationOptions(task,r.yLabel,"yLabel")}
+              </select>
+            </label>
+          </section>
+
+          <section class="variation-step-card">
+            <span class="variation-step-number">2</span>
+            <h5>Build k with words</h5>
+            <p>Because y = kx, the constant is k = y ÷ x.</p>
+            <div class="variation-fraction">
+              <select data-variation-field="ratioTop"><option value="">top...</option>${directVariationOptions(task,r.ratioTop,"ratioTop")}</select>
+              <span></span>
+              <select data-variation-field="ratioBottom"><option value="">bottom...</option>${directVariationOptions(task,r.ratioBottom,"ratioBottom")}</select>
+            </div>
+            <small>Read it as “${escapeHTML(task.yLabel)} per ${escapeHTML(task.xLabel)}.”</small>
+          </section>
+
+          <section class="variation-step-card">
+            <span class="variation-step-number">3</span>
+            <h5>Substitute and find k</h5>
+            <p class="variation-known-ratio">k = ${task.yValue} ÷ ${task.xValue}</p>
+            <label>k = <input data-variation-field="k" inputmode="decimal" value="${escapeHTML(r.k || "")}" placeholder="constant of variation"></label>
+            <small>k tells how much y there is for 1 unit of x.</small>
+          </section>
+
+          <section class="variation-step-card">
+            <span class="variation-step-number">4</span>
+            <h5>Write the equation</h5>
+            <div class="variation-equation-row"><span>y =</span><input data-variation-field="equationK" inputmode="decimal" value="${escapeHTML(r.equationK || "")}" aria-label="value of k in y equals kx"><span>x</span></div>
+            <small>Use the same k you just found.</small>
+          </section>
+        </div>
+
+        <section class="variation-solve-card">
+          <div>
+            <span class="variation-step-number">5</span>
+            <p class="lab-mini-title">Use k to solve</p>
+            <h5>${task.find === "y"
+              ? `What is y when ${escapeHTML(task.targetLabel)} = ${task.targetValue}?`
+              : `What is x when y = ${task.targetValue}?`}</h5>
+            <p>Substitute the new value into your direct-variation equation.</p>
+          </div>
+          <div class="variation-solve-work">
+            <span>y = ${task.k}(${task.targetValue})</span>
+            <label>Answer <input data-variation-field="answer" inputmode="decimal" value="${escapeHTML(r.answer || "")}"> <strong>${escapeHTML(task.answerUnit)}</strong></label>
+          </div>
+        </section>
+
+        <div class="relation-submit-row">
+          <button class="lab-action" id="checkVariationTask" type="button">Check my reasoning</button>
+          ${data.solved ? `<button class="lab-next" id="nextVariationTask" type="button">${data.index === DIRECT_VARIATION_TASKS.length - 1 ? "Finish lab →" : "Next situation →"}</button>` : ""}
+        </div>
+      </section>`;
+
+    body.querySelectorAll("[data-variation-field]").forEach(field => {
+      field.addEventListener("input",() => { data.responses[field.dataset.variationField] = field.value; });
+      field.addEventListener("change",() => { data.responses[field.dataset.variationField] = field.value; });
+    });
+
+    $("#checkVariationTask").addEventListener("click",() => {
+      body.querySelectorAll("[data-variation-field]").forEach(field => { data.responses[field.dataset.variationField] = field.value; });
+      const missed = [];
+      if (r.xLabel !== task.xLabel || r.yLabel !== task.yLabel) missed.push("variables");
+      if (r.ratioTop !== task.yLabel || r.ratioBottom !== task.xLabel) missed.push("word ratio");
+      if (!directVariationNear(r.k,task.k)) missed.push("k");
+      if (!directVariationNear(r.equationK,task.k)) missed.push("equation");
+      if (!directVariationNear(r.answer,task.answer)) missed.push("final answer");
+      if (missed.length) {
+        const hint = missed.includes("variables")
+          ? "Ask which quantity is chosen or changed first; that is x. The quantity that responds is y."
+          : missed.includes("word ratio")
+            ? "Build k as y/x: put the dependent variable on top and the independent variable on the bottom."
+            : missed.includes("k")
+              ? "Divide the known y-value by the known x-value to find k."
+              : missed.includes("equation")
+                ? "Write y = kx using the exact k you found."
+                : "Substitute the new x-value into y = kx and calculate y.";
+        return setLabFeedback(`Recheck the ${missed.join(", ")}. ${hint}`,"incorrect");
+      }
+      data.solved = true;
+      renderLab85E();
+      setLabFeedback(`Correct. k = ${task.k}, so the direct-variation equation is y = ${task.k}x and the new value is ${task.answer}${task.answerUnit ? " " + task.answerUnit : ""}.`,"correct");
+    });
+
+    const next = $("#nextVariationTask");
+    if (next) next.addEventListener("click",() => {
+      if (data.index >= DIRECT_VARIATION_TASKS.length - 1) return showLabCompletion("8.5E");
+      data.index += 1;
+      resetDirectVariationTask(data);
+      renderLab85E();
+      syncWhiteboardQuestion();
+      setLabFeedback("New direct-variation situation ready. Start by naming x and y.");
+    });
   }
 
   const TREND_LAB_TASKS = [
