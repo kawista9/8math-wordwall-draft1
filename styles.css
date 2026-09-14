@@ -1602,3 +1602,33 @@ button.root-integer-tick:hover i, button.root-integer-tick:focus-visible i, butt
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+
+/* 8.5E direct variation lab */
+.variation-lab-shell{display:grid;gap:1rem;color:#10223d}
+.variation-problem-card{display:grid;grid-template-columns:1fr auto;gap:.55rem 1rem;padding:1rem 1.1rem;border:2px solid #10223d;border-radius:18px;background:linear-gradient(110deg,#fff7f2,#fff 58%,#ffe0d3);box-shadow:5px 5px 0 #10223d}
+.variation-problem-card h4{margin:0;font-size:clamp(1.35rem,2.5vw,2rem)}
+.variation-problem-card .lab-mini-title{margin:0 0 .2rem;color:#a63a19}
+.variation-problem-count{align-self:start;padding:.5rem .7rem;border:2px solid #10223d;border-radius:999px;background:#fff;font-weight:950;box-shadow:2px 2px 0 #ff815b}
+.variation-situation,.variation-statement{grid-column:1/-1;margin:0;line-height:1.5}
+.variation-situation{font-size:1.05rem;font-weight:760}
+.variation-statement{padding:.7rem .8rem;border-left:5px solid #ff815b;background:#fff;font-family:"STIX Two Math","Cambria Math",serif;font-size:1.08rem;font-weight:800}
+.variation-step-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+.variation-step-card,.variation-solve-card{position:relative;padding:1rem;border:2px solid #10223d;border-radius:18px;background:#fff;box-shadow:4px 4px 0 rgba(16,34,61,.14)}
+.variation-step-card h5,.variation-solve-card h5{margin:.15rem 0 .35rem;font-size:1.12rem}
+.variation-step-card p,.variation-solve-card p{margin:.2rem 0 .8rem;color:#4b5b70;line-height:1.45}
+.variation-step-card label{display:grid;gap:.3rem;margin:.65rem 0;font-weight:900}
+.variation-step-card select,.variation-step-card input,.variation-solve-card input{width:100%;padding:.65rem .7rem;border:2px solid #008f92;border-radius:10px;background:#f2ffff;color:#10223d;font:inherit;font-weight:850}
+.variation-step-number{display:inline-grid;place-items:center;width:30px;height:30px;border:2px solid #10223d;border-radius:50%;background:#ff815b;font-weight:950}
+.variation-fraction{display:grid;grid-template-rows:auto 3px auto;gap:.45rem;max-width:360px;margin:.9rem auto}
+.variation-fraction span{display:block;background:#10223d;border-radius:99px}
+.variation-fraction select{text-align:center}
+.variation-known-ratio{padding:.65rem;border-radius:10px;background:#f7f2ff;color:#10223d!important;font-family:"STIX Two Math","Cambria Math",serif;font-size:1.2rem;font-weight:900;text-align:center}
+.variation-equation-row{display:flex;align-items:center;justify-content:center;gap:.45rem;padding:.9rem;border:2px solid #10223d;border-radius:12px;background:#fff7f2;font-family:"STIX Two Math","Cambria Math",serif;font-size:1.5rem;font-weight:900}
+.variation-equation-row input{width:100px;text-align:center}
+.variation-solve-card{display:grid;grid-template-columns:1fr minmax(280px,.7fr);gap:1rem;align-items:center;background:linear-gradient(115deg,#f6ffff,#fff 60%,#fff7f2)}
+.variation-solve-card .lab-mini-title{margin:.2rem 0;color:#007f82;font-weight:950;text-transform:uppercase;letter-spacing:.06em}
+.variation-solve-work{display:grid;gap:.65rem;padding:.9rem;border:2px dashed #10223d;border-radius:14px;background:#fff}
+.variation-solve-work>span{font-family:"STIX Two Math","Cambria Math",serif;font-size:1.3rem;font-weight:900}
+.variation-solve-work label{display:grid;grid-template-columns:auto 1fr auto;gap:.5rem;align-items:center;font-weight:900}
+@media(max-width:780px){.variation-step-grid,.variation-solve-card{grid-template-columns:1fr}.variation-solve-work label{grid-template-columns:1fr}.variation-problem-card{grid-template-columns:1fr}.variation-problem-count{justify-self:start}}
