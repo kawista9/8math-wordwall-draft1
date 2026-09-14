@@ -719,6 +719,15 @@
         ["https://go.screenpal.com/watch/cOeh2OnZbiF", "No Association"]
       ]
     },
+    "8.5D": {
+      title: "Trend Lines: Choose, Model, Predict",
+      description: "Study ten realistic scatterplots with clustered data. First choose the line that best represents the overall trend; then use that line to make the closest reasonable prediction. The work-paper side of every problem stays open for your slope, equation, plotted answer choices, and other calculations.",
+      summary: "You selected trend lines that passed through the middle of clustered data with roughly the same number of points above and below. You rejected lines that opposed the association or sat above or below nearly every point. Then you used each best-fit line to estimate values. A prediction from a trend line is an approximation, so the best answer is the reasonable value closest to the line—not necessarily an exact data point.",
+      videos: [
+        ["https://go.screenpal.com/watch/cOeh2AnZbQk", "Understanding and Creating Quality Trend Lines"],
+        ["https://go.screenpal.com/watch/cOehoQnZbDb", "Using Trend Lines for Predictions"]
+      ]
+    },
     "8.4A": {
       title: "Slope: Do It With Me",
       description: "Choose four exact points on each line. The lab groups them into two pairs, and you complete the rise-first, run-second process for both pairs to prove that the slope stays the same. Pay attention to the value of each axis interval: the first five problems coach every move, and the final ten ask you to determine and enter both sets of signed changes yourself.",
@@ -956,6 +965,7 @@
     if (standard === "8.5A") renderLab85A();
     if (standard === "8.5B") renderLab85B();
     if (standard === "8.5C") renderLab85C();
+    if (standard === "8.5D") renderLab85D();
     if (standard === "8.10A") renderLabA();
     if (standard === "8.10B") renderLabB();
     if (standard === "8.10C") renderLabC();
@@ -2431,6 +2441,250 @@
     setLabProgress(completed,SCATTER_TOTAL_TASKS,`Question ${data.index + 1}: ${phaseLabel}.`);
     if (data.index < SCATTER_BUILD_TASKS.length) return renderScatterBuilder(data,SCATTER_BUILD_TASKS[data.index]);
     renderScatterClassifier(data,SCATTER_CLASSIFY_ROUNDS[data.index - SCATTER_BUILD_TASKS.length]);
+  }
+
+  const TREND_LAB_TASKS = [
+    {
+      title:"Study time and quiz scores", context:"A teacher compared students' weekly study time with their quiz scores.",
+      xLabel:"Study time (hours)", yLabel:"Quiz score", xMin:0, xMax:8, yMin:40, yMax:100,
+      xTicks:[0,2,4,6,8], yTicks:[40,50,60,70,80,90,100], slope:6, intercept:50, offset:13,
+      points:[[1,55],[1,59],[2,60],[2,64],[3,65],[3,70],[4,72],[4,76],[5,78],[5,82],[6,84],[6,88],[6.5,90],[4.5,70]],
+      lineOrder:["above","best","against","below"], targetX:7, prediction:92, predictionChoices:[84,98,92,72], unit:"points",
+      predictionPrompt:"About what quiz score does the trend line predict for a student who studies 7 hours?"
+    },
+    {
+      title:"Temperature and hot-cocoa sales", context:"A café recorded the afternoon temperature and the number of cups of hot cocoa sold.",
+      xLabel:"Temperature (°F)", yLabel:"Cups sold", xMin:40, xMax:80, yMin:10, yMax:90,
+      xTicks:[40,50,60,70,80], yTicks:[10,30,50,70,90], slope:-1.5, intercept:140, offset:18,
+      points:[[42,78],[45,72],[45,76],[50,62],[52,65],[55,55],[55,60],[60,48],[62,45],[65,41],[65,36],[70,32],[72,32],[58,50]],
+      lineOrder:["against","below","above","best"], targetX:75, prediction:28, predictionChoices:[45,28,18,72], unit:"cups",
+      predictionPrompt:"About how many cups does the trend line predict when the temperature is 75°F?"
+    },
+    {
+      title:"Practice shots and baskets made", context:"Players recorded the number of practice shots they attempted and the number they made.",
+      xLabel:"Shots attempted", yLabel:"Baskets made", xMin:0, xMax:60, yMin:0, yMax:50,
+      xTicks:[0,10,20,30,40,50,60], yTicks:[0,10,20,30,40,50], slope:.7, intercept:3, offset:10,
+      points:[[8,8],[10,12],[10,9],[15,15],[20,16],[20,20],[25,18],[30,26],[32,24],[35,29],[40,30],[40,34],[45,36],[50,36],[55,43]],
+      lineOrder:["below","against","best","above"], targetX:50, prediction:38, predictionChoices:[50,31,18,38], unit:"baskets",
+      predictionPrompt:"About how many baskets does the trend line predict for 50 attempted shots?"
+    },
+    {
+      title:"Vehicle age and resale value", context:"A dealership compared vehicle age with resale value for similar vehicles.",
+      xLabel:"Vehicle age (years)", yLabel:"Resale value ($1,000s)", xMin:0, xMax:12, yMin:5, yMax:35,
+      xTicks:[0,2,4,6,8,10,12], yTicks:[5,10,15,20,25,30,35], slope:-2.2, intercept:34, offset:7,
+      points:[[1,31],[2,29],[2,31],[3,26],[4,24],[4,26],[5,21],[6,22],[6,19],[7,18],[8,15],[8,17],[9,13],[11,10]],
+      lineOrder:["best","above","below","against"], targetX:10, prediction:12, predictionChoices:[26,8,18,12], unit:"thousand dollars",
+      predictionPrompt:"About what resale value does the trend line predict for a 10-year-old vehicle?"
+    },
+    {
+      title:"Rainfall and plant growth", context:"A gardening club compared weekly rainfall with the growth of several plants.",
+      xLabel:"Rainfall (inches)", yLabel:"Plant growth (cm)", xMin:0, xMax:8, yMin:0, yMax:24,
+      xTicks:[0,2,4,6,8], yTicks:[0,4,8,12,16,20,24], slope:2.5, intercept:2, offset:5,
+      points:[[1,4],[1,6],[2,8],[2.5,7],[3,10],[3,12],[4,11],[4,14],[5,13],[5,16],[6,18],[6,16],[6.5,19],[7.5,22]],
+      lineOrder:["above","against","below","best"], targetX:7, prediction:20, predictionChoices:[12,24,20,16], unit:"centimeters",
+      predictionPrompt:"About how much growth does the trend line predict with 7 inches of rainfall?"
+    },
+    {
+      title:"Distance and sound level", context:"Students measured sound level at different distances from the same speaker.",
+      xLabel:"Distance (feet)", yLabel:"Sound level (decibels)", xMin:0, xMax:30, yMin:35, yMax:100,
+      xTicks:[0,5,10,15,20,25,30], yTicks:[40,50,60,70,80,90,100], slope:-1.7, intercept:95, offset:14,
+      points:[[2,92],[4,86],[4,90],[7,81],[9,82],[10,76],[10,79],[13,70],[15,72],[17,64],[18,64],[20,60],[20,57],[23,55],[27,48]],
+      lineOrder:["below","best","above","against"], targetX:25, prediction:53, predictionChoices:[38,68,53,82], unit:"decibels",
+      predictionPrompt:"About what sound level does the trend line predict 25 feet from the speaker?"
+    },
+    {
+      title:"Advertising time and attendance", context:"Student groups compared hours spent advertising an event with the number of people who attended.",
+      xLabel:"Advertising time (hours)", yLabel:"Attendance", xMin:0, xMax:12, yMin:20, yMax:140,
+      xTicks:[0,2,4,6,8,10,12], yTicks:[20,40,60,80,100,120,140], slope:9, intercept:25, offset:25,
+      points:[[1,32],[2,46],[2,41],[3,50],[4,64],[4,58],[5,76],[6,76],[6,82],[7,91],[8,94],[8,101],[9,108],[11,125]],
+      lineOrder:["against","above","best","below"], targetX:10, prediction:115, predictionChoices:[90,140,70,115], unit:"people",
+      predictionPrompt:"About how many people does the trend line predict after 10 hours of advertising?"
+    },
+    {
+      title:"Elevation and air temperature", context:"Hikers recorded the air temperature at several elevations on the same day.",
+      xLabel:"Elevation (feet)", yLabel:"Temperature (°F)", xMin:0, xMax:8000, yMin:30, yMax:80,
+      xTicks:[0,2000,4000,6000,8000], yTicks:[30,40,50,60,70,80], slope:-.0055, intercept:78, offset:11,
+      points:[[500,76],[1000,70],[1000,74],[2000,65],[2500,66],[3000,60],[3000,63],[4000,57],[4500,51],[5000,52],[5000,48],[6000,44],[6500,44],[7500,36]],
+      lineOrder:["best","below","against","above"], targetX:7000, prediction:40, predictionChoices:[58,32,72,40], unit:"degrees Fahrenheit",
+      predictionPrompt:"About what temperature does the trend line predict at an elevation of 7,000 feet?"
+    },
+    {
+      title:"Pages read and reading time", context:"Readers recorded the number of pages completed and the number of minutes they spent reading.",
+      xLabel:"Pages read", yLabel:"Reading time (minutes)", xMin:0, xMax:100, yMin:0, yMax:160,
+      xTicks:[0,20,40,60,80,100], yTicks:[0,20,40,60,80,100,120,140,160], slope:1.4, intercept:8, offset:28,
+      points:[[8,18],[15,34],[15,24],[25,50],[30,42],[40,58],[40,70],[50,86],[55,88],[60,88],[70,100],[70,112],[80,108],[95,144]],
+      lineOrder:["above","below","best","against"], targetX:90, prediction:134, predictionChoices:[112,154,90,134], unit:"minutes",
+      predictionPrompt:"About how many minutes does the trend line predict for reading 90 pages?"
+    },
+    {
+      title:"High temperature and pool attendance", context:"A community pool compared each day's high temperature with the number of visitors.",
+      xLabel:"High temperature (°F)", yLabel:"Pool attendance", xMin:70, xMax:100, yMin:40, yMax:320,
+      xTicks:[70,75,80,85,90,95,100], yTicks:[40,80,120,160,200,240,280,320], slope:8, intercept:-500, offset:60,
+      points:[[72,68],[74,92],[74,72],[78,106],[80,144],[82,146],[82,166],[85,164],[86,192],[88,192],[90,236],[90,206],[92,226],[96,286],[98,278]],
+      lineOrder:["below","against","above","best"], targetX:95, prediction:260, predictionChoices:[200,300,260,140], unit:"visitors",
+      predictionPrompt:"About how many visitors does the trend line predict when the high temperature is 95°F?"
+    }
+  ];
+
+  const TREND_VIEW = { width:720, height:520, left:90, top:38, right:680, bottom:438 };
+
+  function trendNumber(value) {
+    return Number(value).toLocaleString("en-US",{maximumFractionDigits:2});
+  }
+
+  function trendScreenPoint(task,x,y) {
+    return {
+      x:TREND_VIEW.left + ((x-task.xMin)/(task.xMax-task.xMin))*(TREND_VIEW.right-TREND_VIEW.left),
+      y:TREND_VIEW.bottom - ((y-task.yMin)/(task.yMax-task.yMin))*(TREND_VIEW.bottom-TREND_VIEW.top)
+    };
+  }
+
+  function trendLineSpec(task,kind) {
+    if (kind === "best") return {m:task.slope,b:task.intercept};
+    if (kind === "above") return {m:task.slope,b:task.intercept + task.offset};
+    if (kind === "below") return {m:task.slope,b:task.intercept - task.offset};
+    const middleX = (task.xMin + task.xMax)/2;
+    const middleY = task.slope*middleX + task.intercept;
+    return {m:-task.slope,b:middleY + task.slope*middleX};
+  }
+
+  function trendClippedLine(task,spec) {
+    const candidates = [];
+    const add = (x,y) => {
+      if (x < task.xMin-.0001 || x > task.xMax+.0001 || y < task.yMin-.0001 || y > task.yMax+.0001) return;
+      if (!candidates.some(point => Math.abs(point.x-x)<.0001 && Math.abs(point.y-y)<.0001)) candidates.push({x,y});
+    };
+    add(task.xMin,spec.m*task.xMin+spec.b);
+    add(task.xMax,spec.m*task.xMax+spec.b);
+    if (Math.abs(spec.m) > .0000001) {
+      add((task.yMin-spec.b)/spec.m,task.yMin);
+      add((task.yMax-spec.b)/spec.m,task.yMax);
+    }
+    if (candidates.length < 2) return null;
+    let pair = [candidates[0],candidates[1]];
+    let distance = -1;
+    candidates.forEach((first,index) => candidates.slice(index+1).forEach(second => {
+      const nextDistance = Math.hypot(second.x-first.x,second.y-first.y);
+      if (nextDistance > distance) { distance = nextDistance; pair = [first,second]; }
+    }));
+    return pair;
+  }
+
+  function trendLineMarkup(task,kind,letter,index,solved) {
+    const clipped = trendClippedLine(task,trendLineSpec(task,kind));
+    if (!clipped) return "";
+    const first = trendScreenPoint(task,clipped[0].x,clipped[0].y);
+    const second = trendScreenPoint(task,clipped[1].x,clipped[1].y);
+    const ratio = .68;
+    const labelX = first.x + (second.x-first.x)*ratio;
+    const labelY = first.y + (second.y-first.y)*ratio;
+    return `<g class="trend-candidate-line ${solved ? "is-best" : `is-option-${index}`}"><line x1="${first.x}" y1="${first.y}" x2="${second.x}" y2="${second.y}"></line>${solved ? "" : `<circle cx="${labelX}" cy="${labelY}" r="15"></circle><text x="${labelX}" y="${labelY+5}">${letter}</text>`}</g>`;
+  }
+
+  function trendGraphMarkup(data,task) {
+    const grid = [
+      ...task.xTicks.map(value => { const point=trendScreenPoint(task,value,task.yMin); return `<line class="trend-grid-line" x1="${point.x}" y1="${TREND_VIEW.top}" x2="${point.x}" y2="${TREND_VIEW.bottom}"></line><text class="trend-tick" x="${point.x}" y="${TREND_VIEW.bottom+24}" text-anchor="middle">${trendNumber(value)}</text>`; }),
+      ...task.yTicks.map(value => { const point=trendScreenPoint(task,task.xMin,value); return `<line class="trend-grid-line" x1="${TREND_VIEW.left}" y1="${point.y}" x2="${TREND_VIEW.right}" y2="${point.y}"></line><text class="trend-tick" x="${TREND_VIEW.left-13}" y="${point.y+5}" text-anchor="end">${trendNumber(value)}</text>`; })
+    ].join("");
+    const dots = task.points.map(point => { const screen=trendScreenPoint(task,point[0],point[1]); return `<circle class="trend-dot" cx="${screen.x}" cy="${screen.y}" r="6"></circle>`; }).join("");
+    const lines = data.lineSolved
+      ? trendLineMarkup(task,"best","",0,true)
+      : task.lineOrder.map((kind,index) => trendLineMarkup(task,kind,String.fromCharCode(65+index),index,false)).join("");
+    let predictionMarkup = "";
+    if (data.lineSolved) {
+      const guideBottom = trendScreenPoint(task,task.targetX,task.yMin);
+      predictionMarkup += `<line class="trend-target-guide" x1="${guideBottom.x}" y1="${TREND_VIEW.top}" x2="${guideBottom.x}" y2="${TREND_VIEW.bottom}"></line>`;
+      if (data.predictionChoice !== "") {
+        const candidate = trendScreenPoint(task,task.targetX,Number(data.predictionChoice));
+        predictionMarkup += `<g class="trend-prediction-point ${data.solved ? "is-correct" : ""}"><circle cx="${candidate.x}" cy="${candidate.y}" r="11"></circle><text x="${candidate.x+14}" y="${candidate.y-12}">(${trendNumber(task.targetX)}, ${trendNumber(data.predictionChoice)})</text></g>`;
+      }
+    }
+    return `<svg class="trend-graph" viewBox="0 0 ${TREND_VIEW.width} ${TREND_VIEW.height}" role="img" aria-label="Scatterplot of ${task.xLabel} and ${task.yLabel}">${grid}<line class="trend-axis" x1="${TREND_VIEW.left}" y1="${TREND_VIEW.bottom}" x2="${TREND_VIEW.right}" y2="${TREND_VIEW.bottom}"></line><line class="trend-axis" x1="${TREND_VIEW.left}" y1="${TREND_VIEW.top}" x2="${TREND_VIEW.left}" y2="${TREND_VIEW.bottom}"></line>${dots}${lines}${predictionMarkup}<text class="trend-axis-label" x="${(TREND_VIEW.left+TREND_VIEW.right)/2}" y="502" text-anchor="middle">${escapeHTML(task.xLabel)}</text><text class="trend-axis-label" x="24" y="${(TREND_VIEW.top+TREND_VIEW.bottom)/2}" text-anchor="middle" transform="rotate(-90 24 ${(TREND_VIEW.top+TREND_VIEW.bottom)/2})">${escapeHTML(task.yLabel)}</text></svg>`;
+  }
+
+  function trendMisconception(kind) {
+    if (kind === "against") return "This line goes against the direction of the data. Follow the overall association from left to right.";
+    if (kind === "above") return "This line sits above nearly all the data. A useful trend line passes through the middle of the cluster.";
+    return "This line sits below nearly all the data. A useful trend line should leave a balanced number of points above and below it.";
+  }
+
+  function resetTrendTask(data) {
+    data.lineChoice = "";
+    data.lineSolved = false;
+    data.predictionChoice = "";
+    data.solved = false;
+  }
+
+  function advanceTrendLab(data) {
+    if (data.index >= TREND_LAB_TASKS.length-1) return showLabCompletion("8.5D");
+    data.index += 1;
+    resetTrendTask(data);
+    renderLab85D();
+    syncWhiteboardQuestion();
+    setLabFeedback("New scatterplot ready. Look at the whole cluster before choosing a trend line.");
+  }
+
+  function renderLab85D() {
+    if (!labRuntime.data) labRuntime.data = {index:0,lineChoice:"",lineSolved:false,predictionChoice:"",solved:false};
+    const data = labRuntime.data;
+    if (data.index >= TREND_LAB_TASKS.length) return showLabCompletion("8.5D");
+    const task = TREND_LAB_TASKS[data.index];
+    const completed = data.index + (data.solved ? 1 : 0);
+    setLabProgress(completed,TREND_LAB_TASKS.length,`Question ${data.index+1}: choose the best trend line, then make a prediction.`);
+    const lineButtons = task.lineOrder.map((kind,index) => {
+      const letter = String.fromCharCode(65+index);
+      return `<button type="button" class="lab-choice trend-line-choice ${data.lineChoice === kind ? "is-selected" : ""}" data-trend-line="${kind}"><span class="trend-choice-key is-option-${index}">${letter}</span> Line ${letter}</button>`;
+    }).join("");
+    const predictionButtons = task.predictionChoices.map(value => `<button type="button" class="lab-choice trend-prediction-choice ${String(data.predictionChoice) === String(value) ? "is-selected" : ""}" data-trend-prediction="${value}">${trendNumber(value)} ${task.unit}</button>`).join("");
+    $("#standardsLabBody").innerHTML = `
+      <section class="trend-lab-shell">
+        <header class="trend-task-header"><div><p class="lab-mini-title">Problem ${data.index+1} of ${TREND_LAB_TASKS.length}</p><h4>${task.title}</h4><p>${task.context}</p></div><span>${data.lineSolved ? "2 · Predict" : "1 · Model"}</span></header>
+        <div class="trend-split-layout">
+          <article class="trend-investigation-card">
+            <div class="trend-graph-frame">${trendGraphMarkup(data,task)}</div>
+            ${data.lineSolved ? `<div class="trend-prediction-panel"><p class="lab-mini-title">Use the selected trend line</p><h5>${task.predictionPrompt}</h5><p>Select an estimate to plot it at x = ${trendNumber(task.targetX)}. Then compare its point with the trend line before checking.</p><div class="trend-prediction-options">${predictionButtons}</div><button type="button" class="lab-action" id="checkTrendPrediction" ${data.predictionChoice === "" || data.solved ? "disabled" : ""}>Check prediction</button></div>` : `<div class="trend-line-panel"><p class="lab-mini-title">Which line best models the data?</p><p>Choose the line that follows the direction of the cluster and passes through its middle.</p><div class="trend-line-options">${lineButtons}</div></div>`}
+          </article>
+          <aside class="trend-work-paper" aria-label="Blank work paper for calculations">
+            <header><span>Work paper</span><small>Use the drawing tools across the top</small></header>
+            <div class="trend-paper-prompts"><span>rise / run</span><span>y = mx + b</span><span>plot an answer choice</span></div>
+          </aside>
+        </div>
+        <div class="trend-next-row"><button type="button" class="lab-next" id="nextTrendTask" ${data.solved ? "" : "hidden"}>${data.index === TREND_LAB_TASKS.length-1 ? "Finish lab" : "Next scatterplot →"}</button></div>
+      </section>`;
+
+    document.querySelectorAll("[data-trend-line]").forEach(button => button.addEventListener("click",() => {
+      if (data.lineSolved) return;
+      const kind = button.dataset.trendLine;
+      data.lineChoice = kind;
+      if (kind !== "best") {
+        renderLab85D();
+        return setLabFeedback(trendMisconception(kind),"incorrect");
+      }
+      data.lineSolved = true;
+      renderLab85D();
+      setLabFeedback("Correct. The other lines disappeared because this line follows the association and passes through the center of the point cloud.","correct");
+    }));
+
+    document.querySelectorAll("[data-trend-prediction]").forEach(button => button.addEventListener("click",() => {
+      if (data.solved) return;
+      data.predictionChoice = Number(button.dataset.trendPrediction);
+      renderLab85D();
+      setLabFeedback(`The point (${trendNumber(task.targetX)}, ${trendNumber(data.predictionChoice)}) is now plotted. Compare it with the trend line, then check your prediction.`);
+    }));
+
+    const checkPrediction = $("#checkTrendPrediction");
+    if (checkPrediction) checkPrediction.addEventListener("click",() => {
+      const choice = Number(data.predictionChoice);
+      if (choice !== task.prediction) {
+        const direction = choice > task.prediction ? "above" : "below";
+        return setLabFeedback(`That point is too far ${direction} the trend line at x = ${trendNumber(task.targetX)}. Use your equation or compare the plotted choices and select the closest value.`,"incorrect");
+      }
+      data.solved = true;
+      renderLab85D();
+      setLabFeedback(`Correct. The line predicts about ${trendNumber(task.prediction)} ${task.unit}. A trend-line prediction is an estimate, so the closest reasonable value is the best choice.`,"correct");
+    });
+    const next = $("#nextTrendTask");
+    if (next) next.addEventListener("click",() => advanceTrendLab(data));
   }
 
   const SIMILARITY_SHAPES = {
@@ -4452,6 +4706,11 @@
       data.index += 1;
       resetScatterTask(data);
       renderLab85C();
+    } else if (standard === "8.5D") {
+      if (data.index >= TREND_LAB_TASKS.length - 1) return showLabCompletion(standard);
+      data.index += 1;
+      resetTrendTask(data);
+      renderLab85D();
     } else if (standard === "8.3A") {
       if (data.index >= SIMILARITY_TASKS.length - 1) return showLabCompletion(standard);
       data.index += 1;
