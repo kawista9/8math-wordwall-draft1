@@ -746,6 +746,12 @@
       summary: "You identified functions and explained the reason in precise language. A function requires every input, x-value, or independent value to correspond to exactly one output, y-value, or dependent value. Different inputs are allowed to share the same output. A relation is not a function only when at least one input corresponds to more than one output.",
       videos: []
     },
+    "8.5H": {
+      title: "Which Does Not Belong? Proportionality Game",
+      description: "Play through fifteen four-card rounds. Eight rounds keep all four cards in the same representation—two table rounds, two graph rounds, two situation rounds, and two equation rounds. Seven final rounds mix a table, graph, equation, and real-world situation. In every round, three relationships belong to one proportionality category and exactly one does not.",
+      summary: "You compared linear relationships across tables, graphs, equations, and real-world situations. Proportional relationships have a constant ratio, pass through the origin, can be written y = kx, and have no starting amount. Non-proportional linear relationships have a nonzero starting value. You identified the odd relationship without relying on the representation type.",
+      videos: []
+    },
     "8.4A": {
       title: "Slope: Do It With Me",
       description: "Choose four exact points on each line. The lab groups them into two pairs, and you complete the rise-first, run-second process for both pairs to prove that the slope stays the same. Pay attention to the value of each axis interval: the first five problems coach every move, and the final ten ask you to determine and enter both sets of signed changes yourself.",
@@ -987,6 +993,7 @@
     if (standard === "8.5E") renderLab85E();
     if (standard === "8.5F") renderLab85F();
     if (standard === "8.5G") renderLab85G();
+    if (standard === "8.5H") renderLab85H();
     if (standard === "8.10A") renderLabA();
     if (standard === "8.10B") renderLabB();
     if (standard === "8.10C") renderLabC();
@@ -3091,6 +3098,239 @@
     const instruction=data.phase==="description" ? "Part 1: choose the correct verbal explanation." : "Part 2: build the explanation from dropdown statements.";
     setLabProgress(done,15,instruction);
     if(data.phase==="description") renderFunctionDescriptionPart(data); else renderFunctionBuildPart(data);
+  }
+
+
+  const WHICH_DOES_NOT_BELONG_TASKS = [
+    {
+      title:"All Tables · Find the proportional relationship", target:"proportional",
+      cards:[
+        {type:"table",label:"A",rows:[[1,5],[2,8],[4,14],[6,20]],kind:"non-proportional",reason:"This table follows y = 3x + 2, so the starting value is 2."},
+        {type:"table",label:"B",rows:[[2,7],[4,11],[6,15],[8,19]],kind:"non-proportional",reason:"This table follows y = 2x + 3, so it is non-proportional."},
+        {type:"table",label:"C",rows:[[1,4],[3,12],[5,20],[7,28]],kind:"proportional",reason:"The ratio y/x is always 4, so y = 4x."},
+        {type:"table",label:"D",rows:[[2,-1],[4,-5],[6,-9],[8,-13]],kind:"non-proportional",reason:"This table follows y = -2x + 3, not y = kx."}
+      ],correct:2
+    },
+    {
+      title:"All Tables · Find the non-proportional relationship", target:"non-proportional",
+      cards:[
+        {type:"table",label:"A",rows:[[2,5],[4,10],[6,15],[10,25]],kind:"proportional",reason:"The ratio y/x is always 2.5."},
+        {type:"table",label:"B",rows:[[1,-3],[2,-6],[4,-12],[7,-21]],kind:"proportional",reason:"The ratio y/x is always -3."},
+        {type:"table",label:"C",rows:[[3,6],[5,10],[8,16],[11,22]],kind:"proportional",reason:"The ratio y/x is always 2."},
+        {type:"table",label:"D",rows:[[2,8],[5,17],[8,26],[11,35]],kind:"non-proportional",reason:"The rate is constant, but the table follows y = 3x + 2, so the ratio y/x is not constant."}
+      ],correct:3
+    },
+    {
+      title:"All Graphs · Find the proportional relationship", target:"proportional",
+      cards:[
+        {type:"graph",label:"A",m:.8,b:2,kind:"non-proportional",reason:"The line crosses the y-axis at 2 instead of the origin."},
+        {type:"graph",label:"B",m:-.6,b:0,kind:"proportional",reason:"The line passes through (0, 0)."},
+        {type:"graph",label:"C",m:1.1,b:-2,kind:"non-proportional",reason:"The line has a nonzero y-intercept."},
+        {type:"graph",label:"D",m:-.45,b:3,kind:"non-proportional",reason:"The line does not pass through the origin."}
+      ],correct:1
+    },
+    {
+      title:"All Graphs · Find the non-proportional relationship", target:"non-proportional",
+      cards:[
+        {type:"graph",label:"A",m:.5,b:0,kind:"proportional",reason:"The line passes through the origin."},
+        {type:"graph",label:"B",m:-.8,b:0,kind:"proportional",reason:"A negative slope can still be proportional when the line passes through (0, 0)."},
+        {type:"graph",label:"C",m:1.2,b:0,kind:"proportional",reason:"The line passes through the origin."},
+        {type:"graph",label:"D",m:.65,b:-3,kind:"non-proportional",reason:"The line crosses the y-axis at -3."}
+      ],correct:3
+    },
+    {
+      title:"All Situations · Find the proportional relationship", target:"proportional",
+      cards:[
+        {type:"situation",label:"A",text:"A gym charges a $25 registration fee plus $18 for each month.",kind:"non-proportional",reason:"The $25 starting fee creates a nonzero initial value."},
+        {type:"situation",label:"B",text:"A delivery company charges $4 to begin an order plus $1.50 per mile.",kind:"non-proportional",reason:"The $4 starting charge makes the relationship non-proportional."},
+        {type:"situation",label:"C",text:"A faucet fills a tank at 6 gallons per minute when the tank begins empty.",kind:"proportional",reason:"There is no starting amount, so gallons = 6 × minutes."},
+        {type:"situation",label:"D",text:"A phone plan costs $15 each month plus $3 for every gigabyte used.",kind:"non-proportional",reason:"The $15 monthly fee is a nonzero starting value."}
+      ],correct:2
+    },
+    {
+      title:"All Situations · Find the non-proportional relationship", target:"non-proportional",
+      cards:[
+        {type:"situation",label:"A",text:"A worker earns $14 for every hour worked with no starting bonus.",kind:"proportional",reason:"Earnings start at $0 and increase by $14 per hour."},
+        {type:"situation",label:"B",text:"Each barrel contains 42 gallons of water. The total water depends on the number of barrels.",kind:"proportional",reason:"Total gallons = 42 × barrels."},
+        {type:"situation",label:"C",text:"A puppy weighs 8 pounds at the start and gains 2 pounds each week.",kind:"non-proportional",reason:"The puppy already weighs 8 pounds when time is 0."},
+        {type:"situation",label:"D",text:"Bananas cost $0.65 per pound with no additional charge.",kind:"proportional",reason:"Cost = 0.65 × pounds."}
+      ],correct:2
+    },
+    {
+      title:"All Equations · Find the proportional relationship", target:"proportional",
+      cards:[
+        {type:"equation",label:"A",text:"y = 4x + 3",kind:"non-proportional",reason:"The equation has b = 3."},
+        {type:"equation",label:"B",text:"y = -2x - 5",kind:"non-proportional",reason:"The equation has b = -5."},
+        {type:"equation",label:"C",text:"y = (3/4)x",kind:"proportional",reason:"The equation is exactly in the form y = kx."},
+        {type:"equation",label:"D",text:"y = 7 - x",kind:"non-proportional",reason:"Rewritten as y = -x + 7, it has a nonzero intercept."}
+      ],correct:2
+    },
+    {
+      title:"All Equations · Find the non-proportional relationship", target:"non-proportional",
+      cards:[
+        {type:"equation",label:"A",text:"y = 5x",kind:"proportional",reason:"This is y = kx."},
+        {type:"equation",label:"B",text:"y = -0.4x",kind:"proportional",reason:"This is y = kx."},
+        {type:"equation",label:"C",text:"y = x/6",kind:"proportional",reason:"This is y = (1/6)x."},
+        {type:"equation",label:"D",text:"y = 2(x + 3)",kind:"non-proportional",reason:"Expanding gives y = 2x + 6, so b ≠ 0."}
+      ],correct:3
+    },
+    {
+      title:"Mixed Round 1 · Which does not belong?", target:"non-proportional",
+      cards:[
+        {type:"table",label:"A",rows:[[1,3],[2,6],[5,15],[7,21]],kind:"proportional",reason:"The ratio y/x is always 3."},
+        {type:"graph",label:"B",m:-.7,b:0,kind:"proportional",reason:"The graph passes through the origin."},
+        {type:"equation",label:"C",text:"y = 1.5x + 4",kind:"non-proportional",reason:"The equation has a starting value of 4."},
+        {type:"situation",label:"D",text:"Movie tickets cost $9 each with no service fee.",kind:"proportional",reason:"Cost = 9 × tickets."}
+      ],correct:2
+    },
+    {
+      title:"Mixed Round 2 · Which does not belong?", target:"proportional",
+      cards:[
+        {type:"table",label:"A",rows:[[1,4],[3,8],[5,12],[7,16]],kind:"non-proportional",reason:"This follows y = 2x + 2."},
+        {type:"graph",label:"B",m:.6,b:-2,kind:"non-proportional",reason:"The graph misses the origin."},
+        {type:"equation",label:"C",text:"y = -4x",kind:"proportional",reason:"The equation is y = kx."},
+        {type:"situation",label:"D",text:"A rental costs $12 plus $5 for each hour used.",kind:"non-proportional",reason:"The $12 initial fee makes it non-proportional."}
+      ],correct:2
+    },
+    {
+      title:"Mixed Round 3 · Which does not belong?", target:"non-proportional",
+      cards:[
+        {type:"table",label:"A",rows:[[2,-6],[4,-12],[7,-21],[10,-30]],kind:"proportional",reason:"The ratio y/x is always -3."},
+        {type:"graph",label:"B",m:.9,b:0,kind:"proportional",reason:"The graph passes through the origin."},
+        {type:"equation",label:"C",text:"y = x/5",kind:"proportional",reason:"The equation is y = kx."},
+        {type:"situation",label:"D",text:"A savings account already has $40 and then increases by $8 each week.",kind:"non-proportional",reason:"The account starts at $40."}
+      ],correct:3
+    },
+    {
+      title:"Mixed Round 4 · Which does not belong?", target:"proportional",
+      cards:[
+        {type:"table",label:"A",rows:[[2,9],[4,15],[6,21],[8,27]],kind:"non-proportional",reason:"This follows y = 3x + 3."},
+        {type:"graph",label:"B",m:-.5,b:4,kind:"non-proportional",reason:"The y-intercept is 4."},
+        {type:"equation",label:"C",text:"y = 6x - 1",kind:"non-proportional",reason:"The equation has b = -1."},
+        {type:"situation",label:"D",text:"A printer produces 28 pages per minute starting from 0 pages.",kind:"proportional",reason:"Pages = 28 × minutes."}
+      ],correct:3
+    },
+    {
+      title:"Mixed Round 5 · Which does not belong?", target:"non-proportional",
+      cards:[
+        {type:"table",label:"A",rows:[[3,1.5],[6,3],[10,5],[14,7]],kind:"proportional",reason:"The ratio y/x is always 0.5."},
+        {type:"graph",label:"B",m:-1.1,b:2,kind:"non-proportional",reason:"The graph crosses the y-axis at 2."},
+        {type:"equation",label:"C",text:"y = -2.25x",kind:"proportional",reason:"The equation is y = kx."},
+        {type:"situation",label:"D",text:"A car travels 55 miles each hour starting at 0 miles.",kind:"proportional",reason:"Distance = 55 × hours."}
+      ],correct:1
+    },
+    {
+      title:"Mixed Round 6 · Which does not belong?", target:"proportional",
+      cards:[
+        {type:"table",label:"A",rows:[[1,6],[3,10],[5,14],[8,20]],kind:"non-proportional",reason:"This follows y = 2x + 4."},
+        {type:"graph",label:"B",m:.4,b:3,kind:"non-proportional",reason:"The graph has a y-intercept of 3."},
+        {type:"equation",label:"C",text:"y = -(2/3)x",kind:"proportional",reason:"The equation is y = kx."},
+        {type:"situation",label:"D",text:"A club charges $30 to join and $7 for each event attended.",kind:"non-proportional",reason:"The $30 joining fee is a starting value."}
+      ],correct:2
+    },
+    {
+      title:"Mixed Round 7 · Final challenge", target:"non-proportional",
+      cards:[
+        {type:"table",label:"A",rows:[[2,7],[4,14],[8,28],[10,35]],kind:"proportional",reason:"The ratio y/x is always 3.5."},
+        {type:"graph",label:"B",m:.75,b:0,kind:"proportional",reason:"The graph passes through the origin."},
+        {type:"equation",label:"C",text:"y = 9x",kind:"proportional",reason:"The equation is y = kx."},
+        {type:"situation",label:"D",text:"A coupon reduces the total purchase price by $5 after the item costs are calculated.",kind:"non-proportional",reason:"Subtracting a fixed $5 creates a nonzero intercept."}
+      ],correct:3
+    }
+  ];
+
+  function wdbTableMarkup(card){
+    const rows=card.rows.map(row=>"<tr><td>"+escapeHTML(row[0])+"</td><td>"+escapeHTML(row[1])+"</td></tr>").join("");
+    return "<table class='wdb-table'><thead><tr><th>x</th><th>y</th></tr></thead><tbody>"+rows+"</tbody></table>";
+  }
+
+  function wdbGraphMarkup(card){
+    const width=310,height=220,pad=30,min=-5,max=5;
+    const px=x=>pad+((x-min)/(max-min))*(width-pad*2);
+    const py=y=>height-pad-((y-min)/(max-min))*(height-pad*2);
+    let marks="";
+    for(let n=-4;n<=4;n+=2){
+      marks+="<line x1='"+px(n)+"' y1='"+pad+"' x2='"+px(n)+"' y2='"+(height-pad)+"' class='wdb-grid'/>";
+      marks+="<line x1='"+pad+"' y1='"+py(n)+"' x2='"+(width-pad)+"' y2='"+py(n)+"' class='wdb-grid'/>";
+    }
+    marks+="<line x1='"+pad+"' y1='"+py(0)+"' x2='"+(width-pad)+"' y2='"+py(0)+"' class='wdb-axis'/>";
+    marks+="<line x1='"+px(0)+"' y1='"+pad+"' x2='"+px(0)+"' y2='"+(height-pad)+"' class='wdb-axis'/>";
+    const x1=-5,x2=5,y1=card.m*x1+card.b,y2=card.m*x2+card.b;
+    marks+="<line x1='"+px(x1)+"' y1='"+py(y1)+"' x2='"+px(x2)+"' y2='"+py(y2)+"' class='wdb-line'/>";
+    marks+="<circle cx='"+px(0)+"' cy='"+py(card.b)+"' r='4.8' class='wdb-y-dot'/>";
+    marks+="<text x='"+(width-pad+5)+"' y='"+(py(0)+4)+"' class='wdb-axis-label'>x</text><text x='"+(px(0)+6)+"' y='"+(pad-7)+"' class='wdb-axis-label'>y</text>";
+    return "<svg class='wdb-graph' viewBox='0 0 "+width+" "+height+"' role='img' aria-label='Linear graph'>"+marks+"</svg>";
+  }
+
+  function wdbCardContent(card){
+    if(card.type==="table") return wdbTableMarkup(card);
+    if(card.type==="graph") return wdbGraphMarkup(card);
+    if(card.type==="equation") return "<div class='wdb-equation'>"+escapeHTML(card.text)+"</div>";
+    return "<p class='wdb-situation'>"+escapeHTML(card.text)+"</p>";
+  }
+
+  function resetWdbTask(data){
+    data.selected=null;
+    data.checked=false;
+    data.solved=false;
+  }
+
+  function renderLab85H(){
+    if(!labRuntime.data) labRuntime.data={index:0,selected:null,checked:false,solved:false};
+    const data=labRuntime.data;
+    const task=WHICH_DOES_NOT_BELONG_TASKS[data.index];
+    if(!task) return showLabCompletion("8.5H");
+    const body=$("#standardsLabBody");
+    const completed=data.index+(data.solved?1:0);
+    setLabProgress(completed,WHICH_DOES_NOT_BELONG_TASKS.length,"Round "+(data.index+1)+" of "+WHICH_DOES_NOT_BELONG_TASKS.length+": find the one relationship that does not belong.");
+
+    const cards=task.cards.map((card,index)=>{
+      const selected=data.selected===index;
+      const wrong=data.checked && selected && index!==task.correct;
+      const right=data.checked && selected && index===task.correct;
+      const reveal=data.solved ? "<div class='wdb-reason'><strong>"+(card.kind==="proportional"?"Proportional":"Non-Proportional")+"</strong><span>"+escapeHTML(card.reason)+"</span></div>" : "";
+      return "<button type='button' class='wdb-card"+(selected?" is-selected":"")+(wrong?" is-wrong":"")+(right?" is-right":"")+"' data-wdb-choice='"+index+"'>"+
+        "<div class='wdb-card-head'><span>"+escapeHTML(card.label)+"</span><strong>"+(card.type==="situation"?"Real-world situation":card.type.charAt(0).toUpperCase()+card.type.slice(1))+"</strong></div>"+
+        "<div class='wdb-card-body'>"+wdbCardContent(card)+"</div>"+reveal+
+      "</button>";
+    }).join("");
+
+    const threeKind=task.target==="proportional" ? "non-proportional" : "proportional";
+    body.innerHTML="<section class='wdb-shell'>"+
+      "<header class='wdb-header'><div><p class='lab-mini-title'>Which Does Not Belong?</p><h4>"+escapeHTML(task.title)+"</h4><p>Three relationships are <strong>"+threeKind+"</strong>. Select the one that is <strong>"+task.target+"</strong>.</p></div><span>Round "+(data.index+1)+" / 15</span></header>"+
+      "<div class='wdb-reminder'><strong>Compare the mathematics, not the card type.</strong> Proportional: constant ratio · graph through (0, 0) · y = kx · no starting amount.</div>"+
+      "<div class='wdb-grid-cards'>"+cards+"</div>"+
+      "<div class='relation-submit-row'><button class='lab-action' id='checkWdb' type='button'>Check my choice</button>"+
+      (data.solved?"<button class='lab-next' id='nextWdb' type='button'>"+(data.index===WHICH_DOES_NOT_BELONG_TASKS.length-1?"Finish game →":"Next round →")+"</button>":"")+
+      "</div></section>";
+
+    body.querySelectorAll("[data-wdb-choice]").forEach(button=>button.addEventListener("click",()=>{
+      if(data.solved) return;
+      data.selected=Number(button.dataset.wdbChoice);
+      data.checked=false;
+      renderLab85H();
+    }));
+    $("#checkWdb").addEventListener("click",()=>{
+      if(data.selected===null) return setLabFeedback("Select the relationship that does not belong with the other three.","incorrect");
+      data.checked=true;
+      if(data.selected!==task.correct){
+        renderLab85H();
+        return setLabFeedback("Not yet. Determine whether each card has a zero starting value. For tables, compare y/x; for graphs, check the origin; for equations, look for y = kx; for situations, look for a starting fee or amount.","incorrect");
+      }
+      data.solved=true;
+      renderLab85H();
+      const odd=task.cards[task.correct];
+      setLabFeedback("Correct. Card "+odd.label+" is "+odd.kind+" while the other three are "+threeKind+". "+odd.reason,"correct");
+    });
+    const next=$("#nextWdb");
+    if(next) next.addEventListener("click",()=>{
+      if(data.index===WHICH_DOES_NOT_BELONG_TASKS.length-1) return showLabCompletion("8.5H");
+      data.index+=1;
+      resetWdbTask(data);
+      renderLab85H();
+      syncWhiteboardQuestion();
+      setLabFeedback("New round ready. The odd card may be proportional or non-proportional.");
+    });
   }
 
   const TREND_LAB_TASKS = [
@@ -5376,6 +5616,11 @@
       }
       resetFunctionTask(data);
       renderLab85G();
+    } else if (standard === "8.5H") {
+      if (data.index >= WHICH_DOES_NOT_BELONG_TASKS.length - 1) return showLabCompletion(standard);
+      data.index += 1;
+      resetWdbTask(data);
+      renderLab85H();
     } else if (standard === "8.3A") {
       if (data.index >= SIMILARITY_TASKS.length - 1) return showLabCompletion(standard);
       data.index += 1;
