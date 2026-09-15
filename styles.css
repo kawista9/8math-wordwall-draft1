@@ -1789,3 +1789,252 @@ button.root-integer-tick:hover i, button.root-integer-tick:focus-visible i, butt
 .eqwrite-hintbar{padding:.75rem .9rem;border:2px solid #c48a00;border-radius:12px;background:#fff9df;line-height:1.45}
 @media(max-width:900px){.eqwrite-layout{grid-template-columns:1fr}.eqwrite-representation{min-height:330px}.eqwrite-header{flex-direction:column}.eqwrite-header>span{align-self:flex-start}}
 @media(max-width:560px){.eqwrite-step{grid-template-columns:1fr}.eqwrite-equation-builder{font-size:1.1rem}.eqwrite-table{min-width:0;width:100%}}
+
+
+/* 8.6A interactive cylinder lab */
+.cylinder-lab-shell {
+  --cylinder-yellow: #ffd500;
+  --cylinder-ink: #070707;
+  --cylinder-panel: #111111;
+  --cylinder-line: rgba(255,255,255,.2);
+  display: grid;
+  gap: 18px;
+  padding: clamp(18px, 3vw, 30px);
+  border: 1px solid rgba(255,213,0,.68);
+  border-radius: 26px;
+  background: #070707;
+  color: #ffffff;
+  box-shadow: 0 24px 54px rgba(0,0,0,.22);
+}
+.cylinder-lab-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  border-bottom: 1px solid rgba(255,213,0,.28);
+  padding-bottom: 14px;
+}
+.cylinder-lab-header h4 {
+  margin: 3px 0 7px;
+  color: var(--cylinder-yellow);
+  font-size: clamp(1.25rem, 2.4vw, 1.85rem);
+}
+.cylinder-lab-header p {
+  margin: 0;
+  max-width: 760px;
+  color: rgba(255,255,255,.82);
+}
+.cylinder-question-chip {
+  flex: 0 0 auto;
+  border: 1px solid var(--cylinder-yellow);
+  border-radius: 999px;
+  padding: 7px 12px;
+  color: var(--cylinder-yellow);
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.cylinder-task-card {
+  min-height: 320px;
+  display: grid;
+  place-items: center;
+  padding: clamp(14px, 2.5vw, 24px);
+  border: 1px solid var(--cylinder-line);
+  border-radius: 22px;
+  background: #0d0d0d;
+}
+.cylinder-formula-board {
+  width: min(100%, 980px);
+  display: grid;
+  grid-template-columns: minmax(160px,1.25fr) auto minmax(150px,1fr) auto minmax(150px,1fr);
+  align-items: center;
+  gap: 14px;
+}
+.cylinder-formula-symbol {
+  color: var(--cylinder-yellow);
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 900;
+}
+.cylinder-drop-target {
+  min-height: 78px;
+  width: 100%;
+  border: 2px dashed rgba(255,213,0,.78);
+  border-radius: 16px;
+  padding: 10px 12px;
+  background: rgba(255,213,0,.04);
+  color: rgba(255,255,255,.72);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+.cylinder-drop-target:hover,
+.cylinder-drop-target:focus-visible {
+  background: rgba(255,213,0,.11);
+  outline: none;
+}
+.cylinder-drop-target.is-filled {
+  border-style: solid;
+  background: var(--cylinder-yellow);
+  color: #111111;
+}
+.cylinder-drop-target.is-locked {
+  cursor: default;
+}
+.cylinder-visual-stage {
+  position: relative;
+  width: min(100%, 760px);
+  aspect-ratio: 620 / 380;
+  border-radius: 20px;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 50%, rgba(255,213,0,.07), transparent 58%);
+}
+.cylinder-visual-stage.is-circle {
+  width: min(100%, 680px);
+}
+.cylinder-visual-stage svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.cylinder-shape-base,
+.cylinder-circle-base {
+  fill: rgba(255,213,0,.08);
+  stroke: var(--cylinder-yellow);
+  stroke-width: 4;
+}
+.cylinder-shape-side {
+  fill: none;
+  stroke: rgba(255,255,255,.92);
+  stroke-width: 4;
+}
+.cylinder-height-line,
+.cylinder-radius-line,
+.cylinder-diameter-line,
+.cylinder-diameter-cap {
+  stroke: #ffffff;
+  stroke-width: 4;
+}
+.cylinder-height-line.is-dashed {
+  stroke-dasharray: 10 8;
+}
+.cylinder-right-angle {
+  fill: none;
+  stroke: var(--cylinder-yellow);
+  stroke-width: 3;
+}
+.cylinder-center-dot {
+  fill: var(--cylinder-yellow);
+}
+.cylinder-measure-label {
+  fill: #ffffff;
+  font-size: 22px;
+  font-weight: 800;
+}
+.cylinder-visual-stage svg marker path {
+  fill: var(--cylinder-yellow);
+}
+.cylinder-drop-target.is-overlay {
+  position: absolute;
+  min-height: 58px;
+  transform: translate(-50%,-50%);
+  z-index: 3;
+  background: rgba(7,7,7,.9);
+  box-shadow: 0 8px 24px rgba(0,0,0,.24);
+}
+.cylinder-drop-target.is-overlay.is-filled {
+  background: var(--cylinder-yellow);
+}
+.cylinder-token-area {
+  display: grid;
+  gap: 10px;
+}
+.cylinder-token-label {
+  margin: 0;
+  color: rgba(255,255,255,.68);
+  font-size: .9rem;
+}
+.cylinder-token-bank {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.cylinder-drag-token {
+  border: 2px solid var(--cylinder-yellow);
+  border-radius: 14px;
+  padding: 11px 15px;
+  background: var(--cylinder-yellow);
+  color: #111111;
+  font: inherit;
+  font-weight: 900;
+  cursor: grab;
+  transition: transform .16s ease, opacity .16s ease, background .16s ease, color .16s ease;
+}
+.cylinder-drag-token:hover {
+  transform: translateY(-2px);
+}
+.cylinder-drag-token.is-selected {
+  background: #ffffff;
+  color: #111111;
+  box-shadow: 0 0 0 3px rgba(255,213,0,.25);
+}
+.cylinder-drag-token.is-used {
+  opacity: .48;
+}
+.cylinder-lab-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.cylinder-next-button {
+  background: var(--cylinder-yellow) !important;
+  color: #111111 !important;
+  border-color: var(--cylinder-yellow) !important;
+}
+.cylinder-diameter-layout {
+  width: min(100%, 760px);
+  display: grid;
+  gap: 14px;
+  place-items: center;
+}
+.cylinder-radius-answer {
+  width: min(100%, 420px);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 12px;
+  color: var(--cylinder-yellow);
+  font-weight: 900;
+}
+.cylinder-radius-answer .cylinder-drop-target {
+  min-height: 64px;
+}
+@media (max-width: 760px) {
+  .cylinder-lab-header {
+    flex-direction: column;
+  }
+  .cylinder-formula-board {
+    grid-template-columns: 1fr;
+    justify-items: stretch;
+  }
+  .cylinder-formula-symbol {
+    text-align: center;
+    line-height: .8;
+  }
+  .cylinder-task-card {
+    min-height: 260px;
+    padding: 10px;
+  }
+  .cylinder-drop-target.is-overlay {
+    min-height: 50px;
+    padding: 7px 8px;
+    font-size: .78rem;
+  }
+  .cylinder-lab-actions {
+    justify-content: stretch;
+  }
+  .cylinder-lab-actions .lab-action {
+    flex: 1 1 0;
+  }
+}
+
