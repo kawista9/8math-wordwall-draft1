@@ -1,0 +1,5 @@
+8.5E direct variation lab publish trigger.
+
+The 8.5E lab is implemented in app.js with six direct-variation situations. Students identify x and y, build k as a word ratio, enter the numerical numerator and denominator themselves, solve for k, write y = kx, and use the equation to solve a new value.
+
+Publish trigger: 2026-09-15.
