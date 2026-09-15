@@ -732,7 +732,12 @@
       title: "Direct Variation: Name It, Build It, Use It",
       description: "Work through six direct-variation situations. For each one, identify the independent and dependent variables, build k as a word ratio, substitute the known values to find the constant of variation, write y = kx, and use the equation to solve a new question.",
       summary: "You connected the language of direct variation to the equation y = kx. In every problem, x was the independent variable, y was the dependent variable, and k = y/x described how much y there is for one unit of x. Once k was known, the same constant was used to solve a new value in the situation.",
-      videos: []
+      videos: [
+        ["https://go.screenpal.com/watch/cOehoonZbb2", "Direct Variation Overview"],
+        ["https://somup.com/cOehowWPxw", "Understanding Dependent Variables"],
+        ["https://somup.com/cOehoZWPwR", "Understanding Independent Variables"],
+        ["https://somup.com/cOehoYWPwv", "Calculating the Constant of Proportionality"]
+      ]
     },
     "8.5F": {
       title: "Proportional or Non-Proportional? Sort the Evidence",
@@ -2485,42 +2490,42 @@
       situation:"A smoothie station uses 3 cups of strawberries to prepare 2 batches of smoothies.",
       statement:"The number of cups of strawberries, y, varies directly with the number of batches, x.",
       xLabel:"number of batches", yLabel:"cups of strawberries", xValue:2, yValue:3,
-      k:1.5, targetLabel:"batches", targetValue:5, find:"y", answer:7.5, answerUnit:"cups of strawberries"
+      k:1.5, kMeaning:"1.5 cups of strawberries per batch", targetLabel:"batches", targetValue:5, find:"y", answer:7.5, answerUnit:"cups of strawberries"
     },
     {
       title:"Lawn-mowing business",
       situation:"Malik mows 4 lawns in 5 hours.",
       statement:"The number of lawns mowed, y, is directly proportional to the number of hours worked, x.",
       xLabel:"hours worked", yLabel:"lawns mowed", xValue:5, yValue:4,
-      k:0.8, targetLabel:"hours worked", targetValue:7.5, find:"y", answer:6, answerUnit:"lawns"
+      k:0.8, kMeaning:"0.8 lawn per hour", targetLabel:"hours worked", targetValue:7.5, find:"y", answer:6, answerUnit:"lawns"
     },
     {
       title:"Electricity cost",
       situation:"Using 1,079 kilowatt-hours of electricity costs $129.48.",
       statement:"The cost of electricity, y, is proportional to the number of kilowatt-hours used, x.",
       xLabel:"kilowatt-hours used", yLabel:"cost in dollars", xValue:1079, yValue:129.48,
-      k:0.12, targetLabel:"kilowatt-hours", targetValue:908, find:"y", answer:108.96, answerUnit:"dollars"
+      k:0.12, kMeaning:"$0.12 per kilowatt-hour", targetLabel:"kilowatt-hours", targetValue:908, find:"y", answer:108.96, answerUnit:"dollars"
     },
     {
       title:"Dishwasher water use",
       situation:"An electric dishwasher uses 32 gallons of water to wash 4 loads of dishes.",
       statement:"The amount of water used, y, varies directly with the number of loads of dishes, x.",
       xLabel:"loads of dishes", yLabel:"gallons of water", xValue:4, yValue:32,
-      k:8, targetLabel:"loads", targetValue:10, find:"y", answer:80, answerUnit:"gallons"
+      k:8, kMeaning:"8 gallons per load", targetLabel:"loads", targetValue:10, find:"y", answer:80, answerUnit:"gallons"
     },
     {
       title:"Gift baskets",
       situation:"Nikki can make 4 gift baskets in one-half hour.",
       statement:"The number of gift baskets, y, is directly proportional to the amount of time in hours, x.",
       xLabel:"time in hours", yLabel:"gift baskets made", xValue:0.5, yValue:4,
-      k:8, targetLabel:"hours", targetValue:5, find:"y", answer:40, answerUnit:"gift baskets"
+      k:8, kMeaning:"8 gift baskets per hour", targetLabel:"hours", targetValue:5, find:"y", answer:40, answerUnit:"gift baskets"
     },
     {
-      title:"Direct variation with numbers",
-      situation:"When x = 1/2, y = 75.",
-      statement:"The value of y varies directly with x.",
-      xLabel:"value of x", yLabel:"value of y", xValue:0.5, yValue:75,
-      k:150, targetLabel:"x", targetValue:2.25, find:"y", answer:337.5, answerUnit:""
+      title:"Water dispenser",
+      situation:"A water dispenser releases 75 ounces of water in one-half minute.",
+      statement:"The amount of water released, y, is proportional to the amount of time in minutes, x.",
+      xLabel:"time in minutes", yLabel:"ounces of water", xValue:0.5, yValue:75,
+      k:150, kMeaning:"150 ounces per minute", targetLabel:"minutes", targetValue:2.25, find:"y", answer:337.5, answerUnit:"ounces"
     }
   ];
 
@@ -2620,8 +2625,8 @@
             <p>Substitute the new value into your direct-variation equation.</p>
           </div>
           <div class="variation-solve-work">
-            <span>y = ${task.k}(${task.targetValue})</span>
-            <label>Answer <input data-variation-field="answer" inputmode="decimal" value="${escapeHTML(r.answer || "")}"> <strong>${escapeHTML(task.answerUnit)}</strong></label>
+            <span>Use the equation you built above. Substitute ${task.targetValue} for x, then solve for y.</span>
+            <label>Answer <input data-variation-field="answer" inputmode="decimal" value="${escapeHTML(r.answer || "")}" placeholder="solve for y"> <strong>${escapeHTML(task.answerUnit)}</strong></label>
           </div>
         </section>
 
@@ -2661,7 +2666,7 @@
       }
       data.solved = true;
       renderLab85E();
-      setLabFeedback(`Correct. k = ${task.k}, so the direct-variation equation is y = ${task.k}x and the new value is ${task.answer}${task.answerUnit ? " " + task.answerUnit : ""}.`,"correct");
+      setLabFeedback(`Correct. k = ${task.k}, which means ${task.kMeaning}. The direct-variation equation is y = ${task.k}x, so the new value is ${task.answer}${task.answerUnit ? " " + task.answerUnit : ""}.`,"correct");
     });
 
     const next = $("#nextVariationTask");
