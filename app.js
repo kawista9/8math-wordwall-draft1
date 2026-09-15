@@ -390,8 +390,13 @@
   }
 
   function renderProgress() {
-    const seen = readProgress().visited?.[state.group.id] || [];
-    const percent = Math.round((seen.length / state.group.pages.length) * 100);
+    const stored = readProgress().visited?.[state.group.id] || [];
+    const seen = [...new Set(stored.filter(index =>
+      Number.isInteger(index) && index >= 0 && index < state.group.pages.length
+    ))];
+    const percent = state.group.pages.length
+      ? Math.min(100, Math.round((seen.length / state.group.pages.length) * 100))
+      : 0;
     $("#progressText").textContent = `${percent}%`;
     $("#progressFill").style.width = `${percent}%`;
   }
