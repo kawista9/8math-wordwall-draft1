@@ -770,8 +770,8 @@
     },
     "8.6A": {
       title: "Build the Cylinder Formula",
-      description: "Drag, label, and identify the parts needed to find the volume of a cylinder. Work through the formula, identify the base and height in different orientations, then connect the circular base to radius and diameter.",
-      summary: "You identified the parts of the cylinder volume formula, located the area of the base and the height in upright, sideways, and leaning cylinders, and connected the circular base to radius. When a diameter is given, the radius is half of that diameter.",
+      description: "Drag, label, and identify the parts needed to find the volume of a cylinder. Build the formula, locate the base and height in upright and sideways cylinders, then connect the circular base to radius and practice finding radius from labeled circle diagrams.",
+      summary: "You identified the parts of the cylinder volume formula, located the area of the base and the height in upright and sideways cylinders, connected the circular base to radius, and used a full edge-to-edge measure through the center to determine the radius.",
       videos: [
         ["https://somup.com/cOeIe2Vcjui", "Volume of a Cylinder"],
         ["https://somup.com/cOeIe0Vcjug", "Area of the Base"],
@@ -2700,359 +2700,378 @@
 
 
   const CYLINDER_VOLUME_TASKS = [
-      {
-        id: "formula",
-        type: "formula",
-        title: "Build the cylinder-volume relationship",
-        prompt: "Drag each phrase into the correct place.",
-        tokens: [
-          { id: "volume", label: "volume of a cylinder" },
-          { id: "baseArea", label: "area of the base" },
-          { id: "height", label: "height of the cylinder" }
-        ],
-        zones: [
-          { id: "left", prompt: "drop phrase" },
-          { id: "factor1", prompt: "drop phrase" },
-          { id: "factor2", prompt: "drop phrase" }
-        ],
-        correct: { left: "volume", factor1: "baseArea", factor2: "height" },
-        hint: "The volume belongs by itself on the left side of the equals sign. The area of the base and the cylinder's height are multiplied."
-      },
-      {
-        id: "upright-top",
-        type: "cylinder",
-        title: "Cylinder standing upright",
-        prompt: "Place the two labels on the diagram.",
-        orientation: "upright",
-        baseTarget: "top",
-        tokens: [
-          { id: "baseArea", label: "area of the base" },
-          { id: "height", label: "height of the cylinder" }
-        ],
-        zones: [
-          { id: "base", prompt: "drop label", x: 50, y: 18, w: 29 },
-          { id: "height", prompt: "drop label", x: 78, y: 50, w: 30 }
-        ],
-        correct: { base: "baseArea", height: "height" },
-        hint: "Look for the circular face when you place area of the base. Height measures the perpendicular distance from one base to the other."
-      },
-      {
-        id: "upright-bottom",
-        type: "cylinder",
-        title: "Same cylinder, different target",
-        prompt: "Place the two labels on the diagram.",
-        orientation: "upright",
-        baseTarget: "bottom",
-        tokens: [
-          { id: "baseArea", label: "area of the base" },
-          { id: "height", label: "height of the cylinder" }
-        ],
-        zones: [
-          { id: "base", prompt: "drop label", x: 50, y: 82, w: 29 },
-          { id: "height", prompt: "drop label", x: 22, y: 50, w: 30 }
-        ],
-        correct: { base: "baseArea", height: "height" },
-        hint: "Either circular face is a base. Height is the perpendicular distance between the two bases."
-      },
-      {
-        id: "sideways-left",
-        type: "cylinder",
-        title: "Cylinder turned sideways",
-        prompt: "Place the two labels on the diagram.",
-        orientation: "sideways",
-        baseTarget: "left",
-        tokens: [
-          { id: "baseArea", label: "area of the base" },
-          { id: "height", label: "height of the cylinder" }
-        ],
-        zones: [
-          { id: "base", prompt: "drop label", x: 19, y: 50, w: 26 },
-          { id: "height", prompt: "drop label", x: 54, y: 82, w: 30 }
-        ],
-        correct: { base: "baseArea", height: "height" },
-        hint: "Turning the cylinder does not change its parts. The circular face is still the base, and the distance between the bases is still the height."
-      },
-      {
-        id: "sideways-right",
-        type: "cylinder",
-        title: "Find the parts again",
-        prompt: "Place the two labels on the diagram.",
-        orientation: "sideways",
-        baseTarget: "right",
-        tokens: [
-          { id: "baseArea", label: "area of the base" },
-          { id: "height", label: "height of the cylinder" }
-        ],
-        zones: [
-          { id: "base", prompt: "drop label", x: 81, y: 50, w: 26 },
-          { id: "height", prompt: "drop label", x: 54, y: 18, w: 30 }
-        ],
-        correct: { base: "baseArea", height: "height" },
-        hint: "The right circular face is one of the bases. Height runs from one base plane to the other."
-      },
-      {
-        id: "leaning",
-        type: "cylinder",
-        title: "Leaning cylinder",
-        prompt: "Place the two labels on the diagram.",
-        orientation: "leaning",
-        baseTarget: "bottom",
-        tokens: [
-          { id: "baseArea", label: "area of the base" },
-          { id: "height", label: "height of the cylinder" }
-        ],
-        zones: [
-          { id: "base", prompt: "drop label", x: 39, y: 83, w: 28 },
-          { id: "height", prompt: "drop label", x: 56, y: 50, w: 30 }
-        ],
-        correct: { base: "baseArea", height: "height" },
-        hint: "For a leaning cylinder, height is not the slanted edge. Use the perpendicular distance between the parallel bases."
-      },
-      {
-        id: "radius",
-        type: "radius",
-        title: "Connect the base to a circle",
-        prompt: "Label the part you use and the circular region it belongs to.",
-        tokens: [
-          { id: "radius", label: "radius" },
-          { id: "baseArea", label: "area of the base" }
-        ],
-        zones: [
-          { id: "radius", prompt: "drop label", x: 62, y: 49, w: 22 },
-          { id: "base", prompt: "drop label", x: 50, y: 78, w: 28 }
-        ],
-        correct: { radius: "radius", base: "baseArea" },
-        hint: "The radius runs from the center of the circle to its edge. The entire circular region represents the area of the base."
-      },
-      {
-        id: "diameter",
-        type: "diameter",
-        title: "The diameter is shown",
-        prompt: "Drag the radius into the answer target.",
-        tokens: [
-          { id: "r7", label: "7 cm" },
-          { id: "r14", label: "14 cm" },
-          { id: "r28", label: "28 cm" }
-        ],
-        zones: [
-          { id: "radiusValue", prompt: "radius = ?" }
-        ],
-        correct: { radiusValue: "r7" },
-        hint: "The radius is half the diameter. Find half of 14 cm."
-      }
-    ];
-  
-    function resetCylinderVolumeTask(data) {
-      data.selected = null;
-      data.answers = {};
-      data.solved = false;
+    {
+      id: "formula",
+      type: "formula",
+      title: "Build the cylinder-volume relationship",
+      prompt: "Drag each phrase into the correct place.",
+      tokens: [
+        { id: "volume", label: "volume of a cylinder" },
+        { id: "baseArea", label: "area of the base" },
+        { id: "height", label: "height of the cylinder" }
+      ],
+      zones: [
+        { id: "left", prompt: "drop phrase" },
+        { id: "factor1", prompt: "drop phrase" },
+        { id: "factor2", prompt: "drop phrase" }
+      ],
+      correct: { left: "volume", factor1: "baseArea", factor2: "height" },
+      hint: "The volume belongs by itself on the left side of the equals sign. The area of the base and the cylinder's height are multiplied."
+    },
+    {
+      id: "upright-top",
+      type: "cylinder",
+      title: "Cylinder standing upright",
+      prompt: "Place the two labels on the diagram.",
+      orientation: "upright",
+      baseTarget: "top",
+      tokens: [
+        { id: "baseArea", label: "area of the base" },
+        { id: "height", label: "height of the cylinder" }
+      ],
+      zones: [
+        { id: "base", prompt: "drop label", x: 50, y: 18, w: 29 },
+        { id: "height", prompt: "drop label", x: 78, y: 50, w: 30 }
+      ],
+      correct: { base: "baseArea", height: "height" },
+      hint: "Look for the circular face when you place area of the base. Height measures the perpendicular distance from one base to the other."
+    },
+    {
+      id: "upright-bottom",
+      type: "cylinder",
+      title: "Same cylinder, different target",
+      prompt: "Place the two labels on the diagram.",
+      orientation: "upright",
+      baseTarget: "bottom",
+      tokens: [
+        { id: "baseArea", label: "area of the base" },
+        { id: "height", label: "height of the cylinder" }
+      ],
+      zones: [
+        { id: "base", prompt: "drop label", x: 50, y: 82, w: 29 },
+        { id: "height", prompt: "drop label", x: 22, y: 50, w: 30 }
+      ],
+      correct: { base: "baseArea", height: "height" },
+      hint: "Either circular face is a base. Height is the perpendicular distance between the two bases."
+    },
+    {
+      id: "sideways-left",
+      type: "cylinder",
+      title: "Cylinder turned sideways",
+      prompt: "Place the two labels on the diagram.",
+      orientation: "sideways",
+      baseTarget: "left",
+      tokens: [
+        { id: "baseArea", label: "area of the base" },
+        { id: "height", label: "height of the cylinder" }
+      ],
+      zones: [
+        { id: "base", prompt: "drop label", x: 19, y: 50, w: 26 },
+        { id: "height", prompt: "drop label", x: 54, y: 82, w: 30 }
+      ],
+      correct: { base: "baseArea", height: "height" },
+      hint: "Turning the cylinder does not change its parts. The circular face is still the base, and the distance between the bases is still the height."
+    },
+    {
+      id: "sideways-right",
+      type: "cylinder",
+      title: "Find the parts again",
+      prompt: "Place the two labels on the diagram.",
+      orientation: "sideways",
+      baseTarget: "right",
+      tokens: [
+        { id: "baseArea", label: "area of the base" },
+        { id: "height", label: "height of the cylinder" }
+      ],
+      zones: [
+        { id: "base", prompt: "drop label", x: 81, y: 50, w: 26 },
+        { id: "height", prompt: "drop label", x: 54, y: 18, w: 30 }
+      ],
+      correct: { base: "baseArea", height: "height" },
+      hint: "The right circular face is one of the bases. Height runs from one base plane to the other."
+    },
+    {
+      id: "radius",
+      type: "radius",
+      title: "Connect the base to a circle",
+      prompt: "Label the part you use and the circular region it belongs to.",
+      tokens: [
+        { id: "radius", label: "radius" },
+        { id: "baseArea", label: "area of the base" }
+      ],
+      zones: [
+        { id: "radius", prompt: "drop label", x: 62, y: 49, w: 22 },
+        { id: "base", prompt: "drop label", x: 50, y: 78, w: 28 }
+      ],
+      correct: { radius: "radius", base: "baseArea" },
+      hint: "The radius runs from the center of the circle to its edge. The entire circular region represents the area of the base."
+    },
+    {
+      id: "radius-value-1",
+      type: "radius-value",
+      title: "Find the radius",
+      prompt: "Use the labeled segment to determine the radius.",
+      measure: 14,
+      unit: "cm",
+      tokens: [
+        { id: "half", label: "7 cm" },
+        { id: "same", label: "14 cm" },
+        { id: "double", label: "28 cm" }
+      ],
+      zones: [{ id: "radiusValue", prompt: "radius = ?" }],
+      correct: { radiusValue: "half" },
+      hint: "A radius goes from the center to the edge. The labeled segment goes from one edge of the circle to the other through the center."
+    },
+    {
+      id: "radius-value-2",
+      type: "radius-value",
+      title: "Find the radius",
+      prompt: "Use the labeled segment to determine the radius.",
+      measure: 18,
+      unit: "in.",
+      tokens: [
+        { id: "same", label: "18 in." },
+        { id: "half", label: "9 in." },
+        { id: "double", label: "36 in." }
+      ],
+      zones: [{ id: "radiusValue", prompt: "radius = ?" }],
+      correct: { radiusValue: "half" },
+      hint: "A radius goes from the center to the edge. The labeled segment crosses the full circle through the center."
+    },
+    {
+      id: "radius-value-3",
+      type: "radius-value",
+      title: "Find the radius",
+      prompt: "Use the labeled segment to determine the radius.",
+      measure: 24,
+      unit: "ft",
+      tokens: [
+        { id: "double", label: "48 ft" },
+        { id: "half", label: "12 ft" },
+        { id: "same", label: "24 ft" }
+      ],
+      zones: [{ id: "radiusValue", prompt: "radius = ?" }],
+      correct: { radiusValue: "half" },
+      hint: "Focus on the center point. A radius is only the distance from that center point to one edge."
+    },
+    {
+      id: "radius-value-4",
+      type: "radius-value",
+      title: "Find the radius",
+      prompt: "Use the labeled segment to determine the radius.",
+      measure: 32,
+      unit: "mm",
+      tokens: [
+        { id: "half", label: "16 mm" },
+        { id: "double", label: "64 mm" },
+        { id: "same", label: "32 mm" }
+      ],
+      zones: [{ id: "radiusValue", prompt: "radius = ?" }],
+      correct: { radiusValue: "half" },
+      hint: "The center point divides the labeled segment into two equal parts. One of those parts is the radius."
     }
-  
-    function cylinderTokenLabel(task, tokenId) {
-      return task.tokens.find(token => token.id === tokenId)?.label || "";
-    }
-  
-    function cylinderDropMarkup(task, data, zone, overlay = false) {
-      const placed = data.answers?.[zone.id];
-      const classes = `cylinder-drop-target${overlay ? " is-overlay" : ""}${placed ? " is-filled" : ""}${data.solved ? " is-locked" : ""}`;
-      const style = overlay ? ` style="left:${zone.x}%;top:${zone.y}%;width:${zone.w || 28}%;"` : "";
-      return `<button type="button" class="${classes}" data-cylinder-zone="${zone.id}"${style}><span>${placed ? escapeHTML(cylinderTokenLabel(task, placed)) : escapeHTML(zone.prompt)}</span></button>`;
-    }
-  
-    function cylinderTokenBankMarkup(task, data) {
-      const used = new Set(Object.values(data.answers || {}));
-      return task.tokens.map(token => {
-        const classes = `cylinder-drag-token${data.selected === token.id ? " is-selected" : ""}${used.has(token.id) ? " is-used" : ""}`;
-        return `<button type="button" draggable="${data.solved ? "false" : "true"}" class="${classes}" data-cylinder-token="${token.id}" aria-pressed="${data.selected === token.id ? "true" : "false"}">${escapeHTML(token.label)}</button>`;
-      }).join("");
-    }
-  
-    function cylinderSvgMarkup(task) {
-      const markerId = `cylinderArrow-${task.id}`;
-      const defs = `<defs><marker id="${markerId}" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z"></path></marker></defs>`;
-      if (task.orientation === "sideways") {
-        return `<svg viewBox="0 0 620 380" role="img" aria-label="Cylinder turned sideways">${defs}
-          <ellipse class="cylinder-shape-base" cx="120" cy="190" rx="36" ry="105"></ellipse>
-          <path class="cylinder-shape-side" d="M120 85 H500 M120 295 H500"></path>
-          <ellipse class="cylinder-shape-base" cx="500" cy="190" rx="36" ry="105"></ellipse>
-          <line class="cylinder-height-line" x1="155" y1="${task.baseTarget === "left" ? 326 : 54}" x2="465" y2="${task.baseTarget === "left" ? 326 : 54}" marker-start="url(#${markerId})" marker-end="url(#${markerId})"></line>
-        </svg>`;
-      }
-      if (task.orientation === "leaning") {
-        return `<svg viewBox="0 0 620 380" role="img" aria-label="Leaning cylinder">${defs}
-          <ellipse class="cylinder-shape-base" cx="365" cy="78" rx="110" ry="34"></ellipse>
-          <path class="cylinder-shape-side" d="M255 78 L145 300 M475 78 L365 300"></path>
-          <ellipse class="cylinder-shape-base" cx="255" cy="300" rx="110" ry="34"></ellipse>
-          <line class="cylinder-height-line is-dashed" x1="310" y1="112" x2="310" y2="266" marker-start="url(#${markerId})" marker-end="url(#${markerId})"></line>
-          <path class="cylinder-right-angle" d="M310 253 h14 v13"></path>
-        </svg>`;
-      }
-      const arrowX = task.baseTarget === "top" ? 490 : 130;
-      return `<svg viewBox="0 0 620 380" role="img" aria-label="Upright cylinder">${defs}
-        <ellipse class="cylinder-shape-base" cx="310" cy="72" rx="112" ry="34"></ellipse>
-        <path class="cylinder-shape-side" d="M198 72 V308 M422 72 V308"></path>
-        <ellipse class="cylinder-shape-base" cx="310" cy="308" rx="112" ry="34"></ellipse>
-        <line class="cylinder-height-line" x1="${arrowX}" y1="106" x2="${arrowX}" y2="274" marker-start="url(#${markerId})" marker-end="url(#${markerId})"></line>
+  ];
+
+  function resetCylinderVolumeTask(data) {
+    data.selected = null;
+    data.answers = {};
+    data.solved = false;
+  }
+
+  function cylinderTokenLabel(task, tokenId) {
+    return task.tokens.find(token => token.id === tokenId)?.label || "";
+  }
+
+  function cylinderDropMarkup(task, data, zone, overlay = false) {
+    const placed = data.answers?.[zone.id];
+    const classes = `cylinder-drop-target${overlay ? " is-overlay" : ""}${placed ? " is-filled" : ""}${data.solved ? " is-locked" : ""}`;
+    const style = overlay ? ` style="left:${zone.x}%;top:${zone.y}%;width:${zone.w || 28}%;"` : "";
+    return `<button type="button" class="${classes}" data-cylinder-zone="${zone.id}"${style}><span>${placed ? escapeHTML(cylinderTokenLabel(task, placed)) : escapeHTML(zone.prompt)}</span></button>`;
+  }
+
+  function cylinderTokenBankMarkup(task, data) {
+    const used = new Set(Object.values(data.answers || {}));
+    return task.tokens.map(token => {
+      const classes = `cylinder-drag-token${data.selected === token.id ? " is-selected" : ""}${used.has(token.id) ? " is-used" : ""}`;
+      return `<button type="button" draggable="${data.solved ? "false" : "true"}" class="${classes}" data-cylinder-token="${token.id}" aria-pressed="${data.selected === token.id ? "true" : "false"}">${escapeHTML(token.label)}</button>`;
+    }).join("");
+  }
+
+  function cylinderSvgMarkup(task) {
+    const markerId = `cylinderArrow-${task.id}`;
+    const defs = `<defs><marker id="${markerId}" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z"></path></marker></defs>`;
+    if (task.orientation === "sideways") {
+      return `<svg viewBox="0 0 620 380" role="img" aria-label="Cylinder turned sideways">${defs}
+        <ellipse class="cylinder-shape-base" cx="120" cy="190" rx="36" ry="105"></ellipse>
+        <path class="cylinder-shape-side" d="M120 85 H500 M120 295 H500"></path>
+        <ellipse class="cylinder-shape-base" cx="500" cy="190" rx="36" ry="105"></ellipse>
+        <line class="cylinder-height-line" x1="155" y1="${task.baseTarget === "left" ? 326 : 54}" x2="465" y2="${task.baseTarget === "left" ? 326 : 54}" marker-start="url(#${markerId})" marker-end="url(#${markerId})"></line>
       </svg>`;
     }
-  
-    function circleBaseSvgMarkup(task) {
-      const markerId = `circleArrow-${task.id}`;
-      return `<svg viewBox="0 0 620 380" role="img" aria-label="Circular base with a radius shown">
-        <defs><marker id="${markerId}" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z"></path></marker></defs>
-        <circle class="cylinder-circle-base" cx="310" cy="190" r="125"></circle>
-        <circle class="cylinder-center-dot" cx="310" cy="190" r="7"></circle>
-        <line class="cylinder-radius-line" x1="310" y1="190" x2="435" y2="190" marker-end="url(#${markerId})"></line>
-        <text class="cylinder-measure-label" x="360" y="174">6 cm</text>
-      </svg>`;
-    }
-  
-    function diameterSvgMarkup() {
-      return `<svg viewBox="0 0 620 330" role="img" aria-label="Circle with a diameter of 14 centimeters">
-        <circle class="cylinder-circle-base" cx="310" cy="165" r="118"></circle>
-        <circle class="cylinder-center-dot" cx="310" cy="165" r="7"></circle>
-        <line class="cylinder-diameter-line" x1="192" y1="165" x2="428" y2="165"></line>
-        <line class="cylinder-diameter-cap" x1="192" y1="151" x2="192" y2="179"></line>
-        <line class="cylinder-diameter-cap" x1="428" y1="151" x2="428" y2="179"></line>
-        <text class="cylinder-measure-label" x="282" y="142">14 cm</text>
-      </svg>`;
-    }
-  
-    function cylinderTaskMarkup(task, data) {
-      if (task.type === "formula") {
-        const left = task.zones.find(zone => zone.id === "left");
-        const factor1 = task.zones.find(zone => zone.id === "factor1");
-        const factor2 = task.zones.find(zone => zone.id === "factor2");
-        return `<div class="cylinder-formula-board">
-          ${cylinderDropMarkup(task, data, left)}
-          <span class="cylinder-formula-symbol">=</span>
-          ${cylinderDropMarkup(task, data, factor1)}
-          <span class="cylinder-formula-symbol">×</span>
-          ${cylinderDropMarkup(task, data, factor2)}
-        </div>`;
-      }
-      if (task.type === "diameter") {
-        return `<div class="cylinder-diameter-layout">
-          <div class="cylinder-visual-stage is-circle">${diameterSvgMarkup()}</div>
-          <div class="cylinder-radius-answer"><span>Radius</span>${cylinderDropMarkup(task, data, task.zones[0])}</div>
-        </div>`;
-      }
-      const visual = task.type === "radius" ? circleBaseSvgMarkup(task) : cylinderSvgMarkup(task);
-      return `<div class="cylinder-visual-stage${task.type === "radius" ? " is-circle" : ""}">
-        ${visual}
-        ${task.zones.map(zone => cylinderDropMarkup(task, data, zone, true)).join("")}
+    const arrowX = task.baseTarget === "top" ? 490 : 130;
+    return `<svg viewBox="0 0 620 380" role="img" aria-label="Upright cylinder">${defs}
+      <ellipse class="cylinder-shape-base" cx="310" cy="72" rx="112" ry="34"></ellipse>
+      <path class="cylinder-shape-side" d="M198 72 V308 M422 72 V308"></path>
+      <ellipse class="cylinder-shape-base" cx="310" cy="308" rx="112" ry="34"></ellipse>
+      <line class="cylinder-height-line" x1="${arrowX}" y1="106" x2="${arrowX}" y2="274" marker-start="url(#${markerId})" marker-end="url(#${markerId})"></line>
+    </svg>`;
+  }
+
+  function circleBaseSvgMarkup(task) {
+    const markerId = `circleArrow-${task.id}`;
+    return `<svg viewBox="0 0 620 380" role="img" aria-label="Circular base with a radius shown">
+      <defs><marker id="${markerId}" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z"></path></marker></defs>
+      <circle class="cylinder-circle-base" cx="310" cy="190" r="125"></circle>
+      <circle class="cylinder-center-dot" cx="310" cy="190" r="7"></circle>
+      <line class="cylinder-radius-line" x1="310" y1="190" x2="435" y2="190" marker-end="url(#${markerId})"></line>
+      <text class="cylinder-measure-label" x="360" y="174">6 cm</text>
+    </svg>`;
+  }
+
+  function radiusValueSvgMarkup(task) {
+    return `<svg viewBox="0 0 620 330" role="img" aria-label="Circle with an edge-to-edge segment through the center labeled ${escapeHTML(task.measure)} ${escapeHTML(task.unit)}">
+      <circle class="cylinder-circle-base" cx="310" cy="165" r="118"></circle>
+      <circle class="cylinder-center-dot" cx="310" cy="165" r="7"></circle>
+      <line class="cylinder-full-span-line" x1="192" y1="165" x2="428" y2="165"></line>
+      <line class="cylinder-full-span-cap" x1="192" y1="151" x2="192" y2="179"></line>
+      <line class="cylinder-full-span-cap" x1="428" y1="151" x2="428" y2="179"></line>
+      <text class="cylinder-measure-label" x="282" y="142">${escapeHTML(task.measure)} ${escapeHTML(task.unit)}</text>
+    </svg>`;
+  }
+
+  function cylinderTaskMarkup(task, data) {
+    if (task.type === "formula") {
+      const left = task.zones.find(zone => zone.id === "left");
+      const factor1 = task.zones.find(zone => zone.id === "factor1");
+      const factor2 = task.zones.find(zone => zone.id === "factor2");
+      return `<div class="cylinder-formula-board">
+        ${cylinderDropMarkup(task, data, left)}
+        <span class="cylinder-formula-symbol">=</span>
+        ${cylinderDropMarkup(task, data, factor1)}
+        <span class="cylinder-formula-symbol">×</span>
+        ${cylinderDropMarkup(task, data, factor2)}
       </div>`;
     }
-  
-    function renderLab86A() {
-      if (!labRuntime.data) labRuntime.data = { index: 0, selected: null, answers: {}, solved: false };
-      const data = labRuntime.data;
-      if (data.index >= CYLINDER_VOLUME_TASKS.length) return showLabCompletion("8.6A");
-      const task = CYLINDER_VOLUME_TASKS[data.index];
-      const completed = data.index + (data.solved ? 1 : 0);
-      setLabProgress(completed, CYLINDER_VOLUME_TASKS.length, `Question ${data.index + 1} of ${CYLINDER_VOLUME_TASKS.length}: drag, place, check, and move on.`);
-  
-      const body = $("#standardsLabBody");
-      body.innerHTML = `<section class="cylinder-lab-shell">
-        <header class="cylinder-lab-header">
-          <div><p class="lab-mini-title">Question ${data.index + 1} of ${CYLINDER_VOLUME_TASKS.length}</p><h4>${escapeHTML(task.title)}</h4><p>${escapeHTML(task.prompt)}</p></div>
-          <span class="cylinder-question-chip">${data.solved ? "Complete" : "8.6A"}</span>
-        </header>
-        <div class="cylinder-task-card">
-          ${cylinderTaskMarkup(task, data)}
-        </div>
-        <div class="cylinder-token-area">
-          <p class="cylinder-token-label">Drag a choice, or click a choice and then click its target.</p>
-          <div class="cylinder-token-bank">${cylinderTokenBankMarkup(task, data)}</div>
-        </div>
-        <div class="cylinder-lab-actions">
-          <button type="button" class="lab-action" id="checkCylinderTask">${data.solved ? "Checked" : "Check"}</button>
-          <button type="button" class="lab-action cylinder-next-button" id="nextCylinderTask"${data.solved ? "" : " hidden"}>${data.index === CYLINDER_VOLUME_TASKS.length - 1 ? "Finish lab" : "Next question"}</button>
-        </div>
-      </section>`;
-  
-      const chooseToken = tokenId => {
-        if (data.solved) return;
-        data.selected = tokenId;
-        body.querySelectorAll("[data-cylinder-token]").forEach(button => {
-          button.classList.toggle("is-selected", button.dataset.cylinderToken === tokenId);
-          button.setAttribute("aria-pressed", button.dataset.cylinderToken === tokenId ? "true" : "false");
-        });
-        setLabFeedback("Choice selected. Now place it in a target.");
-      };
-  
-      const assignZone = (zoneId, tokenId) => {
-        if (data.solved) return;
-        if (!tokenId) {
-          if (data.answers[zoneId]) {
-            delete data.answers[zoneId];
-            renderLab86A();
-            setLabFeedback("Label returned to the choice bank.");
-          } else {
-            setLabFeedback("Select a choice first, then click the target.");
-          }
-          return;
-        }
-        Object.keys(data.answers).forEach(key => {
-          if (data.answers[key] === tokenId) delete data.answers[key];
-        });
-        data.answers[zoneId] = tokenId;
-        data.selected = null;
-        renderLab86A();
-        setLabFeedback("Placed. Continue until every target has a choice.");
-      };
-  
-      body.querySelectorAll("[data-cylinder-token]").forEach(button => {
-        button.addEventListener("click", () => chooseToken(button.dataset.cylinderToken));
-        button.addEventListener("dragstart", event => {
-          if (data.solved) return event.preventDefault();
-          event.dataTransfer.setData("text/plain", button.dataset.cylinderToken);
-          event.dataTransfer.effectAllowed = "move";
-        });
-      });
-  
-      body.querySelectorAll("[data-cylinder-zone]").forEach(zone => {
-        zone.addEventListener("click", () => assignZone(zone.dataset.cylinderZone, data.selected));
-        zone.addEventListener("dragover", event => {
-          if (!data.solved) {
-            event.preventDefault();
-            event.dataTransfer.dropEffect = "move";
-          }
-        });
-        zone.addEventListener("drop", event => {
-          event.preventDefault();
-          assignZone(zone.dataset.cylinderZone, event.dataTransfer.getData("text/plain"));
-        });
-      });
-  
-      $("#checkCylinderTask").addEventListener("click", () => {
-        if (data.solved) return setLabFeedback("This question is complete. Choose Next question.", "correct");
-        const missing = task.zones.filter(zone => !data.answers[zone.id]);
-        if (missing.length) return setLabFeedback("Place a choice in every target before checking.", "incorrect");
-        const correct = Object.entries(task.correct).every(([zoneId, tokenId]) => data.answers[zoneId] === tokenId);
-        if (!correct) return setLabFeedback(task.hint, "incorrect");
-        data.solved = true;
-        renderLab86A();
-        const success = task.type === "formula"
-          ? "Correct. Volume of a cylinder = area of the base × height of the cylinder."
-          : task.type === "diameter"
-            ? "Correct. A 14 cm diameter has a 7 cm radius."
-            : task.type === "radius"
-              ? "Correct. The radius is measured from the center to the edge, and the full circle is the base area."
-              : "Correct. You located the base area and the cylinder's height even when the cylinder changed orientation.";
-        setLabFeedback(success, "correct");
-      });
-  
-      const next = $("#nextCylinderTask");
-      if (next) next.addEventListener("click", () => {
-        if (data.index >= CYLINDER_VOLUME_TASKS.length - 1) return showLabCompletion("8.6A");
-        data.index += 1;
-        resetCylinderVolumeTask(data);
-        renderLab86A();
-        syncWhiteboardQuestion();
-        setLabFeedback("New question ready. Work from the diagram first.");
-      });
+    if (task.type === "radius-value") {
+      return `<div class="cylinder-radius-value-layout">
+        <div class="cylinder-visual-stage is-circle">${radiusValueSvgMarkup(task)}</div>
+        <div class="cylinder-radius-answer"><span>Radius</span>${cylinderDropMarkup(task, data, task.zones[0])}</div>
+      </div>`;
     }
+    const visual = task.type === "radius" ? circleBaseSvgMarkup(task) : cylinderSvgMarkup(task);
+    return `<div class="cylinder-visual-stage${task.type === "radius" ? " is-circle" : ""}">
+      ${visual}
+      ${task.zones.map(zone => cylinderDropMarkup(task, data, zone, true)).join("")}
+    </div>`;
+  }
+
+  function renderLab86A() {
+    if (!labRuntime.data) labRuntime.data = { index: 0, selected: null, answers: {}, solved: false };
+    const data = labRuntime.data;
+    if (data.index >= CYLINDER_VOLUME_TASKS.length) return showLabCompletion("8.6A");
+    const task = CYLINDER_VOLUME_TASKS[data.index];
+    const completed = data.index + (data.solved ? 1 : 0);
+    setLabProgress(completed, CYLINDER_VOLUME_TASKS.length, `Question ${data.index + 1} of ${CYLINDER_VOLUME_TASKS.length}: drag, place, check, and move on.`);
+
+    const body = $("#standardsLabBody");
+    body.innerHTML = `<section class="cylinder-lab-shell">
+      <header class="cylinder-lab-header">
+        <div><p class="lab-mini-title">Question ${data.index + 1} of ${CYLINDER_VOLUME_TASKS.length}</p><h4>${escapeHTML(task.title)}</h4><p>${escapeHTML(task.prompt)}</p></div>
+        <span class="cylinder-question-chip">${data.solved ? "Complete" : "8.6A"}</span>
+      </header>
+      <div class="cylinder-task-card">${cylinderTaskMarkup(task, data)}</div>
+      <div class="cylinder-token-area">
+        <p class="cylinder-token-label">Drag a choice, or click a choice and then click its target.</p>
+        <div class="cylinder-token-bank">${cylinderTokenBankMarkup(task, data)}</div>
+      </div>
+      <div class="cylinder-lab-actions">
+        <button type="button" class="lab-action" id="checkCylinderTask">${data.solved ? "Checked" : "Check"}</button>
+        <button type="button" class="lab-action cylinder-next-button" id="nextCylinderTask"${data.solved ? "" : " hidden"}>${data.index === CYLINDER_VOLUME_TASKS.length - 1 ? "Finish lab" : "Next question"}</button>
+      </div>
+    </section>`;
+
+    const chooseToken = tokenId => {
+      if (data.solved) return;
+      data.selected = tokenId;
+      body.querySelectorAll("[data-cylinder-token]").forEach(button => {
+        button.classList.toggle("is-selected", button.dataset.cylinderToken === tokenId);
+        button.setAttribute("aria-pressed", button.dataset.cylinderToken === tokenId ? "true" : "false");
+      });
+      setLabFeedback("Choice selected. Now place it in a target.");
+    };
+
+    const assignZone = (zoneId, tokenId) => {
+      if (data.solved) return;
+      if (!tokenId) {
+        if (data.answers[zoneId]) {
+          delete data.answers[zoneId];
+          renderLab86A();
+          setLabFeedback("Label returned to the choice bank.");
+        } else {
+          setLabFeedback("Select a choice first, then click the target.");
+        }
+        return;
+      }
+      Object.keys(data.answers).forEach(key => {
+        if (data.answers[key] === tokenId) delete data.answers[key];
+      });
+      data.answers[zoneId] = tokenId;
+      data.selected = null;
+      renderLab86A();
+      setLabFeedback("Placed. Continue until every target has a choice.");
+    };
+
+    body.querySelectorAll("[data-cylinder-token]").forEach(button => {
+      button.addEventListener("click", () => chooseToken(button.dataset.cylinderToken));
+      button.addEventListener("dragstart", event => {
+        if (data.solved) return event.preventDefault();
+        event.dataTransfer.setData("text/plain", button.dataset.cylinderToken);
+        event.dataTransfer.effectAllowed = "move";
+      });
+    });
+
+    body.querySelectorAll("[data-cylinder-zone]").forEach(zone => {
+      zone.addEventListener("click", () => assignZone(zone.dataset.cylinderZone, data.selected));
+      zone.addEventListener("dragover", event => {
+        if (!data.solved) {
+          event.preventDefault();
+          event.dataTransfer.dropEffect = "move";
+        }
+      });
+      zone.addEventListener("drop", event => {
+        event.preventDefault();
+        assignZone(zone.dataset.cylinderZone, event.dataTransfer.getData("text/plain"));
+      });
+    });
+
+    $("#checkCylinderTask").addEventListener("click", () => {
+      if (data.solved) return setLabFeedback("This question is complete. Choose Next question.", "correct");
+      const missing = task.zones.filter(zone => !data.answers[zone.id]);
+      if (missing.length) return setLabFeedback("Place a choice in every target before checking.", "incorrect");
+      const correct = Object.entries(task.correct).every(([zoneId, tokenId]) => data.answers[zoneId] === tokenId);
+      if (!correct) return setLabFeedback(task.hint, "incorrect");
+      data.solved = true;
+      renderLab86A();
+      const success = task.type === "formula"
+        ? "Correct. Volume of a cylinder = area of the base × height of the cylinder."
+        : task.type === "radius-value"
+          ? `Correct. The radius is ${cylinderTokenLabel(task, task.correct.radiusValue)}.`
+          : task.type === "radius"
+            ? "Correct. The radius is measured from the center to the edge, and the full circle is the base area."
+            : "Correct. You located the base area and the cylinder's height even when the cylinder changed orientation.";
+      setLabFeedback(success, "correct");
+    });
+
+    const next = $("#nextCylinderTask");
+    if (next) next.addEventListener("click", () => {
+      if (data.index >= CYLINDER_VOLUME_TASKS.length - 1) return showLabCompletion("8.6A");
+      data.index += 1;
+      resetCylinderVolumeTask(data);
+      renderLab86A();
+      syncWhiteboardQuestion();
+      setLabFeedback("New question ready. Work from the diagram first.");
+    });
+  }
 
   const PROPORTIONAL_SORT_ROUNDS = [
     {
