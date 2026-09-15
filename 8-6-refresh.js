@@ -48,11 +48,9 @@
       standard: "8.6B",
       resource: "Anchor chart",
       videos: [
-        { title: "Cone and Cylinder Volume Relationship", url: "https://somup.com/cOefq8WNpX" },
         { title: "Build the Cone Volume Formula", url: "https://somup.com/cOeIeMVcjvq" }
       ],
       videoHotspots: [
-        { title: "Cone and Cylinder Volume Relationship", url: "https://somup.com/cOefq8WNpX", left: 7.0, top: 16.0, width: 68.5, height: 35.5 },
         { title: "Build the Cone Volume Formula", url: "https://somup.com/cOeIeMVcjvq", left: 6.0, top: 53.5, width: 87.5, height: 38.0 }
       ]
     },
