@@ -26,6 +26,13 @@
         { title: "Height of the Cylinder", url: "https://somup.com/cOeIezVcjUu" },
         { title: "V = B × h", url: "https://somup.com/cOeIemVcjU9" },
         { title: "V = πr²h", url: "https://somup.com/cOeIf4Vcjx4" }
+      ],
+      videoHotspots: [
+        { title: "Volume of a Cylinder", url: "https://somup.com/cOeIe2Vcjui", left: 10.5, top: 15.0, width: 18.5, height: 13.5 },
+        { title: "Area of the Base", url: "https://somup.com/cOeIe0Vcjug", left: 34.5, top: 15.0, width: 19.5, height: 13.5 },
+        { title: "Height of the Cylinder", url: "https://somup.com/cOeIezVcjUu", left: 60.5, top: 15.0, width: 19.0, height: 13.5 },
+        { title: "V = B × h", url: "https://somup.com/cOeIemVcjU9", left: 6.5, top: 31.0, width: 72.0, height: 15.0 },
+        { title: "V = πr²h", url: "https://somup.com/cOeIf4Vcjx4", left: 24.5, top: 77.0, width: 50.5, height: 14.0 }
       ]
     },
     {
@@ -43,6 +50,10 @@
       videos: [
         { title: "Cone and Cylinder Volume Relationship", url: "https://somup.com/cOefq8WNpX" },
         { title: "Build the Cone Volume Formula", url: "https://somup.com/cOeIeMVcjvq" }
+      ],
+      videoHotspots: [
+        { title: "Cone and Cylinder Volume Relationship", url: "https://somup.com/cOefq8WNpX", left: 7.0, top: 16.0, width: 68.5, height: 35.5 },
+        { title: "Build the Cone Volume Formula", url: "https://somup.com/cOeIeMVcjvq", left: 6.0, top: 53.5, width: 87.5, height: 38.0 }
       ]
     },
     {
@@ -61,6 +72,11 @@
         { title: "Pythagorean Theorem", url: "https://somup.com/cOeIfeVcjvN" },
         { title: "Why the Pythagorean Theorem Works", url: "https://somup.com/cOeIeRVcjva" },
         { title: "Square Model for a² + b² = c²", url: "https://somup.com/cOeIfTVcjwW" }
+      ],
+      videoHotspots: [
+        { title: "Pythagorean Theorem", url: "https://somup.com/cOeIfeVcjvN", left: 7.0, top: 39.5, width: 49.0, height: 17.0 },
+        { title: "Why the Pythagorean Theorem Works", url: "https://somup.com/cOeIeRVcjva", left: 5.0, top: 17.0, width: 53.5, height: 18.5 },
+        { title: "Square Model for a² + b² = c²", url: "https://somup.com/cOeIfTVcjwW", left: 57.5, top: 18.0, width: 31.0, height: 57.0 }
       ]
     },
     {
