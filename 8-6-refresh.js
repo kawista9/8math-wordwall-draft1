@@ -69,14 +69,16 @@
       standard: "8.6C",
       resource: "Anchor chart",
       videos: [
-        { title: "Pythagorean Theorem", url: "https://somup.com/cOeIfeVcjvN" },
-        { title: "Why the Pythagorean Theorem Works", url: "https://somup.com/cOeIeRVcjva" },
-        { title: "Square Model for a² + b² = c²", url: "https://somup.com/cOeIfTVcjwW" }
+        { title: "Legs in the Pythagorean Theorem", url: "https://somup.com/cOeIeRVcjva" },
+        { title: "Hypotenuse in the Pythagorean Theorem", url: "https://somup.com/cOeIfeVcjvN" },
+        { title: "Area Model for the Pythagorean Theorem", url: "https://somup.com/cOeIfTVcjwW" },
+        { title: "Why Use the Pythagorean Theorem?", url: "https://somup.com/cOeIfXVcjwq" }
       ],
       videoHotspots: [
-        { title: "Pythagorean Theorem", url: "https://somup.com/cOeIfeVcjvN", left: 7.0, top: 39.5, width: 49.0, height: 17.0 },
-        { title: "Why the Pythagorean Theorem Works", url: "https://somup.com/cOeIeRVcjva", left: 5.0, top: 17.0, width: 53.5, height: 18.5 },
-        { title: "Square Model for a² + b² = c²", url: "https://somup.com/cOeIfTVcjwW", left: 57.5, top: 18.0, width: 31.0, height: 57.0 }
+        { title: "Legs in the Pythagorean Theorem", url: "https://somup.com/cOeIeRVcjva", left: 2.2, top: 10.2, width: 5.8, height: 12.5 },
+        { title: "Hypotenuse in the Pythagorean Theorem", url: "https://somup.com/cOeIfeVcjvN", left: 34.7, top: 10.2, width: 5.8, height: 12.5 },
+        { title: "Area Model for the Pythagorean Theorem", url: "https://somup.com/cOeIfTVcjwW", left: 60.8, top: 9.8, width: 6.0, height: 13.0 },
+        { title: "Why Use the Pythagorean Theorem?", url: "https://somup.com/cOeIfXVcjwq", left: 2.7, top: 74.8, width: 5.8, height: 13.0 }
       ]
     },
     {
