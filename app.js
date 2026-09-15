@@ -5824,6 +5824,11 @@
       data.index += 1;
       resetTrendTask(data);
       renderLab85D();
+    } else if (standard === "8.5E") {
+      if (data.index >= DIRECT_VARIATION_TASKS.length - 1) return showLabCompletion(standard);
+      data.index += 1;
+      resetDirectVariationTask(data);
+      renderLab85E();
     } else if (standard === "8.5G") {
       if (data.phase === "description") {
         if (data.index >= FUNCTION_DESCRIPTION_TASKS.length - 1) {
