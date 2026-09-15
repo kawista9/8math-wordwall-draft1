@@ -2,14 +2,11 @@
   const group = (window.WORD_WALL_DATA || []).find(item => item.code === "8.6");
   if (!group) return;
 
-  // Use the seven approved 8.6 PNGs already stored in /assets.
-  // The previous refresh script generated replacement SVG slides at runtime,
-  // which is why the site was still showing the wrong artwork.
   group.entryPageIndex = 0;
   group.pages = [
     {
       page: 1,
-      image: "assets/8-6-p02.png?v=20260915-1441-approved3",
+      image: "assets/8.6_revamp_01.png?v=20260915-8.6revamp-final",
       videos: [],
       resource: "Standards",
       substandardHotspots: [
@@ -20,7 +17,7 @@
     },
     {
       page: 2,
-      image: "assets/8-6-p04.png?v=20260915-1441-approved3",
+      image: "assets/8.6_revamp_02.png?v=20260915-8.6revamp-final",
       standard: "8.6A",
       resource: "Anchor chart",
       videos: [
@@ -33,14 +30,14 @@
     },
     {
       page: 3,
-      image: "assets/8-6-p05.png?v=20260915-1441-approved3",
+      image: "assets/8.6_revamp_03.png?v=20260915-8.6revamp-final",
       standard: "8.6A",
       resource: "No Special Calculator Steps",
       videos: []
     },
     {
       page: 4,
-      image: "assets/8-6-p07.png?v=20260915-1441-approved3",
+      image: "assets/8.6_revamp_04.png?v=20260915-8.6revamp-final",
       standard: "8.6B",
       resource: "Anchor chart",
       videos: [
@@ -50,14 +47,14 @@
     },
     {
       page: 5,
-      image: "assets/8-6-p08.png?v=20260915-1441-approved3",
+      image: "assets/8.6_revamp_05.png?v=20260915-8.6revamp-final",
       standard: "8.6B",
       resource: "No Special Calculator Steps",
       videos: []
     },
     {
       page: 6,
-      image: "assets/8-6-p10.png?v=20260915-1441-approved3",
+      image: "assets/8.6_revamp_06.png?v=20260915-8.6revamp-final",
       standard: "8.6C",
       resource: "Anchor chart",
       videos: [
@@ -68,7 +65,7 @@
     },
     {
       page: 7,
-      image: "assets/8-6-p11.png?v=20260915-1441-approved3",
+      image: "assets/8.6_revamp_07.png?v=20260915-8.6revamp-final",
       standard: "8.6C",
       resource: "No Special Calculator Steps",
       videos: []
