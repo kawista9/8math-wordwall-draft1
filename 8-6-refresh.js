@@ -32,7 +32,7 @@
       page: 3,
       image: "assets/8.6_revamp_03.png?v=20260915-8.6revamp-final",
       standard: "8.6A",
-      resource: "No Special Calculator Steps",
+      resource: "Calculator tips",
       videos: []
     },
     {
@@ -49,7 +49,7 @@
       page: 5,
       image: "assets/8.6_revamp_05.png?v=20260915-8.6revamp-final",
       standard: "8.6B",
-      resource: "No Special Calculator Steps",
+      resource: "Calculator tips",
       videos: []
     },
     {
@@ -67,7 +67,7 @@
       page: 7,
       image: "assets/8.6_revamp_07.png?v=20260915-8.6revamp-final",
       standard: "8.6C",
-      resource: "No Special Calculator Steps",
+      resource: "Calculator tips",
       videos: []
     }
   ];
