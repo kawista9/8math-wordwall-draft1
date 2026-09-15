@@ -9,7 +9,7 @@
   group.pages = [
     {
       page: 1,
-      image: "assets/8-6-p02.png",
+      image: "assets/8-6-p02.png?v=20260915-1441-approved3",
       videos: [],
       resource: "Standards",
       substandardHotspots: [
@@ -20,7 +20,7 @@
     },
     {
       page: 2,
-      image: "assets/8-6-p04.png",
+      image: "assets/8-6-p04.png?v=20260915-1441-approved3",
       standard: "8.6A",
       resource: "Anchor chart",
       videos: [
@@ -33,14 +33,14 @@
     },
     {
       page: 3,
-      image: "assets/8-6-p05.png",
+      image: "assets/8-6-p05.png?v=20260915-1441-approved3",
       standard: "8.6A",
       resource: "No Special Calculator Steps",
       videos: []
     },
     {
       page: 4,
-      image: "assets/8-6-p07.png",
+      image: "assets/8-6-p07.png?v=20260915-1441-approved3",
       standard: "8.6B",
       resource: "Anchor chart",
       videos: [
@@ -50,14 +50,14 @@
     },
     {
       page: 5,
-      image: "assets/8-6-p08.png",
+      image: "assets/8-6-p08.png?v=20260915-1441-approved3",
       standard: "8.6B",
       resource: "No Special Calculator Steps",
       videos: []
     },
     {
       page: 6,
-      image: "assets/8-6-p10.png",
+      image: "assets/8-6-p10.png?v=20260915-1441-approved3",
       standard: "8.6C",
       resource: "Anchor chart",
       videos: [
@@ -68,7 +68,7 @@
     },
     {
       page: 7,
-      image: "assets/8-6-p11.png",
+      image: "assets/8-6-p11.png?v=20260915-1441-approved3",
       standard: "8.6C",
       resource: "No Special Calculator Steps",
       videos: []
