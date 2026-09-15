@@ -75,10 +75,10 @@
         { title: "Why Use the Pythagorean Theorem?", url: "https://somup.com/cOeIfXVcjwq" }
       ],
       videoHotspots: [
-        { title: "Legs in the Pythagorean Theorem", url: "https://somup.com/cOeIeRVcjva", left: 2.2, top: 10.2, width: 5.8, height: 12.5 },
-        { title: "Hypotenuse in the Pythagorean Theorem", url: "https://somup.com/cOeIfeVcjvN", left: 34.7, top: 10.2, width: 5.8, height: 12.5 },
-        { title: "Area Model for the Pythagorean Theorem", url: "https://somup.com/cOeIfTVcjwW", left: 60.8, top: 9.8, width: 6.0, height: 13.0 },
-        { title: "Why Use the Pythagorean Theorem?", url: "https://somup.com/cOeIfXVcjwq", left: 2.7, top: 74.8, width: 5.8, height: 13.0 }
+        { title: "Legs in the Pythagorean Theorem", url: "https://somup.com/cOeIeRVcjva", left: 2.30, top: 9.98, width: 5.63, height: 12.61 },
+        { title: "Hypotenuse in the Pythagorean Theorem", url: "https://somup.com/cOeIfeVcjvN", left: 34.56, top: 10.16, width: 5.47, height: 12.26 },
+        { title: "Area Model for the Pythagorean Theorem", url: "https://somup.com/cOeIfTVcjwW", left: 60.61, top: 7.99, width: 6.10, height: 13.66 },
+        { title: "Why Use the Pythagorean Theorem?", url: "https://somup.com/cOeIfXVcjwq", left: 2.99, top: 75.20, width: 5.94, height: 13.31 }
       ]
     },
     {
