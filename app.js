@@ -780,6 +780,17 @@
         ["https://somup.com/cOeIf4Vcjx4", "V = πr²h"]
       ]
     },
+    "8.6C": {
+      title: "Pythagorean Square Match",
+      description: "Each question shows three right triangles with attached squares. One square is already labeled on each triangle. Drag the six remaining squares from the bank to complete true right triangles.",
+      summary: "You matched side-length labels and square-area labels to complete right triangles. You used the Pythagorean relationship to decide whether each label represented a side length or the area of a square built on a side.",
+      videos: [
+        ["https://somup.com/cOeIeRVcjva", "Legs in the Pythagorean Theorem"],
+        ["https://somup.com/cOeIfeVcjvN", "Hypotenuse in the Pythagorean Theorem"],
+        ["https://somup.com/cOeIfTVcjwW", "Area Model for the Pythagorean Theorem"],
+        ["https://somup.com/cOeIfXVcjwq", "Why Use the Pythagorean Theorem?"]
+      ]
+    },
     "8.4A": {
       title: "Slope: Do It With Me",
       description: "Choose four exact points on each line. The lab groups them into two pairs, and you complete the rise-first, run-second process for both pairs to prove that the slope stays the same. Pay attention to the value of each axis interval: the first five problems coach every move, and the final ten ask you to determine and enter both sets of signed changes yourself.",
@@ -1024,6 +1035,7 @@
     if (standard === "8.5H") renderLab85H();
     if (standard === "8.5I") renderLab85I();
     if (standard === "8.6A") renderLab86A();
+    if (standard === "8.6C") renderLab86C();
     if (standard === "8.10A") renderLabA();
     if (standard === "8.10B") renderLabB();
     if (standard === "8.10C") renderLabC();
@@ -2963,6 +2975,14 @@
       ${visual}
       ${task.zones.map(zone => cylinderDropMarkup(task, data, zone, true)).join("")}
     </div>`;
+  }
+
+  function renderLab86C() {
+    if (typeof window.renderPythagorean86CLab !== "function") {
+      setLabFeedback("The 8.6C lab module did not load. Refresh the page and try again.", "incorrect");
+      return;
+    }
+    window.renderPythagorean86CLab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
   }
 
   function renderLab86A() {
@@ -6256,6 +6276,13 @@
       data.index += 1;
       resetCylinderVolumeTask(data);
       renderLab86A();
+    } else if (standard === "8.6C") {
+      if (data.index >= window.PYTHAGOREAN_86C_TOTAL - 1) return showLabCompletion(standard);
+      data.index += 1;
+      data.answers = {};
+      data.selected = null;
+      data.solved = false;
+      renderLab86C();
     } else if (standard === "8.3A") {
       if (data.index >= SIMILARITY_TASKS.length - 1) return showLabCompletion(standard);
       data.index += 1;
