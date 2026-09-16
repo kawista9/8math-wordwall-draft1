@@ -2,64 +2,86 @@
   const TASKS = [
     {
       t: [
-        { g: ["a", "9 cm²"], c: { b: 0, h: 1 } },
-        { g: ["h", "13 m"], c: { a: 2, b: 3 } },
-        { g: ["a", "8 yd"], c: { b: 4, h: 5 } }
+        { o: "br", g: ["a", "9 cm²"], c: { b: 0, h: 1 } },
+        { o: "bl", g: ["h", "13 cm"], c: { a: 2, b: 3 } },
+        { o: "tr", g: ["a", "8 cm"], c: { b: 4, h: 5 } }
       ],
-      b: ["16 cm²", "25 cm²", "5 m", "12 m", "15 yd", "289 yd²"]
+      b: ["16 cm²", "25 cm²", "5 cm", "12 cm", "15 cm", "289 cm²"]
     },
     {
       t: [
-        { g: ["h", "625 ft²"], c: { a: 0, b: 1 } },
-        { g: ["a", "20 in"], c: { b: 2, h: 3 } },
-        { g: ["a", "36 cm²"], c: { b: 4, h: 5 } }
+        { o: "tl", g: ["h", "625 ft²"], c: { a: 0, b: 1 } },
+        { o: "br", g: ["a", "20 ft"], c: { b: 2, h: 3 } },
+        { o: "bl", g: ["a", "36 ft²"], c: { b: 4, h: 5 } }
       ],
-      b: ["7 ft", "576 ft²", "21 in", "29 in", "8 cm", "100 cm²"]
+      b: ["7 ft", "576 ft²", "21 ft", "29 ft", "8 ft", "100 ft²"]
     },
     {
       t: [
-        { g: ["h", "41 m"], c: { a: 0, b: 1 } },
-        { g: ["a", "121 yd²"], c: { b: 2, h: 3 } },
-        { g: ["a", "12 km"], c: { b: 4, h: 5 } }
+        { o: "tr", g: ["h", "41 m"], c: { a: 0, b: 1 } },
+        { o: "tl", g: ["a", "121 m²"], c: { b: 2, h: 3 } },
+        { o: "br", g: ["a", "12 m"], c: { b: 4, h: 5 } }
       ],
-      b: ["81 m²", "40 m", "60 yd", "61 yd", "35 km", "1369 km²"]
+      b: ["81 m²", "40 m", "60 m", "61 m", "35 m", "1369 m²"]
     },
     {
       t: [
-        { g: ["b", "84 ft"], c: { a: 0, h: 1 } },
-        { g: ["h", "65 cm"], c: { a: 2, b: 3 } },
-        { g: ["b", "2025 in²"], c: { a: 4, h: 5 } }
+        { o: "bl", g: ["b", "84 in"], c: { a: 0, h: 1 } },
+        { o: "tr", g: ["h", "65 in"], c: { a: 2, b: 3 } },
+        { o: "tl", g: ["b", "2025 in²"], c: { a: 4, h: 5 } }
       ],
-      b: ["13 ft", "7225 ft²", "256 cm²", "63 cm", "28 in", "53 in"]
+      b: ["13 in", "7225 in²", "256 in²", "63 in", "28 in", "53 in"]
     },
     {
       t: [
-        { g: ["h", "4225 yd²"], c: { a: 0, b: 1 } },
-        { g: ["a", "36 cm"], c: { b: 2, h: 3 } },
-        { g: ["b", "55 m"], c: { a: 4, h: 5 } }
+        { o: "br", g: ["h", "4225 yd²"], c: { a: 0, b: 1 } },
+        { o: "tl", g: ["a", "36 yd"], c: { b: 2, h: 3 } },
+        { o: "tr", g: ["b", "55 yd"], c: { a: 4, h: 5 } }
       ],
-      b: ["33 yd", "3136 yd²", "5929 cm²", "85 cm", "2304 m²", "73 m"]
+      b: ["33 yd", "3136 yd²", "5929 yd²", "85 yd", "2304 yd²", "73 yd"]
     },
     {
       t: [
-        { g: ["a", "65 ft"], c: { b: 0, h: 1 } },
-        { g: ["h", "101 in"], c: { a: 2, b: 3 } },
-        { g: ["h", "109 cm"], c: { a: 4, b: 5 } }
+        { o: "tl", g: ["a", "65 cm"], c: { b: 0, h: 1 } },
+        { o: "bl", g: ["h", "101 cm"], c: { a: 2, b: 3 } },
+        { o: "br", g: ["h", "109 cm"], c: { a: 4, b: 5 } }
       ],
-      b: ["5184 ft²", "97 ft", "400 in²", "99 in", "60 cm", "8281 cm²"]
+      b: ["5184 cm²", "97 cm", "400 cm²", "99 cm", "60 cm", "8281 cm²"]
     },
     {
       t: [
-        { g: ["a", "39 yd"], c: { b: 0, h: 1 } },
-        { g: ["b", "117 m"], c: { a: 2, h: 3 } },
-        { g: ["h", "145 ft"], c: { a: 4, b: 5 } }
+        { o: "tr", g: ["a", "39 m"], c: { b: 0, h: 1 } },
+        { o: "br", g: ["b", "117 m"], c: { a: 2, h: 3 } },
+        { o: "bl", g: ["h", "145 m"], c: { a: 4, b: 5 } }
       ],
-      b: ["6400 yd²", "89 yd", "1936 m²", "125 m", "576 ft²", "143 ft"]
+      b: ["6400 m²", "89 m", "1936 m²", "125 m", "576 m²", "143 m"]
     }
   ];
 
-  const SLOT_CLASS = { a: "pt86-slot-legA", b: "pt86-slot-legB", h: "pt86-slot-hyp" };
   const SLOT_NAMES = ["a", "b", "h"];
+
+  const ORIENTATIONS = {
+    br: {
+      points: { a: [96, 180], r: [224, 180], b: [224, 64] },
+      marker: "M204 180 V160 H224",
+      slots: { a: [24, 144], b: [224, 64], h: [96, 24] }
+    },
+    bl: {
+      points: { a: [224, 180], r: [96, 180], b: [96, 64] },
+      marker: "M116 180 V160 H96",
+      slots: { a: [224, 144], b: [24, 64], h: [152, 24] }
+    },
+    tr: {
+      points: { a: [96, 64], r: [224, 64], b: [224, 180] },
+      marker: "M204 64 V84 H224",
+      slots: { a: [24, 28], b: [224, 128], h: [96, 144] }
+    },
+    tl: {
+      points: { a: [224, 64], r: [96, 64], b: [96, 180] },
+      marker: "M116 64 V84 H96",
+      slots: { a: [224, 28], b: [24, 128], h: [152, 144] }
+    }
+  };
 
   window.PYTHAGOREAN_86C_TOTAL = TASKS.length;
 
@@ -83,35 +105,46 @@
       SLOT_NAMES.filter(slot => tri.g[0] !== slot).map(slot => keyFor(triIndex, slot))
     );
 
-    const slotMarkup = (tri, triIndex, slot) => {
+    const slotMarkup = (tri, triIndex, slot, orientation) => {
+      const [left, top] = orientation.slots[slot];
+      const style = `left:${left}px;top:${top}px`;
       if (tri.g[0] === slot) {
-        return `<div class="pt86-slot ${SLOT_CLASS[slot]} is-given"><span>${tri.g[1]}</span></div>`;
+        return `<div class="pt86-slot is-given" style="${style}"><span>${tri.g[1]}</span></div>`;
       }
       const key = keyFor(triIndex, slot);
       const bankIndex = data.answers[key];
       const label = bankIndex === undefined ? null : task.b[Number(bankIndex)];
-      return `<button type="button" class="pt86-slot ${SLOT_CLASS[slot]}${label ? " is-filled" : ""}" data-pt86-slot="${key}">
+      return `<button type="button" class="pt86-slot${label ? " is-filled" : ""}" style="${style}" data-pt86-slot="${key}">
         <span>${label || "drop square"}</span>
       </button>`;
     };
 
-    const triangleMarkup = (tri, triIndex) => `<article class="pt86-triangle-card">
-      <div class="pt86-triangle-title">Triangle ${String.fromCharCode(65 + triIndex)}</div>
-      <div class="pt86-stage">
-        <svg class="pt86-triangle-svg" viewBox="0 0 320 240" aria-hidden="true">
-          <rect class="pt86-outline-square" x="24" y="144" width="72" height="72"></rect>
-          <rect class="pt86-outline-square" x="224" y="64" width="72" height="72"></rect>
-          <rect class="pt86-outline-square" x="96" y="24" width="72" height="72"></rect>
-          <line class="pt86-guide-line" x1="96" y1="180" x2="224" y2="180"></line>
-          <line class="pt86-guide-line" x1="224" y1="180" x2="224" y2="64"></line>
-          <line class="pt86-guide-line" x1="96" y1="180" x2="224" y2="64"></line>
-          <path class="pt86-right-angle" d="M214 180 v-14 h-14"></path>
-        </svg>
-        ${slotMarkup(tri, triIndex, "a")}
-        ${slotMarkup(tri, triIndex, "b")}
-        ${slotMarkup(tri, triIndex, "h")}
-      </div>
-    </article>`;
+    const triangleMarkup = (tri, triIndex) => {
+      const orientation = ORIENTATIONS[tri.o] || ORIENTATIONS.br;
+      const pa = orientation.points.a;
+      const pr = orientation.points.r;
+      const pb = orientation.points.b;
+      const rects = SLOT_NAMES.map(slot => {
+        const [x, y] = orientation.slots[slot];
+        return `<rect class="pt86-outline-square" x="${x}" y="${y}" width="72" height="72"></rect>`;
+      }).join("");
+
+      return `<article class="pt86-triangle-card">
+        <div class="pt86-triangle-title">Triangle ${String.fromCharCode(65 + triIndex)}</div>
+        <div class="pt86-stage">
+          <svg class="pt86-triangle-svg" viewBox="0 0 320 240" aria-hidden="true">
+            ${rects}
+            <line class="pt86-guide-line" x1="${pa[0]}" y1="${pa[1]}" x2="${pr[0]}" y2="${pr[1]}"></line>
+            <line class="pt86-guide-line" x1="${pr[0]}" y1="${pr[1]}" x2="${pb[0]}" y2="${pb[1]}"></line>
+            <line class="pt86-guide-line" x1="${pa[0]}" y1="${pa[1]}" x2="${pb[0]}" y2="${pb[1]}"></line>
+            <path class="pt86-right-angle" d="${orientation.marker}"></path>
+          </svg>
+          ${slotMarkup(tri, triIndex, "a", orientation)}
+          ${slotMarkup(tri, triIndex, "b", orientation)}
+          ${slotMarkup(tri, triIndex, "h", orientation)}
+        </div>
+      </article>`;
+    };
 
     const used = new Set(Object.values(data.answers || {}).map(String));
     const bankMarkup = task.b.map((label, index) => `<button
@@ -131,14 +164,18 @@
         </div>
         <span class="pt86-chip">${data.solved ? "Complete" : "8.6C"}</span>
       </header>
+
       <div class="pt86-coach-note">
-        All diagrams are intentionally the same size. Do not use the picture size to decide. Use the numbers, the units, and the right-triangle relationship.
+        All three triangles in this question use the same unit. Some labels are side lengths and some are square areas, so decide what each number means before you place it.
       </div>
+
       <div class="pt86-triangle-grid">${task.t.map(triangleMarkup).join("")}</div>
+
       <section class="pt86-bank-panel">
         <h5>Square Bank</h5>
         <div class="pt86-bank-grid">${bankMarkup}</div>
       </section>
+
       <div class="pt86-actions">
         <button type="button" class="lab-action" id="checkPt86Task">${data.solved ? "Checked" : "Check"}</button>
         <button type="button" class="lab-action pt86-next" id="nextPt86Task"${data.solved ? "" : " hidden"}>${data.index === total - 1 ? "Finish lab" : "Next question"}</button>
@@ -161,9 +198,11 @@
         }
         return;
       }
+
       Object.keys(data.answers).forEach(key => {
         if (String(data.answers[key]) === String(bankIndex)) delete data.answers[key];
       });
+
       data.answers[slotKey] = String(bankIndex);
       data.selected = null;
       rerender("Placed. Continue until all 6 missing squares are filled.");
@@ -175,6 +214,7 @@
         data.selected = button.dataset.pt86Bank;
         rerender("Square selected. Now click a missing square on a triangle.");
       });
+
       button.addEventListener("dragstart", event => {
         if (data.solved) return event.preventDefault();
         event.dataTransfer.setData("text/plain", button.dataset.pt86Bank);
@@ -198,6 +238,7 @@
 
     $("#checkPt86Task").addEventListener("click", () => {
       if (data.solved) return setLabFeedback("This question is complete. Choose Next question.", "correct");
+
       const keys = missingKeys();
       if (!keys.every(key => data.answers[key] !== undefined)) {
         return setLabFeedback("Fill all 6 missing squares before checking.", "incorrect");
@@ -211,7 +252,7 @@
       });
 
       if (!correct) {
-        return setLabFeedback("At least one triangle is not a true right triangle yet. Recheck whether each label is a side length or a square area.", "incorrect");
+        return setLabFeedback("At least one triangle is not a true right triangle yet. Recheck whether each label is a side length or a square area, then test the Pythagorean relationship.", "incorrect");
       }
 
       data.solved = true;
@@ -220,15 +261,18 @@
     });
 
     const next = $("#nextPt86Task");
-    if (next) next.addEventListener("click", () => {
-      if (data.index >= TASKS.length - 1) return showLabCompletion("8.6C");
-      data.index += 1;
-      data.answers = {};
-      data.selected = null;
-      data.solved = false;
-      window.renderPythagorean86CLab(ctx);
-      if (syncWhiteboardQuestion) syncWhiteboardQuestion();
-      setLabFeedback("New question ready.");
-    });
+    if (next) {
+      next.addEventListener("click", () => {
+        if (data.index >= TASKS.length - 1) return showLabCompletion("8.6C");
+
+        data.index += 1;
+        data.answers = {};
+        data.selected = null;
+        data.solved = false;
+        window.renderPythagorean86CLab(ctx);
+        if (syncWhiteboardQuestion) syncWhiteboardQuestion();
+        setLabFeedback("New question ready.");
+      });
+    }
   };
 })();
