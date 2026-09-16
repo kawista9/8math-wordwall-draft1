@@ -192,24 +192,28 @@
           <line class="pt86-proof-triangle" x1="105" y1="210" x2="310" y2="72"></line>
           <path class="pt86-proof-right-angle" d="M290 210 V190 H310"></path>
 
+          <!-- side-length labels -->
           <text class="pt86-proof-side-label" x="207" y="198" text-anchor="middle">${aLen} ${unit}</text>
-          <text class="pt86-proof-side-label" x="318" y="145">${bLen} ${unit}</text>
-          <text class="pt86-proof-side-label" x="185" y="124" text-anchor="middle">${hLen} ${unit}</text>
+          <text class="pt86-proof-side-label" x="364" y="98" text-anchor="middle">${bLen} ${unit}</text>
+          <text class="pt86-proof-side-label" x="79" y="60" text-anchor="middle">${hLen} ${unit}</text>
 
+          <!-- area under the base side length -->
           <rect class="pt86-proof-area-box" x="175" y="224" width="64" height="58" rx="8"></rect>
           <text class="pt86-proof-area-number" x="207" y="248" text-anchor="middle">${aArea}</text>
           <text class="pt86-proof-area-unit" x="207" y="267" text-anchor="middle">${areaUnit}</text>
 
-          <rect class="pt86-proof-area-box" x="326" y="112" width="76" height="58" rx="8"></rect>
-          <text class="pt86-proof-area-number" x="364" y="136" text-anchor="middle">${bArea}</text>
-          <text class="pt86-proof-area-unit" x="364" y="155" text-anchor="middle">${areaUnit}</text>
+          <!-- area under the vertical-leg side length -->
+          <rect class="pt86-proof-area-box" x="326" y="110" width="76" height="58" rx="8"></rect>
+          <text class="pt86-proof-area-number" x="364" y="134" text-anchor="middle">${bArea}</text>
+          <text class="pt86-proof-area-unit" x="364" y="153" text-anchor="middle">${areaUnit}</text>
 
+          <!-- area under the hypotenuse side length -->
           <rect class="pt86-proof-area-box is-hypotenuse" x="38" y="72" width="82" height="58" rx="8"></rect>
           <text class="pt86-proof-area-number" x="79" y="96" text-anchor="middle">${hArea}</text>
           <text class="pt86-proof-area-unit" x="79" y="115" text-anchor="middle">${areaUnit}</text>
         </svg>
         <p class="pt86-proof-sentence">
-          The lengths of the two legs are <strong>${aLen} ${unit}</strong> and <strong>${bLen} ${unit}</strong>, and the length of the hypotenuse is <strong>${hLen} ${unit}</strong>. When we square the two legs, we get <strong>${aArea} ${areaUnit}</strong> and <strong>${bArea} ${areaUnit}</strong>; their sum is <strong>${hArea} ${areaUnit}</strong>. The square root of <strong>${hArea}</strong> is <strong>${hLen}</strong>, so the hypotenuse is <strong>${hLen} ${unit}</strong>.
+          The leg lengths are <strong>${aLen} ${unit}</strong> and <strong>${bLen} ${unit}</strong>. Their square areas are <strong>${aArea} ${areaUnit}</strong> and <strong>${bArea} ${areaUnit}</strong>, and together they equal <strong>${hArea} ${areaUnit}</strong>. Since √${hArea} = <strong>${hLen}</strong>, the hypotenuse is <strong>${hLen} ${unit}</strong>.
         </p>
       </section>`;
     };
@@ -384,9 +388,10 @@
         font-weight:800;
       }
       .pt86-proof-sentence{
-        margin:.35rem 0 0;
+        max-width:34rem;
+        margin:.35rem auto 0;
         color:#10223d;
-        line-height:1.55;
+        line-height:1.5;
       }
     </style>
     <section class="pt86-shell">
