@@ -49,15 +49,21 @@
       resource: "Anchor chart",
       videos: [
         { title: "Cone", url: coneVideo },
-        { title: "Cone Height", url: coneHeightVideo },
-        { title: "Cone Radius", url: coneRadiusVideo },
+        { title: "Height", url: coneHeightVideo },
+        { title: "Radius", url: coneRadiusVideo },
         { title: "Sphere", url: sphereVideo },
         { title: "Cylinder", url: cylinderVideo }
       ],
       videoHotspots: [
         { title: "Cone", url: coneVideo, left: 24.5, top: 21.0, width: 5.0, height: 8.5 },
-        { title: "Cone Height", url: coneHeightVideo, left: 24.5, top: 41.0, width: 5.0, height: 8.5 },
-        { title: "Cone Radius", url: coneRadiusVideo, left: 24.5, top: 51.5, width: 5.0, height: 8.5 },
+
+        { title: "Height", url: coneHeightVideo, left: 24.5, top: 41.0, width: 5.0, height: 8.5 },
+        { title: "Height", url: coneHeightVideo, left: 85.5, top: 41.0, width: 5.0, height: 8.5 },
+
+        { title: "Radius", url: coneRadiusVideo, left: 24.5, top: 51.5, width: 5.0, height: 8.5 },
+        { title: "Radius", url: coneRadiusVideo, left: 56.5, top: 28.5, width: 5.0, height: 8.5 },
+        { title: "Radius", url: coneRadiusVideo, left: 89.5, top: 51.5, width: 5.0, height: 8.5 },
+
         { title: "Sphere", url: sphereVideo, left: 56.5, top: 21.0, width: 5.0, height: 8.5 },
         { title: "Cylinder", url: cylinderVideo, left: 88.5, top: 21.0, width: 5.0, height: 8.5 }
       ]
