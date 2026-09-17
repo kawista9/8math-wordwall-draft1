@@ -88,5 +88,3 @@
     }
   ];
 })();
-
-document.write('<script src="8-7-refresh.js?v=20260916-87-revamp"><\/script>');
