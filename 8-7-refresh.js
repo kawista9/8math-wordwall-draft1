@@ -2,6 +2,31 @@
   const group = (window.WORD_WALL_DATA || []).find(item => item.code === "8.7");
   if (!group) return;
 
+  const volumeCone = "https://go.screenpal.com/watch/cOewhonTxsX";
+  const volumeSphere = "https://go.screenpal.com/watch/cOewhtnTxM2";
+  const volumeCylinder = "https://go.screenpal.com/watch/cOew1cnTx88";
+  const numericSolver = "https://go.screenpal.com/watch/cOew12nTx9k";
+  const piAndExponents = "https://go.screenpal.com/watch/cOew1UnTxSk";
+
+  const lateralSurfaceArea = "https://go.screenpal.com/watch/cOewrnnTaAP";
+  const totalSurfaceArea = "https://go.screenpal.com/watch/cOewrQnTaBR";
+  const perimeterBase = "https://go.screenpal.com/watch/cOewr3nTakp";
+  const surfaceHeight = "https://go.screenpal.com/watch/cOewrgnTaCG";
+  const areaBase = "https://go.screenpal.com/watch/cOewhonTxsX";
+  const cylinderLsa = "https://go.screenpal.com/watch/cOfVnZnTzQX";
+  const cylinderTsa = "https://go.screenpal.com/watch/cOfVnMnTzI1";
+  const rectangularPrismLsa = "https://go.screenpal.com/watch/cOfVeFnTzDX";
+  const rectangularPrismTsa = "https://go.screenpal.com/watch/cOew36nTaGS";
+  const triangularPrismLsa = "https://go.screenpal.com/watch/cOfVeMnTzqP";
+  const triangularPrismTsa = "https://go.screenpal.com/watch/cOewr9nTaE7";
+  const surfaceAreaOverview = "https://go.screenpal.com/watch/cOew14nTxWx";
+
+  const converse = "https://go.screenpal.com/watch/cOfebZnT5SF";
+  const legs = "https://go.screenpal.com/watch/cOfeDgnT5NR";
+  const hypotenuse = "https://go.screenpal.com/watch/cOfeDPnT59i";
+
+  const distance = "https://go.screenpal.com/watch/cOfebynT5WY";
+
   group.entryPageIndex = 0;
   group.pages = [
     {
@@ -22,11 +47,19 @@
       standard: "8.7A",
       resource: "Anchor chart",
       videos: [
-        { title: "Watch lesson 1", url: "https://go.screenpal.com/watch/cOewhonTxsX" },
-        { title: "Watch lesson 2", url: "https://go.screenpal.com/watch/cOewhtnTxM2" },
-        { title: "Watch lesson 3", url: "https://go.screenpal.com/watch/cOew1cnTx88" },
-        { title: "Watch lesson 4", url: "https://go.screenpal.com/watch/cOew12nTx9k" },
-        { title: "Watch lesson 5", url: "https://go.screenpal.com/watch/cOew1UnTxSk" }
+        { title: "Volume of a Cone", url: volumeCone },
+        { title: "Volume of a Sphere", url: volumeSphere },
+        { title: "Volume of a Cylinder", url: volumeCylinder }
+      ],
+      videoHotspots: [
+        { title: "Volume of a Cone", url: volumeCone, left: 24.5, top: 21.0, width: 5.0, height: 8.5 },
+        { title: "Volume of a Cone", url: volumeCone, left: 24.5, top: 41.0, width: 5.0, height: 8.5 },
+        { title: "Volume of a Cone", url: volumeCone, left: 24.5, top: 51.5, width: 5.0, height: 8.5 },
+        { title: "Volume of a Sphere", url: volumeSphere, left: 56.5, top: 21.0, width: 5.0, height: 8.5 },
+        { title: "Volume of a Sphere", url: volumeSphere, left: 56.5, top: 28.5, width: 5.0, height: 8.5 },
+        { title: "Volume of a Cylinder", url: volumeCylinder, left: 88.5, top: 21.0, width: 5.0, height: 8.5 },
+        { title: "Volume of a Cylinder", url: volumeCylinder, left: 85.5, top: 41.0, width: 5.0, height: 8.5 },
+        { title: "Volume of a Cylinder", url: volumeCylinder, left: 89.5, top: 51.5, width: 5.0, height: 8.5 }
       ]
     },
     {
@@ -34,7 +67,14 @@
       image: "assets/8-7-03.jpeg?v=20260916-87-revamp",
       standard: "8.7A",
       resource: "Calculator tips",
-      videos: []
+      videos: [
+        { title: "Using the Numeric Solver", url: numericSolver },
+        { title: "Using π and Exponents", url: piAndExponents }
+      ],
+      videoHotspots: [
+        { title: "Using the Numeric Solver", url: numericSolver, left: 43.0, top: 24.0, width: 5.0, height: 9.0 },
+        { title: "Using π and Exponents", url: piAndExponents, left: 91.0, top: 24.0, width: 5.0, height: 9.0 }
+      ]
     },
     {
       page: 4,
@@ -42,18 +82,31 @@
       standard: "8.7B",
       resource: "Anchor chart",
       videos: [
-        { title: "Watch lesson 1", url: "https://go.screenpal.com/watch/cOewrnnTaAP" },
-        { title: "Watch lesson 2", url: "https://go.screenpal.com/watch/cOewrQnTaBR" },
-        { title: "Watch lesson 3", url: "https://go.screenpal.com/watch/cOewr3nTakp" },
-        { title: "Watch lesson 4", url: "https://go.screenpal.com/watch/cOewrgnTaCG" },
-        { title: "Watch lesson 5", url: "https://go.screenpal.com/watch/cOewhonTxsX" },
-        { title: "Watch lesson 6", url: "https://go.screenpal.com/watch/cOfVnZnTzQX" },
-        { title: "Watch lesson 7", url: "https://go.screenpal.com/watch/cOfVnMnTzI1" },
-        { title: "Watch lesson 8", url: "https://go.screenpal.com/watch/cOfVeFnTzDX" },
-        { title: "Watch lesson 9", url: "https://go.screenpal.com/watch/cOew36nTaGS" },
-        { title: "Watch lesson 10", url: "https://go.screenpal.com/watch/cOfVeMnTzqP" },
-        { title: "Watch lesson 11", url: "https://go.screenpal.com/watch/cOewr9nTaE7" },
-        { title: "Surface area", url: "https://go.screenpal.com/watch/cOew14nTxWx" }
+        { title: "Lateral Surface Area", url: lateralSurfaceArea },
+        { title: "Total Surface Area", url: totalSurfaceArea },
+        { title: "Perimeter of the Base", url: perimeterBase },
+        { title: "Height in Surface Area Formulas", url: surfaceHeight },
+        { title: "Area of the Base", url: areaBase },
+        { title: "Cylinder: Lateral Surface Area", url: cylinderLsa },
+        { title: "Cylinder: Total Surface Area", url: cylinderTsa },
+        { title: "Rectangular Prism: Lateral Surface Area", url: rectangularPrismLsa },
+        { title: "Rectangular Prism: Total Surface Area", url: rectangularPrismTsa },
+        { title: "Triangular Prism: Lateral Surface Area", url: triangularPrismLsa },
+        { title: "Triangular Prism: Total Surface Area", url: triangularPrismTsa },
+        { title: "Surface Area Overview", url: surfaceAreaOverview }
+      ],
+      videoHotspots: [
+        { title: "Lateral Surface Area", url: lateralSurfaceArea, left: 23.0, top: 13.7, width: 5.0, height: 8.0 },
+        { title: "Total Surface Area", url: totalSurfaceArea, left: 51.5, top: 13.7, width: 5.0, height: 8.0 },
+        { title: "Perimeter of the Base", url: perimeterBase, left: 43.0, top: 21.3, width: 5.0, height: 8.0 },
+        { title: "Height in Surface Area Formulas", url: surfaceHeight, left: 67.0, top: 21.3, width: 5.0, height: 8.0 },
+        { title: "Area of the Base", url: areaBase, left: 64.0, top: 26.8, width: 5.0, height: 8.0 },
+        { title: "Cylinder: Lateral Surface Area", url: cylinderLsa, left: 21.5, top: 68.0, width: 5.0, height: 8.0 },
+        { title: "Cylinder: Total Surface Area", url: cylinderTsa, left: 21.5, top: 76.5, width: 5.0, height: 8.0 },
+        { title: "Rectangular Prism: Lateral Surface Area", url: rectangularPrismLsa, left: 60.8, top: 64.2, width: 5.0, height: 8.0 },
+        { title: "Rectangular Prism: Total Surface Area", url: rectangularPrismTsa, left: 60.8, top: 72.5, width: 5.0, height: 8.0 },
+        { title: "Triangular Prism: Lateral Surface Area", url: triangularPrismLsa, left: 93.3, top: 62.8, width: 5.0, height: 8.0 },
+        { title: "Triangular Prism: Total Surface Area", url: triangularPrismTsa, left: 93.3, top: 71.5, width: 5.0, height: 8.0 }
       ]
     },
     {
@@ -69,9 +122,15 @@
       standard: "8.7C",
       resource: "Anchor chart",
       videos: [
-        { title: "Converse of the Pythagorean Theorem", url: "https://go.screenpal.com/watch/cOfebZnT5SF" },
-        { title: "Watch lesson 2", url: "https://go.screenpal.com/watch/cOfeDgnT5NR" },
-        { title: "Watch lesson 3", url: "https://go.screenpal.com/watch/cOfeDPnT59i" }
+        { title: "The Legs of a Right Triangle", url: legs },
+        { title: "The Hypotenuse of a Right Triangle", url: hypotenuse },
+        { title: "Converse of the Pythagorean Theorem", url: converse }
+      ],
+      videoHotspots: [
+        { title: "The Legs of a Right Triangle", url: legs, left: 32.5, top: 27.5, width: 5.0, height: 8.0 },
+        { title: "The Legs of a Right Triangle", url: legs, left: 47.5, top: 40.5, width: 5.0, height: 8.0 },
+        { title: "The Hypotenuse of a Right Triangle", url: hypotenuse, left: 48.0, top: 21.0, width: 5.0, height: 8.0 },
+        { title: "Converse of the Pythagorean Theorem", url: converse, left: 51.0, top: 51.5, width: 5.0, height: 8.0 }
       ]
     },
     {
@@ -87,7 +146,10 @@
       standard: "8.7D",
       resource: "Anchor chart",
       videos: [
-        { title: "Watch lesson 1", url: "https://go.screenpal.com/watch/cOfebynT5WY" }
+        { title: "Distance on the Coordinate Plane", url: distance }
+      ],
+      videoHotspots: [
+        { title: "Distance on the Coordinate Plane", url: distance, left: 25.0, top: 44.0, width: 13.0, height: 10.0 }
       ]
     },
     {
