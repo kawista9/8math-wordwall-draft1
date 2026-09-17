@@ -2,11 +2,12 @@
   const group = (window.WORD_WALL_DATA || []).find(item => item.code === "8.7");
   if (!group) return;
 
-  const volumeCone = "https://go.screenpal.com/watch/cOewhonTxsX";
-  const volumeSphere = "https://go.screenpal.com/watch/cOewhtnTxM2";
-  const volumeCylinder = "https://go.screenpal.com/watch/cOew1cnTx88";
-  const numericSolver = "https://go.screenpal.com/watch/cOew12nTx9k";
-  const piAndExponents = "https://go.screenpal.com/watch/cOew1UnTxSk";
+  // 8.7A anchor-chart videos mapped to the exact visible play buttons.
+  const coneVideo = "https://go.screenpal.com/watch/cOew1cnTx88";
+  const coneHeightVideo = "https://go.screenpal.com/watch/cOewhtnTxM2";
+  const coneRadiusVideo = "https://go.screenpal.com/watch/cOewhonTxsX";
+  const sphereVideo = "https://go.screenpal.com/watch/cOew12nTx9k";
+  const cylinderVideo = "https://go.screenpal.com/watch/cOew1UnTxSk";
 
   const lateralSurfaceArea = "https://go.screenpal.com/watch/cOewrnnTaAP";
   const totalSurfaceArea = "https://go.screenpal.com/watch/cOewrQnTaBR";
@@ -47,19 +48,18 @@
       standard: "8.7A",
       resource: "Anchor chart",
       videos: [
-        { title: "Volume of a Cone", url: volumeCone },
-        { title: "Volume of a Sphere", url: volumeSphere },
-        { title: "Volume of a Cylinder", url: volumeCylinder }
+        { title: "Cone", url: coneVideo },
+        { title: "Cone Height", url: coneHeightVideo },
+        { title: "Cone Radius", url: coneRadiusVideo },
+        { title: "Sphere", url: sphereVideo },
+        { title: "Cylinder", url: cylinderVideo }
       ],
       videoHotspots: [
-        { title: "Volume of a Cone", url: volumeCone, left: 24.5, top: 21.0, width: 5.0, height: 8.5 },
-        { title: "Volume of a Cone", url: volumeCone, left: 24.5, top: 41.0, width: 5.0, height: 8.5 },
-        { title: "Volume of a Cone", url: volumeCone, left: 24.5, top: 51.5, width: 5.0, height: 8.5 },
-        { title: "Volume of a Sphere", url: volumeSphere, left: 56.5, top: 21.0, width: 5.0, height: 8.5 },
-        { title: "Volume of a Sphere", url: volumeSphere, left: 56.5, top: 28.5, width: 5.0, height: 8.5 },
-        { title: "Volume of a Cylinder", url: volumeCylinder, left: 88.5, top: 21.0, width: 5.0, height: 8.5 },
-        { title: "Volume of a Cylinder", url: volumeCylinder, left: 85.5, top: 41.0, width: 5.0, height: 8.5 },
-        { title: "Volume of a Cylinder", url: volumeCylinder, left: 89.5, top: 51.5, width: 5.0, height: 8.5 }
+        { title: "Cone", url: coneVideo, left: 24.5, top: 21.0, width: 5.0, height: 8.5 },
+        { title: "Cone Height", url: coneHeightVideo, left: 24.5, top: 41.0, width: 5.0, height: 8.5 },
+        { title: "Cone Radius", url: coneRadiusVideo, left: 24.5, top: 51.5, width: 5.0, height: 8.5 },
+        { title: "Sphere", url: sphereVideo, left: 56.5, top: 21.0, width: 5.0, height: 8.5 },
+        { title: "Cylinder", url: cylinderVideo, left: 88.5, top: 21.0, width: 5.0, height: 8.5 }
       ]
     },
     {
@@ -67,14 +67,7 @@
       image: "assets/8-7-03.jpeg?v=20260916-87-revamp",
       standard: "8.7A",
       resource: "Calculator tips",
-      videos: [
-        { title: "Using the Numeric Solver", url: numericSolver },
-        { title: "Using π and Exponents", url: piAndExponents }
-      ],
-      videoHotspots: [
-        { title: "Using the Numeric Solver", url: numericSolver, left: 43.0, top: 24.0, width: 5.0, height: 9.0 },
-        { title: "Using π and Exponents", url: piAndExponents, left: 91.0, top: 24.0, width: 5.0, height: 9.0 }
-      ]
+      videos: []
     },
     {
       page: 4,
