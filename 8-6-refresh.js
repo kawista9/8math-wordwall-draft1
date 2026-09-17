@@ -30,7 +30,7 @@
       videoHotspots: [
         { title: "Volume of a Cylinder", url: "https://somup.com/cOeIe2Vcjui", left: 10.5, top: 15.0, width: 18.5, height: 13.5 },
         { title: "Area of the Base", url: "https://somup.com/cOeIe0Vcjug", left: 34.5, top: 15.0, width: 19.5, height: 13.5 },
-        { title: "Height of the Cylinder", url: "https://somup.com/cOeIezVcjUu", left: 60.5, top: 15.0, width: 19.0, height: 13.5 },
+        { title: "Height of the Cylinder", url: "https://somup.com/cOeIezVcjug", left: 60.5, top: 15.0, width: 19.0, height: 13.5 },
         { title: "V = B × h", url: "https://somup.com/cOeIemVcjU9", left: 6.5, top: 31.0, width: 72.0, height: 15.0 },
         { title: "V = πr²h", url: "https://somup.com/cOeIf4Vcjx4", left: 24.5, top: 77.0, width: 50.5, height: 14.0 }
       ]
@@ -88,3 +88,5 @@
     }
   ];
 })();
+
+document.write('<script src="8-7-refresh.js?v=20260916-87-revamp"><\/script>');
