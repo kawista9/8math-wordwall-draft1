@@ -403,3 +403,115 @@
       return `<svg class="v87-composite-svg" viewBox="0 0 520 390" role="img" aria-label="Cone on top of a cylinder">
         <path d="M260 28 L120 168 Q260 208 400 168 Z" class="v87-composite-fill"/>
         <ellipse cx="260" cy="168" rx="140" ry="35" class="v87-outline"/>
+        <path d="M120 168 V310 Q260 350 400 310 V168" class="v87-composite-fill"/>
+        <ellipse cx="260" cy="310" rx="140" ry="35" class="v87-outline"/>
+        <line x1="120" y1="310" x2="400" y2="310" class="v87-dim"/><text x="245" y="294" class="v87-comp-label">8 ${u}</text>
+        <line x1="420" y1="168" x2="420" y2="310" class="v87-dim"/><text x="436" y="244" class="v87-comp-label">6 ${u}</text>
+        <line x1="98" y1="28" x2="98" y2="168" class="v87-dim"/><text x="48" y="103" class="v87-comp-label">5 ${u}</text>
+      </svg>`;
+    }
+    if (task.diagram === "cone-hole") {
+      return `<svg class="v87-composite-svg" viewBox="0 0 520 360" role="img" aria-label="Cylinder with a cone-shaped opening removed">
+        <path d="M100 72 Q260 24 420 72 V286 Q260 334 100 286 Z" class="v87-composite-fill"/>
+        <ellipse cx="260" cy="72" rx="160" ry="46" class="v87-outline"/>
+        <ellipse cx="260" cy="286" rx="160" ry="46" class="v87-outline"/>
+        <path d="M130 72 L260 275 L390 72" class="v87-hole"/><ellipse cx="260" cy="72" rx="130" ry="34" class="v87-hole"/>
+        <line x1="100" y1="72" x2="420" y2="72" class="v87-dim"/><text x="245" y="57" class="v87-comp-label">10 ${u}</text>
+        <line x1="448" y1="72" x2="448" y2="286" class="v87-dim"/><text x="463" y="185" class="v87-comp-label">12 ${u}</text>
+      </svg>`;
+    }
+    if (task.diagram === "silo") {
+      return `<svg class="v87-composite-svg" viewBox="0 0 520 390" role="img" aria-label="Cylinder with a hemispherical roof">
+        <path d="M120 160 A140 140 0 0 1 400 160" class="v87-composite-fill"/>
+        <path d="M120 160 V320 Q260 360 400 320 V160" class="v87-composite-fill"/>
+        <ellipse cx="260" cy="320" rx="140" ry="35" class="v87-outline"/>
+        <line x1="260" y1="160" x2="400" y2="160" class="v87-dim"/><text x="327" y="145" class="v87-comp-label">4 ${u}</text>
+        <line x1="425" y1="160" x2="425" y2="320" class="v87-dim"/><text x="441" y="245" class="v87-comp-label">10 ${u}</text>
+      </svg>`;
+    }
+    if (task.diagram === "tennis-can") {
+      return `<svg class="v87-composite-svg" viewBox="0 0 420 560" role="img" aria-label="Three tennis balls stacked inside a cylinder">
+        <path d="M85 55 Q210 18 335 55 V500 Q210 537 85 500 Z" class="v87-can-fill"/>
+        <ellipse cx="210" cy="55" rx="125" ry="35" class="v87-outline"/>
+        <ellipse cx="210" cy="500" rx="125" ry="35" class="v87-outline"/>
+        <circle cx="210" cy="135" r="92" class="v87-ball"/><circle cx="210" cy="315" r="92" class="v87-ball"/><circle cx="210" cy="495" r="92" class="v87-ball"/>
+        <line x1="85" y1="55" x2="335" y2="55" class="v87-dim"/><text x="190" y="41" class="v87-comp-label">6.6 ${u}</text>
+        <line x1="360" y1="55" x2="360" y2="500" class="v87-dim"/><text x="375" y="282" class="v87-comp-label">19.8 ${u}</text>
+      </svg>`;
+    }
+    return `<svg class="v87-composite-svg" viewBox="0 0 480 430" role="img" aria-label="Cone with a hemispherical scoop">
+      <path d="M105 155 A135 135 0 0 1 375 155" class="v87-composite-fill"/>
+      <path d="M105 155 L240 390 L375 155 Z" class="v87-composite-fill"/>
+      <line x1="105" y1="155" x2="375" y2="155" class="v87-dim"/><text x="220" y="140" class="v87-comp-label">8 ${u}</text>
+      <line x1="395" y1="155" x2="395" y2="390" class="v87-dim"/><text x="410" y="278" class="v87-comp-label">9 ${u}</text>
+    </svg>`;
+  }
+
+  function compositeMarkup(task, data, qNumber) {
+    const step = data.seminarStep || 0;
+    const answer = `${formatNumber(rounded(taskVolume(task)))} ${task.unit}³`;
+    const completed = data.seminarAnswers || [];
+    return `<section class="v87-shell composite-shell">
+      <header class="v87-question-header">
+        <div><p class="lab-mini-title">Question ${qNumber} of ${TASKS.length}</p><h4>${escapeHTML(task.title)}</h4><p>Read only the measurements shown on the figure. Decide what each measure represents before you calculate.</p></div>
+        <span class="v87-chip">Composite volume</span>
+      </header>
+
+      <div class="v87-composite-grid">
+        <section class="v87-visual-card composite-visual"><h5>Study the figure</h5>${compositeSvg(task)}</section>
+        <section class="v87-seminar-card">
+          <div class="v87-seminar-heading"><span>Socratic progression</span><strong>Reason first. Calculate second.</strong></div>
+          ${task.seminar.map((item, idx) => {
+            const done = idx < step;
+            const active = idx === step && step < task.seminar.length;
+            if (!done && !active) return `<div class="v87-seminar-locked"><span>${idx + 1}</span>Next question unlocks after the previous idea is correct.</div>`;
+            return `<div class="v87-seminar-question${done ? " is-done" : ""}">
+              <p><span>${idx + 1}</span>${escapeHTML(item.q)}</p>
+              ${done ? `<div class="v87-seminar-answer">✓ ${escapeHTML(item.choices[item.correct])}</div>` : `<div class="v87-choice-grid">${item.choices.map((choice, choiceIndex) => `<button type="button" data-v87-seminar="${idx}" data-v87-choice="${choiceIndex}">${escapeHTML(choice)}</button>`).join("")}</div>`}
+            </div>`;
+          }).join("")}
+          ${step >= task.seminar.length ? `<div class="v87-final-composite">
+            <h5>Now calculate the final volume.</h5>
+            <label class="v87-volume-entry"><span>Round to the nearest hundredth and include cubic units.</span><input data-v87-input="volume" value="${escapeHTML(data.inputs.volume || "")}" placeholder="Number + cubic unit"></label>
+            ${data.solved ? `<div class="v87-solution-banner">✓ ${answer}</div>` : ""}
+          </div>` : ""}
+        </section>
+      </div>
+
+      <div class="v87-actions">
+        <button type="button" class="lab-action" id="checkV87"${step < task.seminar.length ? " disabled" : ""}>${data.solved ? "Checked" : "Check final volume"}</button>
+        <button type="button" class="lab-action v87-next" id="nextV87"${data.solved ? "" : " hidden"}>${qNumber === TASKS.length ? "Finish lab" : "Next question"}</button>
+      </div>
+    </section>`;
+  }
+
+  function normalizeUnitText(text) {
+    return String(text || "").toLowerCase().replace(/\s+/g, " ").trim();
+  }
+
+  function volumeAnswerCorrect(text, task) {
+    const raw = String(text || "").trim();
+    const numberMatch = raw.replace(/,/g, "").match(/-?\d+(?:\.\d+)?/);
+    if (!numberMatch) return false;
+    const numeric = Number(numberMatch[0]);
+    const expected = rounded(taskVolume(task));
+    if (Math.abs(numeric - expected) > 0.011) return false;
+
+    const t = normalizeUnitText(raw).replace(/\s/g, "");
+    const unit = task.unit.toLowerCase();
+    const aliases = {
+      cm: ["cm³", "cm^3", "cm3", "cubiccm", "cubiccentimeter", "cubiccentimeters"],
+      m: ["m³", "m^3", "m3", "cubicm", "cubicmeter", "cubicmeters"],
+      in: ["in³", "in^3", "in3", "cubicin", "cubicinch", "cubicinches"],
+      ft: ["ft³", "ft^3", "ft3", "cubicft", "cubicfoot", "cubicfeet"],
+      yd: ["yd³", "yd^3", "yd3", "cubicyd", "cubicyard", "cubicyards"]
+    };
+    return (aliases[unit] || []).some(alias => t.includes(alias));
+  }
+
+  function numericInputCorrect(value, expected) {
+    const n = Number(String(value || "").trim());
+    return Number.isFinite(n) && Math.abs(n - Number(expected)) < 0.001;
+  }
+
+  window.renderVolume87ALab = function renderVolume87ALab(ctx) {
