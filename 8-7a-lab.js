@@ -191,7 +191,18 @@
     return sphereVolume(task.radius);
   }
 
-  function rounded(value) { return Math.round((value + Number.EPSILON) * 100) / 100; }
+  const ROUNDING_LEVELS = [
+    { key: "volumeTenths", places: 1, label: "Nearest tenth" },
+    { key: "volumeHundredths", places: 2, label: "Nearest hundredth" },
+    { key: "volumeThousandths", places: 3, label: "Nearest thousandth" }
+  ];
+
+  function roundTo(value, places) {
+    const factor = 10 ** places;
+    return Math.round((Number(value) + Number.EPSILON) * factor) / factor;
+  }
+  function rounded(value) { return roundTo(value, 2); }
+  function formatRounded(value, places) { return roundTo(value, places).toFixed(places); }
   function formatNumber(value) {
     const n = rounded(Number(value));
     return Number.isInteger(n) ? String(n) : String(n);
@@ -226,79 +237,94 @@
   }
 
   function shapeSvg(task, compact = false) {
-    const unit = task.unit;
-    const w = compact ? 220 : 460;
-    const h = compact ? 190 : 330;
+    const unit = escapeHTML(task.unit);
     const sizeClass = compact ? " is-compact" : "";
+
     if (task.shape === "sphere") {
       const full = task.given === "diameter";
-      const x1 = full ? 80 : 150;
-      const x2 = 300;
-      return `<svg class="v87-shape-svg${sizeClass}" viewBox="0 0 380 300" role="img" aria-label="Sphere with a measurement shown">
+      const centerX = 190;
+      const leftEdge = 78;
+      const rightEdge = 302;
+      const x1 = full ? leftEdge : centerX;
+      const x2 = rightEdge;
+      const labelX = full ? centerX : 246;
+      return `<svg class="v87-shape-svg${sizeClass}" viewBox="0 0 420 300" role="img" aria-label="Sphere with a measurement shown">
         <defs><radialGradient id="v87sphere" cx="35%" cy="30%" r="70%"><stop offset="0" stop-color="#eaf9ff"/><stop offset=".42" stop-color="#70c7f4"/><stop offset="1" stop-color="#4830a9"/></radialGradient></defs>
-        <circle cx="190" cy="150" r="112" fill="url(#v87sphere)" stroke="#33206e" stroke-width="5"/>
-        <ellipse cx="190" cy="150" rx="112" ry="34" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="10 9" opacity=".85"/>
-        <circle cx="190" cy="150" r="5" fill="#ff3eb5"/>
+        <circle cx="${centerX}" cy="150" r="112" fill="url(#v87sphere)" stroke="#33206e" stroke-width="5"/>
+        <ellipse cx="${centerX}" cy="150" rx="112" ry="34" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="10 9" opacity=".85"/>
+        <circle cx="${centerX}" cy="150" r="5" fill="#ff3eb5"/>
         <line x1="${x1}" y1="150" x2="${x2}" y2="150" stroke="#ff3eb5" stroke-width="5" stroke-linecap="round"/>
-        ${full ? '<line x1="80" y1="137" x2="80" y2="163" stroke="#ff3eb5" stroke-width="4"/><line x1="300" y1="137" x2="300" y2="163" stroke="#ff3eb5" stroke-width="4"/>' : ''}
-        <text x="190" y="132" text-anchor="middle" class="v87-svg-label">${escapeHTML(task.shown)} ${escapeHTML(unit)}</text>
+        ${full ? `<line x1="${leftEdge}" y1="137" x2="${leftEdge}" y2="163" stroke="#ff3eb5" stroke-width="4"/><line x1="${rightEdge}" y1="137" x2="${rightEdge}" y2="163" stroke="#ff3eb5" stroke-width="4"/>` : ""}
+        <text x="${labelX}" y="132" text-anchor="middle" class="v87-svg-label">${escapeHTML(task.shown)} ${unit}</text>
       </svg>`;
     }
+
     if (task.shape === "cone") {
       const full = task.given === "diameter";
-      return `<svg class="v87-shape-svg${sizeClass}" viewBox="0 0 420 320" role="img" aria-label="Cone with measurements shown">
+      const left = 70, center = 210, right = 350, baseY = 250;
+      return `<svg class="v87-shape-svg${sizeClass}" viewBox="0 0 500 320" role="img" aria-label="Cone with measurements shown">
         <defs><linearGradient id="v87cone" x1="0" x2="1"><stop offset="0" stop-color="#e9faff"/><stop offset=".45" stop-color="#6dc8f5"/><stop offset="1" stop-color="#5a2eb5"/></linearGradient></defs>
-        <path d="M210 35 L70 250 Q210 305 350 250 Z" fill="url(#v87cone)" stroke="#33206e" stroke-width="5"/>
-        <ellipse cx="210" cy="250" rx="140" ry="39" fill="none" stroke="#33206e" stroke-width="5"/>
-        <line x1="210" y1="35" x2="210" y2="250" stroke="#fff" stroke-width="4" stroke-dasharray="9 8"/>
-        <circle cx="210" cy="250" r="5" fill="#ff3eb5"/>
-        <line x1="${full ? 70 : 210}" y1="250" x2="350" y2="250" stroke="#ff3eb5" stroke-width="5"/>
-        ${full ? '<line x1="70" y1="238" x2="70" y2="262" stroke="#ff3eb5" stroke-width="4"/><line x1="350" y1="238" x2="350" y2="262" stroke="#ff3eb5" stroke-width="4"/>' : ''}
-        <line x1="365" y1="35" x2="365" y2="250" stroke="#20b9df" stroke-width="4"/>
-        <line x1="354" y1="35" x2="376" y2="35" stroke="#20b9df" stroke-width="4"/><line x1="354" y1="250" x2="376" y2="250" stroke="#20b9df" stroke-width="4"/>
-        <text x="280" y="232" text-anchor="middle" class="v87-svg-label">${escapeHTML(task.shown)} ${escapeHTML(unit)}</text>
-        <text x="382" y="147" class="v87-svg-label">${escapeHTML(task.height)} ${escapeHTML(unit)}</text>
+        <path d="M${center} 35 L${left} ${baseY} Q${center} 289 ${right} ${baseY} Z" fill="url(#v87cone)" stroke="none"/>
+        <line x1="${center}" y1="35" x2="${left}" y2="${baseY}" stroke="#33206e" stroke-width="5" stroke-linecap="round"/>
+        <line x1="${center}" y1="35" x2="${right}" y2="${baseY}" stroke="#33206e" stroke-width="5" stroke-linecap="round"/>
+        <ellipse cx="${center}" cy="${baseY}" rx="140" ry="39" fill="#8bd6f4" fill-opacity=".28" stroke="#33206e" stroke-width="5"/>
+        <line x1="${center}" y1="35" x2="${center}" y2="${baseY}" stroke="#fff" stroke-width="4" stroke-dasharray="9 8"/>
+        <circle cx="${center}" cy="${baseY}" r="5" fill="#ff3eb5"/>
+        <line x1="${full ? left : center}" y1="${baseY}" x2="${right}" y2="${baseY}" stroke="#ff3eb5" stroke-width="5" stroke-linecap="round"/>
+        ${full ? `<line x1="${left}" y1="238" x2="${left}" y2="262" stroke="#ff3eb5" stroke-width="4"/><line x1="${right}" y1="238" x2="${right}" y2="262" stroke="#ff3eb5" stroke-width="4"/>` : ""}
+        <line x1="385" y1="35" x2="385" y2="${baseY}" stroke="#20b9df" stroke-width="4"/>
+        <line x1="374" y1="35" x2="396" y2="35" stroke="#20b9df" stroke-width="4"/><line x1="374" y1="${baseY}" x2="396" y2="${baseY}" stroke="#20b9df" stroke-width="4"/>
+        <text x="${full ? center : 280}" y="232" text-anchor="middle" class="v87-svg-label">${escapeHTML(task.shown)} ${unit}</text>
+        <text x="410" y="147" text-anchor="start" class="v87-svg-label">${escapeHTML(task.height)} ${unit}</text>
       </svg>`;
     }
+
     const full = task.given === "diameter";
-    return `<svg class="v87-shape-svg${sizeClass}" viewBox="0 0 420 320" role="img" aria-label="Cylinder with measurements shown">
+    const left = 80, center = 210, right = 340;
+    return `<svg class="v87-shape-svg${sizeClass}" viewBox="0 0 500 320" role="img" aria-label="Cylinder with measurements shown">
       <defs><linearGradient id="v87cyl" x1="0" x2="1"><stop offset="0" stop-color="#e9faff"/><stop offset=".38" stop-color="#6dc8f5"/><stop offset="1" stop-color="#5530b5"/></linearGradient></defs>
-      <path d="M80 72 Q210 26 340 72 L340 245 Q210 291 80 245 Z" fill="url(#v87cyl)" stroke="#33206e" stroke-width="5"/>
-      <ellipse cx="210" cy="72" rx="130" ry="42" fill="#a9e8ff" stroke="#33206e" stroke-width="5"/>
-      <ellipse cx="210" cy="245" rx="130" ry="42" fill="none" stroke="#33206e" stroke-width="5"/>
-      <circle cx="210" cy="245" r="5" fill="#ff3eb5"/>
-      <line x1="${full ? 80 : 210}" y1="245" x2="340" y2="245" stroke="#ff3eb5" stroke-width="5"/>
-      ${full ? '<line x1="80" y1="233" x2="80" y2="257" stroke="#ff3eb5" stroke-width="4"/><line x1="340" y1="233" x2="340" y2="257" stroke="#ff3eb5" stroke-width="4"/>' : ''}
-      <line x1="362" y1="72" x2="362" y2="245" stroke="#20b9df" stroke-width="4"/>
-      <line x1="351" y1="72" x2="373" y2="72" stroke="#20b9df" stroke-width="4"/><line x1="351" y1="245" x2="373" y2="245" stroke="#20b9df" stroke-width="4"/>
-      <text x="280" y="227" text-anchor="middle" class="v87-svg-label">${escapeHTML(task.shown)} ${escapeHTML(unit)}</text>
-      <text x="379" y="165" class="v87-svg-label">${escapeHTML(task.height)} ${escapeHTML(unit)}</text>
+      <path d="M${left} 72 L${left} 245 Q${center} 287 ${right} 245 L${right} 72 Z" fill="url(#v87cyl)" stroke="none"/>
+      <line x1="${left}" y1="72" x2="${left}" y2="245" stroke="#33206e" stroke-width="5"/>
+      <line x1="${right}" y1="72" x2="${right}" y2="245" stroke="#33206e" stroke-width="5"/>
+      <ellipse cx="${center}" cy="72" rx="130" ry="42" fill="#a9e8ff" stroke="#33206e" stroke-width="5"/>
+      <ellipse cx="${center}" cy="245" rx="130" ry="42" fill="#78c9ef" fill-opacity=".32" stroke="#33206e" stroke-width="5"/>
+      <circle cx="${center}" cy="245" r="5" fill="#ff3eb5"/>
+      <line x1="${full ? left : center}" y1="245" x2="${right}" y2="245" stroke="#ff3eb5" stroke-width="5" stroke-linecap="round"/>
+      ${full ? `<line x1="${left}" y1="233" x2="${left}" y2="257" stroke="#ff3eb5" stroke-width="4"/><line x1="${right}" y1="233" x2="${right}" y2="257" stroke="#ff3eb5" stroke-width="4"/>` : ""}
+      <line x1="382" y1="72" x2="382" y2="245" stroke="#20b9df" stroke-width="4"/>
+      <line x1="371" y1="72" x2="393" y2="72" stroke="#20b9df" stroke-width="4"/><line x1="371" y1="245" x2="393" y2="245" stroke="#20b9df" stroke-width="4"/>
+      <text x="${full ? center : 280}" y="227" text-anchor="middle" class="v87-svg-label">${escapeHTML(task.shown)} ${unit}</text>
+      <text x="408" y="165" text-anchor="start" class="v87-svg-label">${escapeHTML(task.height)} ${unit}</text>
     </svg>`;
   }
 
   function blankShapeSvg(shape) {
     if (shape === "sphere") {
-      return `<svg class="v87-shape-svg" viewBox="0 0 380 300" aria-hidden="true">
+      return `<svg class="v87-shape-svg" viewBox="0 0 420 300" aria-hidden="true">
         <circle cx="190" cy="150" r="112" class="v87-fill-shape"/>
         <ellipse cx="190" cy="150" rx="112" ry="34" class="v87-dash"/>
         <circle cx="190" cy="150" r="5" class="v87-center-dot"/>
-        <line x1="190" y1="150" x2="300" y2="150" class="v87-measure-line"/>
+        <line x1="190" y1="150" x2="302" y2="150" class="v87-measure-line"/>
       </svg>`;
     }
     if (shape === "cone") {
-      return `<svg class="v87-shape-svg" viewBox="0 0 420 320" aria-hidden="true">
-        <path d="M210 35 L70 250 Q210 305 350 250 Z" class="v87-fill-shape"/>
+      return `<svg class="v87-shape-svg" viewBox="0 0 500 320" aria-hidden="true">
+        <path d="M210 35 L70 250 Q210 289 350 250 Z" fill="#b9eafa" stroke="none"/>
+        <line x1="210" y1="35" x2="70" y2="250" class="v87-outline-line"/>
+        <line x1="210" y1="35" x2="350" y2="250" class="v87-outline-line"/>
         <ellipse cx="210" cy="250" rx="140" ry="39" class="v87-outline"/>
         <line x1="210" y1="35" x2="210" y2="250" class="v87-dash"/>
         <line x1="210" y1="250" x2="350" y2="250" class="v87-measure-line"/>
       </svg>`;
     }
-    return `<svg class="v87-shape-svg" viewBox="0 0 420 320" aria-hidden="true">
-      <path d="M80 72 Q210 26 340 72 L340 245 Q210 291 80 245 Z" class="v87-fill-shape"/>
+    return `<svg class="v87-shape-svg" viewBox="0 0 500 320" aria-hidden="true">
+      <path d="M80 72 L80 245 Q210 287 340 245 L340 72 Z" fill="#b9eafa" stroke="none"/>
+      <line x1="80" y1="72" x2="80" y2="245" class="v87-outline-line"/>
+      <line x1="340" y1="72" x2="340" y2="245" class="v87-outline-line"/>
       <ellipse cx="210" cy="72" rx="130" ry="42" class="v87-top-fill"/>
       <ellipse cx="210" cy="245" rx="130" ry="42" class="v87-outline"/>
       <line x1="210" y1="245" x2="340" y2="245" class="v87-measure-line"/>
-      <line x1="362" y1="72" x2="362" y2="245" class="v87-height-line"/>
+      <line x1="382" y1="72" x2="382" y2="245" class="v87-height-line"/>
     </svg>`;
   }
 
@@ -318,10 +344,10 @@
 
   function miniFigureButton(shape) {
     const icon = shape === "sphere"
-      ? '<svg viewBox="0 0 80 70"><circle cx="40" cy="35" r="26"/><ellipse cx="40" cy="35" rx="26" ry="8"/></svg>'
+      ? '<svg viewBox="0 0 80 70"><circle cx="40" cy="35" r="26"/><path d="M14 35 Q40 48 66 35" fill="none"/></svg>'
       : shape === "cone"
-        ? '<svg viewBox="0 0 80 70"><path d="M40 7 L14 57 Q40 68 66 57 Z"/><ellipse cx="40" cy="57" rx="26" ry="8"/></svg>'
-        : '<svg viewBox="0 0 80 70"><path d="M16 17 Q40 8 64 17 V54 Q40 63 16 54 Z"/><ellipse cx="40" cy="17" rx="24" ry="8"/><ellipse cx="40" cy="54" rx="24" ry="8"/></svg>';
+        ? '<svg viewBox="0 0 80 70"><path d="M40 7 L14 57 Q40 65 66 57 Z" fill="#c9eff8" stroke="none"/><line x1="40" y1="7" x2="14" y2="57"/><line x1="40" y1="7" x2="66" y2="57"/><ellipse cx="40" cy="57" rx="26" ry="8" fill="none"/></svg>'
+        : '<svg viewBox="0 0 80 70"><path d="M16 17 V54 Q40 62 64 54 V17 Z" fill="#c9eff8" stroke="none"/><line x1="16" y1="17" x2="16" y2="54"/><line x1="64" y1="17" x2="64" y2="54"/><ellipse cx="40" cy="17" rx="24" ry="8"/><ellipse cx="40" cy="54" rx="24" ry="8" fill="none"/></svg>';
     return `${icon}<span>${shapeName(shape)}</span>`;
   }
 
@@ -333,10 +359,27 @@
     return BASE_CHOICES.map(item => `<button type="button" draggable="true" class="v87-token small${data.selectedBase === item.id ? " is-selected" : ""}${data.base === item.id ? " is-used" : ""}" data-v87-base="${item.id}">${item.label}</button>`).join("");
   }
 
+  function roundingInputsMarkup(task, data) {
+    return `<div class="v87-rounding-grid">
+      ${ROUNDING_LEVELS.map(level => `<label class="v87-rounding-row">
+        <span><strong>${level.label}</strong><small>Include ${escapeHTML(task.unit)}³.</small></span>
+        <input data-v87-input="${level.key}" value="${escapeHTML(data.inputs[level.key] || "")}" placeholder="${level.places === 1 ? "452.4" : level.places === 2 ? "452.39" : "452.389"} ${escapeHTML(task.unit)}³" aria-label="Volume rounded to the ${level.label.toLowerCase()} with cubic units">
+      </label>`).join("")}
+    </div>`;
+  }
+
+  function roundingSolutionMarkup(task) {
+    const value = taskVolume(task);
+    return `<div class="v87-solution-banner v87-solution-stack">
+      <span>✓ Tenth: <strong>${formatRounded(value, 1)} ${escapeHTML(task.unit)}³</strong></span>
+      <span>✓ Hundredth: <strong>${formatRounded(value, 2)} ${escapeHTML(task.unit)}³</strong></span>
+      <span>✓ Thousandth: <strong>${formatRounded(value, 3)} ${escapeHTML(task.unit)}³</strong></span>
+    </div>`;
+  }
+
   function directOrWordMarkup(task, data, qNumber) {
     const isWord = task.kind === "word";
     const needsBase = task.shape !== "sphere";
-    const expectedAnswer = `${formatNumber(rounded(taskVolume(task)))} ${task.unit}³`;
     return `<section class="v87-shell">
       <header class="v87-question-header">
         <div><p class="lab-mini-title">Question ${qNumber} of ${TASKS.length}</p><h4>${escapeHTML(isWord ? task.title : task.title)}</h4><p>${isWord ? escapeHTML(task.prompt) : "Read the measurements from the figure. A full line through the center means you must determine the radius yourself."}</p></div>
@@ -374,9 +417,10 @@
           </div>
 
           <div class="v87-step-block final-answer">
-            <h5>5. Calculate the volume</h5>
-            <label class="v87-volume-entry"><span>Round to the nearest hundredth and include cubic units.</span><input data-v87-input="volume" value="${escapeHTML(data.inputs.volume || "")}" placeholder="Example: 452.39 cm³" aria-label="Final volume with units"></label>
-            ${data.solved ? `<div class="v87-solution-banner">✓ ${expectedAnswer}</div>` : ""}
+            <h5>5. Calculate and round the volume three ways</h5>
+            <p class="v87-small-note">Use the same calculated volume. Report it to the nearest tenth, hundredth, and thousandth. Include cubic units in every answer.</p>
+            ${roundingInputsMarkup(task, data)}
+            ${data.solved ? roundingSolutionMarkup(task) : ""}
           </div>
         </section>
       </div>
@@ -391,65 +435,70 @@
   function compositeSvg(task) {
     const u = escapeHTML(task.unit);
     if (task.diagram === "capsule") {
-      return `<svg class="v87-composite-svg" viewBox="0 0 520 330" role="img" aria-label="Capsule made from a cylinder and two hemispheres">
-        <path d="M150 70 H370 A90 90 0 0 1 370 250 H150 A90 90 0 0 1 150 70 Z" class="v87-composite-fill"/>
-        <line x1="150" y1="60" x2="370" y2="60" class="v87-dim"/><line x1="150" y1="52" x2="150" y2="68" class="v87-dim"/><line x1="370" y1="52" x2="370" y2="68" class="v87-dim"/>
-        <text x="260" y="45" class="v87-comp-label">8 ${u}</text>
-        <line x1="60" y1="160" x2="150" y2="160" class="v87-dim"/><line x1="60" y1="148" x2="60" y2="172" class="v87-dim"/>
-        <text x="98" y="145" class="v87-comp-label">6 ${u}</text>
+      return `<svg class="v87-composite-svg" viewBox="0 0 560 330" role="img" aria-label="Capsule made from a cylinder and two hemispheres">
+        <path d="M170 70 H390 A90 90 0 0 1 390 250 H170 A90 90 0 0 1 170 70 Z" class="v87-composite-fill"/>
+        <line x1="170" y1="60" x2="390" y2="60" class="v87-dim"/><line x1="170" y1="52" x2="170" y2="68" class="v87-dim"/><line x1="390" y1="52" x2="390" y2="68" class="v87-dim"/>
+        <text x="280" y="45" text-anchor="middle" class="v87-comp-label">8 ${u}</text>
+        <line x1="80" y1="160" x2="170" y2="160" class="v87-dim"/><line x1="80" y1="148" x2="80" y2="172" class="v87-dim"/>
+        <text x="118" y="145" text-anchor="middle" class="v87-comp-label">6 ${u}</text>
       </svg>`;
     }
     if (task.diagram === "cone-cylinder") {
-      return `<svg class="v87-composite-svg" viewBox="0 0 520 390" role="img" aria-label="Cone on top of a cylinder">
-        <path d="M260 28 L120 168 Q260 208 400 168 Z" class="v87-composite-fill"/>
-        <ellipse cx="260" cy="168" rx="140" ry="35" class="v87-outline"/>
-        <path d="M120 168 V310 Q260 350 400 310 V168" class="v87-composite-fill"/>
-        <ellipse cx="260" cy="310" rx="140" ry="35" class="v87-outline"/>
-        <line x1="120" y1="310" x2="400" y2="310" class="v87-dim"/><text x="245" y="294" class="v87-comp-label">8 ${u}</text>
-        <line x1="420" y1="168" x2="420" y2="310" class="v87-dim"/><text x="436" y="244" class="v87-comp-label">6 ${u}</text>
-        <line x1="98" y1="28" x2="98" y2="168" class="v87-dim"/><text x="48" y="103" class="v87-comp-label">5 ${u}</text>
+      return `<svg class="v87-composite-svg" viewBox="0 0 560 390" role="img" aria-label="Cone on top of a cylinder">
+        <path d="M280 28 L140 168 Q280 203 420 168 Z" class="v87-composite-fill" stroke="none"/>
+        <line x1="280" y1="28" x2="140" y2="168" class="v87-outline-line"/><line x1="280" y1="28" x2="420" y2="168" class="v87-outline-line"/>
+        <ellipse cx="280" cy="168" rx="140" ry="35" class="v87-outline"/>
+        <path d="M140 168 V310 Q280 345 420 310 V168 Z" class="v87-composite-fill" stroke="none"/>
+        <line x1="140" y1="168" x2="140" y2="310" class="v87-outline-line"/><line x1="420" y1="168" x2="420" y2="310" class="v87-outline-line"/>
+        <ellipse cx="280" cy="310" rx="140" ry="35" class="v87-outline"/>
+        <line x1="140" y1="310" x2="420" y2="310" class="v87-dim"/><text x="280" y="294" text-anchor="middle" class="v87-comp-label">8 ${u}</text>
+        <line x1="448" y1="168" x2="448" y2="310" class="v87-dim"/><text x="466" y="244" class="v87-comp-label">6 ${u}</text>
+        <line x1="112" y1="28" x2="112" y2="168" class="v87-dim"/><text x="96" y="103" text-anchor="end" class="v87-comp-label">5 ${u}</text>
       </svg>`;
     }
     if (task.diagram === "cone-hole") {
-      return `<svg class="v87-composite-svg" viewBox="0 0 520 360" role="img" aria-label="Cylinder with a cone-shaped opening removed">
-        <path d="M100 72 Q260 24 420 72 V286 Q260 334 100 286 Z" class="v87-composite-fill"/>
-        <ellipse cx="260" cy="72" rx="160" ry="46" class="v87-outline"/>
-        <ellipse cx="260" cy="286" rx="160" ry="46" class="v87-outline"/>
-        <path d="M130 72 L260 275 L390 72" class="v87-hole"/><ellipse cx="260" cy="72" rx="130" ry="34" class="v87-hole"/>
-        <line x1="100" y1="72" x2="420" y2="72" class="v87-dim"/><text x="245" y="57" class="v87-comp-label">10 ${u}</text>
-        <line x1="448" y1="72" x2="448" y2="286" class="v87-dim"/><text x="463" y="185" class="v87-comp-label">12 ${u}</text>
+      return `<svg class="v87-composite-svg" viewBox="0 0 580 360" role="img" aria-label="Cylinder with a cone-shaped opening removed">
+        <path d="M110 72 V286 Q270 332 430 286 V72 Z" class="v87-composite-fill" stroke="none"/>
+        <line x1="110" y1="72" x2="110" y2="286" class="v87-outline-line"/><line x1="430" y1="72" x2="430" y2="286" class="v87-outline-line"/>
+        <ellipse cx="270" cy="72" rx="160" ry="46" class="v87-outline"/>
+        <ellipse cx="270" cy="286" rx="160" ry="46" class="v87-outline"/>
+        <path d="M140 72 L270 275 L400 72" class="v87-hole"/><ellipse cx="270" cy="72" rx="130" ry="34" class="v87-hole"/>
+        <line x1="110" y1="72" x2="430" y2="72" class="v87-dim"/><text x="270" y="57" text-anchor="middle" class="v87-comp-label">10 ${u}</text>
+        <line x1="470" y1="72" x2="470" y2="286" class="v87-dim"/><text x="490" y="185" class="v87-comp-label">12 ${u}</text>
       </svg>`;
     }
     if (task.diagram === "silo") {
-      return `<svg class="v87-composite-svg" viewBox="0 0 520 390" role="img" aria-label="Cylinder with a hemispherical roof">
-        <path d="M120 160 A140 140 0 0 1 400 160" class="v87-composite-fill"/>
-        <path d="M120 160 V320 Q260 360 400 320 V160" class="v87-composite-fill"/>
-        <ellipse cx="260" cy="320" rx="140" ry="35" class="v87-outline"/>
-        <line x1="260" y1="160" x2="400" y2="160" class="v87-dim"/><text x="327" y="145" class="v87-comp-label">4 ${u}</text>
-        <line x1="425" y1="160" x2="425" y2="320" class="v87-dim"/><text x="441" y="245" class="v87-comp-label">10 ${u}</text>
+      return `<svg class="v87-composite-svg" viewBox="0 0 570 390" role="img" aria-label="Cylinder with a hemispherical roof">
+        <path d="M135 160 A140 140 0 0 1 415 160" class="v87-composite-fill"/>
+        <path d="M135 160 V320 Q275 355 415 320 V160 Z" class="v87-composite-fill" stroke="none"/>
+        <line x1="135" y1="160" x2="135" y2="320" class="v87-outline-line"/><line x1="415" y1="160" x2="415" y2="320" class="v87-outline-line"/>
+        <ellipse cx="275" cy="320" rx="140" ry="35" class="v87-outline"/>
+        <line x1="275" y1="160" x2="415" y2="160" class="v87-dim"/><text x="345" y="145" text-anchor="middle" class="v87-comp-label">4 ${u}</text>
+        <line x1="448" y1="160" x2="448" y2="320" class="v87-dim"/><text x="468" y="245" class="v87-comp-label">10 ${u}</text>
       </svg>`;
     }
     if (task.diagram === "tennis-can") {
-      return `<svg class="v87-composite-svg" viewBox="0 0 420 560" role="img" aria-label="Three tennis balls stacked inside a cylinder">
-        <path d="M85 55 Q210 18 335 55 V500 Q210 537 85 500 Z" class="v87-can-fill"/>
-        <ellipse cx="210" cy="55" rx="125" ry="35" class="v87-outline"/>
-        <ellipse cx="210" cy="500" rx="125" ry="35" class="v87-outline"/>
-        <circle cx="210" cy="135" r="92" class="v87-ball"/><circle cx="210" cy="315" r="92" class="v87-ball"/><circle cx="210" cy="495" r="92" class="v87-ball"/>
-        <line x1="85" y1="55" x2="335" y2="55" class="v87-dim"/><text x="190" y="41" class="v87-comp-label">6.6 ${u}</text>
-        <line x1="360" y1="55" x2="360" y2="500" class="v87-dim"/><text x="375" y="282" class="v87-comp-label">19.8 ${u}</text>
+      return `<svg class="v87-composite-svg" viewBox="0 0 520 560" role="img" aria-label="Three tennis balls stacked inside a cylinder">
+        <path d="M95 55 V500 Q220 535 345 500 V55 Z" class="v87-can-fill" stroke="none"/>
+        <line x1="95" y1="55" x2="95" y2="500" class="v87-outline-line"/><line x1="345" y1="55" x2="345" y2="500" class="v87-outline-line"/>
+        <ellipse cx="220" cy="55" rx="125" ry="35" class="v87-outline"/>
+        <ellipse cx="220" cy="500" rx="125" ry="35" class="v87-outline"/>
+        <circle cx="220" cy="135" r="92" class="v87-ball"/><circle cx="220" cy="315" r="92" class="v87-ball"/><circle cx="220" cy="495" r="92" class="v87-ball"/>
+        <line x1="95" y1="55" x2="345" y2="55" class="v87-dim"/><text x="220" y="41" text-anchor="middle" class="v87-comp-label">6.6 ${u}</text>
+        <line x1="390" y1="55" x2="390" y2="500" class="v87-dim"/><text x="412" y="282" class="v87-comp-label">19.8 ${u}</text>
       </svg>`;
     }
-    return `<svg class="v87-composite-svg" viewBox="0 0 480 430" role="img" aria-label="Cone with a hemispherical scoop">
-      <path d="M105 155 A135 135 0 0 1 375 155" class="v87-composite-fill"/>
-      <path d="M105 155 L240 390 L375 155 Z" class="v87-composite-fill"/>
-      <line x1="105" y1="155" x2="375" y2="155" class="v87-dim"/><text x="220" y="140" class="v87-comp-label">8 ${u}</text>
-      <line x1="395" y1="155" x2="395" y2="390" class="v87-dim"/><text x="410" y="278" class="v87-comp-label">9 ${u}</text>
+    return `<svg class="v87-composite-svg" viewBox="0 0 540 430" role="img" aria-label="Cone with a hemispherical scoop">
+      <path d="M120 155 A135 135 0 0 1 390 155" class="v87-composite-fill"/>
+      <path d="M120 155 L255 390 L390 155 Z" class="v87-composite-fill" stroke="none"/>
+      <line x1="120" y1="155" x2="255" y2="390" class="v87-outline-line"/><line x1="390" y1="155" x2="255" y2="390" class="v87-outline-line"/>
+      <line x1="120" y1="155" x2="390" y2="155" class="v87-dim"/><text x="255" y="140" text-anchor="middle" class="v87-comp-label">8 ${u}</text>
+      <line x1="420" y1="155" x2="420" y2="390" class="v87-dim"/><text x="442" y="278" class="v87-comp-label">9 ${u}</text>
     </svg>`;
   }
 
   function compositeMarkup(task, data, qNumber) {
     const step = data.seminarStep || 0;
-    const answer = `${formatNumber(rounded(taskVolume(task)))} ${task.unit}³`;
     const completed = data.seminarAnswers || [];
     return `<section class="v87-shell composite-shell">
       <header class="v87-question-header">
@@ -471,9 +520,10 @@
             </div>`;
           }).join("")}
           ${step >= task.seminar.length ? `<div class="v87-final-composite">
-            <h5>Now calculate the final volume.</h5>
-            <label class="v87-volume-entry"><span>Round to the nearest hundredth and include cubic units.</span><input data-v87-input="volume" value="${escapeHTML(data.inputs.volume || "")}" placeholder="Number + cubic unit"></label>
-            ${data.solved ? `<div class="v87-solution-banner">✓ ${answer}</div>` : ""}
+            <h5>Now calculate and round the final volume three ways.</h5>
+            <p class="v87-small-note">Report the same final volume to the nearest tenth, hundredth, and thousandth. Include cubic units every time.</p>
+            ${roundingInputsMarkup(task, data)}
+            ${data.solved ? roundingSolutionMarkup(task) : ""}
           </div>` : ""}
         </section>
       </div>
@@ -489,14 +539,7 @@
     return String(text || "").toLowerCase().replace(/\s+/g, " ").trim();
   }
 
-  function volumeAnswerCorrect(text, task) {
-    const raw = String(text || "").trim();
-    const numberMatch = raw.replace(/,/g, "").match(/-?\d+(?:\.\d+)?/);
-    if (!numberMatch) return false;
-    const numeric = Number(numberMatch[0]);
-    const expected = rounded(taskVolume(task));
-    if (Math.abs(numeric - expected) > 0.011) return false;
-
+  function hasCubicUnit(raw, task) {
     const t = normalizeUnitText(raw).replace(/\s/g, "");
     const unit = task.unit.toLowerCase();
     const aliases = {
@@ -507,6 +550,29 @@
       yd: ["yd³", "yd^3", "yd3", "cubicyd", "cubicyard", "cubicyards"]
     };
     return (aliases[unit] || []).some(alias => t.includes(alias));
+  }
+
+  function volumeAnswerCorrect(text, task, places) {
+    const raw = String(text || "").trim();
+    const numberMatch = raw.replace(/,/g, "").match(/-?\d+(?:\.(\d+))?/);
+    if (!numberMatch) return false;
+    const decimalDigits = numberMatch[1] || "";
+    if (decimalDigits.length !== places) return false;
+    const numeric = Number(numberMatch[0]);
+    const expected = roundTo(taskVolume(task), places);
+    if (Math.abs(numeric - expected) > 10 ** (-(places + 4))) return false;
+    return hasCubicUnit(raw, task);
+  }
+
+  function roundingAnswerError(data, task) {
+    for (const level of ROUNDING_LEVELS) {
+      const value = data.inputs[level.key];
+      if (!String(value || "").trim()) return `${level.label}: enter an answer with cubic units.`;
+      if (!volumeAnswerCorrect(value, task, level.places)) {
+        return `${level.label}: check the rounding, use exactly ${level.places} decimal place${level.places === 1 ? "" : "s"}, and include ${task.unit}³.`;
+      }
+    }
+    return "";
   }
 
   function numericInputCorrect(value, expected) {
@@ -639,8 +705,9 @@
       if (data.solved) return setLabFeedback("This question is complete. Choose Next question.", "correct");
       if (task.kind === "composite") {
         if ((data.seminarStep || 0) < task.seminar.length) return setLabFeedback("Complete the reasoning questions first.", "incorrect");
-        if (!volumeAnswerCorrect(data.inputs.volume, task)) {
-          return setLabFeedback(`Check the arithmetic, rounding, and cubic unit. Your answer should be rounded to the nearest hundredth.`, "incorrect");
+        const roundingError = roundingAnswerError(data, task);
+        if (roundingError) {
+          return setLabFeedback(roundingError, "incorrect");
         }
       } else {
         if (task.kind === "word" && data.figure !== task.shape) {
@@ -659,14 +726,17 @@
         if (task.shape !== "sphere" && !numericInputCorrect(data.inputs.height, task.height)) {
           return setLabFeedback("Recheck the height you entered.", "incorrect");
         }
-        if (!volumeAnswerCorrect(data.inputs.volume, task)) {
-          return setLabFeedback("Recheck your substitution, calculation, rounding to the nearest hundredth, and cubic unit label.", "incorrect");
+        const roundingError = roundingAnswerError(data, task);
+        if (roundingError) {
+          return setLabFeedback(roundingError, "incorrect");
         }
       }
 
       data.solved = true;
-      rerender(`Correct. The volume is ${formatNumber(rounded(taskVolume(task)))} ${task.unit}³.`, "correct");
-      setLabFeedback(`Correct. The volume is ${formatNumber(rounded(taskVolume(task)))} ${task.unit}³.`, "correct");
+      const value = taskVolume(task);
+      const successMessage = `Correct. Tenth: ${formatRounded(value, 1)} ${task.unit}³; hundredth: ${formatRounded(value, 2)} ${task.unit}³; thousandth: ${formatRounded(value, 3)} ${task.unit}³.`;
+      rerender(successMessage);
+      setLabFeedback(successMessage, "correct");
     });
 
     const next = $("#nextV87");
