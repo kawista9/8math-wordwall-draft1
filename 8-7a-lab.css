@@ -97,3 +97,18 @@
     grid-template-columns:1fr;
   }
 }
+
+
+.v87-cone-cut-base{
+  fill:none;
+  stroke:#d74384;
+  stroke-width:5;
+}
+.v87-cone-cut-sides{
+  fill:none;
+  stroke:#d74384;
+  stroke-width:5;
+  stroke-dasharray:10 8;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
