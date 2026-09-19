@@ -462,7 +462,7 @@
         <line x1="110" y1="72" x2="110" y2="286" class="v87-outline-line"/><line x1="430" y1="72" x2="430" y2="286" class="v87-outline-line"/>
         <ellipse cx="270" cy="72" rx="160" ry="46" class="v87-outline"/>
         <ellipse cx="270" cy="286" rx="160" ry="46" class="v87-outline"/>
-        <path d="M140 72 L270 275 L400 72" class="v87-hole"/><ellipse cx="270" cy="72" rx="130" ry="34" class="v87-hole"/>
+        <path d="M110 72 L270 275 L430 72" class="v87-hole"/><ellipse cx="270" cy="72" rx="160" ry="46" class="v87-hole"/>
         <line x1="110" y1="72" x2="430" y2="72" class="v87-dim"/><text x="270" y="57" text-anchor="middle" class="v87-comp-label">10 ${u}</text>
         <line x1="470" y1="72" x2="470" y2="286" class="v87-dim"/><text x="490" y="185" class="v87-comp-label">12 ${u}</text>
       </svg>`;
