@@ -267,7 +267,7 @@
         <path d="M${center} 35 L${left} ${baseY} Q${center} 289 ${right} ${baseY} Z" fill="url(#v87cone)" stroke="none"/>
         <line x1="${center}" y1="35" x2="${left}" y2="${baseY}" stroke="#33206e" stroke-width="5" stroke-linecap="round"/>
         <line x1="${center}" y1="35" x2="${right}" y2="${baseY}" stroke="#33206e" stroke-width="5" stroke-linecap="round"/>
-        <ellipse cx="${center}" cy="${baseY}" rx="140" ry="39" fill="#8bd6f4" fill-opacity=".28" stroke="#33206e" stroke-width="5"/>
+        <ellipse cx="${center}" cy="${baseY}" rx="140" ry="39" fill="#8bd6f4" fill-opacity=".72" stroke="#33206e" stroke-width="5"/>
         <line x1="${center}" y1="35" x2="${center}" y2="${baseY}" stroke="#fff" stroke-width="4" stroke-dasharray="9 8"/>
         <circle cx="${center}" cy="${baseY}" r="5" fill="#ff3eb5"/>
         <line x1="${full ? left : center}" y1="${baseY}" x2="${right}" y2="${baseY}" stroke="#ff3eb5" stroke-width="5" stroke-linecap="round"/>
@@ -287,7 +287,7 @@
       <line x1="${left}" y1="72" x2="${left}" y2="245" stroke="#33206e" stroke-width="5"/>
       <line x1="${right}" y1="72" x2="${right}" y2="245" stroke="#33206e" stroke-width="5"/>
       <ellipse cx="${center}" cy="72" rx="130" ry="42" fill="#a9e8ff" stroke="#33206e" stroke-width="5"/>
-      <ellipse cx="${center}" cy="245" rx="130" ry="42" fill="#78c9ef" fill-opacity=".32" stroke="#33206e" stroke-width="5"/>
+      <ellipse cx="${center}" cy="245" rx="130" ry="42" fill="#8bd6f4" fill-opacity=".72" stroke="#33206e" stroke-width="5"/>
       <circle cx="${center}" cy="245" r="5" fill="#ff3eb5"/>
       <line x1="${full ? left : center}" y1="245" x2="${right}" y2="245" stroke="#ff3eb5" stroke-width="5" stroke-linecap="round"/>
       ${full ? `<line x1="${left}" y1="233" x2="${left}" y2="257" stroke="#ff3eb5" stroke-width="4"/><line x1="${right}" y1="233" x2="${right}" y2="257" stroke="#ff3eb5" stroke-width="4"/>` : ""}
@@ -312,7 +312,7 @@
         <path d="M210 35 L70 250 Q210 289 350 250 Z" fill="#b9eafa" stroke="none"/>
         <line x1="210" y1="35" x2="70" y2="250" class="v87-outline-line"/>
         <line x1="210" y1="35" x2="350" y2="250" class="v87-outline-line"/>
-        <ellipse cx="210" cy="250" rx="140" ry="39" class="v87-outline"/>
+        <ellipse cx="210" cy="250" rx="140" ry="39" class="v87-base-fill"/>
         <line x1="210" y1="35" x2="210" y2="250" class="v87-dash"/>
         <line x1="210" y1="250" x2="350" y2="250" class="v87-measure-line"/>
       </svg>`;
@@ -322,7 +322,7 @@
       <line x1="80" y1="72" x2="80" y2="245" class="v87-outline-line"/>
       <line x1="340" y1="72" x2="340" y2="245" class="v87-outline-line"/>
       <ellipse cx="210" cy="72" rx="130" ry="42" class="v87-top-fill"/>
-      <ellipse cx="210" cy="245" rx="130" ry="42" class="v87-outline"/>
+      <ellipse cx="210" cy="245" rx="130" ry="42" class="v87-base-fill"/>
       <line x1="210" y1="245" x2="340" y2="245" class="v87-measure-line"/>
       <line x1="382" y1="72" x2="382" y2="245" class="v87-height-line"/>
     </svg>`;
@@ -346,8 +346,8 @@
     const icon = shape === "sphere"
       ? '<svg viewBox="0 0 80 70"><circle cx="40" cy="35" r="26"/><path d="M14 35 Q40 48 66 35" fill="none"/></svg>'
       : shape === "cone"
-        ? '<svg viewBox="0 0 80 70"><path d="M40 7 L14 57 Q40 65 66 57 Z" fill="#c9eff8" stroke="none"/><line x1="40" y1="7" x2="14" y2="57"/><line x1="40" y1="7" x2="66" y2="57"/><ellipse cx="40" cy="57" rx="26" ry="8" fill="none"/></svg>'
-        : '<svg viewBox="0 0 80 70"><path d="M16 17 V54 Q40 62 64 54 V17 Z" fill="#c9eff8" stroke="none"/><line x1="16" y1="17" x2="16" y2="54"/><line x1="64" y1="17" x2="64" y2="54"/><ellipse cx="40" cy="17" rx="24" ry="8"/><ellipse cx="40" cy="54" rx="24" ry="8" fill="none"/></svg>';
+        ? '<svg viewBox="0 0 80 70"><path d="M40 7 L14 57 Q40 65 66 57 Z" fill="#c9eff8" stroke="none"/><line x1="40" y1="7" x2="14" y2="57"/><line x1="40" y1="7" x2="66" y2="57"/><ellipse cx="40" cy="57" rx="26" ry="8" fill="#c9eff8"/></svg>'
+        : '<svg viewBox="0 0 80 70"><path d="M16 17 V54 Q40 62 64 54 V17 Z" fill="#c9eff8" stroke="none"/><line x1="16" y1="17" x2="16" y2="54"/><line x1="64" y1="17" x2="64" y2="54"/><ellipse cx="40" cy="17" rx="24" ry="8"/><ellipse cx="40" cy="54" rx="24" ry="8" fill="#c9eff8"/></svg>';
     return `${icon}<span>${shapeName(shape)}</span>`;
   }
 
@@ -447,10 +447,10 @@
       return `<svg class="v87-composite-svg" viewBox="0 0 560 390" role="img" aria-label="Cone on top of a cylinder">
         <path d="M280 28 L140 168 Q280 203 420 168 Z" class="v87-composite-fill" stroke="none"/>
         <line x1="280" y1="28" x2="140" y2="168" class="v87-outline-line"/><line x1="280" y1="28" x2="420" y2="168" class="v87-outline-line"/>
-        <ellipse cx="280" cy="168" rx="140" ry="35" class="v87-outline"/>
+        <ellipse cx="280" cy="168" rx="140" ry="35" class="v87-composite-base-fill"/>
         <path d="M140 168 V310 Q280 345 420 310 V168 Z" class="v87-composite-fill" stroke="none"/>
         <line x1="140" y1="168" x2="140" y2="310" class="v87-outline-line"/><line x1="420" y1="168" x2="420" y2="310" class="v87-outline-line"/>
-        <ellipse cx="280" cy="310" rx="140" ry="35" class="v87-outline"/>
+        <ellipse cx="280" cy="310" rx="140" ry="35" class="v87-composite-base-fill"/>
         <line x1="140" y1="310" x2="420" y2="310" class="v87-dim"/><text x="280" y="294" text-anchor="middle" class="v87-comp-label">8 ${u}</text>
         <line x1="448" y1="168" x2="448" y2="310" class="v87-dim"/><text x="466" y="244" class="v87-comp-label">6 ${u}</text>
         <line x1="112" y1="28" x2="112" y2="168" class="v87-dim"/><text x="96" y="103" text-anchor="end" class="v87-comp-label">5 ${u}</text>
@@ -461,7 +461,7 @@
         <path d="M110 72 V286 Q270 332 430 286 V72 Z" class="v87-composite-fill" stroke="none"/>
         <line x1="110" y1="72" x2="110" y2="286" class="v87-outline-line"/><line x1="430" y1="72" x2="430" y2="286" class="v87-outline-line"/>
         <ellipse cx="270" cy="72" rx="160" ry="46" class="v87-outline"/>
-        <ellipse cx="270" cy="286" rx="160" ry="46" class="v87-outline"/>
+        <ellipse cx="270" cy="286" rx="160" ry="46" class="v87-composite-base-fill"/>
         <path d="M110 72 L270 275 L430 72" class="v87-cone-cut-sides"/><ellipse cx="270" cy="72" rx="160" ry="46" class="v87-cone-cut-base"/>
         <line x1="110" y1="72" x2="430" y2="72" class="v87-dim"/><text x="270" y="57" text-anchor="middle" class="v87-comp-label">10 ${u}</text>
         <line x1="470" y1="72" x2="470" y2="286" class="v87-dim"/><text x="490" y="185" class="v87-comp-label">12 ${u}</text>
@@ -472,7 +472,7 @@
         <path d="M135 160 A140 140 0 0 1 415 160" class="v87-composite-fill"/>
         <path d="M135 160 V320 Q275 355 415 320 V160 Z" class="v87-composite-fill" stroke="none"/>
         <line x1="135" y1="160" x2="135" y2="320" class="v87-outline-line"/><line x1="415" y1="160" x2="415" y2="320" class="v87-outline-line"/>
-        <ellipse cx="275" cy="320" rx="140" ry="35" class="v87-outline"/>
+        <ellipse cx="275" cy="320" rx="140" ry="35" class="v87-composite-base-fill"/>
         <line x1="275" y1="160" x2="415" y2="160" class="v87-dim"/><text x="345" y="145" text-anchor="middle" class="v87-comp-label">4 ${u}</text>
         <line x1="448" y1="160" x2="448" y2="320" class="v87-dim"/><text x="468" y="245" class="v87-comp-label">10 ${u}</text>
       </svg>`;
@@ -482,7 +482,7 @@
         <path d="M95 55 V500 Q220 535 345 500 V55 Z" class="v87-can-fill" stroke="none"/>
         <line x1="95" y1="55" x2="95" y2="500" class="v87-outline-line"/><line x1="345" y1="55" x2="345" y2="500" class="v87-outline-line"/>
         <ellipse cx="220" cy="55" rx="125" ry="35" class="v87-outline"/>
-        <ellipse cx="220" cy="500" rx="125" ry="35" class="v87-outline"/>
+        <ellipse cx="220" cy="500" rx="125" ry="35" class="v87-composite-base-fill"/>
         <circle cx="220" cy="135" r="92" class="v87-ball"/><circle cx="220" cy="315" r="92" class="v87-ball"/><circle cx="220" cy="495" r="92" class="v87-ball"/>
         <line x1="95" y1="55" x2="345" y2="55" class="v87-dim"/><text x="220" y="41" text-anchor="middle" class="v87-comp-label">6.6 ${u}</text>
         <line x1="390" y1="55" x2="390" y2="500" class="v87-dim"/><text x="412" y="282" class="v87-comp-label">19.8 ${u}</text>
