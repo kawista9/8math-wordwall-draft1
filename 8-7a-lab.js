@@ -294,3 +294,112 @@
       </svg>`;
     }
     return `<svg class="v87-shape-svg" viewBox="0 0 420 320" aria-hidden="true">
+      <path d="M80 72 Q210 26 340 72 L340 245 Q210 291 80 245 Z" class="v87-fill-shape"/>
+      <ellipse cx="210" cy="72" rx="130" ry="42" class="v87-top-fill"/>
+      <ellipse cx="210" cy="245" rx="130" ry="42" class="v87-outline"/>
+      <line x1="210" y1="245" x2="340" y2="245" class="v87-measure-line"/>
+      <line x1="362" y1="72" x2="362" y2="245" class="v87-height-line"/>
+    </svg>`;
+  }
+
+  function wordModelMarkup(task, data) {
+    if (!data.figure) {
+      return `<div class="v87-model-empty"><strong>Drop one figure here.</strong><span>Choose the solid described in the word problem.</span></div>`;
+    }
+    const shape = data.figure;
+    const valueR = escapeHTML(data.inputs.radius || "");
+    const valueH = escapeHTML(data.inputs.height || "");
+    return `<div class="v87-word-model ${shape}">
+      ${blankShapeSvg(shape)}
+      <label class="v87-on-shape v87-radius-input"><span>r =</span><input inputmode="decimal" data-v87-input="radius" value="${valueR}" aria-label="Radius"></label>
+      ${shape !== "sphere" ? `<label class="v87-on-shape v87-height-input"><span>h =</span><input inputmode="decimal" data-v87-input="height" value="${valueH}" aria-label="Height"></label>` : ""}
+    </div>`;
+  }
+
+  function miniFigureButton(shape) {
+    const icon = shape === "sphere"
+      ? '<svg viewBox="0 0 80 70"><circle cx="40" cy="35" r="26"/><ellipse cx="40" cy="35" rx="26" ry="8"/></svg>'
+      : shape === "cone"
+        ? '<svg viewBox="0 0 80 70"><path d="M40 7 L14 57 Q40 68 66 57 Z"/><ellipse cx="40" cy="57" rx="26" ry="8"/></svg>'
+        : '<svg viewBox="0 0 80 70"><path d="M16 17 Q40 8 64 17 V54 Q40 63 16 54 Z"/><ellipse cx="40" cy="17" rx="24" ry="8"/><ellipse cx="40" cy="54" rx="24" ry="8"/></svg>';
+    return `${icon}<span>${shapeName(shape)}</span>`;
+  }
+
+  function formulaBankMarkup(data) {
+    return FORMULAS.map(item => `<button type="button" draggable="true" class="v87-token${data.selectedFormula === item.id ? " is-selected" : ""}${data.formula === item.id ? " is-used" : ""}" data-v87-formula="${item.id}">${item.label}</button>`).join("");
+  }
+
+  function baseBankMarkup(data) {
+    return BASE_CHOICES.map(item => `<button type="button" draggable="true" class="v87-token small${data.selectedBase === item.id ? " is-selected" : ""}${data.base === item.id ? " is-used" : ""}" data-v87-base="${item.id}">${item.label}</button>`).join("");
+  }
+
+  function directOrWordMarkup(task, data, qNumber) {
+    const isWord = task.kind === "word";
+    const needsBase = task.shape !== "sphere";
+    const expectedAnswer = `${formatNumber(rounded(taskVolume(task)))} ${task.unit}³`;
+    return `<section class="v87-shell">
+      <header class="v87-question-header">
+        <div><p class="lab-mini-title">Question ${qNumber} of ${TASKS.length}</p><h4>${escapeHTML(isWord ? task.title : task.title)}</h4><p>${isWord ? escapeHTML(task.prompt) : "Read the measurements from the figure. A full line through the center means you must determine the radius yourself."}</p></div>
+        <span class="v87-chip">${qNumber <= 7 ? "Figure practice" : "Word problem"}</span>
+      </header>
+
+      <div class="v87-main-grid">
+        <section class="v87-visual-card">
+          <h5>${isWord ? "1. Build a model" : "1. Read the figure"}</h5>
+          ${isWord ? `<div class="v87-figure-bank" aria-label="Figure bank">
+              ${["cylinder", "cone", "sphere"].map(shape => `<button type="button" draggable="true" class="v87-figure-token${data.selectedFigure === shape ? " is-selected" : ""}" data-v87-figure="${shape}">${miniFigureButton(shape)}</button>`).join("")}
+            </div>
+            <div class="v87-model-drop" data-v87-figure-drop>${wordModelMarkup(task, data)}</div>` : shapeSvg(task)}
+        </section>
+
+        <section class="v87-work-card">
+          <div class="v87-step-block">
+            <h5>${isWord ? "2" : "2"}. Choose the volume formula</h5>
+            <div class="v87-formula-bank">${formulaBankMarkup(data)}</div>
+            <button type="button" class="v87-drop-zone formula${data.formula ? " is-filled" : ""}" data-v87-formula-drop>${data.formula ? FORMULAS.find(x => x.id === data.formula).label : "Drop the correct formula here"}</button>
+          </div>
+
+          ${needsBase ? `<div class="v87-step-block">
+            <h5>${isWord ? "3" : "3"}. Replace B with the circular base formula</h5>
+            <div class="v87-formula-bank compact">${baseBankMarkup(data)}</div>
+            <button type="button" class="v87-drop-zone base${data.base ? " is-filled" : ""}" data-v87-base-drop>${data.base ? BASE_CHOICES.find(x => x.id === data.base).label : "B = ?"}</button>
+          </div>` : `<div class="v87-step-block is-note"><strong>3. No B substitution is needed for a sphere.</strong><span>The sphere formula already uses r.</span></div>`}
+
+          <div class="v87-step-block">
+            <h5>4. Type the dimensions you will use</h5>
+            ${isWord ? `<p class="v87-small-note">Type these in the open spaces on the model above.</p>` : `<div class="v87-dimension-row">
+                <label><span>radius, r</span><input inputmode="decimal" data-v87-input="radius" value="${escapeHTML(data.inputs.radius || "")}" placeholder="r"></label>
+                ${task.shape !== "sphere" ? `<label><span>height, h</span><input inputmode="decimal" data-v87-input="height" value="${escapeHTML(data.inputs.height || "")}" placeholder="h"></label>` : ""}
+              </div>`}
+          </div>
+
+          <div class="v87-step-block final-answer">
+            <h5>5. Calculate the volume</h5>
+            <label class="v87-volume-entry"><span>Round to the nearest hundredth and include cubic units.</span><input data-v87-input="volume" value="${escapeHTML(data.inputs.volume || "")}" placeholder="Example: 452.39 cm³" aria-label="Final volume with units"></label>
+            ${data.solved ? `<div class="v87-solution-banner">✓ ${expectedAnswer}</div>` : ""}
+          </div>
+        </section>
+      </div>
+
+      <div class="v87-actions">
+        <button type="button" class="lab-action" id="checkV87">${data.solved ? "Checked" : "Check my work"}</button>
+        <button type="button" class="lab-action v87-next" id="nextV87"${data.solved ? "" : " hidden"}>${qNumber === TASKS.length ? "Finish lab" : "Next question"}</button>
+      </div>
+    </section>`;
+  }
+
+  function compositeSvg(task) {
+    const u = escapeHTML(task.unit);
+    if (task.diagram === "capsule") {
+      return `<svg class="v87-composite-svg" viewBox="0 0 520 330" role="img" aria-label="Capsule made from a cylinder and two hemispheres">
+        <path d="M150 70 H370 A90 90 0 0 1 370 250 H150 A90 90 0 0 1 150 70 Z" class="v87-composite-fill"/>
+        <line x1="150" y1="60" x2="370" y2="60" class="v87-dim"/><line x1="150" y1="52" x2="150" y2="68" class="v87-dim"/><line x1="370" y1="52" x2="370" y2="68" class="v87-dim"/>
+        <text x="260" y="45" class="v87-comp-label">8 ${u}</text>
+        <line x1="60" y1="160" x2="150" y2="160" class="v87-dim"/><line x1="60" y1="148" x2="60" y2="172" class="v87-dim"/>
+        <text x="98" y="145" class="v87-comp-label">6 ${u}</text>
+      </svg>`;
+    }
+    if (task.diagram === "cone-cylinder") {
+      return `<svg class="v87-composite-svg" viewBox="0 0 520 390" role="img" aria-label="Cone on top of a cylinder">
+        <path d="M260 28 L120 168 Q260 208 400 168 Z" class="v87-composite-fill"/>
+        <ellipse cx="260" cy="168" rx="140" ry="35" class="v87-outline"/>
