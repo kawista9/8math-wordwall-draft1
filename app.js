@@ -794,7 +794,7 @@
     "8.7A": {
       title: "Volume Builder: Model, Calculate, Combine",
       description: "Work through twenty volume problems in three phases. First match formulas to cylinders, cones, and spheres and enter the dimensions; then model word problems by choosing the correct solid; finally reason through composite figures with guided questions before calculating the final volume.",
-      summary: "You selected and used volume formulas for cylinders, cones, and spheres, replaced B with πr² when needed, converted diameter to radius, modeled word problems with the correct solid, rounded answers to the nearest hundredth with cubic units, and combined or subtracted component volumes in composite figures.",
+      summary: "You selected and used volume formulas for cylinders, cones, and spheres, replaced B with πr² when needed, converted diameter to radius, modeled word problems with the correct solid, reported each volume to the nearest tenth, hundredth, and thousandth with cubic units, and combined or subtracted component volumes in composite figures.",
       videos: []
     },
     "8.4A": {
