@@ -657,3 +657,27 @@
           return setLabFeedback(diameterNudge ? "The measure given goes all the way across the circle. Determine the radius before calculating volume." : "Recheck the radius you entered.", "incorrect");
         }
         if (task.shape !== "sphere" && !numericInputCorrect(data.inputs.height, task.height)) {
+          return setLabFeedback("Recheck the height you entered.", "incorrect");
+        }
+        if (!volumeAnswerCorrect(data.inputs.volume, task)) {
+          return setLabFeedback("Recheck your substitution, calculation, rounding to the nearest hundredth, and cubic unit label.", "incorrect");
+        }
+      }
+
+      data.solved = true;
+      rerender(`Correct. The volume is ${formatNumber(rounded(taskVolume(task)))} ${task.unit}³.`, "correct");
+      setLabFeedback(`Correct. The volume is ${formatNumber(rounded(taskVolume(task)))} ${task.unit}³.`, "correct");
+    });
+
+    const next = $("#nextV87");
+    next?.addEventListener("click", () => {
+      if (!data.solved) return;
+      if (data.index >= TASKS.length - 1) return showLabCompletion("8.7A");
+      const nextIndex = data.index + 1;
+      Object.assign(data, freshQuestion(nextIndex));
+      window.renderVolume87ALab(ctx);
+      setLabFeedback("Next question ready.");
+      syncWhiteboardQuestion();
+    });
+  };
+})();
