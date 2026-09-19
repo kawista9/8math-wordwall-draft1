@@ -515,3 +515,145 @@
   }
 
   window.renderVolume87ALab = function renderVolume87ALab(ctx) {
+    const { labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion } = ctx;
+    if (!labRuntime.data) labRuntime.data = freshQuestion(0);
+    const data = labRuntime.data;
+    if (data.index >= TASKS.length) return showLabCompletion("8.7A");
+    const task = TASKS[data.index];
+    const qNumber = data.index + 1;
+    const phaseName = qNumber <= 7 ? "formula + dimensions" : qNumber <= 14 ? "word problem modeling" : "composite reasoning";
+    setLabProgress(data.index + (data.solved ? 1 : 0), TASKS.length, `Question ${qNumber} of ${TASKS.length}: ${phaseName}.`);
+
+    const body = $("#standardsLabBody");
+    body.innerHTML = task.kind === "composite" ? compositeMarkup(task, data, qNumber) : directOrWordMarkup(task, data, qNumber);
+
+    const rerender = message => {
+      window.renderVolume87ALab(ctx);
+      if (message) setLabFeedback(message);
+      syncWhiteboardQuestion();
+    };
+
+    body.querySelectorAll("[data-v87-input]").forEach(input => {
+      input.addEventListener("input", () => { data.inputs[input.dataset.v87Input] = input.value; });
+    });
+
+    if (task.kind !== "composite") {
+      const selectFormula = id => {
+        data.selectedFormula = id;
+        rerender("Formula selected. Now place it in the formula target.");
+      };
+      const placeFormula = id => {
+        if (!id) return setLabFeedback("Choose a formula first.", "incorrect");
+        data.formula = id;
+        data.selectedFormula = null;
+        rerender("Formula placed. Continue through the setup.");
+      };
+      body.querySelectorAll("[data-v87-formula]").forEach(button => {
+        button.addEventListener("click", () => selectFormula(button.dataset.v87Formula));
+        button.addEventListener("dragstart", event => {
+          event.dataTransfer.setData("text/v87-formula", button.dataset.v87Formula);
+          event.dataTransfer.effectAllowed = "copy";
+        });
+      });
+      const formulaDrop = body.querySelector("[data-v87-formula-drop]");
+      formulaDrop?.addEventListener("click", () => placeFormula(data.selectedFormula));
+      formulaDrop?.addEventListener("dragover", event => event.preventDefault());
+      formulaDrop?.addEventListener("drop", event => {
+        event.preventDefault();
+        placeFormula(event.dataTransfer.getData("text/v87-formula") || event.dataTransfer.getData("text/plain"));
+      });
+
+      if (task.shape !== "sphere") {
+        const selectBase = id => {
+          data.selectedBase = id;
+          rerender("Base formula selected. Place it beside B.");
+        };
+        const placeBase = id => {
+          if (!id) return setLabFeedback("Choose a formula for B first.", "incorrect");
+          data.base = id;
+          data.selectedBase = null;
+          rerender("B substitution placed. Now use the dimensions.");
+        };
+        body.querySelectorAll("[data-v87-base]").forEach(button => {
+          button.addEventListener("click", () => selectBase(button.dataset.v87Base));
+          button.addEventListener("dragstart", event => {
+            event.dataTransfer.setData("text/v87-base", button.dataset.v87Base);
+            event.dataTransfer.effectAllowed = "copy";
+          });
+        });
+        const baseDrop = body.querySelector("[data-v87-base-drop]");
+        baseDrop?.addEventListener("click", () => placeBase(data.selectedBase));
+        baseDrop?.addEventListener("dragover", event => event.preventDefault());
+        baseDrop?.addEventListener("drop", event => {
+          event.preventDefault();
+          placeBase(event.dataTransfer.getData("text/v87-base") || event.dataTransfer.getData("text/plain"));
+        });
+      }
+
+      if (task.kind === "word") {
+        const selectFigure = shape => {
+          data.selectedFigure = shape;
+          rerender("Figure selected. Drop it into the model area.");
+        };
+        const placeFigure = shape => {
+          if (!shape) return setLabFeedback("Choose a figure from the bank first.", "incorrect");
+          data.figure = shape;
+          data.selectedFigure = null;
+          data.inputs.radius = "";
+          data.inputs.height = "";
+          rerender("Model placed. Type the dimensions from the situation onto the figure.");
+        };
+        body.querySelectorAll("[data-v87-figure]").forEach(button => {
+          button.addEventListener("click", () => selectFigure(button.dataset.v87Figure));
+          button.addEventListener("dragstart", event => {
+            event.dataTransfer.setData("text/v87-figure", button.dataset.v87Figure);
+            event.dataTransfer.effectAllowed = "copy";
+          });
+        });
+        const figureDrop = body.querySelector("[data-v87-figure-drop]");
+        figureDrop?.addEventListener("click", () => placeFigure(data.selectedFigure));
+        figureDrop?.addEventListener("dragover", event => event.preventDefault());
+        figureDrop?.addEventListener("drop", event => {
+          event.preventDefault();
+          placeFigure(event.dataTransfer.getData("text/v87-figure") || event.dataTransfer.getData("text/plain"));
+        });
+      }
+    }
+
+    body.querySelectorAll("[data-v87-seminar]").forEach(button => {
+      button.addEventListener("click", () => {
+        const promptIndex = Number(button.dataset.v87Seminar);
+        const choiceIndex = Number(button.dataset.v87Choice);
+        const prompt = task.seminar[promptIndex];
+        if (choiceIndex !== prompt.correct) {
+          return setLabFeedback("Not yet. Use the picture and ask what is being added, removed, or repeated.", "incorrect");
+        }
+        data.seminarAnswers[promptIndex] = choiceIndex;
+        data.seminarStep = promptIndex + 1;
+        rerender("Yes. That reasoning is correct. Move to the next question.");
+      });
+    });
+
+    const check = $("#checkV87");
+    check?.addEventListener("click", () => {
+      if (data.solved) return setLabFeedback("This question is complete. Choose Next question.", "correct");
+      if (task.kind === "composite") {
+        if ((data.seminarStep || 0) < task.seminar.length) return setLabFeedback("Complete the reasoning questions first.", "incorrect");
+        if (!volumeAnswerCorrect(data.inputs.volume, task)) {
+          return setLabFeedback(`Check the arithmetic, rounding, and cubic unit. Your answer should be rounded to the nearest hundredth.`, "incorrect");
+        }
+      } else {
+        if (task.kind === "word" && data.figure !== task.shape) {
+          return setLabFeedback(`The situation describes a ${shapeName(task.shape).toLowerCase()}. Choose that model first.`, "incorrect");
+        }
+        if (data.formula !== task.shape) {
+          return setLabFeedback(`Recheck the volume formula for a ${shapeName(task.shape).toLowerCase()}.`, "incorrect");
+        }
+        if (task.shape !== "sphere" && data.base !== "circle") {
+          return setLabFeedback("B is the area of the circular base. Recheck the formula you placed for B.", "incorrect");
+        }
+        if (!numericInputCorrect(data.inputs.radius, task.radius)) {
+          const diameterNudge = task.given === "diameter" || (task.kind === "word" && /diameter|across|through its center/i.test(task.prompt));
+          return setLabFeedback(diameterNudge ? "The measure given goes all the way across the circle. Determine the radius before calculating volume." : "Recheck the radius you entered.", "incorrect");
+        }
+        if (task.shape !== "sphere" && !numericInputCorrect(data.inputs.height, task.height)) {
