@@ -9,17 +9,18 @@
   const sphereVideo = "https://go.screenpal.com/watch/cOew12nTx9k";
   const cylinderVideo = "https://go.screenpal.com/watch/cOew1UnTxSk";
 
-  const lateralSurfaceArea = "https://go.screenpal.com/watch/cOewrnnTaAP";
-  const totalSurfaceArea = "https://go.screenpal.com/watch/cOewrQnTaBR";
+  // 8.7B links verified against the actual ScreenPal page metadata.
+  const totalSurfaceArea = "https://go.screenpal.com/watch/cOewrnnTaAP";
+  const surfaceHeight = "https://go.screenpal.com/watch/cOewrQnTaBR";
   const perimeterBase = "https://go.screenpal.com/watch/cOewr3nTakp";
-  const surfaceHeight = "https://go.screenpal.com/watch/cOewrgnTaCG";
-  const areaBase = "https://go.screenpal.com/watch/cOewhonTxsX";
+  const areaBase = "https://go.screenpal.com/watch/cOewrgnTaCG";
+  const radiusOverview = "https://go.screenpal.com/watch/cOewhonTxsX";
   const cylinderLsa = "https://go.screenpal.com/watch/cOfVnZnTzQX";
   const cylinderTsa = "https://go.screenpal.com/watch/cOfVnMnTzI1";
-  const rectangularPrismLsa = "https://go.screenpal.com/watch/cOfVeFnTzDX";
-  const rectangularPrismTsa = "https://go.screenpal.com/watch/cOew36nTaGS";
-  const triangularPrismLsa = "https://go.screenpal.com/watch/cOfVeMnTzqP";
-  const triangularPrismTsa = "https://go.screenpal.com/watch/cOewr9nTaE7";
+  const rectangularPrismTsa = "https://go.screenpal.com/watch/cOfVeFnTzDX";
+  const triangularPrismTsa = "https://go.screenpal.com/watch/cOew36nTaGS";
+  const rectangularPrismLsa = "https://go.screenpal.com/watch/cOfVeMnTzqP";
+  const triangularPrismLsa = "https://go.screenpal.com/watch/cOewr9nTaE7";
   const surfaceAreaOverview = "https://go.screenpal.com/watch/cOew14nTxWx";
 
   const converse = "https://go.screenpal.com/watch/cOfebZnT5SF";
@@ -88,35 +89,36 @@
       standard: "8.7B",
       resource: "Anchor chart",
       videos: [
-        { title: "Lateral Surface Area", url: lateralSurfaceArea },
-        { title: "Total Surface Area", url: totalSurfaceArea },
-        { title: "Perimeter of the Base", url: perimeterBase },
-        { title: "Height in Surface Area Formulas", url: surfaceHeight },
-        { title: "Area of the Base", url: areaBase },
-        { title: "Cylinder: Lateral Surface Area", url: cylinderLsa },
-        { title: "Cylinder: Total Surface Area", url: cylinderTsa },
-        { title: "Rectangular Prism: Lateral Surface Area", url: rectangularPrismLsa },
-        { title: "Rectangular Prism: Total Surface Area", url: rectangularPrismTsa },
-        { title: "Triangular Prism: Lateral Surface Area", url: triangularPrismLsa },
-        { title: "Triangular Prism: Total Surface Area", url: triangularPrismTsa },
-        { title: "Surface Area Overview", url: surfaceAreaOverview }
+        { title: "Understanding Surface Area", url: surfaceAreaOverview },
+        { title: "Finding Total Surface Area of 3D Figures", url: totalSurfaceArea },
+        { title: "Finding the Perimeter of Bases in Geometry", url: perimeterBase },
+        { title: "Understanding Height in Geometry", url: surfaceHeight },
+        { title: "Finding the Area of the Base", url: areaBase },
+        { title: "Understanding Radius in Geometry", url: radiusOverview },
+        { title: "Calculating Lateral Surface Area of a Cylinder", url: cylinderLsa },
+        { title: "Calculating Total Surface Area of a Cylinder", url: cylinderTsa },
+        { title: "Calculating Lateral Surface Area of a Rectangular Prism", url: rectangularPrismLsa },
+        { title: "Finding the Total Surface Area of a Rectangular Prism", url: rectangularPrismTsa },
+        { title: "Finding Lateral Surface Area of a Triangular Prism", url: triangularPrismLsa },
+        { title: "Finding the Total Surface Area of a Triangular Prism", url: triangularPrismTsa }
       ],
       videoHotspots: [
-        // Match each visible play button to the lesson named immediately to its left.
-        { title: "Lateral Surface Area", url: lateralSurfaceArea, left: 22.4, top: 13.6, width: 5.2, height: 8.5 },
-        { title: "Total Surface Area", url: totalSurfaceArea, left: 50.5, top: 13.8, width: 5.2, height: 8.5 },
-        { title: "Perimeter of the Base", url: perimeterBase, left: 42.7, top: 21.2, width: 5.2, height: 8.5 },
-        { title: "Height in Surface Area Formulas", url: surfaceHeight, left: 66.2, top: 21.2, width: 5.2, height: 8.5 },
-        { title: "Area of the Base", url: areaBase, left: 63.4, top: 26.7, width: 5.2, height: 8.5 },
+        // Every hotspot below was matched to the actual ScreenPal title/subject.
+        // No exact generic "Lateral Surface Area" lesson exists in the available links,
+        // so the top-left generic LSA play button is intentionally left unmapped.
+        { title: "Finding Total Surface Area of 3D Figures", url: totalSurfaceArea, left: 50.5, top: 13.8, width: 5.2, height: 8.5 },
+        { title: "Finding the Perimeter of Bases in Geometry", url: perimeterBase, left: 42.7, top: 21.2, width: 5.2, height: 8.5 },
+        { title: "Understanding Height in Geometry", url: surfaceHeight, left: 66.2, top: 21.2, width: 5.2, height: 8.5 },
+        { title: "Finding the Area of the Base", url: areaBase, left: 63.4, top: 26.7, width: 5.2, height: 8.5 },
 
-        { title: "Cylinder: Lateral Surface Area", url: cylinderLsa, left: 21.5, top: 67.0, width: 5.2, height: 8.5 },
-        { title: "Cylinder: Total Surface Area", url: cylinderTsa, left: 21.6, top: 76.0, width: 5.2, height: 8.5 },
+        { title: "Calculating Lateral Surface Area of a Cylinder", url: cylinderLsa, left: 21.5, top: 67.0, width: 5.2, height: 8.5 },
+        { title: "Calculating Total Surface Area of a Cylinder", url: cylinderTsa, left: 21.6, top: 76.0, width: 5.2, height: 8.5 },
 
-        { title: "Rectangular Prism: Lateral Surface Area", url: rectangularPrismLsa, left: 60.2, top: 63.3, width: 5.2, height: 8.5 },
-        { title: "Rectangular Prism: Total Surface Area", url: rectangularPrismTsa, left: 60.1, top: 71.6, width: 5.2, height: 8.5 },
+        { title: "Calculating Lateral Surface Area of a Rectangular Prism", url: rectangularPrismLsa, left: 60.2, top: 63.3, width: 5.2, height: 8.5 },
+        { title: "Finding the Total Surface Area of a Rectangular Prism", url: rectangularPrismTsa, left: 60.1, top: 71.6, width: 5.2, height: 8.5 },
 
-        { title: "Triangular Prism: Lateral Surface Area", url: triangularPrismLsa, left: 92.1, top: 62.4, width: 5.2, height: 8.5 },
-        { title: "Triangular Prism: Total Surface Area", url: triangularPrismTsa, left: 92.1, top: 70.7, width: 5.2, height: 8.5 }
+        { title: "Finding Lateral Surface Area of a Triangular Prism", url: triangularPrismLsa, left: 92.1, top: 62.4, width: 5.2, height: 8.5 },
+        { title: "Finding the Total Surface Area of a Triangular Prism", url: triangularPrismTsa, left: 92.1, top: 70.7, width: 5.2, height: 8.5 }
       ]
     },
     {
