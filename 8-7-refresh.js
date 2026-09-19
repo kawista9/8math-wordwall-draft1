@@ -163,7 +163,12 @@
       image: "assets/8-7-07.jpeg?v=20260916-87-revamp",
       standard: "8.7C",
       resource: "Calculator tips",
-      videos: []
+      videos: [
+        { title: "Using Numeric Solver to Find Missing Side Length of Right Triangle", url: "https://go.screenpal.com/watch/cOff14nTEHq" }
+      ],
+      videoHotspots: [
+        { title: "Using Numeric Solver to Find Missing Side Length of Right Triangle", url: "https://go.screenpal.com/watch/cOff14nTEHq", left: 40.0, top: 22.0, width: 20.0, height: 74.0 }
+      ]
     },
     {
       page: 8,
