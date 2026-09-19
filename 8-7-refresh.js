@@ -73,7 +73,14 @@
       image: "assets/8-7-03.jpeg?v=20260916-87-revamp",
       standard: "8.7A",
       resource: "Calculator tips",
-      videos: []
+      videos: [
+        { title: "Using the Numeric Solver", url: "https://go.screenpal.com/watch/cOffhKnTEGk" },
+        { title: "Using π and Exponents", url: "https://go.screenpal.com/watch/cOff1enTEGS" }
+      ],
+      videoHotspots: [
+        { title: "Using the Numeric Solver", url: "https://go.screenpal.com/watch/cOffhKnTEGk", left: 42.2, top: 23.5, width: 6.8, height: 11.0 },
+        { title: "Using π and Exponents", url: "https://go.screenpal.com/watch/cOff1enTEGS", left: 90.2, top: 23.5, width: 6.8, height: 11.0 }
+      ]
     },
     {
       page: 4,
