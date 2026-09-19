@@ -102,17 +102,21 @@
         { title: "Surface Area Overview", url: surfaceAreaOverview }
       ],
       videoHotspots: [
-        { title: "Lateral Surface Area", url: lateralSurfaceArea, left: 23.0, top: 13.7, width: 5.0, height: 8.0 },
-        { title: "Total Surface Area", url: totalSurfaceArea, left: 51.5, top: 13.7, width: 5.0, height: 8.0 },
-        { title: "Perimeter of the Base", url: perimeterBase, left: 43.0, top: 21.3, width: 5.0, height: 8.0 },
-        { title: "Height in Surface Area Formulas", url: surfaceHeight, left: 67.0, top: 21.3, width: 5.0, height: 8.0 },
-        { title: "Area of the Base", url: areaBase, left: 64.0, top: 26.8, width: 5.0, height: 8.0 },
-        { title: "Cylinder: Lateral Surface Area", url: cylinderLsa, left: 21.5, top: 68.0, width: 5.0, height: 8.0 },
-        { title: "Cylinder: Total Surface Area", url: cylinderTsa, left: 21.5, top: 76.5, width: 5.0, height: 8.0 },
-        { title: "Rectangular Prism: Lateral Surface Area", url: rectangularPrismLsa, left: 60.8, top: 64.2, width: 5.0, height: 8.0 },
-        { title: "Rectangular Prism: Total Surface Area", url: rectangularPrismTsa, left: 60.8, top: 72.5, width: 5.0, height: 8.0 },
-        { title: "Triangular Prism: Lateral Surface Area", url: triangularPrismLsa, left: 93.3, top: 62.8, width: 5.0, height: 8.0 },
-        { title: "Triangular Prism: Total Surface Area", url: triangularPrismTsa, left: 93.3, top: 71.5, width: 5.0, height: 8.0 }
+        // Match each visible play button to the lesson named immediately to its left.
+        { title: "Lateral Surface Area", url: lateralSurfaceArea, left: 22.4, top: 13.6, width: 5.2, height: 8.5 },
+        { title: "Total Surface Area", url: totalSurfaceArea, left: 50.5, top: 13.8, width: 5.2, height: 8.5 },
+        { title: "Perimeter of the Base", url: perimeterBase, left: 42.7, top: 21.2, width: 5.2, height: 8.5 },
+        { title: "Height in Surface Area Formulas", url: surfaceHeight, left: 66.2, top: 21.2, width: 5.2, height: 8.5 },
+        { title: "Area of the Base", url: areaBase, left: 63.4, top: 26.7, width: 5.2, height: 8.5 },
+
+        { title: "Cylinder: Lateral Surface Area", url: cylinderLsa, left: 21.5, top: 67.0, width: 5.2, height: 8.5 },
+        { title: "Cylinder: Total Surface Area", url: cylinderTsa, left: 21.6, top: 76.0, width: 5.2, height: 8.5 },
+
+        { title: "Rectangular Prism: Lateral Surface Area", url: rectangularPrismLsa, left: 60.2, top: 63.3, width: 5.2, height: 8.5 },
+        { title: "Rectangular Prism: Total Surface Area", url: rectangularPrismTsa, left: 60.1, top: 71.6, width: 5.2, height: 8.5 },
+
+        { title: "Triangular Prism: Lateral Surface Area", url: triangularPrismLsa, left: 92.1, top: 62.4, width: 5.2, height: 8.5 },
+        { title: "Triangular Prism: Total Surface Area", url: triangularPrismTsa, left: 92.1, top: 70.7, width: 5.2, height: 8.5 }
       ]
     },
     {
