@@ -36,10 +36,10 @@
       videos: [],
       resource: "Standards",
       substandardHotspots: [
-        { standard: "8.7A", label: "Open 8.7A", left: 5, top: 14, width: 90, height: 17 },
-        { standard: "8.7B", label: "Open 8.7B", left: 5, top: 33, width: 90, height: 17 },
-        { standard: "8.7C", label: "Open 8.7C", left: 5, top: 52, width: 90, height: 17 },
-        { standard: "8.7D", label: "Open 8.7D", left: 5, top: 71, width: 90, height: 17 }
+        { standard: "8.7A", label: "Open 8.7A anchor chart", left: 2.7, top: 25.5, width: 44.0, height: 31.8 },
+        { standard: "8.7B", label: "Open 8.7B anchor chart", left: 53.0, top: 25.5, width: 44.0, height: 31.8 },
+        { standard: "8.7C", label: "Open 8.7C anchor chart", left: 2.7, top: 60.2, width: 44.0, height: 31.8 },
+        { standard: "8.7D", label: "Open 8.7D anchor chart", left: 53.0, top: 60.2, width: 44.0, height: 31.8 }
       ]
     },
     {
