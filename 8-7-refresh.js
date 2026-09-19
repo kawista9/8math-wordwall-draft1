@@ -126,7 +126,14 @@
       image: "assets/8-7-05.jpeg?v=20260916-87-revamp",
       standard: "8.7B",
       resource: "Calculator tips",
-      videos: []
+      videos: [
+        { title: "Using π and Exponents", url: "https://go.screenpal.com/watch/cOff1enTEGS" },
+        { title: "Solving for Missing Values", url: "https://go.screenpal.com/watch/cOff1tnTEHV" }
+      ],
+      videoHotspots: [
+        { title: "Using π and Exponents", url: "https://go.screenpal.com/watch/cOff1enTEGS", left: 3.0, top: 21.5, width: 45.0, height: 14.0 },
+        { title: "Solving for Missing Values", url: "https://go.screenpal.com/watch/cOff1tnTEHV", left: 52.0, top: 21.5, width: 45.0, height: 14.0 }
+      ]
     },
     {
       page: 6,
