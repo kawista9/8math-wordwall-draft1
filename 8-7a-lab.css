@@ -127,3 +127,21 @@
   stroke:#352172;
   stroke-width:5;
 }
+
+
+/* 8.7A Question 17 corrected tennis-can figure */
+.v87-tennis-visual{
+  padding:0;
+  border:0;
+  box-shadow:none;
+  background:transparent;
+  min-height:0;
+  overflow:visible;
+}
+.v87-tennis-site-figure{
+  display:block;
+  width:100%;
+  height:auto;
+  max-height:780px;
+  margin:0 auto;
+}
