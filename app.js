@@ -791,6 +791,12 @@
         ["https://somup.com/cOeIfXVcjwq", "Why Use the Pythagorean Theorem?"]
       ]
     },
+    "8.7A": {
+      title: "Volume Builder: Model, Calculate, Combine",
+      description: "Work through twenty volume problems in three phases. First match formulas to cylinders, cones, and spheres and enter the dimensions; then model word problems by choosing the correct solid; finally reason through composite figures with guided questions before calculating the final volume.",
+      summary: "You selected and used volume formulas for cylinders, cones, and spheres, replaced B with πr² when needed, converted diameter to radius, modeled word problems with the correct solid, rounded answers to the nearest hundredth with cubic units, and combined or subtracted component volumes in composite figures.",
+      videos: []
+    },
     "8.4A": {
       title: "Slope: Do It With Me",
       description: "Choose four exact points on each line. The lab groups them into two pairs, and you complete the rise-first, run-second process for both pairs to prove that the slope stays the same. Pay attention to the value of each axis interval: the first five problems coach every move, and the final ten ask you to determine and enter both sets of signed changes yourself.",
@@ -1036,6 +1042,7 @@
     if (standard === "8.5I") renderLab85I();
     if (standard === "8.6A") renderLab86A();
     if (standard === "8.6C") renderLab86C();
+    if (standard === "8.7A") renderLab87A();
     if (standard === "8.10A") renderLabA();
     if (standard === "8.10B") renderLabB();
     if (standard === "8.10C") renderLabC();
@@ -2983,6 +2990,14 @@
       return;
     }
     window.renderPythagorean86CLab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
+  }
+
+  function renderLab87A() {
+    if (typeof window.renderVolume87ALab !== "function") {
+      setLabFeedback("The 8.7A lab module did not load. Refresh the page and try again.", "incorrect");
+      return;
+    }
+    window.renderVolume87ALab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
   }
 
   function renderLab86A() {
@@ -6283,6 +6298,24 @@
       data.selected = null;
       data.solved = false;
       renderLab86C();
+    } else if (standard === "8.7A") {
+      if (data.index >= window.VOLUME_87A_TOTAL - 1) return showLabCompletion(standard);
+      const nextIndex = data.index + 1;
+      if (typeof window.resetVolume87AQuestion === "function") window.resetVolume87AQuestion(data, nextIndex);
+      else {
+        data.index = nextIndex;
+        data.solved = false;
+        data.selectedFormula = null;
+        data.formula = null;
+        data.selectedBase = null;
+        data.base = null;
+        data.selectedFigure = null;
+        data.figure = null;
+        data.inputs = {};
+        data.seminarAnswers = [];
+        data.seminarStep = 0;
+      }
+      renderLab87A();
     } else if (standard === "8.3A") {
       if (data.index >= SIMILARITY_TASKS.length - 1) return showLabCompletion(standard);
       data.index += 1;
