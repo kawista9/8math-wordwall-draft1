@@ -1,0 +1,35 @@
+name: ScreenPal 8.7C calculator metadata check
+
+on:
+  push:
+    paths:
+      - ".github/workflows/screenpal-87c-calc-meta.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Inspect ScreenPal metadata
+        shell: bash
+        run: |
+          python - <<'PY'
+          import requests, re, html
+          url="https://go.screenpal.com/watch/cOff14nTEHq"
+          headers={"User-Agent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/130 Safari/537.36"}
+          r=requests.get(url,headers=headers,timeout=30,allow_redirects=True)
+          print("status",r.status_code,"url",r.url,"len",len(r.text))
+          pats=[
+            ("og:title", r'<meta[^>]+property=["\']og:title["\'][^>]+content=["\']([^"\']+)'),
+            ("title", r'<title[^>]*>(.*?)</title>'),
+            ("og:description", r'<meta[^>]+property=["\']og:description["\'][^>]+content=["\']([^"\']+)'),
+            ("description", r'<meta[^>]+name=["\']description["\'][^>]+content=["\']([^"\']+)')
+          ]
+          for label,pat in pats:
+            m=re.search(pat,r.text,re.I|re.S)
+            if m:
+              v=re.sub(r'\s+',' ',html.unescape(m.group(1))).strip()
+              print(label+":",v)
+          PY
