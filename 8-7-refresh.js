@@ -23,9 +23,10 @@
   const triangularPrismLsa = "https://go.screenpal.com/watch/cOewr9nTaE7";
   const surfaceAreaOverview = "https://go.screenpal.com/watch/cOew14nTxWx";
 
+  // 8.7C links verified against ScreenPal metadata.
   const converse = "https://go.screenpal.com/watch/cOfebZnT5SF";
-  const legs = "https://go.screenpal.com/watch/cOfeDgnT5NR";
-  const hypotenuse = "https://go.screenpal.com/watch/cOfeDPnT59i";
+  const missingSideLengths = "https://go.screenpal.com/watch/cOfeDgnT5NR";
+  const missingLeg = "https://go.screenpal.com/watch/cOfeDPnT59i";
 
   const distance = "https://go.screenpal.com/watch/cOfebynT5WY";
 
@@ -141,14 +142,19 @@
       standard: "8.7C",
       resource: "Anchor chart",
       videos: [
-        { title: "The Legs of a Right Triangle", url: legs },
-        { title: "The Hypotenuse of a Right Triangle", url: hypotenuse },
+        { title: "Using the Pythagorean Theorem to Find Missing Side Lengths", url: missingSideLengths },
+        { title: "Using the Pythagorean Theorem to Find the Leg of a Right Triangle", url: missingLeg },
         { title: "Converse of the Pythagorean Theorem", url: converse }
       ],
       videoHotspots: [
-        { title: "The Legs of a Right Triangle", url: legs, left: 32.5, top: 27.5, width: 5.0, height: 8.0 },
-        { title: "The Legs of a Right Triangle", url: legs, left: 47.5, top: 40.5, width: 5.0, height: 8.0 },
-        { title: "The Hypotenuse of a Right Triangle", url: hypotenuse, left: 48.0, top: 21.0, width: 5.0, height: 8.0 },
+        // Both play buttons beside a leg use the verified missing-leg lesson.
+        { title: "Using the Pythagorean Theorem to Find the Leg of a Right Triangle", url: missingLeg, left: 32.5, top: 27.5, width: 5.0, height: 8.0 },
+        { title: "Using the Pythagorean Theorem to Find the Leg of a Right Triangle", url: missingLeg, left: 47.5, top: 40.5, width: 5.0, height: 8.0 },
+
+        // The play button beside c (the hypotenuse) uses the broader verified missing-side-lengths lesson.
+        { title: "Using the Pythagorean Theorem to Find Missing Side Lengths", url: missingSideLengths, left: 48.0, top: 21.0, width: 5.0, height: 8.0 },
+
+        // The converse button uses the verified converse lesson.
         { title: "Converse of the Pythagorean Theorem", url: converse, left: 51.0, top: 51.5, width: 5.0, height: 8.0 }
       ]
     },
