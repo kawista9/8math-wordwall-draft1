@@ -82,3 +82,14 @@
   filter:drop-shadow(0 0 12px rgba(230,57,143,.95));
 }
 .sa87b-face-instruction strong{color:#4f249f}
+
+
+/* Dimension labels travel with the 3D model */
+.sa87b-cube-face{overflow:visible;color:#182141;font:800 15px/1.1 Arial,sans-serif}
+.sa87b-face-measure{position:absolute;z-index:4;pointer-events:none;background:rgba(255,255,255,.9);border:1px solid rgba(50,32,111,.18);border-radius:999px;padding:4px 7px;white-space:nowrap;box-shadow:0 3px 8px rgba(34,24,80,.09)}
+.sa87b-face-measure.horizontal{left:50%;bottom:7px;transform:translateX(-50%)}
+.sa87b-face-measure.vertical{left:7px;top:50%;transform:translate(-44%,-50%) rotate(-90deg)}
+.sa87b-model-label{font-family:Arial,sans-serif;font-size:17px;font-weight:900;fill:#17213f;paint-order:stroke;stroke:#fff;stroke-width:5px;stroke-linejoin:round;pointer-events:none}
+.sa87b-model-dim{stroke:#e6398f;stroke-width:4;stroke-linecap:round;pointer-events:none}
+.sa87b-base-caption{font-family:Arial,sans-serif;font-size:15px;font-weight:700;fill:#59627b}
+.sa87b-base-svg{overflow:visible}
