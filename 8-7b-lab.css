@@ -105,3 +105,29 @@
   stroke-width:5px;
   stroke-linejoin:round;
 }
+
+
+/* True 3D projected cylinder and triangular prism */
+.sa87b-turner.projected-3d{
+  width:min(520px,96%);
+  height:330px;
+  transform:none !important;
+}
+.sa87b-projected-svg{
+  display:block;
+  width:100%;
+  height:100%;
+  overflow:visible;
+  filter:drop-shadow(0 16px 12px rgba(34,25,80,.12));
+}
+.sa87b-projected-svg .sa87b-3d-side{
+  vector-effect:non-scaling-stroke;
+}
+.sa87b-projected-svg .sa87b-3d-base{
+  cursor:crosshair;
+  vector-effect:non-scaling-stroke;
+}
+.sa87b-projected-svg .sa87b-3d-base:hover,
+.sa87b-projected-svg .sa87b-3d-base.is-selected{
+  filter:drop-shadow(0 0 9px rgba(121,46,232,.9));
+}
