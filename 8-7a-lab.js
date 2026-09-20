@@ -101,6 +101,25 @@
       ]
     },
     {
+      kind: "composite", diagram: "tennis-can", unit: "cm", title: "Three 6.6 cm tennis balls in a can",
+      canRadius: 3.3, sphereRadius: 3.3, height: 19.8,
+      answer: () => cylinderVolume(3.3, 19.8) - 3 * sphereVolume(3.3),
+      seminar: [
+        {
+          q: "To find the empty space, which volumes must you calculate first?",
+          choices: ["the cylinder and one tennis ball", "only the cylinder", "only one tennis ball"], correct: 0
+        },
+        {
+          q: "There are three identical balls. What is the total volume occupied by the balls?",
+          choices: ["3 × Vsphere", "Vsphere ÷ 3", "Vcylinder + Vsphere"], correct: 0
+        },
+        {
+          q: "Which expression gives the space inside the can that is NOT occupied by tennis balls?",
+          choices: ["V = Vcylinder − 3Vsphere", "V = Vcylinder + 3Vsphere", "V = 3Vcylinder − Vsphere"], correct: 0
+        }
+      ]
+    },
+    {
       kind: "composite", diagram: "cone-hole", unit: "ft", title: "Cylinder with a conical opening",
       radius: 5, height: 12,
       answer: () => cylinderVolume(5, 12) - coneVolume(5, 12),
@@ -116,25 +135,6 @@
         {
           q: "Which expression represents the volume that remains?",
           choices: ["V = Vcylinder − Vcone", "V = Vcylinder + Vcone", "V = Vcone − Vcylinder"], correct: 0
-        }
-      ]
-    },
-    {
-      kind: "composite", diagram: "tennis-can", unit: "cm", title: "Three tennis balls in a can",
-      canRadius: 3.3, sphereRadius: 3.2, height: 19.8,
-      answer: () => cylinderVolume(3.3, 19.8) - 3 * sphereVolume(3.2),
-      seminar: [
-        {
-          q: "To find the empty space, which volumes must you calculate first?",
-          choices: ["the cylinder and one tennis ball", "only the cylinder", "only one tennis ball"], correct: 0
-        },
-        {
-          q: "There are three identical balls. What is the total volume occupied by the balls?",
-          choices: ["3 × Vsphere", "Vsphere ÷ 3", "Vcylinder + Vsphere"], correct: 0
-        },
-        {
-          q: "Which expression gives the space inside the can that is NOT occupied by tennis balls?",
-          choices: ["V = Vcylinder − 3Vsphere", "V = Vcylinder + 3Vsphere", "V = 3Vcylinder − Vsphere"], correct: 0
         }
       ]
     },
@@ -478,7 +478,7 @@
       </svg>`;
     }
     if (task.diagram === "tennis-can") {
-      return `<img class="v87-tennis-site-figure" src="assets/8-7a/q18-tennis-can.webp?v=20260919-1" alt="Cylinder 6.6 centimeters in diameter and 19.8 centimeters high containing three tennis balls, each 6.4 centimeters in diameter">`;
+      return `<img class="v87-tennis-site-figure" src="assets/8-7a/q17-tennis-can.webp?v=20260919-2" alt="Cylinder 6.6 centimeters in diameter and 19.8 centimeters high containing three tennis balls, each 6.6 centimeters in diameter">`;
     }
     return `<svg class="v87-composite-svg" viewBox="0 0 540 430" role="img" aria-label="Cone with a hemispherical scoop">
       <path d="M120 155 A135 135 0 0 1 390 155" class="v87-composite-fill"/>
