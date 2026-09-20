@@ -797,6 +797,23 @@
       summary: "You selected and used volume formulas for cylinders, cones, and spheres, replaced B with πr² when needed, converted diameter to radius, modeled word problems with the correct solid, reported each volume to the nearest tenth, hundredth, and thousandth with cubic units, and combined or subtracted component volumes in composite figures.",
       videos: []
     },
+    "8.7B": {
+      title: "Surface Area Lab: Bases, Nets, and Missing Measures",
+      description: "Work through fifteen surface-area problems in three phases. First turn 3D prisms and cylinders to identify their two bases, calculate B and P from one base, identify h as the distance between the bases, and build both lateral and total surface-area formulas. Then solve real-world covering and painting situations from nets. Finish by working backward to find missing measures.",
+      summary: "You learned that B and P come from one two-dimensional base, while h is the distance between the two congruent parallel bases. You used L = Ph for lateral surface area and S = Ph + 2B for total surface area, recognized when real-world situations include or exclude the bases, interpreted nets, and worked backward from surface area to find missing dimensions.",
+      videos: [
+        ["https://go.screenpal.com/watch/cOewrnnTaAP", "Finding Total Surface Area of 3D Figures"],
+        ["https://go.screenpal.com/watch/cOewr3nTakp", "Finding the Perimeter of Bases in Geometry"],
+        ["https://go.screenpal.com/watch/cOewrQnTaBR", "Understanding Height in Geometry"],
+        ["https://go.screenpal.com/watch/cOewrgnTaCG", "Finding the Area of the Base"],
+        ["https://go.screenpal.com/watch/cOfVnZnTzQX", "Lateral Surface Area of a Cylinder"],
+        ["https://go.screenpal.com/watch/cOfVnMnTzI1", "Total Surface Area of a Cylinder"],
+        ["https://go.screenpal.com/watch/cOfVeMnTzqP", "Lateral Surface Area of a Rectangular Prism"],
+        ["https://go.screenpal.com/watch/cOfVeFnTzDX", "Total Surface Area of a Rectangular Prism"],
+        ["https://go.screenpal.com/watch/cOewr9nTaE7", "Lateral Surface Area of a Triangular Prism"],
+        ["https://go.screenpal.com/watch/cOew36nTaGS", "Total Surface Area of a Triangular Prism"]
+      ]
+    },
     "8.4A": {
       title: "Slope: Do It With Me",
       description: "Choose four exact points on each line. The lab groups them into two pairs, and you complete the rise-first, run-second process for both pairs to prove that the slope stays the same. Pay attention to the value of each axis interval: the first five problems coach every move, and the final ten ask you to determine and enter both sets of signed changes yourself.",
@@ -1043,6 +1060,7 @@
     if (standard === "8.6A") renderLab86A();
     if (standard === "8.6C") renderLab86C();
     if (standard === "8.7A") renderLab87A();
+    if (standard === "8.7B") renderLab87B();
     if (standard === "8.10A") renderLabA();
     if (standard === "8.10B") renderLabB();
     if (standard === "8.10C") renderLabC();
@@ -2998,6 +3016,14 @@
       return;
     }
     window.renderVolume87ALab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
+  }
+
+  function renderLab87B() {
+    if (typeof window.renderSurface87BLab !== "function") {
+      setLabFeedback("The 8.7B lab module did not load. Refresh the page and try again.", "incorrect");
+      return;
+    }
+    window.renderSurface87BLab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
   }
 
   function renderLab86A() {
@@ -6316,6 +6342,12 @@
         data.seminarStep = 0;
       }
       renderLab87A();
+    } else if (standard === "8.7B") {
+      if (data.index >= window.SURFACE_87B_TOTAL - 1) return showLabCompletion(standard);
+      const nextIndex = data.index + 1;
+      if (typeof window.resetSurface87BQuestion === "function") window.resetSurface87BQuestion(data, nextIndex);
+      else Object.assign(data, { index: nextIndex, step: 0, solved: false, turning: true, rx: -14, ry: 24, selectedFaces: [], pair: null, need: null, formula: null, inputs: {}, seminar: [] });
+      renderLab87B();
     } else if (standard === "8.3A") {
       if (data.index >= SIMILARITY_TASKS.length - 1) return showLabCompletion(standard);
       data.index += 1;
