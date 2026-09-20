@@ -239,6 +239,58 @@
     text.textContent = value;
   }
 
+  function add3(a, b) {
+    return { x: a.x + b.x, y: a.y + b.y, z: a.z + b.z };
+  }
+
+  function scale3(v, scalar) {
+    return { x: v.x * scalar, y: v.y * scalar, z: v.z * scalar };
+  }
+
+  function normalize3(v) {
+    const length = Math.hypot(v.x, v.y, v.z) || 1;
+    return { x: v.x / length, y: v.y / length, z: v.z / length };
+  }
+
+  function distance2(a, b) {
+    return Math.hypot(a.x - b.x, a.y - b.y);
+  }
+
+  function setProjectedPlaque(group, center, ux, uy, width, height, data, label) {
+    if (!group) return;
+    const xAxis = normalize3(ux);
+    const yAxis = normalize3(uy);
+    const hw = width / 2;
+    const hh = height / 2;
+    const corners3 = [
+      add3(add3(center, scale3(xAxis, -hw)), scale3(yAxis, -hh)),
+      add3(add3(center, scale3(xAxis, hw)), scale3(yAxis, -hh)),
+      add3(add3(center, scale3(xAxis, hw)), scale3(yAxis, hh)),
+      add3(add3(center, scale3(xAxis, -hw)), scale3(yAxis, hh))
+    ];
+    const corners2 = corners3.map(point => project3DPoint(point, data));
+    const polygon = group.querySelector("polygon");
+    const text = group.querySelector("text");
+    if (polygon) polygon.setAttribute("points", svgPoints(corners2));
+
+    const center2 = project3DPoint(center, data);
+    const xA = project3DPoint(add3(center, scale3(xAxis, -hw)), data);
+    const xB = project3DPoint(add3(center, scale3(xAxis, hw)), data);
+    const yA = project3DPoint(add3(center, scale3(yAxis, -hh)), data);
+    const yB = project3DPoint(add3(center, scale3(yAxis, hh)), data);
+    const angle = Math.atan2(xB.y - xA.y, xB.x - xA.x) * 180 / Math.PI;
+    const projectedHeight = Math.max(8, distance2(yA, yB));
+    const fontSize = Math.max(10, Math.min(18, projectedHeight * 0.68));
+
+    if (text) {
+      text.setAttribute("x", center2.x.toFixed(1));
+      text.setAttribute("y", center2.y.toFixed(1));
+      text.setAttribute("font-size", fontSize.toFixed(1));
+      text.setAttribute("transform", `rotate(${angle.toFixed(2)} ${center2.x.toFixed(1)} ${center2.y.toFixed(1)})`);
+      text.textContent = label;
+    }
+  }
+
   function triangleWorldGeometry(task) {
     const base = Number(task.base.triBase);
     const altitude = Number(task.base.triHeight);
@@ -247,10 +299,10 @@
       || Math.abs((sides[0] ** 2 + sides[2] ** 2) - sides[1] ** 2) < 0.2
       || Math.abs((sides[1] ** 2 + sides[2] ** 2) - sides[0] ** 2) < 0.2;
 
-    const scale = Math.min(24, 170 / Math.max(base, altitude, 1));
+    const scale = Math.min(30, 215 / Math.max(base, altitude, 1));
     const b = base * scale;
     const h = altitude * scale;
-    const depth = Math.max(120, Math.min(205, Number(task.h) * 18));
+    const depth = Math.max(155, Math.min(245, Number(task.h) * 22));
     let triangle;
 
     if (isRight && Math.abs(base - 8) < 0.2) {
@@ -308,31 +360,65 @@
     const altitudeB = project3DPoint(apex3, data);
     setSvgLine(svg.querySelector("[data-tri-altitude]"), altitudeA, altitudeB);
 
-    const lengthA = project3DPoint(front3[2], data);
-    const lengthB = project3DPoint(back3[2], data);
-    setSvgLine(svg.querySelector("[data-tri-length]"), lengthA, lengthB);
-
     const unit = task.unit;
-    const baseMid2 = project3DPoint(baseMid3, data);
-    setSvgText(svg.querySelector('[data-tri-label="base"]'), baseMid2, `base = ${clean(task.base.triBase)} ${unit}`, 0, 28);
+    const frontPlaneX = { x: 1, y: 0, z: 0 };
+    const frontPlaneY = { x: 0, y: 1, z: 0 };
 
-    const altMid = { x:(altitudeA.x+altitudeB.x)/2, y:(altitudeA.y+altitudeB.y)/2 };
-    setSvgText(svg.querySelector('[data-tri-label="altitude"]'), altMid, `height = ${clean(task.base.triHeight)} ${unit}`, 20, -8);
+    // Labels are small white plaques that lie in the same plane as the triangular base,
+    // just like the labels that sit on the rectangular-prism faces.
+    setProjectedPlaque(
+      svg.querySelector('[data-tri-plaque="base"]'),
+      add3(baseMid3, { x: 0, y: 17, z: 0 }),
+      frontPlaneX, frontPlaneY, 78, 25, data,
+      `${clean(task.base.triBase)} ${unit}`
+    );
 
-    for (let i = 0; i < 2; i += 1) {
-      const mid = midpoint3D(front3[i === 0 ? 0 : 1], front3[2]);
-      const p = project3DPoint(mid, data);
-      const dx = i === 0 ? -30 : 30;
-      setSvgText(svg.querySelector(`[data-tri-label="side${i}"]`), p, `${clean(task.base.sides[i])} ${unit}`, dx, -4);
-    }
+    const altitudeCenter = {
+      x: (baseMid3.x + apex3.x) / 2 + 22,
+      y: (baseMid3.y + apex3.y) / 2,
+      z: frontZ
+    };
+    setProjectedPlaque(
+      svg.querySelector('[data-tri-plaque="altitude"]'),
+      altitudeCenter,
+      frontPlaneX, frontPlaneY, 76, 24, data,
+      `${clean(task.base.triHeight)} ${unit}`
+    );
 
-    const lengthMid = { x:(lengthA.x+lengthB.x)/2, y:(lengthA.y+lengthB.y)/2 };
-    setSvgText(svg.querySelector('[data-tri-label="length"]'), lengthMid, `prism length = ${clean(task.h)} ${unit}`, 0, -12);
+    const leftEdge = { x: front3[2].x - front3[0].x, y: front3[2].y - front3[0].y, z: 0 };
+    const leftNormal = normalize3({ x: -leftEdge.y, y: leftEdge.x, z: 0 });
+    const leftCenter = add3(midpoint3D(front3[0], front3[2]), scale3(leftNormal, 13));
+    setProjectedPlaque(
+      svg.querySelector('[data-tri-plaque="side0"]'),
+      leftCenter, leftEdge, leftNormal, 58, 22, data,
+      `${clean(task.base.sides[0])} ${unit}`
+    );
+
+    const rightEdge = { x: front3[2].x - front3[1].x, y: front3[2].y - front3[1].y, z: 0 };
+    const rightNormal = normalize3({ x: -rightEdge.y, y: rightEdge.x, z: 0 });
+    const rightCenter = add3(midpoint3D(front3[1], front3[2]), scale3(rightNormal, -13));
+    setProjectedPlaque(
+      svg.querySelector('[data-tri-plaque="side1"]'),
+      rightCenter, rightEdge, rightNormal, 58, 22, data,
+      `${clean(task.base.sides[1])} ${unit}`
+    );
+
+    // Prism length sits flat on one rectangular lateral face.
+    const edgeMidFront = midpoint3D(front3[0], front3[1]);
+    const edgeMidBack = midpoint3D(back3[0], back3[1]);
+    const lateralCenter = midpoint3D(edgeMidFront, edgeMidBack);
+    const lateralEdge = { x: front3[1].x - front3[0].x, y: front3[1].y - front3[0].y, z: 0 };
+    const prismAxis = { x: 0, y: 0, z: 1 };
+    setProjectedPlaque(
+      svg.querySelector('[data-tri-plaque="length"]'),
+      lateralCenter, prismAxis, lateralEdge, 84, 24, data,
+      `${clean(task.h)} ${unit}`
+    );
   }
 
   function cylinderWorldGeometry(task, segments = 28) {
-    const radius = 90;
-    const halfLength = Math.max(105, Math.min(175, Number(task.h) * 10.5));
+    const radius = 108;
+    const halfLength = Math.max(135, Math.min(215, Number(task.h) * 13));
     const ring = z => Array.from({length:segments}, (_,i) => {
       const angle = i * Math.PI * 2 / segments;
       return { x: radius * Math.cos(angle), y: radius * Math.sin(angle), z };
@@ -373,21 +459,35 @@
     });
 
     const frontCenter3 = {x:0,y:0,z:halfLength};
-    const backCenter3 = {x:0,y:0,z:-halfLength};
     const radiusEnd3 = {x:radius,y:0,z:halfLength};
     const frontCenter2 = project3DPoint(frontCenter3, data);
-    const backCenter2 = project3DPoint(backCenter3, data);
     const radiusEnd2 = project3DPoint(radiusEnd3, data);
 
     setSvgLine(svg.querySelector("[data-cyl-radius]"), frontCenter2, radiusEnd2);
-    setSvgLine(svg.querySelector("[data-cyl-height]"), frontCenter2, backCenter2);
 
     const unit = task.unit;
-    const radiusMid = {x:(frontCenter2.x+radiusEnd2.x)/2,y:(frontCenter2.y+radiusEnd2.y)/2};
-    setSvgText(svg.querySelector('[data-cyl-label="radius"]'), radiusMid, `r = ${clean(task.radius)} ${unit}`, 0, -12);
 
-    const heightMid = {x:(frontCenter2.x+backCenter2.x)/2,y:(frontCenter2.y+backCenter2.y)/2};
-    setSvgText(svg.querySelector('[data-cyl-label="height"]'), heightMid, `h = ${clean(task.h)} ${unit}`, 18, -10);
+    // Radius plaque lies directly in the circular base plane.
+    setProjectedPlaque(
+      svg.querySelector('[data-cyl-plaque="radius"]'),
+      { x: radius * 0.22, y: radius * 0.28, z: halfLength },
+      { x: 1, y: 0, z: 0 },
+      { x: 0, y: 1, z: 0 },
+      86, 26, data,
+      `r = ${clean(task.radius)} ${unit}`
+    );
+
+    // Height/distance-between-bases plaque lies tangent to the curved side.
+    // At x = radius, the tangent plane is spanned by the cylinder axis (z)
+    // and the local vertical direction (y).
+    setProjectedPlaque(
+      svg.querySelector('[data-cyl-plaque="height"]'),
+      { x: radius, y: 0, z: 0 },
+      { x: 0, y: 0, z: 1 },
+      { x: 0, y: 1, z: 0 },
+      96, 28, data,
+      `${clean(task.h)} ${unit}`
+    );
   }
 
   function renderProjectedSolid(turner, task, data) {
@@ -408,12 +508,11 @@
         <polygon class="sa87b-svg-face sa87b-3d-base${selected.has("triFront") ? " is-selected" : ""}" data-sa-face="triFront" data-sa-pair="triPair" fill="#ead8ff" fill-opacity=".94" stroke="#6d2fd4" stroke-width="6"/>
       </g>
       <line data-tri-altitude class="sa87b-model-dim" stroke-dasharray="9 7"/>
-      <line data-tri-length class="sa87b-length-guide"/>
-      <text data-tri-label="base" text-anchor="middle" class="sa87b-model-label"></text>
-      <text data-tri-label="altitude" text-anchor="middle" class="sa87b-model-label"></text>
-      <text data-tri-label="side0" text-anchor="middle" class="sa87b-model-label"></text>
-      <text data-tri-label="side1" text-anchor="middle" class="sa87b-model-label"></text>
-      <text data-tri-label="length" text-anchor="middle" class="sa87b-model-label sa87b-length-label"></text>
+      <g data-tri-plaque="base" class="sa87b-surface-plaque"><polygon/><text text-anchor="middle" dominant-baseline="middle"></text></g>
+      <g data-tri-plaque="altitude" class="sa87b-surface-plaque"><polygon/><text text-anchor="middle" dominant-baseline="middle"></text></g>
+      <g data-tri-plaque="side0" class="sa87b-surface-plaque"><polygon/><text text-anchor="middle" dominant-baseline="middle"></text></g>
+      <g data-tri-plaque="side1" class="sa87b-surface-plaque"><polygon/><text text-anchor="middle" dominant-baseline="middle"></text></g>
+      <g data-tri-plaque="length" class="sa87b-surface-plaque"><polygon/><text text-anchor="middle" dominant-baseline="middle"></text></g>
     </svg>`;
   }
 
@@ -453,9 +552,8 @@
         <polygon class="sa87b-svg-face sa87b-3d-base${selected.has("circleTop") ? " is-selected" : ""}" data-sa-face="circleTop" data-sa-pair="circlePair" fill="#ead8ff" fill-opacity=".92" stroke="#6d2fd4" stroke-width="5"/>
       </g>
       <line data-cyl-radius class="sa87b-model-dim"/>
-      <line data-cyl-height class="sa87b-length-guide"/>
-      <text data-cyl-label="radius" text-anchor="middle" class="sa87b-model-label"></text>
-      <text data-cyl-label="height" text-anchor="middle" class="sa87b-model-label"></text>
+      <g data-cyl-plaque="radius" class="sa87b-surface-plaque"><polygon/><text text-anchor="middle" dominant-baseline="middle"></text></g>
+      <g data-cyl-plaque="height" class="sa87b-surface-plaque"><polygon/><text text-anchor="middle" dominant-baseline="middle"></text></g>
     </svg>`;
   }
 
