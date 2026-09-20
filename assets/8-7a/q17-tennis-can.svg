@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 1200" role="img" aria-labelledby="title desc">
+  <title id="title">Study the figure</title>
+  <desc id="desc">A cylinder 6.6 centimeters in diameter and 19.8 centimeters high containing three spheres, each 6.6 centimeters in diameter.</desc>
+  <defs>
+    <linearGradient id="can" x1="0" x2="1">
+      <stop offset="0" stop-color="#eefcff" stop-opacity=".92"/>
+      <stop offset=".5" stop-color="#a8e5f8" stop-opacity=".45"/>
+      <stop offset="1" stop-color="#eefcff" stop-opacity=".88"/>
+    </linearGradient>
+    <radialGradient id="ball" cx="38%" cy="28%" r="76%">
+      <stop offset="0" stop-color="#fcff8a"/>
+      <stop offset=".58" stop-color="#dfff20"/>
+      <stop offset="1" stop-color="#a7d614"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="720" height="1200" fill="#f8fbff"/>
+  <rect x="18" y="18" width="684" height="1164" rx="34" fill="#fff" stroke="#7b2ee8" stroke-width="5"/>
+
+  <text x="52" y="82" fill="#32106e" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="800">Study the figure</text>
+
+  <!-- cylinder -->
+  <rect x="180" y="190" width="300" height="900" fill="url(#can)"/>
+  <line x1="180" y1="190" x2="180" y2="1090" stroke="#1487c1" stroke-width="6"/>
+  <line x1="480" y1="190" x2="480" y2="1090" stroke="#1487c1" stroke-width="6"/>
+  <ellipse cx="330" cy="190" rx="150" ry="38" fill="#c9f2ff" fill-opacity=".82" stroke="#1487c1" stroke-width="6"/>
+  <ellipse cx="330" cy="1090" rx="150" ry="38" fill="#a7e4f7" fill-opacity=".85" stroke="#1487c1" stroke-width="6"/>
+
+  <!-- diameter -->
+  <line x1="180" y1="211" x2="480" y2="211" stroke="#ff2f95" stroke-width="6" stroke-linecap="round"/>
+  <line x1="180" y1="196" x2="180" y2="226" stroke="#ff2f95" stroke-width="6"/>
+  <line x1="480" y1="196" x2="480" y2="226" stroke="#ff2f95" stroke-width="6"/>
+  <text x="330" y="182" text-anchor="middle" fill="#111d42" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="800">6.6 cm</text>
+
+  <!-- spheres; each diameter equals cylinder diameter -->
+  <g fill="url(#ball)" stroke="#4e7f22" stroke-width="5">
+    <circle cx="330" cy="340" r="150"/>
+    <circle cx="330" cy="640" r="150"/>
+    <circle cx="330" cy="940" r="150"/>
+  </g>
+
+  <!-- simple tennis-ball seams -->
+  <g fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" opacity=".9">
+    <path d="M235 250 C215 310 215 370 235 430"/>
+    <path d="M425 250 C445 310 445 370 425 430"/>
+    <path d="M235 550 C215 610 215 670 235 730"/>
+    <path d="M425 550 C445 610 445 670 425 730"/>
+    <path d="M235 850 C215 910 215 970 235 1030"/>
+    <path d="M425 850 C445 910 445 970 425 1030"/>
+  </g>
+
+  <!-- cylinder height -->
+  <line x1="555" y1="190" x2="555" y2="1090" stroke="#ff2f95" stroke-width="6" stroke-linecap="round"/>
+  <line x1="542" y1="190" x2="568" y2="190" stroke="#ff2f95" stroke-width="6"/>
+  <line x1="542" y1="1090" x2="568" y2="1090" stroke="#ff2f95" stroke-width="6"/>
+  <text x="585" y="660" fill="#111d42" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="800">19.8 cm</text>
+</svg>
