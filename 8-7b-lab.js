@@ -209,7 +209,7 @@
       <div class="sa87b-scene">
         <div class="sa87b-turner${data.turning ? " can-turn" : ""}" style="--rx:${data.rx}deg;--ry:${data.ry}deg">${model}</div>
       </div>
-      <p class="sa87b-face-instruction"><strong>Step 1:</strong> Click the two congruent, parallel faces you want to use as the bases. For a rectangular prism, any one of the three opposite pairs can be the bases.</p>
+      <p class="sa87b-face-instruction"><strong>Step 1:</strong> Turn the solid until you can see a base clearly. <strong>While Turning is ON, double-click a face to select it.</strong> If you switch Turning OFF, a single click will select. Choose two congruent, parallel opposite faces. For a rectangular prism, any one of the three opposite pairs can be the bases.</p>
     </section>`;
   }
 
@@ -584,33 +584,57 @@
     attachInputs(body, data);
     wireTurner(body, data);
 
+    const selectBaseFace = face => {
+      const id = face.dataset.saFace;
+      if (!id) return;
+
+      if (data.selectedFaces.includes(id)) {
+        data.selectedFaces = data.selectedFaces.filter(item => item !== id);
+        face.classList.remove("is-selected");
+        return setLabFeedback("That face was unselected. Choose the two congruent, parallel faces you want to use as bases.");
+      }
+
+      data.selectedFaces.push(id);
+      face.classList.add("is-selected");
+
+      if (data.selectedFaces.length < 2) {
+        return setLabFeedback("Base 1 selected. Keep turning the solid if needed, then double-click its congruent, parallel opposite face.");
+      }
+
+      const [first, second] = data.selectedFaces.slice(-2);
+      if (!pairIsValid(task, first, second)) {
+        data.selectedFaces = [];
+        body.querySelectorAll("[data-sa-face]").forEach(node => node.classList.remove("is-selected"));
+        return setLabFeedback("Those two faces are not an opposite congruent pair. Keep turning the solid and double-click a different pair.", "incorrect");
+      }
+
+      data.pair = pairKey(first);
+      data.step = 1;
+      data.turning = false;
+      setLabFeedback("Yes. Those two faces can be the bases. Now ignore the full solid for a moment and study ONE base.", "correct");
+      window.renderSurface87BLab(ctx);
+      syncWhiteboardQuestion();
+    };
+
     body.querySelectorAll("[data-sa-face]").forEach(face => {
       face.addEventListener("click", event => {
         const turner = body.querySelector(".sa87b-turner");
         if (turner?.dataset.moved === "yes") return;
-        const id = face.dataset.saFace;
-        if (data.selectedFaces.includes(id)) {
-          data.selectedFaces = data.selectedFaces.filter(item => item !== id);
-          face.classList.remove("is-selected");
-          return;
+
+        // When the model is still in turning mode, reserve a normal click for
+        // rotating/positioning the solid. Double-click is the deliberate select action.
+        if (data.turning) {
+          return setLabFeedback("Turning is ON. Double-click the face to select it, or switch Turning OFF and single-click.");
         }
-        data.selectedFaces.push(id);
-        face.classList.add("is-selected");
-        if (data.selectedFaces.length < 2) {
-          return setLabFeedback("One face selected. Now find its congruent, parallel opposite face.");
-        }
-        const [first, second] = data.selectedFaces.slice(-2);
-        if (!pairIsValid(task, first, second)) {
-          data.selectedFaces = [];
-          body.querySelectorAll("[data-sa-face]").forEach(node => node.classList.remove("is-selected"));
-          return setLabFeedback("Those two faces are not an opposite congruent pair. Turn the solid and try a different pair.", "incorrect");
-        }
-        data.pair = pairKey(first);
-        data.step = 1;
-        data.turning = false;
-        setLabFeedback("Yes. Those two faces can be the bases. Now ignore the full solid for a moment and study ONE base.", "correct");
-        window.renderSurface87BLab(ctx);
-        syncWhiteboardQuestion();
+
+        event.preventDefault();
+        selectBaseFace(face);
+      });
+
+      face.addEventListener("dblclick", event => {
+        event.preventDefault();
+        event.stopPropagation();
+        selectBaseFace(face);
       });
     });
 
