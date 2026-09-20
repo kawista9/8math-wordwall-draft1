@@ -71,3 +71,14 @@
   .sa87b-input-row,.sa87b-choice-row,.sa87b-given-grid{grid-template-columns:1fr}
   .sa87b-turner{width:300px}
 }
+
+
+/* Easier base selection while inspecting 3D solids */
+.sa87b-turner.can-turn [data-sa-face]{cursor:crosshair}
+.sa87b-turner [data-sa-face]:hover{
+  filter:drop-shadow(0 0 10px rgba(121,46,232,.9));
+}
+.sa87b-turner [data-sa-face].is-selected{
+  filter:drop-shadow(0 0 12px rgba(230,57,143,.95));
+}
+.sa87b-face-instruction strong{color:#4f249f}
