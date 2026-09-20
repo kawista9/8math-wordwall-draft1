@@ -103,8 +103,17 @@
     const target = roundTo(expected, 2);
     if (Math.abs(n - target) > 0.005) return { ok: false, type: "math", target };
     const decimals = match[1] || "";
-    if (decimals.length !== 2) return { ok: false, type: "place", target };
-    return { ok: true, target };
+    const targetIsWhole = Number.isInteger(target);
+
+    // A whole-number result may be entered as 40, 40.0, or 40.00.
+    // Non-whole results still show the hundredths place explicitly.
+    if (targetIsWhole) {
+      if (decimals.length > 2) return { ok: false, type: "place", target, targetIsWhole };
+      return { ok: true, target, targetIsWhole };
+    }
+
+    if (decimals.length !== 2) return { ok: false, type: "place", target, targetIsWhole };
+    return { ok: true, target, targetIsWhole };
   }
 
   function circleBase(radius) {
@@ -162,45 +171,64 @@
     return "solve for a missing measure";
   }
 
-  function rect3DMarkup(data) {
+  function rect3DMarkup(task, data) {
     const sel = new Set(data.selectedFaces || []);
-    const face = (id, pair, label) =>
-      `<button type="button" class="sa87b-cube-face ${id}${sel.has(id) ? " is-selected" : ""}" data-sa-face="${id}" data-sa-pair="${pair}" aria-label="${label} face"></button>`;
+    const u = escapeHTML(task.unit);
+    const face = (id, pair, label, horizontal, vertical) =>
+      `<button type="button" class="sa87b-cube-face ${id}${sel.has(id) ? " is-selected" : ""}" data-sa-face="${id}" data-sa-pair="${pair}" aria-label="${label} face, ${horizontal} by ${vertical} ${u}">
+        <span class="sa87b-face-measure horizontal">${horizontal} ${u}</span>
+        <span class="sa87b-face-measure vertical">${vertical} ${u}</span>
+      </button>`;
     return `<div class="sa87b-object sa87b-cuboid">
-      ${face("front", "frontBack", "front")}
-      ${face("back", "frontBack", "back")}
-      ${face("left", "leftRight", "left")}
-      ${face("right", "leftRight", "right")}
-      ${face("top", "topBottom", "top")}
-      ${face("bottom", "topBottom", "bottom")}
+      ${face("front", "frontBack", "front", clean(task.width), clean(task.height))}
+      ${face("back", "frontBack", "back", clean(task.width), clean(task.height))}
+      ${face("left", "leftRight", "left", clean(task.depth), clean(task.height))}
+      ${face("right", "leftRight", "right", clean(task.depth), clean(task.height))}
+      ${face("top", "topBottom", "top", clean(task.width), clean(task.depth))}
+      ${face("bottom", "topBottom", "bottom", clean(task.width), clean(task.depth))}
     </div>`;
   }
 
-  function triangular3DMarkup(data) {
+  function triangular3DMarkup(task, data) {
     const selected = new Set(data.selectedFaces || []);
-    return `<svg class="sa87b-object sa87b-svg-solid" viewBox="0 0 460 330" role="img" aria-label="Triangular prism that can be turned">
-      <polygon points="95,105 205,55 205,255 95,275" fill="#dff6ff" stroke="#32206f" stroke-width="5"/>
-      <polygon points="205,55 365,105 365,275 205,255" fill="#bcecff" stroke="#32206f" stroke-width="5"/>
-      <polygon points="95,105 205,55 365,105 245,155" fill="#96dcf4" stroke="#32206f" stroke-width="5"/>
-      <polygon class="sa87b-svg-face${selected.has("triFront") ? " is-selected" : ""}" data-sa-face="triFront" data-sa-pair="triPair" points="95,105 95,275 245,205" fill="#f0dbff" stroke="#6d2fd4" stroke-width="6"/>
-      <polygon class="sa87b-svg-face${selected.has("triBack") ? " is-selected" : ""}" data-sa-face="triBack" data-sa-pair="triPair" points="205,55 205,255 365,175" fill="#ead2ff" fill-opacity=".74" stroke="#6d2fd4" stroke-width="6"/>
-      <line x1="245" y1="205" x2="365" y2="175" stroke="#32206f" stroke-width="5"/>
+    const u = escapeHTML(task.unit);
+    const s = task.base.sides;
+    return `<svg class="sa87b-object sa87b-svg-solid" viewBox="0 0 500 360" role="img" aria-label="Triangular prism with labeled dimensions that turns with the model">
+      <polygon points="110,105 225,55 225,275 110,300" fill="#dff6ff" stroke="#32206f" stroke-width="5"/>
+      <polygon points="225,55 400,105 400,295 225,275" fill="#bcecff" stroke="#32206f" stroke-width="5"/>
+      <polygon points="110,105 225,55 400,105 265,165" fill="#96dcf4" stroke="#32206f" stroke-width="5"/>
+      <polygon class="sa87b-svg-face${selected.has("triFront") ? " is-selected" : ""}" data-sa-face="triFront" data-sa-pair="triPair" points="110,105 110,300 265,215" fill="#f0dbff" stroke="#6d2fd4" stroke-width="6"/>
+      <polygon class="sa87b-svg-face${selected.has("triBack") ? " is-selected" : ""}" data-sa-face="triBack" data-sa-pair="triPair" points="225,55 225,275 400,185" fill="#ead2ff" fill-opacity=".74" stroke="#6d2fd4" stroke-width="6"/>
+      <line x1="265" y1="215" x2="400" y2="185" stroke="#32206f" stroke-width="5"/>
+
+      <line x1="110" y1="215" x2="265" y2="215" class="sa87b-model-dim" stroke-dasharray="8 6"/>
+      <text x="178" y="202" text-anchor="middle" class="sa87b-model-label">height = ${clean(task.base.triHeight)} ${u}</text>
+      <text x="82" y="205" text-anchor="middle" class="sa87b-model-label" transform="rotate(-90 82 205)">base = ${clean(task.base.triBase)} ${u}</text>
+      <text x="178" y="135" text-anchor="middle" class="sa87b-model-label">${clean(s[0])} ${u}</text>
+      <text x="184" y="278" text-anchor="middle" class="sa87b-model-label">${clean(s[1])} ${u}</text>
+      <text x="330" y="68" text-anchor="middle" class="sa87b-model-label">prism length = ${clean(task.h)} ${u}</text>
     </svg>`;
   }
 
-  function cylinder3DMarkup(data) {
+  function cylinder3DMarkup(task, data) {
     const selected = new Set(data.selectedFaces || []);
-    return `<svg class="sa87b-object sa87b-svg-solid" viewBox="0 0 430 340" role="img" aria-label="Cylinder that can be turned">
-      <path d="M100 78 V270 Q215 314 330 270 V78 Z" fill="#c6eff9" stroke="none"/>
-      <line x1="100" y1="78" x2="100" y2="270" stroke="#32206f" stroke-width="6"/>
-      <line x1="330" y1="78" x2="330" y2="270" stroke="#32206f" stroke-width="6"/>
-      <ellipse class="sa87b-svg-face${selected.has("circleTop") ? " is-selected" : ""}" data-sa-face="circleTop" data-sa-pair="circlePair" cx="215" cy="78" rx="115" ry="38" fill="#e9d6ff" stroke="#6d2fd4" stroke-width="6"/>
-      <ellipse class="sa87b-svg-face${selected.has("circleBottom") ? " is-selected" : ""}" data-sa-face="circleBottom" data-sa-pair="circlePair" cx="215" cy="270" rx="115" ry="38" fill="#d9c0ff" stroke="#6d2fd4" stroke-width="6"/>
+    const u = escapeHTML(task.unit);
+    return `<svg class="sa87b-object sa87b-svg-solid" viewBox="0 0 470 370" role="img" aria-label="Cylinder with labeled radius and height that turn with the model">
+      <path d="M105 80 V290 Q230 335 355 290 V80 Z" fill="#c6eff9" stroke="none"/>
+      <line x1="105" y1="80" x2="105" y2="290" stroke="#32206f" stroke-width="6"/>
+      <line x1="355" y1="80" x2="355" y2="290" stroke="#32206f" stroke-width="6"/>
+      <ellipse class="sa87b-svg-face${selected.has("circleTop") ? " is-selected" : ""}" data-sa-face="circleTop" data-sa-pair="circlePair" cx="230" cy="80" rx="125" ry="40" fill="#e9d6ff" stroke="#6d2fd4" stroke-width="6"/>
+      <ellipse class="sa87b-svg-face${selected.has("circleBottom") ? " is-selected" : ""}" data-sa-face="circleBottom" data-sa-pair="circlePair" cx="230" cy="290" rx="125" ry="40" fill="#d9c0ff" stroke="#6d2fd4" stroke-width="6"/>
+      <circle cx="230" cy="80" r="4" fill="#e6398f"/>
+      <line x1="230" y1="80" x2="355" y2="80" class="sa87b-model-dim"/>
+      <text x="292" y="64" text-anchor="middle" class="sa87b-model-label">r = ${clean(task.radius)} ${u}</text>
+      <line x1="390" y1="80" x2="390" y2="290" class="sa87b-model-dim"/>
+      <text x="412" y="192" text-anchor="middle" class="sa87b-model-label" transform="rotate(90 412 192)">h = ${clean(task.h)} ${u}</text>
     </svg>`;
   }
 
   function turnableSolidMarkup(task, data) {
-    const model = task.shape === "rect" ? rect3DMarkup(data) : task.shape === "tri" ? triangular3DMarkup(data) : cylinder3DMarkup(data);
+    const model = task.shape === "rect" ? rect3DMarkup(task, data) : task.shape === "tri" ? triangular3DMarkup(task, data) : cylinder3DMarkup(task, data);
     return `<section class="sa87b-turn-card">
       <div class="sa87b-turn-toolbar">
         <div><strong>Turn the solid</strong><span>Drag the model to inspect it. Lock it when you are ready to select the bases.</span></div>
@@ -214,28 +242,34 @@
   }
 
   function basePicture(spec, unit) {
+    const u = escapeHTML(unit);
     if (spec.shape === "circle") {
-      return `<svg class="sa87b-base-svg" viewBox="0 0 360 260" role="img" aria-label="Circular base shown separately">
-        <circle cx="175" cy="130" r="92" fill="#d7f3ff" stroke="#342173" stroke-width="6"/>
-        <circle cx="175" cy="130" r="5" fill="#e6398f"/>
-        <line x1="175" y1="130" x2="267" y2="130" stroke="#e6398f" stroke-width="5"/>
-        <text x="220" y="116" class="sa87b-svg-label">r = ${clean(spec.radius)} ${unit}</text>
+      return `<svg class="sa87b-base-svg" viewBox="0 0 460 310" role="img" aria-label="Circular base shown separately">
+        <circle cx="205" cy="150" r="92" fill="#d7f3ff" stroke="#342173" stroke-width="6"/>
+        <circle cx="205" cy="150" r="5" fill="#e6398f"/>
+        <line x1="205" y1="150" x2="297" y2="150" class="sa87b-dim"/>
+        <text x="315" y="138" class="sa87b-svg-label">r = ${clean(spec.radius)} ${u}</text>
+        <text x="205" y="286" text-anchor="middle" class="sa87b-base-caption">Use this circle only to find B and P.</text>
       </svg>`;
     }
     if (spec.shape === "triangle") {
-      return `<svg class="sa87b-base-svg" viewBox="0 0 380 280" role="img" aria-label="Triangular base shown separately">
-        <polygon points="70,220 310,220 190,60" fill="#e6d7ff" stroke="#342173" stroke-width="6"/>
-        <line x1="190" y1="60" x2="190" y2="220" stroke="#e6398f" stroke-width="4" stroke-dasharray="9 7"/>
-        <text x="190" y="252" text-anchor="middle" class="sa87b-svg-label">${clean(spec.triBase)} ${unit}</text>
-        <text x="202" y="145" class="sa87b-svg-label">${clean(spec.triHeight)} ${unit}</text>
-        <text x="102" y="137" class="sa87b-svg-label">${clean(spec.sides[0])}</text>
-        <text x="268" y="137" class="sa87b-svg-label">${clean(spec.sides[1])}</text>
+      return `<svg class="sa87b-base-svg" viewBox="0 0 500 350" role="img" aria-label="Triangular base shown separately">
+        <polygon points="120,255 380,255 250,65" fill="#e6d7ff" stroke="#342173" stroke-width="6"/>
+        <line x1="250" y1="65" x2="250" y2="255" class="sa87b-dim" stroke-dasharray="9 7"/>
+        <line x1="120" y1="292" x2="380" y2="292" class="sa87b-dim"/>
+        <text x="250" y="327" text-anchor="middle" class="sa87b-svg-label">${clean(spec.triBase)} ${u}</text>
+        <text x="270" y="165" class="sa87b-svg-label">height = ${clean(spec.triHeight)} ${u}</text>
+        <text x="158" y="155" text-anchor="middle" class="sa87b-svg-label">${clean(spec.sides[0])} ${u}</text>
+        <text x="342" y="155" text-anchor="middle" class="sa87b-svg-label">${clean(spec.sides[1])} ${u}</text>
+        <text x="250" y="235" text-anchor="middle" class="sa87b-svg-label">${clean(spec.sides[2])} ${u}</text>
       </svg>`;
     }
-    return `<svg class="sa87b-base-svg" viewBox="0 0 380 270" role="img" aria-label="Rectangular base shown separately">
-      <rect x="70" y="55" width="240" height="155" rx="10" fill="#d8f2ff" stroke="#342173" stroke-width="6"/>
-      <text x="190" y="242" text-anchor="middle" class="sa87b-svg-label">${clean(spec.a)} ${unit}</text>
-      <text x="35" y="140" class="sa87b-svg-label">${clean(spec.b)} ${unit}</text>
+    return `<svg class="sa87b-base-svg" viewBox="0 0 520 360" role="img" aria-label="Rectangular base shown separately">
+      <rect x="135" y="55" width="270" height="190" rx="12" fill="#d8f2ff" stroke="#342173" stroke-width="6"/>
+      <line x1="135" y1="285" x2="405" y2="285" class="sa87b-dim"/>
+      <line x1="92" y1="55" x2="92" y2="245" class="sa87b-dim"/>
+      <text x="270" y="326" text-anchor="middle" class="sa87b-svg-label">${clean(spec.a)} ${u}</text>
+      <text x="48" y="158" text-anchor="middle" class="sa87b-svg-label">${clean(spec.b)} ${u}</text>
     </svg>`;
   }
 
@@ -274,7 +308,7 @@
     return `<div class="sa87b-formula-build">
       <div class="sa87b-formula-line"><strong>L =</strong><input data-sa-input="lP" value="${escapeHTML(data.inputs.lP || "")}" placeholder="P"><span>×</span><input data-sa-input="lh" value="${escapeHTML(data.inputs.lh || "")}" placeholder="h"><span>=</span><input class="answer" data-sa-input="lateral" value="${escapeHTML(data.inputs.lateral || "")}" placeholder="0.00"></div>
       ${includeTotal ? `<div class="sa87b-formula-line"><strong>S =</strong><input data-sa-input="tP" value="${escapeHTML(data.inputs.tP || "")}" placeholder="P"><span>×</span><input data-sa-input="th" value="${escapeHTML(data.inputs.th || "")}" placeholder="h"><span>+</span><span>2(</span><input data-sa-input="tB" value="${escapeHTML(data.inputs.tB || "")}" placeholder="B"><span>) =</span><input class="answer" data-sa-input="total" value="${escapeHTML(data.inputs.total || "")}" placeholder="0.00"></div>` : ""}
-      <p>Final surface-area answers must be rounded to the nearest hundredth and written with exactly two decimal places.</p>
+      <p>Round final surface-area answers to the nearest hundredth. If the rounded answer is a whole number, you may enter the whole number without .00.</p>
     </div>`;
   }
 
@@ -449,7 +483,7 @@
         <h5>Choose the formula that connects the information you have.</h5>
         <div class="sa87b-choice-row"><button type="button" data-sa-formula="lateral">L = Ph</button><button type="button" data-sa-formula="total">S = Ph + 2B</button></div>
         <div class="sa87b-missing-inputs">${inputs}</div>
-        <p class="sa87b-tiny">Round the requested missing measure to the nearest hundredth.</p>
+        <p class="sa87b-tiny">Round the requested missing measure to the nearest hundredth. If it is a whole number, you may enter it without .00.</p>
         <button type="button" class="lab-action" id="checkMissing87B">Check missing measure</button>
       </section>
       <div class="sa87b-actions"><button type="button" class="lab-action sa87b-next" id="next87B"${data.solved ? "" : " hidden"}>${qNumber === TASKS.length ? "Finish lab" : "Next question"}</button></div>
@@ -481,7 +515,7 @@
 
   function feedbackHundredth(ctx, status, label) {
     if (status.type === "missing") return ctx.setLabFeedback(`${label}: enter a numerical answer rounded to the nearest hundredth.`, "incorrect");
-    if (status.type === "place") return ctx.setLabFeedback(`${label}: your numerical value is correct. Show exactly two decimal places because the question asks for the nearest hundredth.`, "incorrect");
+    if (status.type === "place") return ctx.setLabFeedback(`${label}: your numerical value is correct. For a non-whole answer, show the hundredths place with two decimal digits. Whole-number answers do not need .00.`, "incorrect");
     return ctx.setLabFeedback(`${label}: the arithmetic is not correct yet. Recheck the formula substitution and calculation; this is not just a place-value issue.`, "incorrect");
   }
 
