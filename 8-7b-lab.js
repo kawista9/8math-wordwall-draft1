@@ -189,58 +189,273 @@
     </div>`;
   }
 
+  function rotate3DPoint(point, rxDeg, ryDeg) {
+    const rx = rxDeg * Math.PI / 180;
+    const ry = ryDeg * Math.PI / 180;
+    const cosX = Math.cos(rx);
+    const sinX = Math.sin(rx);
+    const cosY = Math.cos(ry);
+    const sinY = Math.sin(ry);
+
+    const y1 = point.y * cosX - point.z * sinX;
+    const z1 = point.y * sinX + point.z * cosX;
+    const x2 = point.x * cosY + z1 * sinY;
+    const z2 = -point.x * sinY + z1 * cosY;
+    return { x: x2, y: y1, z: z2 };
+  }
+
+  function project3DPoint(point, data, cx = 280, cy = 185) {
+    const rotated = rotate3DPoint(point, data.rx, data.ry);
+    const camera = 900;
+    const factor = camera / Math.max(260, camera - rotated.z);
+    return {
+      x: cx + rotated.x * factor,
+      y: cy - rotated.y * factor,
+      z: rotated.z,
+      factor
+    };
+  }
+
+  function svgPoints(points) {
+    return points.map(point => `${point.x.toFixed(1)},${point.y.toFixed(1)}`).join(" ");
+  }
+
+  function midpoint3D(a, b) {
+    return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2, z: (a.z + b.z) / 2 };
+  }
+
+  function setSvgLine(line, a, b) {
+    if (!line) return;
+    line.setAttribute("x1", a.x.toFixed(1));
+    line.setAttribute("y1", a.y.toFixed(1));
+    line.setAttribute("x2", b.x.toFixed(1));
+    line.setAttribute("y2", b.y.toFixed(1));
+  }
+
+  function setSvgText(text, point, value, dx = 0, dy = 0) {
+    if (!text) return;
+    text.setAttribute("x", (point.x + dx).toFixed(1));
+    text.setAttribute("y", (point.y + dy).toFixed(1));
+    text.textContent = value;
+  }
+
+  function triangleWorldGeometry(task) {
+    const base = Number(task.base.triBase);
+    const altitude = Number(task.base.triHeight);
+    const sides = task.base.sides.map(Number);
+    const isRight = Math.abs((sides[0] ** 2 + sides[1] ** 2) - sides[2] ** 2) < 0.2
+      || Math.abs((sides[0] ** 2 + sides[2] ** 2) - sides[1] ** 2) < 0.2
+      || Math.abs((sides[1] ** 2 + sides[2] ** 2) - sides[0] ** 2) < 0.2;
+
+    const scale = Math.min(24, 170 / Math.max(base, altitude, 1));
+    const b = base * scale;
+    const h = altitude * scale;
+    const depth = Math.max(120, Math.min(205, Number(task.h) * 18));
+    let triangle;
+
+    if (isRight && Math.abs(base - 8) < 0.2) {
+      triangle = [
+        { x: -b / 2, y: -h / 2 },
+        { x: b / 2, y: -h / 2 },
+        { x: -b / 2, y: h / 2 }
+      ];
+    } else {
+      triangle = [
+        { x: -b / 2, y: -h / 3 },
+        { x: b / 2, y: -h / 3 },
+        { x: 0, y: 2 * h / 3 }
+      ];
+    }
+
+    return { triangle, depth, scale, isRight };
+  }
+
+  function renderProjectedTriangle(svg, task, data) {
+    if (!svg) return;
+    const { triangle, depth } = triangleWorldGeometry(task);
+    const frontZ = depth / 2;
+    const backZ = -depth / 2;
+    const front3 = triangle.map(p => ({ ...p, z: frontZ }));
+    const back3 = triangle.map(p => ({ ...p, z: backZ }));
+    const front2 = front3.map(p => project3DPoint(p, data));
+    const back2 = back3.map(p => project3DPoint(p, data));
+
+    const faceGroup = svg.querySelector(".sa87b-projected-faces");
+    const faces = [];
+    for (let i = 0; i < 3; i += 1) {
+      const j = (i + 1) % 3;
+      const polygon = svg.querySelector(`[data-tri-side="${i}"]`);
+      const points = [front2[i], front2[j], back2[j], back2[i]];
+      polygon?.setAttribute("points", svgPoints(points));
+      const depthAverage = points.reduce((sum, p) => sum + p.z, 0) / points.length;
+      faces.push({ node: polygon, depth: depthAverage });
+    }
+
+    const frontFace = svg.querySelector('[data-sa-face="triFront"]');
+    const backFace = svg.querySelector('[data-sa-face="triBack"]');
+    frontFace?.setAttribute("points", svgPoints(front2));
+    backFace?.setAttribute("points", svgPoints(back2));
+    faces.push({ node: frontFace, depth: front2.reduce((s,p)=>s+p.z,0)/3 });
+    faces.push({ node: backFace, depth: back2.reduce((s,p)=>s+p.z,0)/3 });
+
+    faces.sort((a,b) => a.depth - b.depth).forEach(face => {
+      if (face.node && faceGroup) faceGroup.appendChild(face.node);
+    });
+
+    const baseMid3 = midpoint3D(front3[0], front3[1]);
+    const apex3 = front3[2];
+    const altitudeA = project3DPoint(baseMid3, data);
+    const altitudeB = project3DPoint(apex3, data);
+    setSvgLine(svg.querySelector("[data-tri-altitude]"), altitudeA, altitudeB);
+
+    const lengthA = project3DPoint(front3[2], data);
+    const lengthB = project3DPoint(back3[2], data);
+    setSvgLine(svg.querySelector("[data-tri-length]"), lengthA, lengthB);
+
+    const unit = task.unit;
+    const baseMid2 = project3DPoint(baseMid3, data);
+    setSvgText(svg.querySelector('[data-tri-label="base"]'), baseMid2, `base = ${clean(task.base.triBase)} ${unit}`, 0, 28);
+
+    const altMid = { x:(altitudeA.x+altitudeB.x)/2, y:(altitudeA.y+altitudeB.y)/2 };
+    setSvgText(svg.querySelector('[data-tri-label="altitude"]'), altMid, `height = ${clean(task.base.triHeight)} ${unit}`, 20, -8);
+
+    for (let i = 0; i < 2; i += 1) {
+      const mid = midpoint3D(front3[i === 0 ? 0 : 1], front3[2]);
+      const p = project3DPoint(mid, data);
+      const dx = i === 0 ? -30 : 30;
+      setSvgText(svg.querySelector(`[data-tri-label="side${i}"]`), p, `${clean(task.base.sides[i])} ${unit}`, dx, -4);
+    }
+
+    const lengthMid = { x:(lengthA.x+lengthB.x)/2, y:(lengthA.y+lengthB.y)/2 };
+    setSvgText(svg.querySelector('[data-tri-label="length"]'), lengthMid, `prism length = ${clean(task.h)} ${unit}`, 0, -12);
+  }
+
+  function cylinderWorldGeometry(task, segments = 28) {
+    const radius = 90;
+    const halfLength = Math.max(105, Math.min(175, Number(task.h) * 10.5));
+    const ring = z => Array.from({length:segments}, (_,i) => {
+      const angle = i * Math.PI * 2 / segments;
+      return { x: radius * Math.cos(angle), y: radius * Math.sin(angle), z };
+    });
+    return { radius, halfLength, front: ring(halfLength), back: ring(-halfLength) };
+  }
+
+  function renderProjectedCylinder(svg, task, data) {
+    if (!svg) return;
+    const { radius, halfLength, front, back } = cylinderWorldGeometry(task);
+    const front2 = front.map(p => project3DPoint(p, data));
+    const back2 = back.map(p => project3DPoint(p, data));
+    const faceGroup = svg.querySelector(".sa87b-projected-faces");
+    const faces = [];
+
+    for (let i = 0; i < front.length; i += 1) {
+      const j = (i + 1) % front.length;
+      const polygon = svg.querySelector(`[data-cyl-side="${i}"]`);
+      const points = [front2[i], front2[j], back2[j], back2[i]];
+      polygon?.setAttribute("points", svgPoints(points));
+      const depthAverage = points.reduce((sum,p)=>sum+p.z,0)/4;
+      if (polygon) {
+        const shade = 214 + Math.round(24 * Math.cos(i * Math.PI * 2 / front.length));
+        polygon.setAttribute("fill", `rgb(${Math.min(238, shade)}, ${Math.min(248, shade+18)}, 250)`);
+      }
+      faces.push({ node: polygon, depth: depthAverage });
+    }
+
+    const frontFace = svg.querySelector('[data-sa-face="circleTop"]');
+    const backFace = svg.querySelector('[data-sa-face="circleBottom"]');
+    frontFace?.setAttribute("points", svgPoints(front2));
+    backFace?.setAttribute("points", svgPoints(back2));
+    faces.push({ node: frontFace, depth: front2.reduce((s,p)=>s+p.z,0)/front2.length });
+    faces.push({ node: backFace, depth: back2.reduce((s,p)=>s+p.z,0)/back2.length });
+
+    faces.sort((a,b)=>a.depth-b.depth).forEach(face => {
+      if (face.node && faceGroup) faceGroup.appendChild(face.node);
+    });
+
+    const frontCenter3 = {x:0,y:0,z:halfLength};
+    const backCenter3 = {x:0,y:0,z:-halfLength};
+    const radiusEnd3 = {x:radius,y:0,z:halfLength};
+    const frontCenter2 = project3DPoint(frontCenter3, data);
+    const backCenter2 = project3DPoint(backCenter3, data);
+    const radiusEnd2 = project3DPoint(radiusEnd3, data);
+
+    setSvgLine(svg.querySelector("[data-cyl-radius]"), frontCenter2, radiusEnd2);
+    setSvgLine(svg.querySelector("[data-cyl-height]"), frontCenter2, backCenter2);
+
+    const unit = task.unit;
+    const radiusMid = {x:(frontCenter2.x+radiusEnd2.x)/2,y:(frontCenter2.y+radiusEnd2.y)/2};
+    setSvgText(svg.querySelector('[data-cyl-label="radius"]'), radiusMid, `r = ${clean(task.radius)} ${unit}`, 0, -12);
+
+    const heightMid = {x:(frontCenter2.x+backCenter2.x)/2,y:(frontCenter2.y+backCenter2.y)/2};
+    setSvgText(svg.querySelector('[data-cyl-label="height"]'), heightMid, `h = ${clean(task.h)} ${unit}`, 18, -10);
+  }
+
+  function renderProjectedSolid(turner, task, data) {
+    const svg = turner?.querySelector("svg[data-projected-solid]");
+    if (!svg) return;
+    if (task.shape === "tri") renderProjectedTriangle(svg, task, data);
+    if (task.shape === "cylinder") renderProjectedCylinder(svg, task, data);
+  }
+
   function triangular3DMarkup(task, data) {
     const selected = new Set(data.selectedFaces || []);
-    const u = escapeHTML(task.unit);
-    const s = task.base.sides;
-    const baseLabel = clean(task.base.triBase);
-    const altitudeLabel = clean(task.base.triHeight);
-    const prismLength = clean(task.h);
-
-    return `<svg class="sa87b-object sa87b-svg-solid sa87b-tri-prism" viewBox="0 0 560 350" role="img" aria-label="Triangular prism with two congruent triangular bases and labeled dimensions">
-      <!-- three lateral faces, drawn behind the bases -->
-      <polygon points="110,85 330,50 450,140 230,175" fill="#aee7f7" fill-opacity=".9" stroke="#32206f" stroke-width="5"/>
-      <polygon points="110,265 330,230 450,140 230,175" fill="#c9eef8" fill-opacity=".92" stroke="#32206f" stroke-width="5"/>
-      <polygon points="110,85 110,265 330,230 330,50" fill="#d9f4fb" fill-opacity=".88" stroke="#32206f" stroke-width="5"/>
-
-      <!-- back base -->
-      <polygon class="sa87b-svg-face${selected.has("triBack") ? " is-selected" : ""}" data-sa-face="triBack" data-sa-pair="triPair"
-        points="330,50 330,230 450,140" fill="#dfc8ff" fill-opacity=".72" stroke="#6d2fd4" stroke-width="6"/>
-
-      <!-- front base: 6-unit side with 4-unit perpendicular altitude gives 5-5-6 triangle -->
-      <polygon class="sa87b-svg-face${selected.has("triFront") ? " is-selected" : ""}" data-sa-face="triFront" data-sa-pair="triPair"
-        points="110,85 110,265 230,175" fill="#ead8ff" stroke="#6d2fd4" stroke-width="7"/>
-
-      <!-- altitude on front base -->
-      <line x1="110" y1="175" x2="230" y2="175" class="sa87b-model-dim" stroke-dasharray="9 7"/>
-      <path d="M110 175 h14 v14" fill="none" stroke="#e6398f" stroke-width="4"/>
-
-      <!-- dimension labels placed around, not over, the triangle -->
-      <text x="78" y="178" text-anchor="middle" class="sa87b-model-label" transform="rotate(-90 78 178)">base = ${baseLabel} ${u}</text>
-      <text x="166" y="159" text-anchor="middle" class="sa87b-model-label">height = ${altitudeLabel} ${u}</text>
-      <text x="157" y="111" text-anchor="middle" class="sa87b-model-label">${clean(s[0])} ${u}</text>
-      <text x="157" y="251" text-anchor="middle" class="sa87b-model-label">${clean(s[1])} ${u}</text>
-
-      <!-- prism length labels the connector between matching vertices -->
-      <line x1="110" y1="85" x2="330" y2="50" class="sa87b-length-guide"/>
-      <text x="222" y="42" text-anchor="middle" class="sa87b-model-label sa87b-length-label">prism length = ${prismLength} ${u}</text>
+    return `<svg class="sa87b-object sa87b-svg-solid sa87b-projected-svg" data-projected-solid="triangle" viewBox="0 0 560 370" role="img" aria-label="True 3D triangular prism with selectable triangular bases">
+      <g class="sa87b-projected-faces">
+        <polygon data-tri-side="0" class="sa87b-3d-side" fill="#c9eef8" stroke="#32206f" stroke-width="4"/>
+        <polygon data-tri-side="1" class="sa87b-3d-side" fill="#b8e7f5" stroke="#32206f" stroke-width="4"/>
+        <polygon data-tri-side="2" class="sa87b-3d-side" fill="#d8f5fb" stroke="#32206f" stroke-width="4"/>
+        <polygon class="sa87b-svg-face sa87b-3d-base${selected.has("triBack") ? " is-selected" : ""}" data-sa-face="triBack" data-sa-pair="triPair" fill="#dfc8ff" fill-opacity=".8" stroke="#6d2fd4" stroke-width="6"/>
+        <polygon class="sa87b-svg-face sa87b-3d-base${selected.has("triFront") ? " is-selected" : ""}" data-sa-face="triFront" data-sa-pair="triPair" fill="#ead8ff" fill-opacity=".94" stroke="#6d2fd4" stroke-width="6"/>
+      </g>
+      <line data-tri-altitude class="sa87b-model-dim" stroke-dasharray="9 7"/>
+      <line data-tri-length class="sa87b-length-guide"/>
+      <text data-tri-label="base" text-anchor="middle" class="sa87b-model-label"></text>
+      <text data-tri-label="altitude" text-anchor="middle" class="sa87b-model-label"></text>
+      <text data-tri-label="side0" text-anchor="middle" class="sa87b-model-label"></text>
+      <text data-tri-label="side1" text-anchor="middle" class="sa87b-model-label"></text>
+      <text data-tri-label="length" text-anchor="middle" class="sa87b-model-label sa87b-length-label"></text>
     </svg>`;
   }
 
   function cylinder3DMarkup(task, data) {
     const selected = new Set(data.selectedFaces || []);
-    const u = escapeHTML(task.unit);
-    return `<svg class="sa87b-object sa87b-svg-solid" viewBox="0 0 470 370" role="img" aria-label="Cylinder with labeled radius and height that turn with the model">
-      <path d="M105 80 V290 Q230 335 355 290 V80 Z" fill="#c6eff9" stroke="none"/>
-      <line x1="105" y1="80" x2="105" y2="290" stroke="#32206f" stroke-width="6"/>
-      <line x1="355" y1="80" x2="355" y2="290" stroke="#32206f" stroke-width="6"/>
-      <ellipse class="sa87b-svg-face${selected.has("circleTop") ? " is-selected" : ""}" data-sa-face="circleTop" data-sa-pair="circlePair" cx="230" cy="80" rx="125" ry="40" fill="#e9d6ff" stroke="#6d2fd4" stroke-width="6"/>
-      <ellipse class="sa87b-svg-face${selected.has("circleBottom") ? " is-selected" : ""}" data-sa-face="circleBottom" data-sa-pair="circlePair" cx="230" cy="290" rx="125" ry="40" fill="#d9c0ff" stroke="#6d2fd4" stroke-width="6"/>
-      <circle cx="230" cy="80" r="4" fill="#e6398f"/>
-      <line x1="230" y1="80" x2="355" y2="80" class="sa87b-model-dim"/>
-      <text x="292" y="64" text-anchor="middle" class="sa87b-model-label">r = ${clean(task.radius)} ${u}</text>
-      <line x1="390" y1="80" x2="390" y2="290" class="sa87b-model-dim"/>
-      <text x="412" y="192" text-anchor="middle" class="sa87b-model-label" transform="rotate(90 412 192)">h = ${clean(task.h)} ${u}</text>
+    return `<svg class="sa87b-object sa87b-svg-solid sa87b-projected-svg" data-projected-solid="cylinder" viewBox="0 0 560 370" role="img" aria-label="True 3D cylinder with circular bases that project naturally as the cylinder turns">
+      <g class="sa87b-projected-faces">
+        <polygon data-cyl-side="0" class="sa87b-3d-side" stroke="#32206f" stroke-width="1.8"/>
+        <polygon data-cyl-side="1" class="sa87b-3d-side" stroke="#32206f" stroke-width="1.8"/>
+        <polygon data-cyl-side="2" class="sa87b-3d-side" stroke="#32206f" stroke-width="1.8"/>
+        <polygon data-cyl-side="3" class="sa87b-3d-side" stroke="#32206f" stroke-width="1.8"/>
+        <polygon data-cyl-side="4" class="sa87b-3d-side" stroke="#32206f" stroke-width="1.8"/>
+        <polygon data-cyl-side="5" class="sa87b-3d-side" stroke="#32206f" stroke-width="1.8"/>
+        <polygon data-cyl-side="6" class="sa87b-3d-side" stroke="#32206f" stroke-width="1.8"/>
+        <polygon data-cyl-side="7" class="sa87b-3d-side" stroke="#32206f" stroke-width="1.8"/>
+        <polygon data-cyl-side="8" class="sa87b-3d-side" stroke="#32206f" stroke-width="1.8"/>
+        <polygon data-cyl-side="9" class="sa87b-3d-side" stroke="#32206f" stroke-width="1.8"/>
+        <polygon data-cyl-side="10" class="sa87b-3d-side" stroke="#32206f" stroke-width="1.8"/>
+        <polygon data-cyl-side="11" class="sa87b-3d-side" stroke="#32206f" stroke-width="1.8"/>
+        <polygon data-cyl-side="12" class="sa87b-3d-side" stroke="#32206f" stroke-width="1.8"/>
+        <polygon data-cyl-side="13" class="sa87b-3d-side" stroke="#32206f" stroke-width="1.8"/>
+        <polygon data-cyl-side="14" class="sa87b-3d-side" stroke="#32206f" stroke-width="1.8"/>
+        <polygon data-cyl-side="15" class="sa87b-3d-side" stroke="#32206f" stroke-width="1.8"/>
+        <polygon data-cyl-side="16" class="sa87b-3d-side" stroke="#32206f" stroke-width="1.8"/>
+        <polygon data-cyl-side="17" class="sa87b-3d-side" stroke="#32206f" stroke-width="1.8"/>
+        <polygon data-cyl-side="18" class="sa87b-3d-side" stroke="#32206f" stroke-width="1.8"/>
+        <polygon data-cyl-side="19" class="sa87b-3d-side" stroke="#32206f" stroke-width="1.8"/>
+        <polygon data-cyl-side="20" class="sa87b-3d-side" stroke="#32206f" stroke-width="1.8"/>
+        <polygon data-cyl-side="21" class="sa87b-3d-side" stroke="#32206f" stroke-width="1.8"/>
+        <polygon data-cyl-side="22" class="sa87b-3d-side" stroke="#32206f" stroke-width="1.8"/>
+        <polygon data-cyl-side="23" class="sa87b-3d-side" stroke="#32206f" stroke-width="1.8"/>
+        <polygon data-cyl-side="24" class="sa87b-3d-side" stroke="#32206f" stroke-width="1.8"/>
+        <polygon data-cyl-side="25" class="sa87b-3d-side" stroke="#32206f" stroke-width="1.8"/>
+        <polygon data-cyl-side="26" class="sa87b-3d-side" stroke="#32206f" stroke-width="1.8"/>
+        <polygon data-cyl-side="27" class="sa87b-3d-side" stroke="#32206f" stroke-width="1.8"/>
+        <polygon class="sa87b-svg-face sa87b-3d-base${selected.has("circleBottom") ? " is-selected" : ""}" data-sa-face="circleBottom" data-sa-pair="circlePair" fill="#d9c0ff" fill-opacity=".78" stroke="#6d2fd4" stroke-width="5"/>
+        <polygon class="sa87b-svg-face sa87b-3d-base${selected.has("circleTop") ? " is-selected" : ""}" data-sa-face="circleTop" data-sa-pair="circlePair" fill="#ead8ff" fill-opacity=".92" stroke="#6d2fd4" stroke-width="5"/>
+      </g>
+      <line data-cyl-radius class="sa87b-model-dim"/>
+      <line data-cyl-height class="sa87b-length-guide"/>
+      <text data-cyl-label="radius" text-anchor="middle" class="sa87b-model-label"></text>
+      <text data-cyl-label="height" text-anchor="middle" class="sa87b-model-label"></text>
     </svg>`;
   }
 
@@ -252,7 +467,7 @@
         <button type="button" class="sa87b-turn-toggle" id="saTurnToggle">${data.turning ? "🔄 Turning ON" : "🔒 Turning OFF"}</button>
       </div>
       <div class="sa87b-scene">
-        <div class="sa87b-turner${data.turning ? " can-turn" : ""}" style="--rx:${data.rx}deg;--ry:${data.ry}deg">${model}</div>
+        <div class="sa87b-turner${data.turning ? " can-turn" : ""}${task.shape === "rect" ? "" : " projected-3d"}" style="--rx:${data.rx}deg;--ry:${data.ry}deg">${model}</div>
       </div>
       <p class="sa87b-face-instruction"><strong>Step 1:</strong> Turn the solid until you can see a base clearly. <strong>While Turning is ON, double-click a face to select it.</strong> If you switch Turning OFF, a single click will select. Choose two congruent, parallel opposite faces. For a rectangular prism, any one of the three opposite pairs can be the bases.</p>
     </section>`;
@@ -576,16 +791,25 @@
     return ctx.setLabFeedback(`${label}: the arithmetic is not correct yet. Recheck the formula substitution and calculation; this is not just a place-value issue.`, "incorrect");
   }
 
-  function wireTurner(body, data) {
+  function wireTurner(body, task, data) {
     const turner = body.querySelector(".sa87b-turner");
     const toggle = body.querySelector("#saTurnToggle");
     if (!turner || !toggle) return;
 
+    const projected = task.shape === "tri" || task.shape === "cylinder";
+
     const sync = () => {
       turner.classList.toggle("can-turn", data.turning);
       toggle.textContent = data.turning ? "🔄 Turning ON" : "🔒 Turning OFF";
-      turner.style.setProperty("--rx", `${data.rx}deg`);
-      turner.style.setProperty("--ry", `${data.ry}deg`);
+
+      if (projected) {
+        turner.style.transform = "none";
+        renderProjectedSolid(turner, task, data);
+      } else {
+        turner.style.removeProperty("transform");
+        turner.style.setProperty("--rx", `${data.rx}deg`);
+        turner.style.setProperty("--ry", `${data.ry}deg`);
+      }
     };
 
     toggle.addEventListener("click", () => {
@@ -613,7 +837,7 @@
       const dy = event.clientY - lastY;
       moved += Math.abs(dx) + Math.abs(dy);
       data.ry += dx * 0.55;
-      data.rx = Math.max(-60, Math.min(60, data.rx - dy * 0.4));
+      data.rx = Math.max(-88, Math.min(88, data.rx - dy * 0.4));
       lastX = event.clientX;
       lastY = event.clientY;
       sync();
@@ -625,6 +849,8 @@
       turner.dataset.moved = moved > 8 ? "yes" : "no";
       setTimeout(() => { if (turner) turner.dataset.moved = "no"; }, 80);
     });
+
+    sync();
   }
 
   function finishQuestion(data, ctx, message) {
@@ -673,7 +899,7 @@
         : missingMarkup(task, data, qNumber);
 
     attachInputs(body, data);
-    wireTurner(body, data);
+    wireTurner(body, task, data);
 
     const selectBaseFace = face => {
       const id = face.dataset.saFace;
