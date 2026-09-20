@@ -101,25 +101,6 @@
       ]
     },
     {
-      kind: "composite", diagram: "tennis-can", unit: "cm", title: "Three tennis balls in a can",
-      canRadius: 3.3, sphereRadius: 3.2, height: 19.8,
-      answer: () => cylinderVolume(3.3, 19.8) - 3 * sphereVolume(3.2),
-      seminar: [
-        {
-          q: "To find the empty space, which volumes must you calculate first?",
-          choices: ["the cylinder and one tennis ball", "only the cylinder", "only one tennis ball"], correct: 0
-        },
-        {
-          q: "There are three identical balls. What is the total volume occupied by the balls?",
-          choices: ["3 × Vsphere", "Vsphere ÷ 3", "Vcylinder + Vsphere"], correct: 0
-        },
-        {
-          q: "Which expression gives the space inside the can that is NOT occupied by tennis balls?",
-          choices: ["V = Vcylinder − 3Vsphere", "V = Vcylinder + 3Vsphere", "V = 3Vcylinder − Vsphere"], correct: 0
-        }
-      ]
-    },
-    {
       kind: "composite", diagram: "cone-hole", unit: "ft", title: "Cylinder with a conical opening",
       radius: 5, height: 12,
       answer: () => cylinderVolume(5, 12) - coneVolume(5, 12),
@@ -135,6 +116,25 @@
         {
           q: "Which expression represents the volume that remains?",
           choices: ["V = Vcylinder − Vcone", "V = Vcylinder + Vcone", "V = Vcone − Vcylinder"], correct: 0
+        }
+      ]
+    },
+    {
+      kind: "composite", diagram: "tennis-can", unit: "cm", title: "Three tennis balls in a can",
+      canRadius: 3.3, sphereRadius: 3.2, height: 19.8,
+      answer: () => cylinderVolume(3.3, 19.8) - 3 * sphereVolume(3.2),
+      seminar: [
+        {
+          q: "To find the empty space, which volumes must you calculate first?",
+          choices: ["the cylinder and one tennis ball", "only the cylinder", "only one tennis ball"], correct: 0
+        },
+        {
+          q: "There are three identical balls. What is the total volume occupied by the balls?",
+          choices: ["3 × Vsphere", "Vsphere ÷ 3", "Vcylinder + Vsphere"], correct: 0
+        },
+        {
+          q: "Which expression gives the space inside the can that is NOT occupied by tennis balls?",
+          choices: ["V = Vcylinder − 3Vsphere", "V = Vcylinder + 3Vsphere", "V = 3Vcylinder − Vsphere"], correct: 0
         }
       ]
     },
@@ -478,55 +478,7 @@
       </svg>`;
     }
     if (task.diagram === "tennis-can") {
-      return `<svg class="v87-tennis-site-figure" viewBox="0 0 650 1100" role="img" aria-label="Cylinder 6.6 centimeters in diameter and 19.8 centimeters high containing three tennis balls, each 6.4 centimeters in diameter">
-        <defs>
-          <linearGradient id="v87CanBody" x1="0" x2="1">
-            <stop offset="0" stop-color="#e9fbff" stop-opacity=".88"/>
-            <stop offset=".5" stop-color="#8fdcf7" stop-opacity=".42"/>
-            <stop offset="1" stop-color="#e9fbff" stop-opacity=".82"/>
-          </linearGradient>
-          <radialGradient id="v87BallFill" cx="42%" cy="30%" r="72%">
-            <stop offset="0" stop-color="#fbff88"/>
-            <stop offset=".58" stop-color="#dfff20"/>
-            <stop offset="1" stop-color="#a8d61b"/>
-          </radialGradient>
-        </defs>
-
-        <rect x="14" y="14" width="622" height="1072" rx="30" fill="#fff" stroke="#7b2ee8" stroke-width="5"/>
-        <text x="42" y="70" fill="#32106e" font-size="32" font-weight="900" font-family="Arial, sans-serif">Study the figure</text>
-
-        <rect x="165" y="160" width="300" height="900" fill="url(#v87CanBody)"/>
-        <line x1="165" y1="160" x2="165" y2="1060" stroke="#147fbd" stroke-width="6"/>
-        <line x1="465" y1="160" x2="465" y2="1060" stroke="#147fbd" stroke-width="6"/>
-        <ellipse cx="315" cy="160" rx="150" ry="38" fill="#c9f2ff" fill-opacity=".78" stroke="#147fbd" stroke-width="6"/>
-        <ellipse cx="315" cy="1060" rx="150" ry="38" fill="#9fe4fa" fill-opacity=".78" stroke="#147fbd" stroke-width="6"/>
-
-        <line x1="165" y1="192" x2="465" y2="192" stroke="#ff2f95" stroke-width="6" stroke-linecap="round"/>
-        <line x1="165" y1="176" x2="165" y2="208" stroke="#ff2f95" stroke-width="6"/>
-        <line x1="465" y1="176" x2="465" y2="208" stroke="#ff2f95" stroke-width="6"/>
-        <text x="315" y="181" text-anchor="middle" fill="#111d42" font-size="28" font-weight="900" font-family="Arial, sans-serif">6.6 cm</text>
-
-        <circle cx="315" cy="319.1" r="145.45" fill="url(#v87BallFill)" stroke="#4d7f25" stroke-width="5"/>
-        <circle cx="315" cy="610" r="145.45" fill="url(#v87BallFill)" stroke="#4d7f25" stroke-width="5"/>
-        <circle cx="315" cy="900.9" r="145.45" fill="url(#v87BallFill)" stroke="#4d7f25" stroke-width="5"/>
-
-        <path d="M214 215 C198 260 199 367 222 410" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" opacity=".92"/>
-        <path d="M416 215 C432 260 431 367 408 410" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" opacity=".92"/>
-        <path d="M214 506 C198 551 199 658 222 701" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" opacity=".92"/>
-        <path d="M416 506 C432 551 431 658 408 701" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" opacity=".92"/>
-        <path d="M214 797 C198 842 199 949 222 992" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" opacity=".92"/>
-        <path d="M416 797 C432 842 431 949 408 992" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" opacity=".92"/>
-
-        <line x1="169.55" y1="319.1" x2="460.45" y2="319.1" stroke="#ff2c2c" stroke-width="6" stroke-linecap="round"/>
-        <line x1="169.55" y1="303" x2="169.55" y2="335" stroke="#ff2c2c" stroke-width="6"/>
-        <line x1="460.45" y1="303" x2="460.45" y2="335" stroke="#ff2c2c" stroke-width="6"/>
-        <text x="315" y="306" text-anchor="middle" fill="#111d42" font-size="28" font-weight="900" font-family="Arial, sans-serif">6.4 cm</text>
-
-        <line x1="520" y1="160" x2="520" y2="1060" stroke="#ff2f95" stroke-width="6" stroke-linecap="round"/>
-        <line x1="508" y1="160" x2="532" y2="160" stroke="#ff2f95" stroke-width="6"/>
-        <line x1="508" y1="1060" x2="532" y2="1060" stroke="#ff2f95" stroke-width="6"/>
-        <text x="548" y="620" fill="#111d42" font-size="28" font-weight="900" font-family="Arial, sans-serif">19.8 cm</text>
-      </svg>`;
+      return `<img class="v87-tennis-site-figure" src="assets/8-7a/q18-tennis-can.webp?v=20260919-1" alt="Cylinder 6.6 centimeters in diameter and 19.8 centimeters high containing three tennis balls, each 6.4 centimeters in diameter">`;
     }
     return `<svg class="v87-composite-svg" viewBox="0 0 540 430" role="img" aria-label="Cone with a hemispherical scoop">
       <path d="M120 155 A135 135 0 0 1 390 155" class="v87-composite-fill"/>
