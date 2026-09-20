@@ -131,3 +131,29 @@
 .sa87b-projected-svg .sa87b-3d-base.is-selected{
   filter:drop-shadow(0 0 9px rgba(121,46,232,.9));
 }
+
+
+/* Surface-mounted dimension labels for true 3D solids */
+.sa87b-scene{min-height:440px}
+.sa87b-turner.projected-3d{
+  width:min(700px,98%);
+  height:420px;
+}
+.sa87b-surface-plaque{pointer-events:none}
+.sa87b-surface-plaque polygon{
+  fill:rgba(255,255,255,.94);
+  stroke:rgba(50,32,111,.22);
+  stroke-width:1.8;
+  vector-effect:non-scaling-stroke;
+  filter:drop-shadow(0 2px 3px rgba(28,25,67,.16));
+}
+.sa87b-surface-plaque text{
+  fill:#17213f;
+  font-family:Arial,sans-serif;
+  font-weight:900;
+  paint-order:stroke;
+  stroke:#fff;
+  stroke-width:2.5px;
+  stroke-linejoin:round;
+  pointer-events:none;
+}
