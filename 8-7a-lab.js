@@ -478,7 +478,7 @@
       </svg>`;
     }
     if (task.diagram === "tennis-can") {
-      return `<img class="v87-tennis-site-figure" src="assets/8-7a/q17-tennis-can.webp?v=20260919-2" alt="Cylinder 6.6 centimeters in diameter and 19.8 centimeters high containing three tennis balls, each 6.6 centimeters in diameter">`;
+      return `<img class="v87-tennis-site-figure" src="assets/8-7a/q17-tennis-can.svg?v=20260919-3" alt="Cylinder 6.6 centimeters in diameter and 19.8 centimeters high containing three tennis balls, each 6.6 centimeters in diameter">`;
     }
     return `<svg class="v87-composite-svg" viewBox="0 0 540 430" role="img" aria-label="Cone with a hemispherical scoop">
       <path d="M120 155 A135 135 0 0 1 390 155" class="v87-composite-fill"/>
