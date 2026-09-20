@@ -193,20 +193,37 @@
     const selected = new Set(data.selectedFaces || []);
     const u = escapeHTML(task.unit);
     const s = task.base.sides;
-    return `<svg class="sa87b-object sa87b-svg-solid" viewBox="0 0 500 360" role="img" aria-label="Triangular prism with labeled dimensions that turns with the model">
-      <polygon points="110,105 225,55 225,275 110,300" fill="#dff6ff" stroke="#32206f" stroke-width="5"/>
-      <polygon points="225,55 400,105 400,295 225,275" fill="#bcecff" stroke="#32206f" stroke-width="5"/>
-      <polygon points="110,105 225,55 400,105 265,165" fill="#96dcf4" stroke="#32206f" stroke-width="5"/>
-      <polygon class="sa87b-svg-face${selected.has("triFront") ? " is-selected" : ""}" data-sa-face="triFront" data-sa-pair="triPair" points="110,105 110,300 265,215" fill="#f0dbff" stroke="#6d2fd4" stroke-width="6"/>
-      <polygon class="sa87b-svg-face${selected.has("triBack") ? " is-selected" : ""}" data-sa-face="triBack" data-sa-pair="triPair" points="225,55 225,275 400,185" fill="#ead2ff" fill-opacity=".74" stroke="#6d2fd4" stroke-width="6"/>
-      <line x1="265" y1="215" x2="400" y2="185" stroke="#32206f" stroke-width="5"/>
+    const baseLabel = clean(task.base.triBase);
+    const altitudeLabel = clean(task.base.triHeight);
+    const prismLength = clean(task.h);
 
-      <line x1="110" y1="215" x2="265" y2="215" class="sa87b-model-dim" stroke-dasharray="8 6"/>
-      <text x="178" y="202" text-anchor="middle" class="sa87b-model-label">height = ${clean(task.base.triHeight)} ${u}</text>
-      <text x="82" y="205" text-anchor="middle" class="sa87b-model-label" transform="rotate(-90 82 205)">base = ${clean(task.base.triBase)} ${u}</text>
-      <text x="178" y="135" text-anchor="middle" class="sa87b-model-label">${clean(s[0])} ${u}</text>
-      <text x="184" y="278" text-anchor="middle" class="sa87b-model-label">${clean(s[1])} ${u}</text>
-      <text x="330" y="68" text-anchor="middle" class="sa87b-model-label">prism length = ${clean(task.h)} ${u}</text>
+    return `<svg class="sa87b-object sa87b-svg-solid sa87b-tri-prism" viewBox="0 0 560 350" role="img" aria-label="Triangular prism with two congruent triangular bases and labeled dimensions">
+      <!-- three lateral faces, drawn behind the bases -->
+      <polygon points="110,85 330,50 450,140 230,175" fill="#aee7f7" fill-opacity=".9" stroke="#32206f" stroke-width="5"/>
+      <polygon points="110,265 330,230 450,140 230,175" fill="#c9eef8" fill-opacity=".92" stroke="#32206f" stroke-width="5"/>
+      <polygon points="110,85 110,265 330,230 330,50" fill="#d9f4fb" fill-opacity=".88" stroke="#32206f" stroke-width="5"/>
+
+      <!-- back base -->
+      <polygon class="sa87b-svg-face${selected.has("triBack") ? " is-selected" : ""}" data-sa-face="triBack" data-sa-pair="triPair"
+        points="330,50 330,230 450,140" fill="#dfc8ff" fill-opacity=".72" stroke="#6d2fd4" stroke-width="6"/>
+
+      <!-- front base: 6-unit side with 4-unit perpendicular altitude gives 5-5-6 triangle -->
+      <polygon class="sa87b-svg-face${selected.has("triFront") ? " is-selected" : ""}" data-sa-face="triFront" data-sa-pair="triPair"
+        points="110,85 110,265 230,175" fill="#ead8ff" stroke="#6d2fd4" stroke-width="7"/>
+
+      <!-- altitude on front base -->
+      <line x1="110" y1="175" x2="230" y2="175" class="sa87b-model-dim" stroke-dasharray="9 7"/>
+      <path d="M110 175 h14 v14" fill="none" stroke="#e6398f" stroke-width="4"/>
+
+      <!-- dimension labels placed around, not over, the triangle -->
+      <text x="78" y="178" text-anchor="middle" class="sa87b-model-label" transform="rotate(-90 78 178)">base = ${baseLabel} ${u}</text>
+      <text x="166" y="159" text-anchor="middle" class="sa87b-model-label">height = ${altitudeLabel} ${u}</text>
+      <text x="157" y="111" text-anchor="middle" class="sa87b-model-label">${clean(s[0])} ${u}</text>
+      <text x="157" y="251" text-anchor="middle" class="sa87b-model-label">${clean(s[1])} ${u}</text>
+
+      <!-- prism length labels the connector between matching vertices -->
+      <line x1="110" y1="85" x2="330" y2="50" class="sa87b-length-guide"/>
+      <text x="222" y="42" text-anchor="middle" class="sa87b-model-label sa87b-length-label">prism length = ${prismLength} ${u}</text>
     </svg>`;
   }
 
@@ -243,6 +260,7 @@
 
   function basePicture(spec, unit) {
     const u = escapeHTML(unit);
+
     if (spec.shape === "circle") {
       return `<svg class="sa87b-base-svg" viewBox="0 0 460 310" role="img" aria-label="Circular base shown separately">
         <circle cx="205" cy="150" r="92" fill="#d7f3ff" stroke="#342173" stroke-width="6"/>
@@ -252,24 +270,63 @@
         <text x="205" y="286" text-anchor="middle" class="sa87b-base-caption">Use this circle only to find B and P.</text>
       </svg>`;
     }
+
     if (spec.shape === "triangle") {
-      return `<svg class="sa87b-base-svg" viewBox="0 0 500 350" role="img" aria-label="Triangular base shown separately">
-        <polygon points="120,255 380,255 250,65" fill="#e6d7ff" stroke="#342173" stroke-width="6"/>
-        <line x1="250" y1="65" x2="250" y2="255" class="sa87b-dim" stroke-dasharray="9 7"/>
-        <line x1="120" y1="292" x2="380" y2="292" class="sa87b-dim"/>
-        <text x="250" y="327" text-anchor="middle" class="sa87b-svg-label">${clean(spec.triBase)} ${u}</text>
-        <text x="270" y="165" class="sa87b-svg-label">height = ${clean(spec.triHeight)} ${u}</text>
-        <text x="158" y="155" text-anchor="middle" class="sa87b-svg-label">${clean(spec.sides[0])} ${u}</text>
-        <text x="342" y="155" text-anchor="middle" class="sa87b-svg-label">${clean(spec.sides[1])} ${u}</text>
-        <text x="250" y="235" text-anchor="middle" class="sa87b-svg-label">${clean(spec.sides[2])} ${u}</text>
+      // Draw 5-5-6 / right-triangle bases proportionally from the given base and altitude.
+      const base = Number(spec.triBase);
+      const altitude = Number(spec.triHeight);
+      const scale = Math.min(250 / Math.max(base, 1), 180 / Math.max(altitude, 1));
+      const basePx = base * scale;
+      const altPx = altitude * scale;
+      const centerX = 260;
+      const bottomY = 255;
+      const leftX = centerX - basePx / 2;
+      const rightX = centerX + basePx / 2;
+      const topY = bottomY - altPx;
+
+      return `<svg class="sa87b-base-svg" viewBox="0 0 520 360" role="img" aria-label="Triangular base shown separately">
+        <polygon points="${leftX},${bottomY} ${rightX},${bottomY} ${centerX},${topY}" fill="#e6d7ff" stroke="#342173" stroke-width="6"/>
+
+        <!-- perpendicular altitude -->
+        <line x1="${centerX}" y1="${topY}" x2="${centerX}" y2="${bottomY}" class="sa87b-dim" stroke-dasharray="9 7"/>
+        <path d="M${centerX} ${bottomY - 18} h18 v-18" fill="none" stroke="#e6398f" stroke-width="4"/>
+
+        <!-- base dimension below the triangle -->
+        <line x1="${leftX}" y1="300" x2="${rightX}" y2="300" class="sa87b-dim"/>
+        <text x="${centerX}" y="338" text-anchor="middle" class="sa87b-svg-label">${clean(spec.triBase)} ${u}</text>
+
+        <!-- side lengths outside the slanted sides -->
+        <text x="${leftX - 34}" y="${(bottomY + topY) / 2}" text-anchor="middle" class="sa87b-svg-label">${clean(spec.sides[0])} ${u}</text>
+        <text x="${rightX + 34}" y="${(bottomY + topY) / 2}" text-anchor="middle" class="sa87b-svg-label">${clean(spec.sides[1])} ${u}</text>
+
+        <!-- altitude label offset from dashed line -->
+        <text x="${centerX + 24}" y="${(bottomY + topY) / 2}" class="sa87b-svg-label">h = ${clean(spec.triHeight)} ${u}</text>
       </svg>`;
     }
-    return `<svg class="sa87b-base-svg" viewBox="0 0 520 360" role="img" aria-label="Rectangular base shown separately">
-      <rect x="135" y="55" width="270" height="190" rx="12" fill="#d8f2ff" stroke="#342173" stroke-width="6"/>
-      <line x1="135" y1="285" x2="405" y2="285" class="sa87b-dim"/>
-      <line x1="92" y1="55" x2="92" y2="245" class="sa87b-dim"/>
-      <text x="270" y="326" text-anchor="middle" class="sa87b-svg-label">${clean(spec.a)} ${u}</text>
-      <text x="48" y="158" text-anchor="middle" class="sa87b-svg-label">${clean(spec.b)} ${u}</text>
+
+    // Rectangular bases are drawn to the actual side-length ratio.
+    const a = Math.max(Number(spec.a) || 1, 0.1);
+    const b = Math.max(Number(spec.b) || 1, 0.1);
+    const maxW = 260;
+    const maxH = 220;
+    const scale = Math.min(maxW / a, maxH / b);
+    const rectW = a * scale;
+    const rectH = b * scale;
+    const centerX = 275;
+    const centerY = 165;
+    const x = centerX - rectW / 2;
+    const y = centerY - rectH / 2;
+    const vDimX = x - 45;
+    const hDimY = y + rectH + 42;
+
+    return `<svg class="sa87b-base-svg" viewBox="0 0 550 390" role="img" aria-label="Rectangular base shown separately in proportion to its dimensions">
+      <rect x="${x}" y="${y}" width="${rectW}" height="${rectH}" rx="12" fill="#d8f2ff" stroke="#342173" stroke-width="6"/>
+
+      <line x1="${x}" y1="${hDimY}" x2="${x + rectW}" y2="${hDimY}" class="sa87b-dim"/>
+      <text x="${centerX}" y="${hDimY + 38}" text-anchor="middle" class="sa87b-svg-label">${clean(spec.a)} ${u}</text>
+
+      <line x1="${vDimX}" y1="${y}" x2="${vDimX}" y2="${y + rectH}" class="sa87b-dim"/>
+      <text x="${vDimX - 18}" y="${centerY}" text-anchor="middle" class="sa87b-svg-label">${clean(spec.b)} ${u}</text>
     </svg>`;
   }
 
