@@ -544,24 +544,78 @@
     return (aliases[unit] || []).some(alias => t.includes(alias));
   }
 
-  function volumeAnswerCorrect(text, task, places) {
+  function parseVolumeEntry(text) {
     const raw = String(text || "").trim();
     const numberMatch = raw.replace(/,/g, "").match(/-?\d+(?:\.(\d+))?/);
-    if (!numberMatch) return false;
-    const decimalDigits = numberMatch[1] || "";
-    if (decimalDigits.length !== places) return false;
-    const numeric = Number(numberMatch[0]);
+    if (!numberMatch) return { raw, numeric: NaN, decimalDigits: "", hasNumber: false };
+    return {
+      raw,
+      numeric: Number(numberMatch[0]),
+      decimalDigits: numberMatch[1] || "",
+      hasNumber: true
+    };
+  }
+
+  function volumeAnswerCorrect(text, task, places) {
+    const entry = parseVolumeEntry(text);
+    if (!entry.hasNumber) return false;
+    if (entry.decimalDigits.length !== places) return false;
     const expected = roundTo(taskVolume(task), places);
-    if (Math.abs(numeric - expected) > 10 ** (-(places + 4))) return false;
-    return hasCubicUnit(raw, task);
+    if (Math.abs(entry.numeric - expected) > 10 ** (-(places + 4))) return false;
+    return hasCubicUnit(entry.raw, task);
+  }
+
+  function looksLikeRoundingIssue(numeric, exact, requestedPlaces) {
+    if (!Number.isFinite(numeric)) return false;
+    for (let places = 0; places <= 6; places += 1) {
+      const candidate = roundTo(exact, places);
+      const tolerance = 10 ** (-(Math.max(places, requestedPlaces) + 3));
+      if (Math.abs(numeric - candidate) <= tolerance) return true;
+    }
+    const requestedStep = 10 ** (-requestedPlaces);
+    return Math.abs(numeric - exact) < requestedStep;
+  }
+
+  function mathErrorHint(task) {
+    if (task.kind === "composite") {
+      return "Your reasoning steps are complete, but the numerical volume is not correct yet. Recheck the volume of each solid and then the add/subtract operation.";
+    }
+    const dimensionText = task.shape === "sphere"
+      ? "the radius you entered"
+      : "the radius and height you entered";
+    return `Your formula and dimensions are set up, but the numerical volume is not correct yet. Recheck the substitution and arithmetic using ${dimensionText}.`;
   }
 
   function roundingAnswerError(data, task) {
+    const exact = taskVolume(task);
+
     for (const level of ROUNDING_LEVELS) {
       const value = data.inputs[level.key];
-      if (!String(value || "").trim()) return `${level.label}: enter an answer with cubic units.`;
-      if (!volumeAnswerCorrect(value, task, level.places)) {
-        return `${level.label}: check the rounding, use exactly ${level.places} decimal place${level.places === 1 ? "" : "s"}, and include ${task.unit}³.`;
+      const entry = parseVolumeEntry(value);
+
+      if (!entry.raw) {
+        return `${level.label}: this answer is missing. Enter the volume and include ${task.unit}³.`;
+      }
+      if (!entry.hasNumber) {
+        return `${level.label}: I could not find a numerical volume. Enter the number first, then add ${task.unit}³.`;
+      }
+
+      const expected = roundTo(exact, level.places);
+      const numericCorrect = Math.abs(entry.numeric - expected) <= 10 ** (-(level.places + 4));
+
+      if (!numericCorrect) {
+        if (looksLikeRoundingIssue(entry.numeric, exact, level.places)) {
+          return `${level.label}: your calculation appears consistent, but the rounding/place value is off. Round the same volume to exactly ${level.places} decimal place${level.places === 1 ? "" : "s"}.`;
+        }
+        return `${level.label}: ${mathErrorHint(task)} This is a math/calculation issue, not a place-value issue.`;
+      }
+
+      if (entry.decimalDigits.length !== level.places) {
+        return `${level.label}: your numerical value is correct. This is only a place-value/formatting issue—show exactly ${level.places} decimal place${level.places === 1 ? "" : "s"}.`;
+      }
+
+      if (!hasCubicUnit(entry.raw, task)) {
+        return `${level.label}: your number and place value are correct. Add the cubic unit ${task.unit}³.`;
       }
     }
     return "";
@@ -570,6 +624,39 @@
   function numericInputCorrect(value, expected) {
     const n = Number(String(value || "").trim());
     return Number.isFinite(n) && Math.abs(n - Number(expected)) < 0.001;
+  }
+
+  function dimensionError(data, task) {
+    const radiusRaw = String(data.inputs.radius || "").trim();
+    const needsHeight = task.shape !== "sphere";
+    const heightRaw = String(data.inputs.height || "").trim();
+
+    const missing = [];
+    if (!radiusRaw) missing.push("radius");
+    if (needsHeight && !heightRaw) missing.push("height");
+    if (missing.length) {
+      return `Dimension setup is incomplete: enter the ${missing.join(" and ")} before checking the volume. The software has not checked your rounding yet.`;
+    }
+
+    const radiusCorrect = numericInputCorrect(radiusRaw, task.radius);
+    const heightCorrect = !needsHeight || numericInputCorrect(heightRaw, task.height);
+
+    if (!radiusCorrect && !heightCorrect) {
+      return "Dimension error: both the radius and height need to be rechecked before you calculate the volume.";
+    }
+
+    if (!radiusCorrect) {
+      const diameterNudge = task.given === "diameter" || (task.kind === "word" && /diameter|across|through its center/i.test(task.prompt || ""));
+      return diameterNudge
+        ? "Dimension error: the given measure goes all the way across the circle. Convert the diameter to a radius before calculating. The software has not checked your arithmetic or rounding yet."
+        : "Dimension error: recheck the radius you entered. The software has not checked your arithmetic or rounding yet.";
+    }
+
+    if (!heightCorrect) {
+      return "Dimension error: recheck the height you entered. The software has not checked your arithmetic or rounding yet.";
+    }
+
+    return "";
   }
 
   window.renderVolume87ALab = function renderVolume87ALab(ctx) {
@@ -711,12 +798,9 @@
         if (task.shape !== "sphere" && data.base !== "circle") {
           return setLabFeedback("B is the area of the circular base. Recheck the formula you placed for B.", "incorrect");
         }
-        if (!numericInputCorrect(data.inputs.radius, task.radius)) {
-          const diameterNudge = task.given === "diameter" || (task.kind === "word" && /diameter|across|through its center/i.test(task.prompt));
-          return setLabFeedback(diameterNudge ? "The measure given goes all the way across the circle. Determine the radius before calculating volume." : "Recheck the radius you entered.", "incorrect");
-        }
-        if (task.shape !== "sphere" && !numericInputCorrect(data.inputs.height, task.height)) {
-          return setLabFeedback("Recheck the height you entered.", "incorrect");
+        const dimensionProblem = dimensionError(data, task);
+        if (dimensionProblem) {
+          return setLabFeedback(dimensionProblem, "incorrect");
         }
         const roundingError = roundingAnswerError(data, task);
         if (roundingError) {
