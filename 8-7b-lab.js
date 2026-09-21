@@ -10,6 +10,13 @@
     total: "TSA = 2πrh + 2πr²"
   };
 
+  function cylinderPiCoefficient(task, type) {
+    const r = Number(task.radius);
+    const h = Number(task.h);
+    if (type === "total") return 2 * r * h + 2 * r * r;
+    return 2 * r * h;
+  }
+
   const EXPLORE_TASKS = [
     { kind: "explore", shape: "rect", title: "Rectangular prism · choose any base pair", unit: "cm", width: 8, height: 5, depth: 3 },
     { kind: "explore", shape: "rect", title: "Rectangular prism · a different size", unit: "m", width: 10, height: 4, depth: 6 },
@@ -830,9 +837,16 @@
         <input data-sa-input="cLR" value="${escapeHTML(data.inputs.cLR || "")}" placeholder="r">
         <span>×</span>
         <input data-sa-input="cLH" value="${escapeHTML(data.inputs.cLH || "")}" placeholder="h">
-        <span>=</span>
-        <input class="answer" data-sa-input="lateral" value="${escapeHTML(data.inputs.lateral || "")}" placeholder="0.00">
       </div>
+      <div class="sa87b-cylinder-answer-line">
+        <span class="sa87b-answer-label">In terms of π:</span>
+        <input data-sa-input="cLPi" value="${escapeHTML(data.inputs.cLPi || "")}" placeholder="coefficient">
+        <strong>π</strong>
+        <span class="sa87b-answer-label">≈</span>
+        <input class="answer" data-sa-input="lateral" value="${escapeHTML(data.inputs.lateral || "")}" placeholder="decimal">
+        <span>${escapeHTML(task.unit)}²</span>
+      </div>
+
       ${includeTotal ? `<div class="sa87b-formula-line sa87b-cylinder-formula-line">
         <strong>TSA =</strong><span>2π ×</span>
         <input data-sa-input="cTR1" value="${escapeHTML(data.inputs.cTR1 || "")}" placeholder="r">
@@ -840,10 +854,18 @@
         <input data-sa-input="cTH" value="${escapeHTML(data.inputs.cTH || "")}" placeholder="h">
         <span>+</span><span>2π ×</span>
         <input data-sa-input="cTR2" value="${escapeHTML(data.inputs.cTR2 || "")}" placeholder="r">
-        <span>² =</span>
-        <input class="answer" data-sa-input="total" value="${escapeHTML(data.inputs.total || "")}" placeholder="0.00">
+        <span>²</span>
+      </div>
+      <div class="sa87b-cylinder-answer-line">
+        <span class="sa87b-answer-label">In terms of π:</span>
+        <input data-sa-input="cTPi" value="${escapeHTML(data.inputs.cTPi || "")}" placeholder="coefficient">
+        <strong>π</strong>
+        <span class="sa87b-answer-label">≈</span>
+        <input class="answer" data-sa-input="total" value="${escapeHTML(data.inputs.total || "")}" placeholder="decimal">
+        <span>${escapeHTML(task.unit)}²</span>
       </div>` : ""}
-      <p><strong>Keep π in the formula until the final calculation.</strong> Do not round circumference or base area first. Round only the final surface-area answer to the nearest hundredth.</p>
+
+      <p><strong>Give both forms.</strong> First write the exact answer as a coefficient times π. Then give the decimal approximation rounded to the nearest hundredth. Keep π exact until the final decimal calculation.</p>
     </div>`;
   }
 
@@ -888,7 +910,7 @@
       work += `<section class="sa87b-learn-card">
         <h5>Step 4 · Build both surface-area equations</h5>
         <p>${isCylinder
-          ? "For a cylinder, keep π and r inside the final formula. Do not replace them with a rounded circumference or rounded base area."
+          ? "For a cylinder, keep π and r inside the final formula. Give the answer first in terms of π, then as a decimal rounded to the nearest hundredth."
           : "Type the values into the formula before calculating. This keeps B and P connected to the base and h connected to the distance between bases."}</p>
         ${isCylinder ? cylinderFormulaInputs(task, data, true) : formulaInputs(spec, data, true)}
         <button type="button" class="lab-action" id="checkExploreFinal87B">Check both surface areas</button>
@@ -1185,15 +1207,25 @@
         }
       }
 
+      const lPi = cylinderPiCoefficient(task, "lateral");
+      const tPi = cylinderPiCoefficient(task, "total");
+
+      if (!near(data.inputs.cLPi, lPi)) {
+        return ctx.setLabFeedback(`The LSA answer in terms of π is not correct yet. Simplify 2rh first, then write ${clean(lPi)}π.`, "incorrect");
+      }
+      if (!near(data.inputs.cTPi, tPi)) {
+        return ctx.setLabFeedback(`The TSA answer in terms of π is not correct yet. Combine 2rh + 2r² first, then write ${clean(tPi)}π.`, "incorrect");
+      }
+
       const lStatus = hundredthStatus(data.inputs.lateral, spec.lateral);
-      if (!lStatus.ok) return feedbackHundredth(ctx, lStatus, "Lateral surface area");
+      if (!lStatus.ok) return feedbackHundredth(ctx, lStatus, "LSA decimal approximation");
       const tStatus = hundredthStatus(data.inputs.total, spec.total);
-      if (!tStatus.ok) return feedbackHundredth(ctx, tStatus, "Total surface area");
+      if (!tStatus.ok) return feedbackHundredth(ctx, tStatus, "TSA decimal approximation");
 
       return finishQuestion(
         data,
         ctx,
-        `Correct. LSA = 2πrh = ${fmt(spec.lateral)} ${task.unit}² and TSA = 2πrh + 2πr² = ${fmt(spec.total)} ${task.unit}². π stayed in the formula until the final calculation.`
+        `Correct. LSA = ${clean(lPi)}π ≈ ${fmt(spec.lateral)} ${task.unit}² and TSA = ${clean(tPi)}π ≈ ${fmt(spec.total)} ${task.unit}².`
       );
     }
 
@@ -1326,7 +1358,7 @@
       }
       data.step = 3;
       setLabFeedback(task.shape === "cylinder"
-        ? "Correct. Now you have r and h. Keep π in the cylinder formula and round only the final surface area."
+        ? "Correct. Now you have r and h. Keep π in the cylinder formula. Give the exact answer in terms of π and the decimal approximation to the nearest hundredth."
         : "Correct. Now you have B, P, and h from the correct places. Build the formulas.", "correct");
       window.renderSurface87BLab(ctx);
     });
@@ -1409,7 +1441,7 @@
           return setLabFeedback("Recheck the radius r shown on the circular base. Do not calculate circumference or base area.", "incorrect");
         }
         data.step = 4;
-        setLabFeedback("Correct. Use r directly in the cylinder formula and keep π exact until the final calculation.", "correct");
+        setLabFeedback("Correct. Use r directly in the cylinder formula. Give the surface area in terms of π and then as a decimal rounded to the nearest hundredth.", "correct");
         return window.renderSurface87BLab(ctx);
       }
 
@@ -1434,17 +1466,29 @@
           if (!near(data.inputs.cTR1, task.radius) || !near(data.inputs.cTH, task.h) || !near(data.inputs.cTR2, task.radius)) {
             return setLabFeedback("Recheck TSA = 2πrh + 2πr². Use the radius r in both places and the cylinder height h; keep π exact.", "incorrect");
           }
+
+          const piCoefficient = cylinderPiCoefficient(task, "total");
+          if (!near(data.inputs.cTPi, piCoefficient)) {
+            return setLabFeedback(`Your formula setup is correct, but the answer in terms of π is not. Simplify the coefficient to ${clean(piCoefficient)}π before using a decimal approximation.`, "incorrect");
+          }
+
           const status = hundredthStatus(data.inputs.total, spec.total);
-          if (!status.ok) return feedbackHundredth(ctx, status, "Total surface area");
-          return finishQuestion(data, ctx, `Correct. TSA = 2πrh + 2πr² = ${fmt(spec.total)} ${task.unit}².`);
+          if (!status.ok) return feedbackHundredth(ctx, status, "TSA decimal approximation");
+          return finishQuestion(data, ctx, `Correct. TSA = ${clean(piCoefficient)}π ≈ ${fmt(spec.total)} ${task.unit}².`);
         }
 
         if (!near(data.inputs.cLR, task.radius) || !near(data.inputs.cLH, task.h)) {
           return setLabFeedback("Recheck LSA = 2πrh. Use r and h directly and keep π in the formula.", "incorrect");
         }
+
+        const piCoefficient = cylinderPiCoefficient(task, "lateral");
+        if (!near(data.inputs.cLPi, piCoefficient)) {
+          return setLabFeedback(`Your formula setup is correct, but the answer in terms of π is not. Simplify 2rh to ${clean(piCoefficient)}π before using a decimal approximation.`, "incorrect");
+        }
+
         const status = hundredthStatus(data.inputs.lateral, spec.lateral);
-        if (!status.ok) return feedbackHundredth(ctx, status, "Lateral surface area");
-        return finishQuestion(data, ctx, `Correct. LSA = 2πrh = ${fmt(spec.lateral)} ${task.unit}².`);
+        if (!status.ok) return feedbackHundredth(ctx, status, "LSA decimal approximation");
+        return finishQuestion(data, ctx, `Correct. LSA = ${clean(piCoefficient)}π ≈ ${fmt(spec.lateral)} ${task.unit}².`);
       }
 
       if (!near(data.inputs.lP, spec.P) || !near(data.inputs.lh, spec.h)) {
