@@ -748,6 +748,37 @@
       </svg>`;
     }
     if (task.shape === "tri") {
+      const sides = (spec.sides || []).map(Number).sort((a,b) => a - b);
+      const isRight = sides.length === 3 && Math.abs(sides[0] ** 2 + sides[1] ** 2 - sides[2] ** 2) < 0.2;
+
+      if (isRight) {
+        // Keep the selected bases visibly RIGHT triangles in Step 3.
+        // The magenta segment is the actual distance between matching points on the two bases.
+        return `<svg class="sa87b-distance-svg sa87b-distance-right-tri" viewBox="0 0 580 340" role="img" aria-label="Right triangular prism with two congruent right-triangle bases separated by ${h} ${u}">
+          <!-- lateral faces -->
+          <polygon points="90,75 315,50 315,235 90,260" fill="#d7f3fb" stroke="#342173" stroke-width="5"/>
+          <polygon points="90,260 240,260 465,235 315,235" fill="#c8ecf8" stroke="#342173" stroke-width="5"/>
+          <polygon points="90,75 240,260 465,235 315,50" fill="#bce7f5" fill-opacity=".86" stroke="#342173" stroke-width="5"/>
+
+          <!-- front right-triangle base -->
+          <polygon points="90,75 90,260 240,260" fill="#eadbff" stroke="#52269f" stroke-width="7"/>
+          <!-- back right-triangle base -->
+          <polygon points="315,50 315,235 465,235" fill="#eadbff" fill-opacity=".78" stroke="#52269f" stroke-width="7"/>
+
+          <!-- right-angle markers -->
+          <path d="M90 236 H114 V260" class="sa87b-right-angle-marker" fill="none"/>
+          <path d="M315 211 H339 V235" class="sa87b-right-angle-marker" fill="none"/>
+
+          <!-- h is the connector between corresponding points on the two bases -->
+          <line x1="90" y1="260" x2="315" y2="235" class="sa87b-dim sa87b-h-connector"/>
+          <circle cx="90" cy="260" r="5" fill="#e6398f"/>
+          <circle cx="315" cy="235" r="5" fill="#e6398f"/>
+          <text x="202" y="226" text-anchor="middle" class="sa87b-svg-label">h = ${h} ${u}</text>
+
+          <text x="170" y="318" text-anchor="middle" class="sa87b-tiny">The two highlighted right triangles are the bases.</text>
+        </svg>`;
+      }
+
       return `<svg class="sa87b-distance-svg" viewBox="0 0 520 310">
         <polygon points="80,85 80,245 205,190" fill="#eadbff" stroke="#52269f" stroke-width="6"/>
         <polygon points="300,55 300,215 425,160" fill="#eadbff" stroke="#52269f" stroke-width="6"/>
