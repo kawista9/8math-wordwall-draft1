@@ -179,3 +179,19 @@
 .sa87b-distance-right-tri .sa87b-h-connector{
   stroke-width:7;
 }
+
+
+/* Cylinder formula builder keeps pi and radius in the final expression */
+.sa87b-cylinder-formulas .sa87b-cylinder-formula-line{
+  gap:10px;
+}
+.sa87b-cylinder-formulas .sa87b-cylinder-formula-line input:not(.answer){
+  width:82px;
+  flex:0 0 82px;
+}
+.sa87b-cylinder-formulas .sa87b-cylinder-formula-line strong{
+  min-width:76px;
+}
+.sa87b-cylinder-formulas p strong{
+  color:#4f249f;
+}
