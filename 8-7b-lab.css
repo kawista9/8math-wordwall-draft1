@@ -157,3 +157,15 @@
   stroke-linejoin:round;
   pointer-events:none;
 }
+
+
+/* Right-triangle base treatment */
+.sa87b-right-angle-marker{
+  stroke:#e6398f;
+  stroke-width:4;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  vector-effect:non-scaling-stroke;
+  pointer-events:none;
+}
+.sa87b-right-triangle-base{max-width:700px}
