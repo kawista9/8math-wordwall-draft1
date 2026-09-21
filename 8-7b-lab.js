@@ -324,7 +324,7 @@
 
   function renderProjectedTriangle(svg, task, data) {
     if (!svg) return;
-    const { triangle, depth } = triangleWorldGeometry(task);
+    const { triangle, depth, isRight } = triangleWorldGeometry(task);
     const frontZ = depth / 2;
     const backZ = -depth / 2;
     const front3 = triangle.map(p => ({ ...p, z: frontZ }));
@@ -354,56 +354,115 @@
       if (face.node && faceGroup) faceGroup.appendChild(face.node);
     });
 
-    const baseMid3 = midpoint3D(front3[0], front3[1]);
-    const apex3 = front3[2];
-    const altitudeA = project3DPoint(baseMid3, data);
-    const altitudeB = project3DPoint(apex3, data);
-    setSvgLine(svg.querySelector("[data-tri-altitude]"), altitudeA, altitudeB);
-
     const unit = task.unit;
     const frontPlaneX = { x: 1, y: 0, z: 0 };
     const frontPlaneY = { x: 0, y: 1, z: 0 };
+    const altitudeLine = svg.querySelector("[data-tri-altitude]");
+    const rightAngle = svg.querySelector("[data-tri-right-angle]");
+    const altitudePlaque = svg.querySelector('[data-tri-plaque="altitude"]');
 
-    // Labels are small white plaques that lie in the same plane as the triangular base,
-    // just like the labels that sit on the rectangular-prism faces.
-    setProjectedPlaque(
-      svg.querySelector('[data-tri-plaque="base"]'),
-      add3(baseMid3, { x: 0, y: 17, z: 0 }),
-      frontPlaneX, frontPlaneY, 78, 25, data,
-      `${clean(task.base.triBase)} ${unit}`
-    );
+    if (isRight) {
+      // For a right-triangle base, the two perpendicular legs already ARE the base and height.
+      // Do not draw an extra dashed altitude through the triangle.
+      if (altitudeLine) altitudeLine.setAttribute("display", "none");
+      if (altitudePlaque) altitudePlaque.setAttribute("display", "none");
 
-    const altitudeCenter = {
-      x: (baseMid3.x + apex3.x) / 2 + 22,
-      y: (baseMid3.y + apex3.y) / 2,
-      z: frontZ
-    };
-    setProjectedPlaque(
-      svg.querySelector('[data-tri-plaque="altitude"]'),
-      altitudeCenter,
-      frontPlaneX, frontPlaneY, 76, 24, data,
-      `${clean(task.base.triHeight)} ${unit}`
-    );
+      // Right-angle marker at vertex 0, between the 8-unit and 6-unit legs.
+      const v0 = front3[0];
+      const uBase = normalize3({ x: front3[1].x - v0.x, y: front3[1].y - v0.y, z: 0 });
+      const uHeight = normalize3({ x: front3[2].x - v0.x, y: front3[2].y - v0.y, z: 0 });
+      const marker = 18;
+      const p1 = add3(v0, scale3(uBase, marker));
+      const p2 = add3(p1, scale3(uHeight, marker));
+      const p3 = add3(v0, scale3(uHeight, marker));
+      if (rightAngle) {
+        rightAngle.setAttribute("display", "");
+        rightAngle.setAttribute("points", svgPoints([
+          project3DPoint(p1, data),
+          project3DPoint(p2, data),
+          project3DPoint(p3, data)
+        ]));
+      }
 
-    const leftEdge = { x: front3[2].x - front3[0].x, y: front3[2].y - front3[0].y, z: 0 };
-    const leftNormal = normalize3({ x: -leftEdge.y, y: leftEdge.x, z: 0 });
-    const leftCenter = add3(midpoint3D(front3[0], front3[2]), scale3(leftNormal, 13));
-    setProjectedPlaque(
-      svg.querySelector('[data-tri-plaque="side0"]'),
-      leftCenter, leftEdge, leftNormal, 58, 22, data,
-      `${clean(task.base.sides[0])} ${unit}`
-    );
+      // Base leg = triBase (8 ft in this task).
+      const baseMid = midpoint3D(front3[0], front3[1]);
+      setProjectedPlaque(
+        svg.querySelector('[data-tri-plaque="base"]'),
+        add3(baseMid, scale3(uHeight, -15)),
+        uBase, uHeight, 66, 24, data,
+        `${clean(task.base.triBase)} ${unit}`
+      );
 
-    const rightEdge = { x: front3[2].x - front3[1].x, y: front3[2].y - front3[1].y, z: 0 };
-    const rightNormal = normalize3({ x: -rightEdge.y, y: rightEdge.x, z: 0 });
-    const rightCenter = add3(midpoint3D(front3[1], front3[2]), scale3(rightNormal, -13));
-    setProjectedPlaque(
-      svg.querySelector('[data-tri-plaque="side1"]'),
-      rightCenter, rightEdge, rightNormal, 58, 22, data,
-      `${clean(task.base.sides[1])} ${unit}`
-    );
+      // Perpendicular leg = triHeight (6 ft in this task).
+      const heightMid = midpoint3D(front3[0], front3[2]);
+      setProjectedPlaque(
+        svg.querySelector('[data-tri-plaque="side0"]'),
+        add3(heightMid, scale3(uBase, -14)),
+        uHeight, uBase, 60, 23, data,
+        `${clean(task.base.triHeight)} ${unit}`
+      );
 
-    // Prism length sits flat on one rectangular lateral face.
+      // Hypotenuse is the longest side.
+      const hypotenuse = Math.max(...task.base.sides.map(Number));
+      const hypEdge = { x: front3[2].x - front3[1].x, y: front3[2].y - front3[1].y, z: 0 };
+      const hypNormal = normalize3({ x: -hypEdge.y, y: hypEdge.x, z: 0 });
+      const hypMid = midpoint3D(front3[1], front3[2]);
+      setProjectedPlaque(
+        svg.querySelector('[data-tri-plaque="side1"]'),
+        add3(hypMid, scale3(hypNormal, -14)),
+        hypEdge, hypNormal, 62, 23, data,
+        `${clean(hypotenuse)} ${unit}`
+      );
+    } else {
+      if (altitudeLine) altitudeLine.setAttribute("display", "");
+      if (altitudePlaque) altitudePlaque.setAttribute("display", "");
+      if (rightAngle) rightAngle.setAttribute("display", "none");
+
+      const baseMid3 = midpoint3D(front3[0], front3[1]);
+      const apex3 = front3[2];
+      const altitudeA = project3DPoint(baseMid3, data);
+      const altitudeB = project3DPoint(apex3, data);
+      setSvgLine(altitudeLine, altitudeA, altitudeB);
+
+      setProjectedPlaque(
+        svg.querySelector('[data-tri-plaque="base"]'),
+        add3(baseMid3, { x: 0, y: 17, z: 0 }),
+        frontPlaneX, frontPlaneY, 78, 25, data,
+        `${clean(task.base.triBase)} ${unit}`
+      );
+
+      const altitudeCenter = {
+        x: (baseMid3.x + apex3.x) / 2 + 22,
+        y: (baseMid3.y + apex3.y) / 2,
+        z: frontZ
+      };
+      setProjectedPlaque(
+        altitudePlaque,
+        altitudeCenter,
+        frontPlaneX, frontPlaneY, 76, 24, data,
+        `${clean(task.base.triHeight)} ${unit}`
+      );
+
+      const leftEdge = { x: front3[2].x - front3[0].x, y: front3[2].y - front3[0].y, z: 0 };
+      const leftNormal = normalize3({ x: -leftEdge.y, y: leftEdge.x, z: 0 });
+      const leftCenter = add3(midpoint3D(front3[0], front3[2]), scale3(leftNormal, 13));
+      setProjectedPlaque(
+        svg.querySelector('[data-tri-plaque="side0"]'),
+        leftCenter, leftEdge, leftNormal, 58, 22, data,
+        `${clean(task.base.sides[0])} ${unit}`
+      );
+
+      const rightEdge = { x: front3[2].x - front3[1].x, y: front3[2].y - front3[1].y, z: 0 };
+      const rightNormal = normalize3({ x: -rightEdge.y, y: rightEdge.x, z: 0 });
+      const rightCenter = add3(midpoint3D(front3[1], front3[2]), scale3(rightNormal, -13));
+      setProjectedPlaque(
+        svg.querySelector('[data-tri-plaque="side1"]'),
+        rightCenter, rightEdge, rightNormal, 58, 22, data,
+        `${clean(task.base.sides[1])} ${unit}`
+      );
+    }
+
+    // Prism length always lies on a rectangular lateral face.
     const edgeMidFront = midpoint3D(front3[0], front3[1]);
     const edgeMidBack = midpoint3D(back3[0], back3[1]);
     const lateralCenter = midpoint3D(edgeMidFront, edgeMidBack);
@@ -508,6 +567,7 @@
         <polygon class="sa87b-svg-face sa87b-3d-base${selected.has("triFront") ? " is-selected" : ""}" data-sa-face="triFront" data-sa-pair="triPair" fill="#ead8ff" fill-opacity=".94" stroke="#6d2fd4" stroke-width="6"/>
       </g>
       <line data-tri-altitude class="sa87b-model-dim" stroke-dasharray="9 7"/>
+      <polyline data-tri-right-angle class="sa87b-right-angle-marker" fill="none"/>
       <g data-tri-plaque="base" class="sa87b-surface-plaque"><polygon/><text text-anchor="middle" dominant-baseline="middle"></text></g>
       <g data-tri-plaque="altitude" class="sa87b-surface-plaque"><polygon/><text text-anchor="middle" dominant-baseline="middle"></text></g>
       <g data-tri-plaque="side0" class="sa87b-surface-plaque"><polygon/><text text-anchor="middle" dominant-baseline="middle"></text></g>
@@ -585,9 +645,45 @@
     }
 
     if (spec.shape === "triangle") {
-      // Draw 5-5-6 / right-triangle bases proportionally from the given base and altitude.
       const base = Number(spec.triBase);
       const altitude = Number(spec.triHeight);
+      const sides = spec.sides.map(Number);
+      const sortedSides = [...sides].sort((a,b)=>a-b);
+      const isRight = Math.abs(sortedSides[0] ** 2 + sortedSides[1] ** 2 - sortedSides[2] ** 2) < 0.2;
+
+      if (isRight) {
+        // The selected base is a right triangle: triBase and triHeight are the perpendicular legs.
+        const maxW = 255;
+        const maxH = 205;
+        const scale = Math.min(maxW / Math.max(base, 1), maxH / Math.max(altitude, 1));
+        const basePx = base * scale;
+        const heightPx = altitude * scale;
+        const leftX = 130;
+        const bottomY = 270;
+        const rightX = leftX + basePx;
+        const topY = bottomY - heightPx;
+        const hypotenuse = sortedSides[2];
+
+        return `<svg class="sa87b-base-svg sa87b-right-triangle-base" viewBox="0 0 560 390" role="img" aria-label="Right triangular base shown separately with perpendicular legs ${clean(altitude)} and ${clean(base)} ${u}">
+          <polygon points="${leftX},${bottomY} ${rightX},${bottomY} ${leftX},${topY}" fill="#e6d7ff" stroke="#342173" stroke-width="6"/>
+
+          <!-- clear right-angle marker; no unnecessary dashed altitude -->
+          <path d="M${leftX + 22} ${bottomY} V${bottomY - 22} H${leftX}" class="sa87b-right-angle-marker" fill="none"/>
+
+          <!-- 8-unit horizontal leg -->
+          <line x1="${leftX}" y1="${bottomY + 42}" x2="${rightX}" y2="${bottomY + 42}" class="sa87b-dim"/>
+          <text x="${(leftX + rightX) / 2}" y="${bottomY + 82}" text-anchor="middle" class="sa87b-svg-label">${clean(base)} ${u}</text>
+
+          <!-- 6-unit vertical leg -->
+          <line x1="${leftX - 44}" y1="${topY}" x2="${leftX - 44}" y2="${bottomY}" class="sa87b-dim"/>
+          <text x="${leftX - 70}" y="${(topY + bottomY) / 2}" text-anchor="middle" class="sa87b-svg-label" transform="rotate(-90 ${leftX - 70} ${(topY + bottomY) / 2})">${clean(altitude)} ${u}</text>
+
+          <!-- hypotenuse label outside the slanted side -->
+          <text x="${rightX + 30}" y="${topY + heightPx * 0.46}" class="sa87b-svg-label">${clean(hypotenuse)} ${u}</text>
+        </svg>`;
+      }
+
+      // Non-right triangular bases use the given base and perpendicular altitude.
       const scale = Math.min(250 / Math.max(base, 1), 180 / Math.max(altitude, 1));
       const basePx = base * scale;
       const altPx = altitude * scale;
@@ -600,19 +696,15 @@
       return `<svg class="sa87b-base-svg" viewBox="0 0 520 360" role="img" aria-label="Triangular base shown separately">
         <polygon points="${leftX},${bottomY} ${rightX},${bottomY} ${centerX},${topY}" fill="#e6d7ff" stroke="#342173" stroke-width="6"/>
 
-        <!-- perpendicular altitude -->
         <line x1="${centerX}" y1="${topY}" x2="${centerX}" y2="${bottomY}" class="sa87b-dim" stroke-dasharray="9 7"/>
         <path d="M${centerX} ${bottomY - 18} h18 v-18" fill="none" stroke="#e6398f" stroke-width="4"/>
 
-        <!-- base dimension below the triangle -->
         <line x1="${leftX}" y1="300" x2="${rightX}" y2="300" class="sa87b-dim"/>
         <text x="${centerX}" y="338" text-anchor="middle" class="sa87b-svg-label">${clean(spec.triBase)} ${u}</text>
 
-        <!-- side lengths outside the slanted sides -->
         <text x="${leftX - 34}" y="${(bottomY + topY) / 2}" text-anchor="middle" class="sa87b-svg-label">${clean(spec.sides[0])} ${u}</text>
         <text x="${rightX + 34}" y="${(bottomY + topY) / 2}" text-anchor="middle" class="sa87b-svg-label">${clean(spec.sides[1])} ${u}</text>
 
-        <!-- altitude label offset from dashed line -->
         <text x="${centerX + 24}" y="${(bottomY + topY) / 2}" class="sa87b-svg-label">h = ${clean(spec.triHeight)} ${u}</text>
       </svg>`;
     }
