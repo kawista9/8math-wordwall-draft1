@@ -5,6 +5,11 @@
     total: "S = Ph + 2B"
   };
 
+  const CYLINDER_FORMULAS = {
+    lateral: "LSA = 2πrh",
+    total: "TSA = 2πrh + 2πr²"
+  };
+
   const EXPLORE_TASKS = [
     { kind: "explore", shape: "rect", title: "Rectangular prism · choose any base pair", unit: "cm", width: 8, height: 5, depth: 3 },
     { kind: "explore", shape: "rect", title: "Rectangular prism · a different size", unit: "m", width: 10, height: 4, depth: 6 },
@@ -49,17 +54,17 @@
 
   const MISSING_TASKS = [
     {
-      kind: "missing", title: "Find the distance between the bases", unit: "cm", missing: "height",
+      kind: "missing", shape: "tri", title: "Find the distance between the bases", unit: "cm", missing: "height",
       prompt: "A triangular prism has lateral surface area 168 cm². The perimeter of one triangular base is 24 cm. Find h, the distance between the two bases.",
       L: 168, P: 24, answer: 7
     },
     {
-      kind: "missing", title: "Find the cylinder diameter", unit: "cm", missing: "diameter",
+      kind: "missing", shape: "cylinder", title: "Find the cylinder diameter", unit: "cm", missing: "diameter",
       prompt: "A cylinder has lateral surface area 301.59 cm² and height 8 cm. Find the diameter of its circular base.",
       L: 96 * PI, displayL: 301.59, h: 8, circumference: 12 * PI, answer: 12
     },
     {
-      kind: "missing", title: "Find the circumference of the base", unit: "in", missing: "circumference",
+      kind: "missing", shape: "cylinder", title: "Find the circumference of the base", unit: "in", missing: "circumference",
       prompt: "A cylinder has lateral surface area 197.92 in² and height 7 in. Find the circumference of one circular base.",
       L: 63 * PI, displayL: 197.92, h: 7, answer: 9 * PI
     }
@@ -132,11 +137,24 @@
 
   function baseSpec(task, pair) {
     if (task.shape === "rect") return task.kind === "explore" ? rectPair(task, pair || "topBottom") : { ...task.base, h: task.h, label: "selected pair" };
-    if (task.shape === "cylinder") return { ...circleBase(task.radius), h: task.h, label: "circular bases" };
+    if (task.shape === "cylinder") return { shape: "circle", radius: task.radius, h: task.h, label: "circular bases" };
     return { ...task.base, h: task.h, label: "triangular bases" };
   }
 
   function surfaceValues(task, pair) {
+    if (task.shape === "cylinder") {
+      const lateral = 2 * PI * task.radius * task.h;
+      const total = lateral + 2 * PI * task.radius * task.radius;
+      return {
+        shape: "circle",
+        radius: task.radius,
+        h: task.h,
+        label: "circular bases",
+        lateral,
+        total
+      };
+    }
+
     const base = baseSpec(task, pair);
     const lateral = base.P * base.h;
     const total = lateral + 2 * base.B;
@@ -805,21 +823,55 @@
     </div>`;
   }
 
+  function cylinderFormulaInputs(task, data, includeTotal = true) {
+    return `<div class="sa87b-formula-build sa87b-cylinder-formulas">
+      <div class="sa87b-formula-line sa87b-cylinder-formula-line">
+        <strong>LSA =</strong><span>2π ×</span>
+        <input data-sa-input="cLR" value="${escapeHTML(data.inputs.cLR || "")}" placeholder="r">
+        <span>×</span>
+        <input data-sa-input="cLH" value="${escapeHTML(data.inputs.cLH || "")}" placeholder="h">
+        <span>=</span>
+        <input class="answer" data-sa-input="lateral" value="${escapeHTML(data.inputs.lateral || "")}" placeholder="0.00">
+      </div>
+      ${includeTotal ? `<div class="sa87b-formula-line sa87b-cylinder-formula-line">
+        <strong>TSA =</strong><span>2π ×</span>
+        <input data-sa-input="cTR1" value="${escapeHTML(data.inputs.cTR1 || "")}" placeholder="r">
+        <span>×</span>
+        <input data-sa-input="cTH" value="${escapeHTML(data.inputs.cTH || "")}" placeholder="h">
+        <span>+</span><span>2π ×</span>
+        <input data-sa-input="cTR2" value="${escapeHTML(data.inputs.cTR2 || "")}" placeholder="r">
+        <span>² =</span>
+        <input class="answer" data-sa-input="total" value="${escapeHTML(data.inputs.total || "")}" placeholder="0.00">
+      </div>` : ""}
+      <p><strong>Keep π in the formula until the final calculation.</strong> Do not round circumference or base area first. Round only the final surface-area answer to the nearest hundredth.</p>
+    </div>`;
+  }
+
   function exploreMarkup(task, data, qNumber) {
     const spec = data.pair ? surfaceValues(task, data.pair) : null;
+    const isCylinder = task.shape === "cylinder";
     let work = turnableSolidMarkup(task, data);
 
     if (data.step >= 1 && spec) {
-      work += `<section class="sa87b-learn-card">
-        <div class="sa87b-idea"><span>B</span><strong>Area of ONE base</strong><small>Look only at the separate base.</small></div>
-        <div class="sa87b-idea"><span>P</span><strong>Perimeter of ONE base</strong><small>For a circle, P means its circumference.</small></div>
-        ${basePicture(spec, task.unit)}
-        <div class="sa87b-input-row">
-          <label><span>B = area of the base</span><input data-sa-input="baseArea" value="${escapeHTML(data.inputs.baseArea || "")}" placeholder="B"></label>
-          <label><span>P = perimeter of the base</span><input data-sa-input="basePerimeter" value="${escapeHTML(data.inputs.basePerimeter || "")}" placeholder="P"></label>
-        </div>
-        <button type="button" class="lab-action" id="checkBase87B">Check B and P</button>
-      </section>`;
+      if (isCylinder) {
+        work += `<section class="sa87b-learn-card">
+          <div class="sa87b-idea"><span>r</span><strong>Radius of ONE circular base</strong><small>Use the radius in the final cylinder formula. Do not calculate circumference or base area first.</small></div>
+          ${basePicture(spec, task.unit)}
+          <label class="sa87b-single-input"><span>r = radius of the circular base</span><input data-sa-input="baseRadius" value="${escapeHTML(data.inputs.baseRadius || "")}" placeholder="r"></label>
+          <button type="button" class="lab-action" id="checkBase87B">Check r</button>
+        </section>`;
+      } else {
+        work += `<section class="sa87b-learn-card">
+          <div class="sa87b-idea"><span>B</span><strong>Area of ONE base</strong><small>Look only at the separate base.</small></div>
+          <div class="sa87b-idea"><span>P</span><strong>Perimeter of ONE base</strong><small>Both B and P come from one two-dimensional base.</small></div>
+          ${basePicture(spec, task.unit)}
+          <div class="sa87b-input-row">
+            <label><span>B = area of the base</span><input data-sa-input="baseArea" value="${escapeHTML(data.inputs.baseArea || "")}" placeholder="B"></label>
+            <label><span>P = perimeter of the base</span><input data-sa-input="basePerimeter" value="${escapeHTML(data.inputs.basePerimeter || "")}" placeholder="P"></label>
+          </div>
+          <button type="button" class="lab-action" id="checkBase87B">Check B and P</button>
+        </section>`;
+      }
     }
 
     if (data.step >= 2 && spec) {
@@ -835,16 +887,24 @@
     if (data.step >= 3 && spec) {
       work += `<section class="sa87b-learn-card">
         <h5>Step 4 · Build both surface-area equations</h5>
-        <p>Type the values into the formula before calculating. This keeps B and P connected to the base and h connected to the distance between bases.</p>
-        ${formulaInputs(spec, data, true)}
+        <p>${isCylinder
+          ? "For a cylinder, keep π and r inside the final formula. Do not replace them with a rounded circumference or rounded base area."
+          : "Type the values into the formula before calculating. This keeps B and P connected to the base and h connected to the distance between bases."}</p>
+        ${isCylinder ? cylinderFormulaInputs(task, data, true) : formulaInputs(spec, data, true)}
         <button type="button" class="lab-action" id="checkExploreFinal87B">Check both surface areas</button>
       </section>`;
     }
 
+    const formulaKey = isCylinder
+      ? `<span>LSA = 2πrh</span><span>TSA = 2πrh + 2πr²</span>`
+      : `<span>L = Ph</span><span>S = Ph + 2B</span>`;
+
     return `<section class="sa87b-shell">
       <header class="sa87b-question-head">
-        <div><p class="lab-mini-title">Question ${qNumber} of ${TASKS.length} · Base detective</p><h4>${escapeHTML(task.title)}</h4><p>Turn the solid, identify a pair of bases, then build B, P, h, lateral surface area, and total surface area.</p></div>
-        <div class="sa87b-formula-key"><span>L = Ph</span><span>S = Ph + 2B</span></div>
+        <div><p class="lab-mini-title">Question ${qNumber} of ${TASKS.length} · Base detective</p><h4>${escapeHTML(task.title)}</h4><p>${isCylinder
+          ? "Turn the cylinder, identify its two circular bases, identify r and h, then use the cylinder surface-area formulas without rounding intermediate values."
+          : "Turn the solid, identify a pair of bases, then build B, P, h, lateral surface area, and total surface area."}</p></div>
+        <div class="sa87b-formula-key">${formulaKey}</div>
       </header>
       ${work}
       <div class="sa87b-actions"><button type="button" class="lab-action sa87b-next" id="next87B"${data.solved ? "" : " hidden"}>Next question</button></div>
@@ -886,6 +946,7 @@
 
   function scenarioMarkup(task, data, qNumber) {
     const spec = surfaceValues(task, null);
+    const isCylinder = task.shape === "cylinder";
     let content = `<section class="sa87b-scenario-card"><h5>Read the situation</h5><p class="sa87b-scenario">${escapeHTML(task.prompt)}</p></section>`;
 
     if (data.step === 0) {
@@ -902,8 +963,8 @@
       content += `<section class="sa87b-learn-card">
         <h5>Step 2 · Choose the matching formula</h5>
         <div class="sa87b-choice-row">
-          <button type="button" data-sa-formula="lateral">L = Ph</button>
-          <button type="button" data-sa-formula="total">S = Ph + 2B</button>
+          <button type="button" data-sa-formula="lateral">${isCylinder ? "LSA = 2πrh" : "L = Ph"}</button>
+          <button type="button" data-sa-formula="total">${isCylinder ? "TSA = 2πrh + 2πr²" : "S = Ph + 2B"}</button>
         </div>
       </section>`;
     }
@@ -911,36 +972,52 @@
     if (data.step >= 2) {
       content += `<section class="sa87b-learn-card">
         <h5>Step 3 · Click the two bases on the net</h5>
-        <p>The base pair tells you where B and P come from. The remaining distance between those bases is h.</p>
+        <p>${isCylinder
+          ? "The two circles are the bases. You only need the radius r from a base; keep π in the final surface-area formula."
+          : "The base pair tells you where B and P come from. The remaining distance between those bases is h."}</p>
         ${netMarkup(task, data)}
       </section>`;
     }
 
     if (data.step >= 3) {
-      content += `<section class="sa87b-learn-card">
-        <h5>Step 4 · Pull B and P from one base only</h5>
-        ${basePicture(spec, task.unit)}
-        <div class="sa87b-input-row">
-          <label><span>P = perimeter/circumference</span><input data-sa-input="basePerimeter" value="${escapeHTML(data.inputs.basePerimeter || "")}" placeholder="P"></label>
-          ${task.need === "total" ? `<label><span>B = area of one base</span><input data-sa-input="baseArea" value="${escapeHTML(data.inputs.baseArea || "")}" placeholder="B"></label>` : ""}
-        </div>
-        <button type="button" class="lab-action" id="checkScenarioBase87B">Check base values</button>
-      </section>`;
+      if (isCylinder) {
+        content += `<section class="sa87b-learn-card">
+          <h5>Step 4 · Read the radius from one circular base</h5>
+          ${basePicture(spec, task.unit)}
+          <label class="sa87b-single-input"><span>r = radius</span><input data-sa-input="baseRadius" value="${escapeHTML(data.inputs.baseRadius || "")}" placeholder="r"></label>
+          <p><strong>Do not calculate circumference or area of the base.</strong> Use r and π directly in the final cylinder formula.</p>
+          <button type="button" class="lab-action" id="checkScenarioBase87B">Check r</button>
+        </section>`;
+      } else {
+        content += `<section class="sa87b-learn-card">
+          <h5>Step 4 · Pull B and P from one base only</h5>
+          ${basePicture(spec, task.unit)}
+          <div class="sa87b-input-row">
+            <label><span>P = perimeter</span><input data-sa-input="basePerimeter" value="${escapeHTML(data.inputs.basePerimeter || "")}" placeholder="P"></label>
+            ${task.need === "total" ? `<label><span>B = area of one base</span><input data-sa-input="baseArea" value="${escapeHTML(data.inputs.baseArea || "")}" placeholder="B"></label>` : ""}
+          </div>
+          <button type="button" class="lab-action" id="checkScenarioBase87B">Check base values</button>
+        </section>`;
+      }
     }
 
     if (data.step >= 4) {
       const total = task.need === "total";
       content += `<section class="sa87b-learn-card">
         <h5>Step 5 · Set up the formula and calculate</h5>
-        ${formulaInputs(spec, data, total)}
+        ${isCylinder ? cylinderFormulaInputs(task, data, total) : formulaInputs(spec, data, total)}
         <button type="button" class="lab-action" id="checkScenarioFinal87B">Check surface area</button>
       </section>`;
     }
 
+    const formulaKey = isCylinder
+      ? `<span>LSA = 2πrh</span><span>TSA = 2πrh + 2πr²</span>`
+      : `<span>L = Ph</span><span>S = Ph + 2B</span>`;
+
     return `<section class="sa87b-shell">
       <header class="sa87b-question-head">
         <div><p class="lab-mini-title">Question ${qNumber} of ${TASKS.length} · Real-world decision</p><h4>${escapeHTML(task.title)}</h4><p>Decide what is being covered, choose the formula, use the net to locate the bases, then calculate.</p></div>
-        <div class="sa87b-formula-key"><span>L = Ph</span><span>S = Ph + 2B</span></div>
+        <div class="sa87b-formula-key">${formulaKey}</div>
       </header>
       ${content}
       <div class="sa87b-actions"><button type="button" class="lab-action sa87b-next" id="next87B"${data.solved ? "" : " hidden"}>Next question</button></div>
@@ -948,34 +1025,45 @@
   }
 
   function missingMarkup(task, data, qNumber) {
+    const isCylinder = task.shape === "cylinder";
     let visual = "";
     if (task.missing === "height") {
       visual = `<div class="sa87b-given-grid"><div><span>L</span><strong>168 cm²</strong></div><div><span>P</span><strong>24 cm</strong></div><div><span>h</span><strong>?</strong></div></div>`;
     } else if (task.missing === "diameter") {
-      visual = `<div class="sa87b-given-grid"><div><span>L</span><strong>301.59 cm²</strong></div><div><span>h</span><strong>8 cm</strong></div><div><span>d</span><strong>?</strong></div></div>`;
+      visual = `<div class="sa87b-given-grid"><div><span>LSA</span><strong>301.59 cm²</strong></div><div><span>h</span><strong>8 cm</strong></div><div><span>d</span><strong>?</strong></div></div>`;
     } else {
-      visual = `<div class="sa87b-given-grid"><div><span>L</span><strong>197.92 in²</strong></div><div><span>h</span><strong>7 in</strong></div><div><span>P = C</span><strong>?</strong></div></div>`;
+      visual = `<div class="sa87b-given-grid"><div><span>LSA</span><strong>197.92 in²</strong></div><div><span>h</span><strong>7 in</strong></div><div><span>C</span><strong>?</strong></div></div>`;
     }
 
     let inputs = "";
     if (task.missing === "diameter") {
-      inputs = `<label><span>First find the circumference P = L ÷ h</span><input data-sa-input="intermediate" value="${escapeHTML(data.inputs.intermediate || "")}" placeholder="circumference"></label>
-        <label><span>Then find diameter d = P ÷ π</span><input data-sa-input="missingAnswer" value="${escapeHTML(data.inputs.missingAnswer || "")}" placeholder="0.00"></label>`;
+      inputs = `<label><span>First solve for r using r = LSA ÷ (2πh)</span><input data-sa-input="radiusIntermediate" value="${escapeHTML(data.inputs.radiusIntermediate || "")}" placeholder="radius"></label>
+        <label><span>Then find diameter d = 2r</span><input data-sa-input="missingAnswer" value="${escapeHTML(data.inputs.missingAnswer || "")}" placeholder="0.00"></label>`;
+    } else if (task.missing === "circumference") {
+      inputs = `<label><span>First solve for r using r = LSA ÷ (2πh)</span><input data-sa-input="radiusIntermediate" value="${escapeHTML(data.inputs.radiusIntermediate || "")}" placeholder="radius"></label>
+        <label><span>Then find circumference C = 2πr</span><input data-sa-input="missingAnswer" value="${escapeHTML(data.inputs.missingAnswer || "")}" placeholder="0.00"></label>`;
     } else {
-      const label = task.missing === "height" ? "h = L ÷ P" : "P = L ÷ h";
-      inputs = `<label><span>${label}</span><input data-sa-input="missingAnswer" value="${escapeHTML(data.inputs.missingAnswer || "")}" placeholder="0.00"></label>`;
+      inputs = `<label><span>h = L ÷ P</span><input data-sa-input="missingAnswer" value="${escapeHTML(data.inputs.missingAnswer || "")}" placeholder="0.00"></label>`;
     }
+
+    const formulaKey = isCylinder
+      ? `<span>LSA = 2πrh</span>`
+      : `<span>L = Ph</span>`;
 
     return `<section class="sa87b-shell">
       <header class="sa87b-question-head">
         <div><p class="lab-mini-title">Question ${qNumber} of ${TASKS.length} · Missing measure</p><h4>${escapeHTML(task.title)}</h4><p>${escapeHTML(task.prompt)}</p></div>
-        <div class="sa87b-formula-key"><span>L = Ph</span></div>
+        <div class="sa87b-formula-key">${formulaKey}</div>
       </header>
       <section class="sa87b-learn-card">
         ${visual}
         <h5>Choose the formula that connects the information you have.</h5>
-        <div class="sa87b-choice-row"><button type="button" data-sa-formula="lateral">L = Ph</button><button type="button" data-sa-formula="total">S = Ph + 2B</button></div>
+        <div class="sa87b-choice-row">
+          <button type="button" data-sa-formula="lateral">${isCylinder ? "LSA = 2πrh" : "L = Ph"}</button>
+          <button type="button" data-sa-formula="total">${isCylinder ? "TSA = 2πrh + 2πr²" : "S = Ph + 2B"}</button>
+        </div>
         <div class="sa87b-missing-inputs">${inputs}</div>
+        ${isCylinder ? `<p class="sa87b-tiny"><strong>Keep π in the equation.</strong> Do not replace 2πr with a rounded circumference before solving.</p>` : ""}
         <p class="sa87b-tiny">Round the requested missing measure to the nearest hundredth. If it is a whole number, you may enter it without .00.</p>
         <button type="button" class="lab-action" id="checkMissing87B">Check missing measure</button>
       </section>
@@ -1083,6 +1171,32 @@
   }
 
   function checkExploreFinal(task, data, spec, ctx) {
+    if (task.shape === "cylinder") {
+      const checks = [
+        ["cLR", task.radius, "LSA formula: r"],
+        ["cLH", task.h, "LSA formula: h"],
+        ["cTR1", task.radius, "TSA formula: first r"],
+        ["cTH", task.h, "TSA formula: h"],
+        ["cTR2", task.radius, "TSA formula: r²"]
+      ];
+      for (const [key, expected, label] of checks) {
+        if (!near(data.inputs[key], expected)) {
+          return ctx.setLabFeedback(`${label} is not correct. Use the radius r and height h directly in the cylinder formula; keep π exact.`, "incorrect");
+        }
+      }
+
+      const lStatus = hundredthStatus(data.inputs.lateral, spec.lateral);
+      if (!lStatus.ok) return feedbackHundredth(ctx, lStatus, "Lateral surface area");
+      const tStatus = hundredthStatus(data.inputs.total, spec.total);
+      if (!tStatus.ok) return feedbackHundredth(ctx, tStatus, "Total surface area");
+
+      return finishQuestion(
+        data,
+        ctx,
+        `Correct. LSA = 2πrh = ${fmt(spec.lateral)} ${task.unit}² and TSA = 2πrh + 2πr² = ${fmt(spec.total)} ${task.unit}². π stayed in the formula until the final calculation.`
+      );
+    }
+
     const componentChecks = [
       ["lP", spec.P, "L formula: P"],
       ["lh", spec.h, "L formula: h"],
@@ -1178,16 +1292,27 @@
 
     body.querySelector("#checkBase87B")?.addEventListener("click", () => {
       const spec = surfaceValues(task, data.pair);
+
+      if (task.shape === "cylinder") {
+        if (!String(data.inputs.baseRadius || "").trim()) {
+          return setLabFeedback("Enter the radius r of the circular base. Do not calculate circumference or base area.", "incorrect");
+        }
+        if (!near(data.inputs.baseRadius, task.radius)) {
+          return setLabFeedback("Recheck the radius of the circular base. Keep r for the final 2πrh / 2πr² formulas.", "incorrect");
+        }
+        data.step = 2;
+        setLabFeedback("Correct. Keep r and π exact. Now return to the full cylinder to identify h.", "correct");
+        return window.renderSurface87BLab(ctx);
+      }
+
       if (!String(data.inputs.baseArea || "").trim() || !String(data.inputs.basePerimeter || "").trim()) {
         return setLabFeedback("Enter both B and P from the separate base before moving on.", "incorrect");
       }
       if (!near(data.inputs.baseArea, spec.B)) {
-        return setLabFeedback("B is the AREA of one base. Recheck the two-dimensional base only; do not use the whole prism or cylinder.", "incorrect");
+        return setLabFeedback("B is the AREA of one base. Recheck the two-dimensional base only; do not use the whole prism.", "incorrect");
       }
       if (!near(data.inputs.basePerimeter, spec.P)) {
-        return setLabFeedback(task.shape === "cylinder"
-          ? "P is the circumference of the circular base. Recheck 2πr."
-          : "P is the distance around one base. Add only the side lengths of the base.", "incorrect");
+        return setLabFeedback("P is the distance around one base. Add only the side lengths of the base.", "incorrect");
       }
       data.step = 2;
       setLabFeedback("Correct. B and P both came from the base. Now return to the full solid to identify h.", "correct");
@@ -1200,7 +1325,9 @@
         return setLabFeedback("h is the distance from one selected base to the other selected base. Recheck the full solid—not the dimensions inside the base.", "incorrect");
       }
       data.step = 3;
-      setLabFeedback("Correct. Now you have B, P, and h from the correct places. Build the formulas.", "correct");
+      setLabFeedback(task.shape === "cylinder"
+        ? "Correct. Now you have r and h. Keep π in the cylinder formula and round only the final surface area."
+        : "Correct. Now you have B, P, and h from the correct places. Build the formulas.", "correct");
       window.renderSurface87BLab(ctx);
     });
 
@@ -1232,12 +1359,17 @@
           }
           data.formula = choice;
           data.step = Math.max(data.step, 2);
-          setLabFeedback(`Correct formula: ${FORMULAS[choice]}. Now use the net to locate the two bases.`, "correct");
+          const formulaText = task.shape === "cylinder" ? CYLINDER_FORMULAS[choice] : FORMULAS[choice];
+          setLabFeedback(`Correct formula: ${formulaText}. Now use the net to locate the two bases.`, "correct");
           window.renderSurface87BLab(ctx);
         } else {
-          if (choice !== "lateral") return setLabFeedback("The given information is lateral surface area, so start with L = Ph.", "incorrect");
+          if (choice !== "lateral") return setLabFeedback(task.shape === "cylinder"
+            ? "The given information is lateral surface area, so start with LSA = 2πrh."
+            : "The given information is lateral surface area, so start with L = Ph.", "incorrect");
           data.formula = "lateral";
-          setLabFeedback("Correct. Use L = Ph and work backward for the missing measure.", "correct");
+          setLabFeedback(task.shape === "cylinder"
+            ? "Correct. Use LSA = 2πrh and solve without replacing 2πr with a rounded circumference."
+            : "Correct. Use L = Ph and work backward for the missing measure.", "correct");
           window.renderSurface87BLab(ctx);
         }
       });
@@ -1262,17 +1394,27 @@
           return setLabFeedback("Those two pieces are not the base pair for this situation. Think about which faces are repeated and parallel.", "incorrect");
         }
         data.step = 3;
-        setLabFeedback("Correct. Those are the two bases. Now pull P—and B when needed—from ONE of those bases.", "correct");
+        setLabFeedback(task.shape === "cylinder"
+          ? "Correct. Those are the two circular bases. Now read the radius r from one base; do not calculate circumference or base area."
+          : "Correct. Those are the two bases. Now pull P—and B when needed—from ONE of those bases.", "correct");
         window.renderSurface87BLab(ctx);
       });
     });
 
     body.querySelector("#checkScenarioBase87B")?.addEventListener("click", () => {
       const spec = surfaceValues(task, null);
+
+      if (task.shape === "cylinder") {
+        if (!near(data.inputs.baseRadius, task.radius)) {
+          return setLabFeedback("Recheck the radius r shown on the circular base. Do not calculate circumference or base area.", "incorrect");
+        }
+        data.step = 4;
+        setLabFeedback("Correct. Use r directly in the cylinder formula and keep π exact until the final calculation.", "correct");
+        return window.renderSurface87BLab(ctx);
+      }
+
       if (!near(data.inputs.basePerimeter, spec.P)) {
-        return setLabFeedback(task.shape === "cylinder"
-          ? "P is the circumference of one circular base. Recheck 2πr."
-          : "P is the perimeter of one selected base. Add only the sides around that base.", "incorrect");
+        return setLabFeedback("P is the perimeter of one selected base. Add only the sides around that base.", "incorrect");
       }
       if (task.need === "total" && !near(data.inputs.baseArea, spec.B)) {
         return setLabFeedback("B is the area of ONE selected base. Recheck the separate base before using the total-surface-area formula.", "incorrect");
@@ -1286,6 +1428,25 @@
 
     body.querySelector("#checkScenarioFinal87B")?.addEventListener("click", () => {
       const spec = surfaceValues(task, null);
+
+      if (task.shape === "cylinder") {
+        if (task.need === "total") {
+          if (!near(data.inputs.cTR1, task.radius) || !near(data.inputs.cTH, task.h) || !near(data.inputs.cTR2, task.radius)) {
+            return setLabFeedback("Recheck TSA = 2πrh + 2πr². Use the radius r in both places and the cylinder height h; keep π exact.", "incorrect");
+          }
+          const status = hundredthStatus(data.inputs.total, spec.total);
+          if (!status.ok) return feedbackHundredth(ctx, status, "Total surface area");
+          return finishQuestion(data, ctx, `Correct. TSA = 2πrh + 2πr² = ${fmt(spec.total)} ${task.unit}².`);
+        }
+
+        if (!near(data.inputs.cLR, task.radius) || !near(data.inputs.cLH, task.h)) {
+          return setLabFeedback("Recheck LSA = 2πrh. Use r and h directly and keep π in the formula.", "incorrect");
+        }
+        const status = hundredthStatus(data.inputs.lateral, spec.lateral);
+        if (!status.ok) return feedbackHundredth(ctx, status, "Lateral surface area");
+        return finishQuestion(data, ctx, `Correct. LSA = 2πrh = ${fmt(spec.lateral)} ${task.unit}².`);
+      }
+
       if (!near(data.inputs.lP, spec.P) || !near(data.inputs.lh, spec.h)) {
         return setLabFeedback("Recheck the formula setup: P comes from one base, and h is the distance between the two bases.", "incorrect");
       }
@@ -1303,12 +1464,19 @@
     });
 
     body.querySelector("#checkMissing87B")?.addEventListener("click", () => {
-      if (data.formula !== "lateral") return setLabFeedback("Choose L = Ph first. The problem gives lateral surface area.", "incorrect");
+      if (data.formula !== "lateral") {
+        return setLabFeedback(task.shape === "cylinder"
+          ? "Choose LSA = 2πrh first. The problem gives lateral surface area."
+          : "Choose L = Ph first. The problem gives lateral surface area.", "incorrect");
+      }
 
-      if (task.missing === "diameter") {
-        const expectedC = task.circumference;
-        if (!near(data.inputs.intermediate, expectedC, 0.02)) {
-          return setLabFeedback("First isolate P: P = L ÷ h. That result is the circumference of the circular base.", "incorrect");
+      if (task.shape === "cylinder") {
+        const expectedRadius = task.missing === "diameter"
+          ? task.answer / 2
+          : task.answer / (2 * PI);
+
+        if (!near(data.inputs.radiusIntermediate, expectedRadius, 0.02)) {
+          return setLabFeedback("Solve for r directly from LSA = 2πrh: r = LSA ÷ (2πh). Keep π in the denominator.", "incorrect");
         }
       }
 
