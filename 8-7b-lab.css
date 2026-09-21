@@ -195,3 +195,35 @@
 .sa87b-cylinder-formulas p strong{
   color:#4f249f;
 }
+
+
+/* Cylinder answers: exact pi form plus hundredths approximation */
+.sa87b-cylinder-answer-line{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:10px;
+  padding:13px 14px;
+  margin-top:-4px;
+  border-radius:16px;
+  background:#fffaf0;
+  border:1px solid #eadfc8;
+}
+.sa87b-cylinder-answer-line input{
+  width:110px;
+  flex:0 0 110px;
+  box-sizing:border-box;
+  border:2px solid #b9b8d9;
+  border-radius:12px;
+  padding:10px 11px;
+  font:inherit;
+  background:#fff;
+}
+.sa87b-cylinder-answer-line input.answer{
+  width:145px;
+  flex:0 0 145px;
+}
+.sa87b-cylinder-answer-line .sa87b-answer-label{
+  font-weight:800;
+  color:#4f249f;
+}
