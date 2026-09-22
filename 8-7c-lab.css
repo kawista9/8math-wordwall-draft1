@@ -66,3 +66,44 @@
 .py87c-converse-table input:focus{outline:3px solid rgba(123,63,228,.16);border-color:#7b3fe4}
 .py87c-set-key{font-size:1.1rem;font-weight:950;color:#4f249f}
 .py87c-classification-table td:last-child input{min-width:190px;text-align:left}
+
+
+/* Real-world ladder scene for 8.7C */
+.py87c-ladder-figure{max-width:820px}
+.py87c-ladder-figure .py87c-wall{
+  fill:#e7ebf0;
+  stroke:#6a7281;
+  stroke-width:4;
+}
+.py87c-ladder-figure .py87c-floor{
+  fill:#e2e7ec;
+  stroke:#6a7281;
+  stroke-width:4;
+}
+.py87c-ladder-figure .py87c-measure-leg{
+  stroke:#4b2792;
+  stroke-width:6;
+  stroke-linecap:round;
+}
+.py87c-ladder-figure .py87c-right-marker{
+  fill:none;
+  stroke:#e83a8c;
+  stroke-width:5;
+  stroke-linejoin:round;
+}
+.py87c-real-ladder{filter:drop-shadow(0 5px 5px rgba(38,25,80,.12))}
+.py87c-ladder-figure .py87c-ladder-rail{
+  stroke:#e83a8c;
+  stroke-width:9;
+  stroke-linecap:round;
+}
+.py87c-ladder-figure .py87c-ladder-rungs line{
+  stroke:#e83a8c;
+  stroke-width:5;
+  stroke-linecap:round;
+}
+.py87c-dimension-guide,.py87c-dimension-cap{
+  stroke:#e83a8c;
+  stroke-width:4;
+  stroke-linecap:round;
+}
