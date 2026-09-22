@@ -44,8 +44,8 @@
     const grid=[],labels=[];
     for(let i=min;i<=max;i++){
       const x=ox+i*step,y=oy-i*step;
-      grid.push(`<line x1="${x}" y1="${oy+min*step}" x2="${x}" y2="${oy-max*step}" class="d87-grid"/>`);
-      grid.push(`<line x1="${ox+min*step}" y1="${y}" x2="${ox+max*step}" y2="${y}" class="d87-grid"/>`);
+      grid.push(`<line x1="${x}" y1="${oy-min*step}" x2="${x}" y2="${oy-max*step}" class="d87-grid d87-grid-vertical"/>`);
+      grid.push(`<line x1="${ox+min*step}" y1="${y}" x2="${ox+max*step}" y2="${y}" class="d87-grid d87-grid-horizontal"/>`);
       if(i!==0){
         labels.push(`<text x="${x}" y="${oy+25}" text-anchor="middle" class="d87-tick">${fmt(cleanZero(i*task.unitX))}</text>`);
         labels.push(`<text x="${ox-16}" y="${y+5}" text-anchor="end" class="d87-tick">${fmt(cleanZero(i*task.unitY))}</text>`);
@@ -54,9 +54,8 @@
 
     const Ax=ox+task.A.gx*step, Ay=oy-task.A.gy*step;
     const Bx=ox+task.B.gx*step, By=oy-task.B.gy*step;
-    const cornerX=Bx, cornerY=Ay;
 
-    return `<svg class="d87-plane" viewBox="0 0 ${W} ${H}" role="img" aria-label="Coordinate plane with points A and B and horizontal and vertical legs forming a right triangle. The x-axis and y-axis use different numerical scales.">
+    return `<svg class="d87-plane" viewBox="0 0 ${W} ${H}" role="img" aria-label="Coordinate plane with points A and B connected by a segment. Horizontal and vertical grid lines are shown, and the x-axis and y-axis use different numerical scales.">
       <rect x="0" y="0" width="${W}" height="${H}" rx="22" class="d87-plane-bg"/>
       ${grid.join("")}
       <line x1="${ox+min*step-14}" y1="${oy}" x2="${ox+max*step+18}" y2="${oy}" class="d87-axis"/>
@@ -67,12 +66,8 @@
       <text x="${ox+10}" y="${oy-max*step-28}" class="d87-axis-name">y</text>
       <text x="${ox-12}" y="${oy+22}" class="d87-tick">0</text>
       ${labels.join("")}
-
-      <!-- diagonal distance and the two legs students count -->
+      <!-- only the segment between A and B is shown; students infer the right-triangle legs from the grid -->
       <line x1="${Ax}" y1="${Ay}" x2="${Bx}" y2="${By}" class="d87-distance-segment"/>
-      <line x1="${Ax}" y1="${Ay}" x2="${cornerX}" y2="${cornerY}" class="d87-leg d87-horizontal-leg"/>
-      <line x1="${cornerX}" y1="${cornerY}" x2="${Bx}" y2="${By}" class="d87-leg d87-vertical-leg"/>
-      <path d="M${cornerX-16} ${cornerY} V${cornerY-16} H${cornerX}" class="d87-right"/>
 
       <circle cx="${Ax}" cy="${Ay}" r="10" class="d87-point point-a"/>
       <circle cx="${Bx}" cy="${By}" r="10" class="d87-point point-b"/>
@@ -81,8 +76,8 @@
 
       <g class="d87-scale-note">
         <rect x="454" y="560" width="210" height="54" rx="14"/>
-        <text x="559" y="582" text-anchor="middle">Count each leg using</text>
-        <text x="559" y="601" text-anchor="middle">that axis's numbered scale.</text>
+        <text x="559" y="582" text-anchor="middle">Use the full grid to determine</text>
+        <text x="559" y="601" text-anchor="middle">the horizontal and vertical changes.</text>
       </g>
     </svg>`;
   }
@@ -91,7 +86,7 @@
   function markup(task,data,q){
     let stages=`<section class="d87-card">
       <h5>Step 1 · Count the two legs on the coordinate grid</h5>
-      <p>The pink horizontal and vertical segments are the two legs of a right triangle. Use the numbered scale on each axis to determine each leg's actual length, then use those leg lengths in the Pythagorean Theorem.</p>
+      <p>The legs are <strong>not drawn for you</strong>. Use the horizontal and vertical grid lines to determine how far apart A and B are horizontally and vertically. Read the numbered scale on each axis because the axes may count by different amounts.</p>
       <div class="d87-change-grid">
         <label><span>Horizontal leg length</span><input data-d87-input="dx" value="${esc(data.inputs.dx||"")}" placeholder="count using x-axis scale"></label>
         <label><span>Vertical leg length</span><input data-d87-input="dy" value="${esc(data.inputs.dy||"")}" placeholder="count using y-axis scale"></label>
@@ -182,7 +177,7 @@
         if(Math.abs(enteredX-gridSpaces)<.001 && Math.abs(task.dx-gridSpaces)>.001){
           return setLabFeedback(`You counted ${gridSpaces} horizontal grid spaces, but each x-axis interval is worth ${fmt(task.unitX)}. Count the leg using the x-axis values, not just the number of squares.`,"incorrect");
         }
-        return setLabFeedback("Recount the horizontal leg. Follow the horizontal pink segment and use the numbered x-axis scale to measure its length.","incorrect");
+        return setLabFeedback("Recount the horizontal leg. Use the vertical grid lines to compare the x-positions of A and B, then measure that horizontal change with the numbered x-axis scale.","incorrect");
       }
 
       if(!near(data.inputs.dy,task.dy)){
@@ -190,7 +185,7 @@
         if(Math.abs(enteredY-gridSpaces)<.001 && Math.abs(task.dy-gridSpaces)>.001){
           return setLabFeedback(`You counted ${gridSpaces} vertical grid spaces, but each y-axis interval is worth ${fmt(task.unitY)}. Count the leg using the y-axis values, not just the number of squares.`,"incorrect");
         }
-        return setLabFeedback("Recount the vertical leg. Follow the vertical pink segment and use the numbered y-axis scale to measure its length.","incorrect");
+        return setLabFeedback("Recount the vertical leg. Use the horizontal grid lines to compare the y-positions of A and B, then measure that vertical change with the numbered y-axis scale.","incorrect");
       }
 
       data.step=1;
