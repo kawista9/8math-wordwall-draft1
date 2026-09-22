@@ -45,3 +45,24 @@
   .py87c-final-input{grid-template-columns:auto 1fr auto}
   .py87c-label{font-size:21px}
 }
+
+
+/* 8.7C ladder visual */
+.py87c-wall{fill:#dfe7ef;stroke:#5b6577;stroke-width:4}
+.py87c-ground{stroke:#5b6577;stroke-width:8;stroke-linecap:round}
+.py87c-ladder-rail{stroke:#e83a8c;stroke-width:8;stroke-linecap:round}
+.py87c-ladder-rungs line{stroke:#e83a8c;stroke-width:5;stroke-linecap:round}
+.py87c-ladder-figure{max-width:760px}
+
+/* Exemplar-style converse tasks */
+.py87c-table-wrap{width:100%;overflow-x:auto}
+.py87c-converse-table{width:100%;border-collapse:separate;border-spacing:0;min-width:720px;border:2px solid #2f3150;border-radius:14px;overflow:hidden;background:#fff}
+.py87c-converse-table th,.py87c-converse-table td{padding:14px 12px;border-right:1px solid #8b8fa5;border-bottom:1px solid #8b8fa5;text-align:center;vertical-align:middle}
+.py87c-converse-table th:last-child,.py87c-converse-table td:last-child{border-right:0}
+.py87c-converse-table tbody tr:last-child td{border-bottom:0}
+.py87c-converse-table th{background:#f4f2fb;color:#24155d;font-weight:900;font-size:1rem}
+.py87c-converse-table td{font-weight:750}
+.py87c-converse-table input{width:100%;min-width:120px;box-sizing:border-box;border:2px solid #b9b8da;border-radius:10px;padding:10px 11px;font:inherit;background:#fff;text-align:center}
+.py87c-converse-table input:focus{outline:3px solid rgba(123,63,228,.16);border-color:#7b3fe4}
+.py87c-set-key{font-size:1.1rem;font-weight:950;color:#4f249f}
+.py87c-classification-table td:last-child input{min-width:190px;text-align:left}
