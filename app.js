@@ -826,8 +826,8 @@
     },
     "8.7D": {
       title: "Distance on the Coordinate Plane: Read the Scale, Build the Triangle, Find the Distance",
-      description: "Work through seven coordinate-plane distance problems. In every graph, the x-axis and y-axis use different interval values, so read each axis carefully before identifying the two ordered pairs. Then find the horizontal and vertical distances, connect those changes to a right triangle, substitute into the distance formula, and calculate the distance between the points.",
-      summary: "You found distance between two points on coordinate planes whose x- and y-axes used different scales. You read ordered pairs from the actual axis labels, calculated the horizontal and vertical changes, connected those changes to the legs of a right triangle, substituted into d = √[(x₂ − x₁)² + (y₂ − y₁)²], and rounded non-whole distances to the nearest hundredth.",
+      description: "Work through seven coordinate-plane distance problems. In every graph, the x-axis and y-axis use different interval values. Count the horizontal and vertical legs directly from the grid using each axis's numbered scale, then use those two leg lengths in the Pythagorean Theorem to find the distance between the points.",
+      summary: "You found distance between two points by counting the horizontal and vertical legs of a right triangle on coordinate grids whose x- and y-axes used different scales. You used the axis labels to measure each leg correctly, substituted the two leg lengths into a² + b² = c², solved for the hypotenuse, and rounded non-whole distances to the nearest hundredth.",
       videos: [
         ["https://go.screenpal.com/watch/cOfebynT5WY", "Distance on the Coordinate Plane"]
       ]
