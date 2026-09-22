@@ -1,6 +1,6 @@
 (function pythagorean87CLabModule() {
   const FIRST_TEN = [
-    { kind:"solve", mode:"visual", diagram:"roof", title:"Roof brace", prompt:"A roof section contains a right triangle. One perpendicular support is 9 ft and the horizontal run is 14 ft. Find the missing slanted brace.", unit:"ft", legs:[9,14], hyp:"x", answer:Math.sqrt(277) },
+    { kind:"solve", mode:"visual", diagram:"ladder", title:"Ladder against a wall", prompt:"A ladder leans against a wall. The bottom of the ladder is 14 ft from the wall, and the ladder reaches 9 ft up the wall. Find the length of the ladder.", unit:"ft", legs:[9,14], hyp:"x", answer:Math.sqrt(277) },
     { kind:"solve", mode:"word", title:"Guy wire", prompt:"A 17 ft guy wire runs from the top of a pole to the ground. The wire, the pole, and the ground form a right triangle. The pole is 8 ft tall. Find the horizontal distance from the bottom of the pole to the ground anchor.", unit:"ft", legs:[8,"x"], hyp:17, answer:15 },
     { kind:"solve", mode:"visual", diagram:"rectangle", title:"Diagonal support", prompt:"A rectangular display frame has a diagonal support. Use the embedded right triangle to find the missing side.", unit:"in", legs:[5,"x"], hyp:13, answer:12 },
     { kind:"solve", mode:"word", title:"Across the park", prompt:"A student walks 7 m east and then 24 m north. A straight path from the starting point to the ending point would form the third side of a right triangle. Find the length of the straight path.", unit:"m", legs:[7,24], hyp:"x", answer:25 },
@@ -13,10 +13,30 @@
   ];
 
   const CONVERSE = [
+    {
+      kind:"converseWhich",
+      title:"Which set could not represent a right triangle?",
+      unit:"cm",
+      sets:[
+        { key:"A", sides:[6,8,10], right:true },
+        { key:"B", sides:[12,35,37], right:true },
+        { key:"C", sides:[4,6,10], right:false },
+        { key:"D", sides:[10,24,26], right:true }
+      ],
+      answer:"C"
+    },
+    {
+      kind:"converseTable",
+      title:"Triangle classification table",
+      unit:"cm",
+      rows:[
+        { sides:[6,8,9], right:false },
+        { sides:[10,24,26], right:true },
+        { sides:[24,45,51], right:true }
+      ]
+    },
     { kind:"converse", title:"Triangle side test", unit:"cm", sides:[8,15,17], right:true, visual:"plain" },
     { kind:"converse", title:"Triangular sign", unit:"in", sides:[9,12,16], right:false, visual:"sign" },
-    { kind:"converse", title:"Support frame", unit:"ft", sides:[12,35,37], right:true, visual:"frame" },
-    { kind:"converse", title:"Garden border", unit:"yd", sides:[7,24,26], right:false, visual:"garden" },
     { kind:"converse", title:"Survey triangle", unit:"m", sides:[20,21,29], right:true, visual:"survey" }
   ];
 
@@ -60,7 +80,25 @@
 
   function visual(task){
     const u=esc(task.unit);
-    if(task.diagram==="roof") return `<svg class="py87c-figure" viewBox="0 0 640 360"><path d="M70 285 H570 L340 80 Z" class="py87c-context"/><line x1="160" y1="285" x2="160" y2="165" class="py87c-triangle"/><line x1="160" y1="285" x2="346" y2="80" class="py87c-triangle py87c-missing"/>${marker(160,285)}<text x="120" y="225" class="py87c-label">9 ${u}</text><text x="250" y="310" class="py87c-label">14 ${u}</text><text x="250" y="180" class="py87c-label py87c-x">x</text></svg>`;
+    if(task.diagram==="ladder") return `<svg class="py87c-figure py87c-ladder-figure" viewBox="0 0 640 360" role="img" aria-label="Ladder leaning against a wall and forming a right triangle">
+      <rect x="105" y="42" width="26" height="260" rx="6" class="py87c-wall"/>
+      <line x1="118" y1="302" x2="560" y2="302" class="py87c-ground"/>
+      <line x1="118" y1="302" x2="118" y2="122" class="py87c-triangle"/>
+      <line x1="118" y1="302" x2="462" y2="122" class="py87c-triangle py87c-missing"/>
+      ${marker(118,302)}
+      <line x1="150" y1="285" x2="438" y2="135" class="py87c-ladder-rail"/>
+      <line x1="166" y1="278" x2="454" y2="128" class="py87c-ladder-rail"/>
+      <g class="py87c-ladder-rungs">
+        <line x1="194" y1="263" x2="210" y2="256"/>
+        <line x1="239" y1="239" x2="255" y2="232"/>
+        <line x1="284" y1="216" x2="300" y2="209"/>
+        <line x1="329" y1="192" x2="345" y2="185"/>
+        <line x1="374" y1="169" x2="390" y2="162"/>
+      </g>
+      <text x="72" y="220" class="py87c-label">9 ${u}</text>
+      <text x="270" y="338" class="py87c-label">14 ${u}</text>
+      <text x="305" y="185" class="py87c-label py87c-x">x</text>
+    </svg>`;
     if(task.diagram==="rectangle") return `<svg class="py87c-figure" viewBox="0 0 640 360"><rect x="120" y="65" width="400" height="230" rx="10" class="py87c-context-fill"/><line x1="120" y1="295" x2="520" y2="65" class="py87c-triangle"/>${marker(120,295)}<text x="305" y="335" class="py87c-label">5 ${u}</text><text x="75" y="190" class="py87c-label py87c-x">x</text><text x="315" y="160" class="py87c-label">13 ${u}</text></svg>`;
     if(task.diagram==="ramp") return `<svg class="py87c-figure" viewBox="0 0 640 360"><path d="M100 285 H550 V135 H490 V285 Z" class="py87c-context-fill"/><line x1="100" y1="285" x2="490" y2="135" class="py87c-triangle py87c-missing"/><line x1="100" y1="285" x2="490" y2="285" class="py87c-triangle"/><line x1="490" y1="285" x2="490" y2="135" class="py87c-triangle"/>${marker(472,285)}<text x="300" y="325" class="py87c-label">60 ${u}</text><text x="515" y="215" class="py87c-label">11 ${u}</text><text x="295" y="190" class="py87c-label py87c-x">x</text></svg>`;
     if(task.diagram==="brace") return `<svg class="py87c-figure" viewBox="0 0 640 360"><rect x="125" y="60" width="390" height="240" rx="8" class="py87c-context-fill"/><line x1="125" y1="300" x2="515" y2="60" class="py87c-triangle"/>${marker(125,300)}<text x="80" y="190" class="py87c-label">11 ${u}</text><text x="315" y="338" class="py87c-label py87c-x">x</text><text x="325" y="155" class="py87c-label">20 ${u}</text></svg>`;
@@ -85,6 +123,83 @@
     if(data.step>=2) work+=`<section class="py87c-work-card py87c-final-card"><h5>Step 3 · Solve for x</h5><p>If the answer is not a whole number, round to the <strong>nearest hundredth</strong>. Whole-number answers do not need .00.</p><label class="py87c-final-input"><span>x =</span><input data-py-input="final" value="${esc(data.inputs.final||"")}" placeholder="answer"><strong>${esc(task.unit)}</strong></label><button type="button" class="lab-action" id="checkFinal87C">Check solution</button></section>`;
 
     return `<section class="py87c-shell"><header class="py87c-head"><div><p class="lab-mini-title">Question ${q} of ${TASKS.length} · Pythagorean Theorem</p><h4>${esc(task.title)}</h4><p>${esc(task.prompt)}</p></div><div class="py87c-formula-chip">a² + b² = c²</div></header>${stimulus}${work}<div class="py87c-actions"><button type="button" class="lab-action" id="next87C"${data.solved?"":" hidden"}>Next question</button></div></section>`;
+  }
+
+  function converseWhichMarkup(task,data,q){
+    const rows=task.sets.map((set,index)=>{
+      const key=set.key;
+      return `<tr>
+        <td class="py87c-set-key">${key}</td>
+        <td>${set.sides.join(", ")} ${esc(task.unit)}</td>
+        <td><input data-py-input="whichLeft${index}" value="${esc(data.inputs["whichLeft"+index]||"")}" placeholder="a² + b²"></td>
+        <td><input data-py-input="whichRight${index}" value="${esc(data.inputs["whichRight"+index]||"")}" placeholder="c²"></td>
+      </tr>`;
+    }).join("");
+
+    let conclusion="";
+    if(data.step>=1){
+      conclusion=`<section class="py87c-work-card py87c-final-card">
+        <h5>Step 2 · Identify the set that could not be a right triangle</h5>
+        <p>Type the letter of the set whose two sides of the converse equation are <strong>not equal</strong>.</p>
+        <label class="py87c-conclusion-input"><span>Set</span><input data-py-input="whichAnswer" value="${esc(data.inputs.whichAnswer||"")}" placeholder="A, B, C, or D"></label>
+        <button type="button" class="lab-action" id="checkWhichConclusion87C">Check conclusion</button>
+      </section>`;
+    }
+
+    return `<section class="py87c-shell">
+      <header class="py87c-head">
+        <div>
+          <p class="lab-mini-title">Question ${q} of ${TASKS.length} · Converse of the Pythagorean Theorem</p>
+          <h4>${esc(task.title)}</h4>
+          <p>Test each set. Use the two shorter side lengths for a and b and the longest side for c. This is open response—do the converse calculations before naming the set.</p>
+        </div>
+        <div class="py87c-formula-chip">a² + b² ? c²</div>
+      </header>
+      <section class="py87c-work-card">
+        <h5>Step 1 · Test each set</h5>
+        <div class="py87c-table-wrap">
+          <table class="py87c-converse-table">
+            <thead><tr><th>Set</th><th>Side lengths</th><th>a² + b²</th><th>c²</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+        <button type="button" class="lab-action" id="checkWhichMath87C">Check calculations</button>
+      </section>
+      ${conclusion}
+      <div class="py87c-actions"><button type="button" class="lab-action" id="next87C"${data.solved?"":" hidden"}>Next question</button></div>
+    </section>`;
+  }
+
+  function converseTableMarkup(task,data,q){
+    const rows=task.rows.map((row,index)=>{
+      return `<tr>
+        <td>${row.sides.join(", ")} ${esc(task.unit)}</td>
+        <td><input data-py-input="tableLeft${index}" value="${esc(data.inputs["tableLeft"+index]||"")}" placeholder="a² + b²"></td>
+        <td><input data-py-input="tableRight${index}" value="${esc(data.inputs["tableRight"+index]||"")}" placeholder="c²"></td>
+        <td><input data-py-input="tableType${index}" value="${esc(data.inputs["tableType"+index]||"")}" placeholder="right / not right"></td>
+      </tr>`;
+    }).join("");
+
+    return `<section class="py87c-shell">
+      <header class="py87c-head">
+        <div>
+          <p class="lab-mini-title">Question ${q} of ${TASKS.length} · Converse of the Pythagorean Theorem</p>
+          <h4>${esc(task.title)}</h4>
+          <p>Determine whether the triangle with each set of side lengths is a right triangle or not a right triangle. Type every response—there are no answer choices to drag.</p>
+        </div>
+        <div class="py87c-formula-chip">a² + b² ? c²</div>
+      </header>
+      <section class="py87c-work-card">
+        <div class="py87c-table-wrap">
+          <table class="py87c-converse-table py87c-classification-table">
+            <thead><tr><th>Lengths</th><th>a² + b²</th><th>c²</th><th>Type of triangle</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+        <button type="button" class="lab-action" id="checkConverseTable87C">Check table</button>
+      </section>
+      <div class="py87c-actions"><button type="button" class="lab-action" id="next87C"${data.solved?"":" hidden"}>Next question</button></div>
+    </section>`;
   }
 
   function converseMarkup(task,data,q){
@@ -132,7 +247,13 @@
 
     setLabProgress(data.index+(data.solved?1:0),TASKS.length,data.index<10?`Question ${data.index+1} of 15: identify the right triangle, label a, b, and c, substitute, and solve.`:`Question ${data.index+1} of 15: use the converse to test the three side lengths.`);
     const body=$("#standardsLabBody");
-    body.innerHTML=task.kind==="solve"?solveMarkup(task,data,data.index+1):converseMarkup(task,data,data.index+1);
+    body.innerHTML=task.kind==="solve"
+      ? solveMarkup(task,data,data.index+1)
+      : task.kind==="converseWhich"
+        ? converseWhichMarkup(task,data,data.index+1)
+        : task.kind==="converseTable"
+          ? converseTableMarkup(task,data,data.index+1)
+          : converseMarkup(task,data,data.index+1);
     bindInputs(body,data);
 
     body.querySelector("#checkSides87C")?.addEventListener("click",()=>{
@@ -153,6 +274,60 @@
       if(status.type==="place") return setLabFeedback(`Your numerical value is correct. Because it is not a whole number, show the nearest hundredth as ${status.target.toFixed(2)}.`,"incorrect");
       if(status.type==="math") return setLabFeedback(task.hyp==="x"?"The setup is correct, but the calculation is not. Add the leg squares, then take the square root.":"The setup is correct, but the calculation is not. Subtract the known leg square from c², then take the square root.","incorrect");
       finish(data,ctx,`Correct. x = ${display(task.answer)} ${task.unit}.`);
+    });
+
+    body.querySelector("#checkWhichMath87C")?.addEventListener("click",()=>{
+      for(let i=0;i<task.sets.length;i+=1){
+        const set=task.sets[i];
+        const sorted=[...set.sides].sort((a,b)=>a-b);
+        const left=sorted[0]**2+sorted[1]**2;
+        const right=sorted[2]**2;
+        if(Math.abs(num(data.inputs["whichLeft"+i])-left)>.001){
+          return setLabFeedback(`Set ${set.key}: recheck a² + b². Use the two shorter side lengths.`,"incorrect");
+        }
+        if(Math.abs(num(data.inputs["whichRight"+i])-right)>.001){
+          return setLabFeedback(`Set ${set.key}: recheck c². c must be the longest side.`,"incorrect");
+        }
+      }
+      data.step=1;
+      setLabFeedback("All four converse calculations are correct. Now identify the set whose values are not equal.","correct");
+      window.renderPythagorean87CLab(ctx);
+    });
+
+    body.querySelector("#checkWhichConclusion87C")?.addEventListener("click",()=>{
+      const answer=String(data.inputs.whichAnswer||"").trim().toUpperCase();
+      if(answer!==task.answer){
+        return setLabFeedback("Recheck the rows. The set that could not form a right triangle is the one where a² + b² does not equal c².","incorrect");
+      }
+      const bad=task.sets.find(set=>set.key===task.answer);
+      const sorted=[...bad.sides].sort((a,b)=>a-b);
+      finish(data,ctx,`Correct. Set ${task.answer}: ${sorted[0]}² + ${sorted[1]}² = ${sorted[0]**2+sorted[1]**2}, while ${sorted[2]}² = ${sorted[2]**2}. The values are not equal.`);
+    });
+
+    body.querySelector("#checkConverseTable87C")?.addEventListener("click",()=>{
+      for(let i=0;i<task.rows.length;i+=1){
+        const row=task.rows[i];
+        const sorted=[...row.sides].sort((a,b)=>a-b);
+        const left=sorted[0]**2+sorted[1]**2;
+        const right=sorted[2]**2;
+        if(Math.abs(num(data.inputs["tableLeft"+i])-left)>.001){
+          return setLabFeedback(`Row ${i+1}: recheck a² + b² using the two shorter side lengths.`,"incorrect");
+        }
+        if(Math.abs(num(data.inputs["tableRight"+i])-right)>.001){
+          return setLabFeedback(`Row ${i+1}: recheck c² using the longest side.`,"incorrect");
+        }
+
+        const typed=conclusion(data.inputs["tableType"+i]);
+        const saysNot=typed.includes("not")||typed==="no";
+        const saysRight=typed.includes("right")||typed==="yes";
+        const classificationOK=row.right?(saysRight&&!saysNot):saysNot;
+        if(!classificationOK){
+          return setLabFeedback(row.right
+            ? `Row ${i+1}: the two calculated values are equal, so type "right triangle".`
+            : `Row ${i+1}: the two calculated values are not equal, so type "not a right triangle".`,"incorrect");
+        }
+      }
+      finish(data,ctx,"Correct. You used the converse to classify all three sets from their side lengths.");
     });
 
     body.querySelector("#checkConverseSides87C")?.addEventListener("click",()=>{
