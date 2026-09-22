@@ -44,3 +44,44 @@
   .d87-graph-card,.d87-card{padding:14px}
   .d87-tick{font-size:13px}
 }
+
+
+/* 8.7D Pythagorean leg-counting workflow */
+.d87-grid{
+  stroke:#bdd7e2;
+  stroke-width:1.8;
+}
+.d87-leg{
+  stroke:#e83a8c;
+  stroke-width:5;
+  stroke-linecap:round;
+  stroke-dasharray:11 8;
+}
+.d87-pythagorean-substitution{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:8px;
+  margin:10px 0 16px;
+  padding:18px;
+  border-radius:16px;
+  background:#f3fbff;
+  border:1px solid #cfe7f0;
+  font-size:1.18rem;
+  font-weight:900;
+}
+.d87-pythagorean-substitution input{
+  width:100px;
+  box-sizing:border-box;
+  border:2px solid #b9b8da;
+  border-radius:12px;
+  padding:11px 12px;
+  font:inherit;
+  text-align:center;
+  background:#fff;
+}
+.d87-pythagorean-substitution input:focus{
+  outline:3px solid rgba(123,63,228,.16);
+  border-color:#7b3fe4;
+}
