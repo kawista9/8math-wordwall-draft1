@@ -38,7 +38,7 @@
   group.pages = [
     {
       page: 1,
-      image: "assets/8-8-9-revamp-hub.webp?v=20260922-889-blue",
+      image: "assets/8-8-9-hub.png?v=20260922-889-final",
       videos: [],
       resource: "Standards",
       substandardHotspots: [
@@ -51,7 +51,7 @@
     },
     {
       page: 2,
-      image: "assets/8-8-9-revamp-8-8A-anchor.webp?v=20260922-889-blue",
+      image: "assets/8-8A-anchor.png?v=20260922-889-final",
       standard: "8.8A",
       resource: "Anchor chart",
       videos: videos(v.aVariable, v.aConstant, v.aAtMost, v.aLess, v.aEqual, v.aGreater, v.aAtLeast, v.aSetup),
@@ -69,14 +69,14 @@
     },
     {
       page: 3,
-      image: "assets/8-8-9-revamp-8-8A-calculator.webp?v=20260922-889-blue",
+      image: "assets/8-8A-calculator.png?v=20260922-889-final",
       standard: "8.8A",
       resource: "Calculator tips",
       videos: []
     },
     {
       page: 4,
-      image: "assets/8-8-9-revamp-8-8B-anchor.webp?v=20260922-889-blue",
+      image: "assets/8-8B-anchor.png?v=20260922-889-final",
       standard: "8.8B",
       resource: "Anchor chart",
       videos: videos(v.bGym, v.bFundraiser, v.bVerbal, v.bBabysitter, v.bRectangle),
@@ -91,14 +91,14 @@
     },
     {
       page: 5,
-      image: "assets/8-8-9-revamp-8-8B-calculator.webp?v=20260922-889-blue",
+      image: "assets/8-8B-calculator.png?v=20260922-889-final",
       standard: "8.8B",
       resource: "Calculator tips",
       videos: []
     },
     {
       page: 6,
-      image: "assets/8-8-9-revamp-8-8C-anchor.webp?v=20260922-889-blue",
+      image: "assets/8-8C-anchor.png?v=20260922-889-final",
       standard: "8.8C",
       resource: "Anchor chart",
       videos: videos(v.cTiles, v.cVariables, v.cSolve),
@@ -110,14 +110,14 @@
     },
     {
       page: 7,
-      image: "assets/8-8-9-revamp-8-8C-calculator.webp?v=20260922-889-blue",
+      image: "assets/8-8C-calculator.png?v=20260922-889-final",
       standard: "8.8C",
       resource: "Calculator tips",
       videos: []
     },
     {
       page: 8,
-      image: "assets/8-8-9-revamp-8-8D-triangle-anchor.webp?v=20260922-889-blue",
+      image: "assets/8-8D-triangle-anchor.png?v=20260922-889-final",
       standard: "8.8D",
       resource: "Triangle relationships",
       videos: videos(v.dInteriorExterior),
@@ -127,7 +127,7 @@
     },
     {
       page: 9,
-      image: "assets/8-8-9-revamp-8-8D-transversal-anchor.webp?v=20260922-889-blue",
+      image: "assets/8-8D-transversal-anchor.png?v=20260922-889-final",
       standard: "8.8D",
       resource: "Parallel lines & transversals",
       videos: videos(v.dOverview, v.dCorresponding, v.dPairs),
@@ -139,14 +139,14 @@
     },
     {
       page: 10,
-      image: "assets/8-8-9-revamp-8-8D-calculator.webp?v=20260922-889-blue",
+      image: "assets/8-8D-calculator.png?v=20260922-889-final",
       standard: "8.8D",
       resource: "Calculator tips",
       videos: []
     },
     {
       page: 11,
-      image: "assets/8-8-9-revamp-8-9A-anchor.webp?v=20260922-889-blue",
+      image: "assets/8-9A-anchor.png?v=20260922-889-final",
       standard: "8.9A",
       resource: "Anchor chart",
       videos: videos(v.system),
@@ -156,7 +156,7 @@
     },
     {
       page: 12,
-      image: "assets/8-8-9-revamp-8-9A-calculator.webp?v=20260922-889-blue",
+      image: "assets/8-9A-calculator.png?v=20260922-889-final",
       standard: "8.9A",
       resource: "Calculator tips",
       videos: []
