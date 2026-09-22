@@ -824,6 +824,14 @@
         ["https://go.screenpal.com/watch/cOfebZnT5SF", "Converse of the Pythagorean Theorem"]
       ]
     },
+    "8.7D": {
+      title: "Distance on the Coordinate Plane: Read the Scale, Build the Triangle, Find the Distance",
+      description: "Work through seven coordinate-plane distance problems. In every graph, the x-axis and y-axis use different interval values, so read each axis carefully before identifying the two ordered pairs. Then find the horizontal and vertical distances, connect those changes to a right triangle, substitute into the distance formula, and calculate the distance between the points.",
+      summary: "You found distance between two points on coordinate planes whose x- and y-axes used different scales. You read ordered pairs from the actual axis labels, calculated the horizontal and vertical changes, connected those changes to the legs of a right triangle, substituted into d = √[(x₂ − x₁)² + (y₂ − y₁)²], and rounded non-whole distances to the nearest hundredth.",
+      videos: [
+        ["https://go.screenpal.com/watch/cOfebynT5WY", "Distance on the Coordinate Plane"]
+      ]
+    },
     "8.4A": {
       title: "Slope: Do It With Me",
       description: "Choose four exact points on each line. The lab groups them into two pairs, and you complete the rise-first, run-second process for both pairs to prove that the slope stays the same. Pay attention to the value of each axis interval: the first five problems coach every move, and the final ten ask you to determine and enter both sets of signed changes yourself.",
@@ -1072,6 +1080,7 @@
     if (standard === "8.7A") renderLab87A();
     if (standard === "8.7B") renderLab87B();
     if (standard === "8.7C") renderLab87C();
+    if (standard === "8.7D") renderLab87D();
     if (standard === "8.10A") renderLabA();
     if (standard === "8.10B") renderLabB();
     if (standard === "8.10C") renderLabC();
@@ -3043,6 +3052,14 @@
       return;
     }
     window.renderPythagorean87CLab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
+  }
+
+  function renderLab87D() {
+    if (typeof window.renderDistance87DLab !== "function") {
+      setLabFeedback("The 8.7D lab module did not load. Refresh the page and try again.", "incorrect");
+      return;
+    }
+    window.renderDistance87DLab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
   }
 
   function renderLab86A() {
@@ -6373,6 +6390,12 @@
       if (typeof window.resetPythagorean87CQuestion === "function") window.resetPythagorean87CQuestion(data, nextIndex);
       else Object.assign(data, { index: nextIndex, step: 0, solved: false, inputs: {} });
       renderLab87C();
+    } else if (standard === "8.7D") {
+      if (data.index >= window.DISTANCE_87D_TOTAL - 1) return showLabCompletion(standard);
+      const nextIndex = data.index + 1;
+      if (typeof window.resetDistance87DQuestion === "function") window.resetDistance87DQuestion(data, nextIndex);
+      else Object.assign(data, { index: nextIndex, step: 0, solved: false, inputs: {} });
+      renderLab87D();
     } else if (standard === "8.3A") {
       if (data.index >= SIMILARITY_TASKS.length - 1) return showLabCompletion(standard);
       data.index += 1;
