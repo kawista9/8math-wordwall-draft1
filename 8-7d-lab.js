@@ -1,12 +1,12 @@
 (function distance87DLabModule() {
   const TASKS = [
-    { title:"Different scales: x by 1, y by 2", unitX:1, unitY:2, A:{gx:-4,gy:-2}, B:{gx:2,gy:2} },
-    { title:"Different scales: x by 2, y by 1", unitX:2, unitY:1, A:{gx:-3,gy:3}, B:{gx:1,gy:-3} },
-    { title:"Different scales: x by 0.5, y by 2", unitX:0.5, unitY:2, A:{gx:-4,gy:-2}, B:{gx:2,gy:2} },
-    { title:"Different scales: x by 5, y by 2", unitX:5, unitY:2, A:{gx:-2,gy:3}, B:{gx:2,gy:-2} },
-    { title:"Different scales: x by 2, y by 5", unitX:2, unitY:5, A:{gx:-4,gy:1}, B:{gx:2,gy:-1} },
-    { title:"Different scales: x by 10, y by 5", unitX:10, unitY:5, A:{gx:-2,gy:-2}, B:{gx:2,gy:2} },
-    { title:"Different scales: x by 0.5, y by 1.5", unitX:0.5, unitY:1.5, A:{gx:-4,gy:2}, B:{gx:4,gy:-2} }
+    { title:"Coordinate distance 1", unitX:1, unitY:2, A:{gx:-4,gy:-2}, B:{gx:2,gy:2} },
+    { title:"Coordinate distance 2", unitX:2, unitY:1, A:{gx:-3,gy:3}, B:{gx:1,gy:-3} },
+    { title:"Coordinate distance 3", unitX:0.5, unitY:2, A:{gx:-4,gy:-2}, B:{gx:2,gy:2} },
+    { title:"Coordinate distance 4", unitX:5, unitY:2, A:{gx:-2,gy:3}, B:{gx:2,gy:-2} },
+    { title:"Coordinate distance 5", unitX:2, unitY:5, A:{gx:-4,gy:1}, B:{gx:2,gy:-1} },
+    { title:"Coordinate distance 6", unitX:10, unitY:5, A:{gx:-2,gy:-2}, B:{gx:2,gy:2} },
+    { title:"Coordinate distance 7", unitX:0.5, unitY:1.5, A:{gx:-4,gy:2}, B:{gx:4,gy:-2} }
   ].map(task => {
     const A = { x: task.A.gx * task.unitX, y: task.A.gy * task.unitY };
     const B = { x: task.B.gx * task.unitX, y: task.B.gy * task.unitY };
