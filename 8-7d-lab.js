@@ -91,7 +91,7 @@
   function markup(task,data,q){
     let stages=`<section class="d87-card">
       <h5>Step 1 · Count the two legs on the coordinate grid</h5>
-      <p>The pink horizontal and vertical segments are the two legs of a right triangle. Use the numbered scale on each axis to determine each leg's actual length. <strong>Do not use a distance formula.</strong></p>
+      <p>The pink horizontal and vertical segments are the two legs of a right triangle. Use the numbered scale on each axis to determine each leg's actual length, then use those leg lengths in the Pythagorean Theorem.</p>
       <div class="d87-change-grid">
         <label><span>Horizontal leg length</span><input data-d87-input="dx" value="${esc(data.inputs.dx||"")}" placeholder="count using x-axis scale"></label>
         <label><span>Vertical leg length</span><input data-d87-input="dy" value="${esc(data.inputs.dy||"")}" placeholder="count using y-axis scale"></label>
