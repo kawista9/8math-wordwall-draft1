@@ -80,24 +80,42 @@
 
   function visual(task){
     const u=esc(task.unit);
-    if(task.diagram==="ladder") return `<svg class="py87c-figure py87c-ladder-figure" viewBox="0 0 640 360" role="img" aria-label="Ladder leaning against a wall and forming a right triangle">
-      <rect x="105" y="42" width="26" height="260" rx="6" class="py87c-wall"/>
-      <line x1="118" y1="302" x2="560" y2="302" class="py87c-ground"/>
-      <line x1="118" y1="302" x2="118" y2="122" class="py87c-triangle"/>
-      <line x1="118" y1="302" x2="462" y2="122" class="py87c-triangle py87c-missing"/>
-      ${marker(118,302)}
-      <line x1="150" y1="285" x2="438" y2="135" class="py87c-ladder-rail"/>
-      <line x1="166" y1="278" x2="454" y2="128" class="py87c-ladder-rail"/>
-      <g class="py87c-ladder-rungs">
-        <line x1="194" y1="263" x2="210" y2="256"/>
-        <line x1="239" y1="239" x2="255" y2="232"/>
-        <line x1="284" y1="216" x2="300" y2="209"/>
-        <line x1="329" y1="192" x2="345" y2="185"/>
-        <line x1="374" y1="169" x2="390" y2="162"/>
+    if(task.diagram==="ladder") return `<svg class="py87c-figure py87c-ladder-figure" viewBox="0 0 680 390" role="img" aria-label="A ladder resting on the ground and leaning against a vertical wall, forming a right triangle">
+      <!-- real-world wall and ground -->
+      <rect x="510" y="48" width="32" height="270" rx="5" class="py87c-wall"/>
+      <rect x="70" y="300" width="520" height="24" rx="6" class="py87c-floor"/>
+
+      <!-- measured right-triangle legs -->
+      <line x1="160" y1="300" x2="510" y2="300" class="py87c-measure-leg"/>
+      <line x1="510" y1="300" x2="510" y2="110" class="py87c-measure-leg"/>
+      <path d="M486 300 V276 H510" class="py87c-right-marker"/>
+
+      <!-- ladder: foot on the ground, top touching the wall -->
+      <g class="py87c-real-ladder">
+        <line x1="153" y1="292" x2="503" y2="102" class="py87c-ladder-rail"/>
+        <line x1="166" y1="309" x2="516" y2="119" class="py87c-ladder-rail"/>
+        <g class="py87c-ladder-rungs">
+          <line x1="210" y1="270" x2="226" y2="286"/>
+          <line x1="257" y1="244" x2="273" y2="260"/>
+          <line x1="304" y1="219" x2="320" y2="235"/>
+          <line x1="351" y1="193" x2="367" y2="209"/>
+          <line x1="398" y1="168" x2="414" y2="184"/>
+          <line x1="445" y1="142" x2="461" y2="158"/>
+        </g>
       </g>
-      <text x="72" y="220" class="py87c-label">9 ${u}</text>
-      <text x="270" y="338" class="py87c-label">14 ${u}</text>
-      <text x="305" y="185" class="py87c-label py87c-x">x</text>
+
+      <!-- dimension guides -->
+      <line x1="160" y1="342" x2="510" y2="342" class="py87c-dimension-guide"/>
+      <line x1="160" y1="334" x2="160" y2="350" class="py87c-dimension-cap"/>
+      <line x1="510" y1="334" x2="510" y2="350" class="py87c-dimension-cap"/>
+
+      <line x1="558" y1="110" x2="558" y2="300" class="py87c-dimension-guide"/>
+      <line x1="550" y1="110" x2="566" y2="110" class="py87c-dimension-cap"/>
+      <line x1="550" y1="300" x2="566" y2="300" class="py87c-dimension-cap"/>
+
+      <text x="335" y="377" text-anchor="middle" class="py87c-label">14 ${u}</text>
+      <text x="600" y="213" text-anchor="middle" class="py87c-label">9 ${u}</text>
+      <text x="340" y="182" text-anchor="middle" class="py87c-label py87c-x">x</text>
     </svg>`;
     if(task.diagram==="rectangle") return `<svg class="py87c-figure" viewBox="0 0 640 360"><rect x="120" y="65" width="400" height="230" rx="10" class="py87c-context-fill"/><line x1="120" y1="295" x2="520" y2="65" class="py87c-triangle"/>${marker(120,295)}<text x="305" y="335" class="py87c-label">5 ${u}</text><text x="75" y="190" class="py87c-label py87c-x">x</text><text x="315" y="160" class="py87c-label">13 ${u}</text></svg>`;
     if(task.diagram==="ramp") return `<svg class="py87c-figure" viewBox="0 0 640 360"><path d="M100 285 H550 V135 H490 V285 Z" class="py87c-context-fill"/><line x1="100" y1="285" x2="490" y2="135" class="py87c-triangle py87c-missing"/><line x1="100" y1="285" x2="490" y2="285" class="py87c-triangle"/><line x1="490" y1="285" x2="490" y2="135" class="py87c-triangle"/>${marker(472,285)}<text x="300" y="325" class="py87c-label">60 ${u}</text><text x="515" y="215" class="py87c-label">11 ${u}</text><text x="295" y="190" class="py87c-label py87c-x">x</text></svg>`;
