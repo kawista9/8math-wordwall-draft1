@@ -51,12 +51,6 @@
   stroke:#bdd7e2;
   stroke-width:1.8;
 }
-.d87-leg{
-  stroke:#e83a8c;
-  stroke-width:5;
-  stroke-linecap:round;
-  stroke-dasharray:11 8;
-}
 .d87-pythagorean-substitution{
   display:flex;
   align-items:center;
@@ -84,4 +78,14 @@
 .d87-pythagorean-substitution input:focus{
   outline:3px solid rgba(123,63,228,.16);
   border-color:#7b3fe4;
+}
+
+
+/* Full graph-paper grid for 8.7D */
+.d87-grid-vertical,
+.d87-grid-horizontal{
+  stroke:#bdd7e2;
+  stroke-width:1.8;
+  opacity:1;
+  vector-effect:non-scaling-stroke;
 }
