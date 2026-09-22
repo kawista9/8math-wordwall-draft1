@@ -56,15 +56,19 @@
       resource: "Anchor chart",
       videos: videos(v.aVariable, v.aConstant, v.aAtMost, v.aLess, v.aEqual, v.aGreater, v.aAtLeast, v.aSetup),
       videoHotspots: [
-        spot(v.aSetup, 69.0, 4.0, 15.0, 13.0),
-        spot(v.aVariable, 3.6, 22.0, 5.0, 8.5),
-        spot(v.aConstant, 3.6, 53.1, 5.0, 8.5),
-        spot(v.aAtMost, 41.0, 28.7, 4.8, 7.5),
-        spot(v.aLess, 49.5, 28.7, 4.8, 7.5),
-        spot(v.aEqual, 58.5, 28.7, 4.8, 7.5),
-        spot(v.aGreater, 67.4, 28.7, 4.8, 7.5),
-        spot(v.aAtLeast, 76.3, 28.7, 4.8, 7.5),
-        spot(v.aSetup, 16.3, 78.4, 5.0, 8.5)
+        // Watch Me First -> foundational set-up video.
+        spot(v.aSetup, 78.6, 6.6, 6.2, 8.4),
+        // Left-side vocabulary buttons.
+        spot(v.aVariable, 4.0, 20.2, 5.2, 7.0),
+        spot(v.aConstant, 3.9, 49.1, 5.2, 7.0),
+        // Symbol buttons, left to right: ≤, <, =, >, ≥.
+        spot(v.aAtMost, 47.9, 26.2, 5.0, 7.0),
+        spot(v.aLess, 57.6, 26.2, 5.0, 7.0),
+        spot(v.aEqual, 67.7, 26.2, 5.0, 7.0),
+        spot(v.aGreater, 78.4, 26.2, 5.0, 7.0),
+        spot(v.aAtLeast, 88.2, 26.2, 5.0, 7.0),
+        // Basic equation / inequality set-up button.
+        spot(v.aSetup, 19.2, 72.8, 5.2, 7.0)
       ]
     },
     {
@@ -81,12 +85,14 @@
       resource: "Anchor chart",
       videos: videos(v.bGym, v.bFundraiser, v.bVerbal, v.bBabysitter, v.bRectangle),
       videoHotspots: [
-        spot(v.bGym, 44.0, 29.0, 5.5, 9.0),
-        spot(v.bFundraiser, 94.1, 29.0, 5.0, 9.0),
-        spot(v.bVerbal, 44.0, 56.4, 5.5, 9.0),
-        spot(v.bBabysitter, 94.1, 56.4, 5.0, 9.0),
-        spot(v.bRectangle, 70.2, 82.3, 5.5, 9.0),
-        spot(v.bGym, 80.7, 4.2, 17.7, 12.5)
+        // Watch Me First opens the first worked example.
+        spot(v.bGym, 80.3, 7.3, 7.0, 13.0),
+        // Worked examples in reading order.
+        spot(v.bGym, 43.0, 28.8, 6.2, 11.0),
+        spot(v.bFundraiser, 91.4, 28.6, 6.2, 11.0),
+        spot(v.bVerbal, 43.0, 55.0, 6.2, 11.0),
+        spot(v.bBabysitter, 91.4, 55.2, 6.2, 11.0),
+        spot(v.bRectangle, 69.2, 77.7, 6.2, 11.0)
       ]
     },
     {
@@ -103,9 +109,9 @@
       resource: "Anchor chart",
       videos: videos(v.cTiles, v.cVariables, v.cSolve),
       videoHotspots: [
-        spot(v.cTiles, 7.7, 26.4, 4.5, 8.0),
-        spot(v.cVariables, 7.7, 43.2, 4.5, 8.0),
-        spot(v.cSolve, 73.6, 72.8, 4.7, 8.2)
+        spot(v.cTiles, 6.7, 26.4, 5.2, 9.0),
+        spot(v.cVariables, 6.7, 41.3, 5.2, 9.0),
+        spot(v.cSolve, 73.3, 69.4, 6.0, 10.5)
       ]
     },
     {
@@ -122,7 +128,11 @@
       resource: "Triangle relationships",
       videos: videos(v.dInteriorExterior),
       videoHotspots: [
-        spot(v.dInteriorExterior, 3.0, 24.2, 5.4, 9.5)
+        // Only one existing ScreenPal URL is present in the legacy site data for this slide.
+        // Keep it exactly on the Interior vs. Exterior play button.
+        spot(v.dInteriorExterior, 2.0, 23.3, 6.5, 11.4)
+        // The visible AA Similarity play button is intentionally not mapped here:
+        // the legacy 8.8D data contains no AA Similarity ScreenPal URL, so do not attach a wrong video.
       ]
     },
     {
@@ -132,9 +142,9 @@
       resource: "Parallel lines & transversals",
       videos: videos(v.dOverview, v.dCorresponding, v.dPairs),
       videoHotspots: [
-        spot(v.dOverview, 4.1, 38.0, 5.6, 9.8),
-        spot(v.dCorresponding, 35.6, 38.0, 5.6, 9.8),
-        spot(v.dPairs, 67.5, 38.0, 5.6, 9.8)
+        spot(v.dOverview, 3.9, 36.9, 5.6, 10.0),
+        spot(v.dCorresponding, 34.9, 36.9, 5.6, 10.0),
+        spot(v.dPairs, 66.4, 36.9, 5.6, 10.0)
       ]
     },
     {
@@ -151,7 +161,7 @@
       resource: "Anchor chart",
       videos: videos(v.system),
       videoHotspots: [
-        spot(v.system, 38.0, 70.5, 5.5, 9.5)
+        spot(v.system, 37.9, 70.4, 6.3, 11.2)
       ]
     },
     {
