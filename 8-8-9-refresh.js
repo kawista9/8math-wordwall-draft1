@@ -24,11 +24,14 @@
     cTiles: { title: "Modeling Equations", url: "https://go.screenpal.com/watch/cOflF8nOnMX" },
     cVariables: { title: "Understanding Inverse Operations", url: "https://go.screenpal.com/watch/cOflF9nOnMF" },
     cSolve: { title: "Solving Equations: Using Inverse Operations", url: "https://go.screenpal.com/watch/cOflqonOnLP" },
+    cCalculator: { title: "How to Use Your Calculator to Solve Systems of Equations", url: "https://go.screenpal.com/watch/cOfIcQnOerJ" },
 
     dInteriorExterior: { title: "Exterior Angle Relationships from Triangles", url: "https://go.screenpal.com/watch/cOfl0GnOeqY" },
     dOverview: { title: "Understanding Parallel Lines and Transversals", url: "https://go.screenpal.com/watch/cOflqqnOnNt" },
     dCorresponding: { title: "Corresponding Angles in Parallel Lines and Transversals", url: "https://go.screenpal.com/watch/cOflq3nOnNa" },
     dPairs: { title: "Angle Pairs and Parallel Lines", url: "https://go.screenpal.com/watch/cOflqwnOn8F" },
+    dCalculatorFirst: { title: "Using a Calculator to Find Angle Measures", url: "https://go.screenpal.com/watch/cOfbbZnOq23" },
+    dCalculatorSecond: { title: "Solving for X and Angle Measures in Parallel Lines", url: "https://go.screenpal.com/watch/cOfbbMnOqFk" },
 
     system: { title: "Graphing Equations and Finding Solutions", url: "https://go.screenpal.com/watch/cOfl0LnOeYr" }
   };
@@ -120,7 +123,10 @@
       image: "assets/8-8C-calculator.png?v=20260922-889-final",
       standard: "8.8C",
       resource: "Calculator tips",
-      videos: []
+      videos: videos(v.cCalculator),
+      videoHotspots: [
+        { ...spot(v.cCalculator, 59.3, 30.0, 6.8, 12.0), showPlayButton: true }
+      ]
     },
     {
       page: 8,
@@ -153,7 +159,11 @@
       image: "assets/8-8D-calculator.png?v=20260922-889-final",
       standard: "8.8D",
       resource: "Calculator tips",
-      videos: []
+      videos: videos(v.dCalculatorFirst, v.dCalculatorSecond),
+      videoHotspots: [
+        { ...spot(v.dCalculatorFirst, 36.5, 27.5, 6.8, 12.0), showPlayButton: true },
+        { ...spot(v.dCalculatorSecond, 60.5, 27.5, 6.8, 12.0), showPlayButton: true }
+      ]
     },
     {
       page: 11,
