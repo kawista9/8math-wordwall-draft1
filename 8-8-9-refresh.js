@@ -5,13 +5,14 @@
   group.entryPageIndex = 0;
 
   const v = {
+    aWatchFirst: { title: "Watch Me First", url: "https://go.screenpal.com/watch/cOfIcVnOer1" },
     aVariable: { title: "Variable Term", url: "https://go.screenpal.com/watch/cOflb6nOn5D" },
     aConstant: { title: "Constant", url: "https://go.screenpal.com/watch/cOflb0nOnEE" },
     aAtMost: { title: "At Most / Less Than or Equal To", url: "https://go.screenpal.com/watch/cOflb8nOnH7" },
     aLess: { title: "Less Than", url: "https://go.screenpal.com/watch/cOflb7nOnH0" },
-    aEqual: { title: "Equal To", url: "https://go.screenpal.com/watch/cOflF2nOnd2" },
+    aEqual: { title: "Equal To", url: "https://go.screenpal.com/watch/cOflbvnOnGv" },
     aGreater: { title: "Greater Than", url: "https://go.screenpal.com/watch/cOflFinOnJB" },
-    aAtLeast: { title: "At Least / Greater Than or Equal To", url: "https://go.screenpal.com/watch/cOflbvnOnGv" },
+    aAtLeast: { title: "At Least / Greater Than or Equal To", url: "https://go.screenpal.com/watch/cOflF2nOnd2" },
     aSetup: { title: "Basic Equation/Inequality Set-Up", url: "https://go.screenpal.com/watch/cOflF0nOnK6" },
 
     bGym: { title: "Writing a Real-World Inequality: Gym Costs", url: "https://go.screenpal.com/watch/cOflFwnOnK5" },
@@ -54,10 +55,10 @@
       image: "assets/8-8A-anchor.png?v=20260923-88A-symbol-fix",
       standard: "8.8A",
       resource: "Anchor chart",
-      videos: videos(v.aVariable, v.aConstant, v.aAtMost, v.aLess, v.aEqual, v.aGreater, v.aAtLeast, v.aSetup),
+      videos: videos(v.aWatchFirst, v.aVariable, v.aConstant, v.aAtMost, v.aLess, v.aEqual, v.aGreater, v.aAtLeast, v.aSetup),
       videoHotspots: [
-        // Watch Me First -> foundational set-up video.
-        spot(v.aSetup, 78.6, 6.6, 6.2, 8.4),
+        // Watch Me First.
+        spot(v.aWatchFirst, 78.6, 6.6, 6.2, 8.4),
         // Left-side vocabulary buttons.
         spot(v.aVariable, 4.0, 20.2, 5.2, 7.0),
         spot(v.aConstant, 3.9, 49.1, 5.2, 7.0),
