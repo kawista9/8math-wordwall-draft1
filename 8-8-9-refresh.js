@@ -51,7 +51,7 @@
     },
     {
       page: 2,
-      image: "assets/8-8A-anchor.png?v=20260922-889-final",
+      image: "assets/8-8A-anchor.png?v=20260923-88A-symbol-fix",
       standard: "8.8A",
       resource: "Anchor chart",
       videos: videos(v.aVariable, v.aConstant, v.aAtMost, v.aLess, v.aEqual, v.aGreater, v.aAtLeast, v.aSetup),
