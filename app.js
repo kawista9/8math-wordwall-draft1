@@ -359,6 +359,10 @@
       hotspot.style.width = `${video.width}%`;
       hotspot.style.height = `${video.height}%`;
       hotspot.setAttribute("aria-label", `Watch: ${displayTitle}`);
+      if (video.showPlayButton) {
+        hotspot.classList.add("video-hotspot--visible");
+        hotspot.textContent = "▶";
+      }
       hotspot.addEventListener("click", () => openVideo({ ...video, title: displayTitle }));
       overlay.append(hotspot);
     });
