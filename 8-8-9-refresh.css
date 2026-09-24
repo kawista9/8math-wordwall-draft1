@@ -9,6 +9,21 @@
 .video-hotspot:active {
   transform: scale(0.96);
 }
+.video-hotspot--visible,
+.video-hotspot--visible:hover {
+  display: grid;
+  place-items: center;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #063685;
+  color: #fff;
+  font-size: clamp(18px, 2.5vw, 34px);
+  box-shadow: 0 0 0 4px #061747, 0 0 18px 7px #14b8ff;
+}
+.video-hotspot--visible:hover {
+  background: #0756c5;
+  box-shadow: 0 0 0 4px #061747, 0 0 26px 10px #14b8ff;
+}
 .substandard-hotspot {
   touch-action: manipulation;
 }
