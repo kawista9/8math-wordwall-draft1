@@ -15,22 +15,22 @@
     aAtLeast: { title: "At Least / Greater Than or Equal To", url: "https://go.screenpal.com/watch/cOflF2nOnd2" },
     aSetup: { title: "Basic Equation/Inequality Set-Up", url: "https://go.screenpal.com/watch/cOflF0nOnK6" },
 
-    bGym: { title: "Writing a Real-World Inequality: Gym Costs", url: "https://go.screenpal.com/watch/cOflFwnOnK5" },
-    bFundraiser: { title: "Writing a Real-World Equation: Fundraiser Costs", url: "https://go.screenpal.com/watch/cOflF4nOnK9" },
-    bVerbal: { title: "Writing an Equation from Words", url: "https://go.screenpal.com/watch/cOflF5nOn7H" },
-    bBabysitter: { title: "Writing a Real-World Inequality: Babysitter Earnings", url: "https://go.screenpal.com/watch/cOflFBnOn7D" },
-    bRectangle: { title: "Writing an Equation from a Geometry Situation", url: "https://go.screenpal.com/watch/cOflFsnOnsJ" },
+    bGym: { title: "Writing Inequalities for Gym Membership Costs", url: "https://go.screenpal.com/watch/cOflFwnOnK5" },
+    bFundraiser: { title: "Writing Equations from Real-World Situations", url: "https://go.screenpal.com/watch/cOflF5nOn7H" },
+    bVerbal: { title: "Writing Equations from Real World Situations", url: "https://go.screenpal.com/watch/cOflFBnOn7D" },
+    bBabysitter: { title: "Writing Inequalities for Babysitter Earnings", url: "https://go.screenpal.com/watch/cOflF4nOnK9" },
+    bRectangle: { title: "Writing Equations from Real World Situations", url: "https://go.screenpal.com/watch/cOflFsnOnsJ" },
 
-    cTiles: { title: "Convert Algebra Tiles into an Equation", url: "https://go.screenpal.com/watch/cOflF8nOnMX" },
-    cVariables: { title: "Gather Variable Terms with Inverse Operations", url: "https://go.screenpal.com/watch/cOflF9nOnMF" },
-    cSolve: { title: "Solve for x", url: "https://go.screenpal.com/watch/cOflqonOnLP" },
+    cTiles: { title: "Modeling Equations", url: "https://go.screenpal.com/watch/cOflF8nOnMX" },
+    cVariables: { title: "Understanding Inverse Operations", url: "https://go.screenpal.com/watch/cOflF9nOnMF" },
+    cSolve: { title: "Solving Equations: Using Inverse Operations", url: "https://go.screenpal.com/watch/cOflqonOnLP" },
 
-    dInteriorExterior: { title: "Angle Relationship: Interior vs. Exterior", url: "https://go.screenpal.com/watch/cOfl0GnOeqY" },
-    dOverview: { title: "Parallel Lines Cut by a Transversal: Overview", url: "https://go.screenpal.com/watch/cOflqqnOnNt" },
-    dCorresponding: { title: "Corresponding Angles", url: "https://go.screenpal.com/watch/cOflq3nOnNa" },
-    dPairs: { title: "Angle Pairs", url: "https://go.screenpal.com/watch/cOflqwnOn8F" },
+    dInteriorExterior: { title: "Exterior Angle Relationships from Triangles", url: "https://go.screenpal.com/watch/cOfl0GnOeqY" },
+    dOverview: { title: "Understanding Parallel Lines and Transversals", url: "https://go.screenpal.com/watch/cOflqqnOnNt" },
+    dCorresponding: { title: "Corresponding Angles in Parallel Lines and Transversals", url: "https://go.screenpal.com/watch/cOflq3nOnNa" },
+    dPairs: { title: "Angle Pairs and Parallel Lines", url: "https://go.screenpal.com/watch/cOflqwnOn8F" },
 
-    system: { title: "Identifying a Solution from the Intersection", url: "https://go.screenpal.com/watch/cOfl0LnOeYr" }
+    system: { title: "Graphing Equations and Finding Solutions", url: "https://go.screenpal.com/watch/cOfl0LnOeYr" }
   };
 
   const videos = (...items) => items;
@@ -86,7 +86,7 @@
       resource: "Anchor chart",
       videos: videos(v.bGym, v.bFundraiser, v.bVerbal, v.bBabysitter, v.bRectangle),
       videoHotspots: [
-        // Watch Me First opens the first worked example.
+        // Watch Me First opens the gym membership introduction.
         spot(v.bGym, 80.3, 7.3, 7.0, 13.0),
         // Worked examples in reading order.
         spot(v.bGym, 43.0, 28.8, 6.2, 11.0),
