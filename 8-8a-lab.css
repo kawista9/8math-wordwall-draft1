@@ -113,3 +113,8 @@ body.lab-is-open #standardsLab {overflow:visible}
 .a88-form-line>.a88-select select {padding:.4rem .1rem;font-size:.9rem}
 .a88-flip-note {padding:.5rem;border-left:3px solid var(--a88-purple);background:#f8f1ff}
 @media(max-width:680px){.a88-form-line{grid-template-columns:minmax(0,1fr) 60px minmax(0,1fr)}}
+
+.a88-sign-cue.a88-variable {color:var(--a88-blue);border-bottom-color:var(--a88-blue);background:#edf4ff}
+.a88-sign-cue.a88-constant {color:var(--a88-green);border-bottom-color:var(--a88-green);background:#eaf9ef}
+.a88-sign-cue.a88-variable.is-picked {color:#fff;background:var(--a88-blue)}
+.a88-sign-cue.a88-constant.is-picked {color:#fff;background:var(--a88-green)}
