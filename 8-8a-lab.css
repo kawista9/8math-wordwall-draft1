@@ -212,3 +212,14 @@ body.lab-is-open #standardsLab {overflow:visible}
 .a88-slot-actions button {padding:.45rem .65rem;border:1px solid #8799b0;border-radius:8px;background:#fff;color:#253954;font-weight:700;cursor:pointer}
 .a88-select-box {margin:0;color:#526277}
 @media(max-width:680px){.a88-builder-row>.a88-select {flex-basis:47px}.a88-build-slot {font-size:.54rem}}
+
+.a88-builder .a88-palette [data-palette="variable"],
+.a88-builder .a88-build-slot.a88-slot-variable {color:var(--a88-blue);border-color:var(--a88-blue);background:#edf4ff}
+.a88-builder .a88-palette [data-palette="constant"],
+.a88-builder .a88-build-slot.a88-slot-constant {color:var(--a88-green);border-color:var(--a88-green);background:#eaf9ef}
+.a88-independent .a88-token.a88-unclassified.a88-evidence-match.a88-variable,
+.a88-independent .a88-sign-cue.a88-neutral.a88-evidence-match.a88-variable {color:var(--a88-blue);background:#edf4ff;padding:.06rem .14rem;border-radius:4px;font-weight:800}
+.a88-independent .a88-token.a88-unclassified.a88-evidence-match.a88-constant,
+.a88-independent .a88-sign-cue.a88-neutral.a88-evidence-match.a88-constant {color:var(--a88-green);background:#eaf9ef;padding:.06rem .14rem;border-radius:4px;font-weight:800}
+.a88-independent .a88-token.a88-unclassified.a88-evidence-mismatch,
+.a88-independent .a88-sign-cue.a88-neutral.a88-evidence-mismatch {color:#39465c;background:#e7ecf3;padding:.06rem .14rem;border-radius:4px}
