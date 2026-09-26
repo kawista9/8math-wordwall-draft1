@@ -138,8 +138,8 @@
     const byId=Object.fromEntries(task.terms.map(t=>[t.id,t]));
     return `<p class="a88-story">${esc(task.context).replace(/\{s:([a-z0-9]+):([^}]+)\}|\{([a-z0-9]+)\}/g,(_,signId,phrase,termId)=>signId?`<button type="button" class="a88-sign-cue a88-${byId[signId]?.kind||"constant"}${data.signPicked.has(signId)?" is-picked":""}" data-sign-cue="${signId}" aria-pressed="${data.signPicked.has(signId)}">${esc(phrase)}</button>`:byId[termId]?tokenButton(byId[termId],data):"")}</p>`;
   }
-  function select(name, current, choices, label) {
-    return `<label class="a88-select"><span>${esc(label)}</span><select data-select="${name}"><option value="">Choose…</option>${choices.map(([v,text])=>`<option value="${esc(v)}"${current===v?" selected":""}>${esc(text)}</option>`).join("")}</select></label>`;
+  function select(name, current, choices, label, placeholder="Choose…") {
+    return `<label class="a88-select"><span>${esc(label)}</span><select data-select="${name}"><option value="">${esc(placeholder)}</option>${choices.map(([v,text])=>`<option value="${esc(v)}"${current===v?" selected":""}>${esc(text)}</option>`).join("")}</select></label>`;
   }
   function field(key, label, kind, data, suffix="") {
     return `<label class="a88-field a88-${kind}"><span>${esc(label)}</span><span class="a88-entry"><input inputmode="decimal" type="number" step="any" data-input="${esc(key)}" value="${esc(data.inputs[key]??"")}" aria-label="${esc(label)}"><b>${suffix}</b></span></label>`;
@@ -163,9 +163,9 @@
     const side=(code,position)=>{
       const prefix="f"+n+"-"+position;
       const way=n===1?"First way":"Reversed way";
-      return `<div class="a88-final-side"><strong>${esc(sideName(code))}</strong><div class="a88-inline-terms"><label class="a88-final-part a88-constant"><span>Constant</span><input type="text" inputmode="decimal" data-input="${prefix}-constant" value="${esc(data.inputs[prefix+"-constant"]||"")}" placeholder="24" aria-label="${way} ${esc(sideName(code))} signed constant"></label><label class="a88-final-part a88-variable"><span>Variable term</span><span class="a88-inline-variable"><input type="text" inputmode="decimal" data-input="${prefix}-variable" value="${esc(data.inputs[prefix+"-variable"]||"")}" placeholder="+6" aria-label="${way} ${esc(sideName(code))} signed variable coefficient"><b>x</b></span></label></div></div>`;
+      return `<div class="a88-final-side"><strong>${esc(sideName(code))}</strong><div class="a88-inline-terms"><label class="a88-final-part a88-constant"><span>Constant</span><input type="text" inputmode="decimal" data-input="${prefix}-constant" value="${esc(data.inputs[prefix+"-constant"]||"")}" aria-label="${way} ${esc(sideName(code))} signed constant"></label><label class="a88-final-part a88-variable"><span>Variable term</span><span class="a88-inline-variable"><input type="text" inputmode="decimal" data-input="${prefix}-variable" value="${esc(data.inputs[prefix+"-variable"]||"")}" aria-label="${way} ${esc(sideName(code))} signed variable coefficient"><b>x</b></span></label></div></div>`;
     };
-    return `<div class="a88-form"><h6>${n===1?"First way":"Same comparison, sides reversed"}</h6><div class="a88-form-line">${side(firstSide,"left")}${select("f"+n+"-symbol",data["f"+n+"-symbol"]||"",[["=","="],["<","<"],[">",">"],["≤","≤"],["≥","≥"]],`${n===1?"First way":"Reversed way"} symbol`)}${side(secondSide,"right")}</div></div>`;
+    return `<div class="a88-form"><h6>${n===1?"First way":"Same comparison, sides reversed"}</h6><div class="a88-form-line">${side(firstSide,"left")}${select("f"+n+"-symbol",data["f"+n+"-symbol"]||"",[["=","="],["<","<"],[">",">"],["≤","≤"],["≥","≥"]],"Symbol","?")}${side(secondSide,"right")}</div></div>`;
   }
   function present(task,data) {
     const guided=data.index<7, relationReady=!guided||data.phase>=1, variableReady=!guided||data.phase>=2, constantReady=!guided||data.phase>=3, buildReady=!guided||data.phase>=4;
