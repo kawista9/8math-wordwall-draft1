@@ -310,6 +310,6 @@
         window.reset88AQuestion(data,data.index+1);window.render88ALab({labRuntime,$,setLabProgress,setLabFeedback,showLabCompletion,syncWhiteboardQuestion});setLabFeedback("Read the next situation before deciding which relationship it describes.");
       }
     }));
-    body.querySelectorAll('.a88-question[data-action="question"]').forEach(el=>el.addEventListener("keydown",event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();el.click();}}));
+    body.querySelectorAll('.a88-question[data-action="question"]').forEach(el=>el.addEventListener("keydown",event=>{if(event.target===el&&(event.key==="Enter"||event.key===" ")){event.preventDefault();el.click();}}));
   };
 })();
