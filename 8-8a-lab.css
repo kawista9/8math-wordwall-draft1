@@ -88,3 +88,28 @@
 @media(max-width:680px){.a88-problem{position:static;max-height:none}.a88-category.a88-constant .a88-category-fields{grid-template-columns:1fr}.a88-choices{grid-template-columns:1fr}}
 
 body.lab-is-open #standardsLab {overflow:visible}
+
+.a88-sign-cue {display:inline;padding:.1rem .2rem;border:0;border-bottom:2px dashed #7136a8;border-radius:3px;background:#f6efff;color:#7136a8;font:inherit;font-weight:800;cursor:pointer}
+.a88-sign-cue.is-picked {background:#7136a8;color:#fff;border-bottom-style:solid}
+.a88-part {min-width:0;display:grid;gap:.42rem;padding:.35rem;border:1px solid #d8e2ef;border-radius:10px;background:#fff}
+.a88-sign-row {display:grid;gap:.4rem}
+.a88-sign-row .a88-select span,.a88-sign-evidence span {font-size:.72rem;line-height:1.2}
+.a88-sign-row select,.a88-sign-evidence input {width:100%;min-width:0;padding:.4rem;border:1.5px solid #9daec4;border-radius:7px;font:inherit;font-size:.84rem;color:#15243a;background:white}
+.a88-sign-evidence {display:grid;gap:.2rem;min-width:0}
+.a88-form {margin:.8rem 0;padding:.65rem;border:1px solid #b9c8dd;border-radius:12px;background:#fff}
+.a88-form h6 {font-size:.9rem;margin:0 0 .6rem}
+.a88-form-line {display:grid;grid-template-columns:minmax(0,1fr) 66px minmax(0,1fr);align-items:center;gap:.35rem}
+.a88-final-side {display:grid;gap:.45rem;min-width:0}
+.a88-final-side>strong {font-size:.78rem;overflow-wrap:anywhere;color:#263952}
+.a88-final-part {display:grid;gap:.15rem;min-width:0}
+.a88-final-part>span:first-child {font-size:.7rem;font-weight:800}
+.a88-final-entry {display:flex;align-items:center;gap:.15rem;min-width:0}
+.a88-final-entry select {width:37px;padding:.4rem .1rem;flex:none}
+.a88-final-entry input {width:100%;min-width:0;padding:.4rem .15rem}
+.a88-final-entry select,.a88-final-entry input {border:1.5px solid currentColor;border-radius:7px;background:#fff;color:inherit;font:inherit;font-size:.82rem}
+.a88-final-entry b {font-size:.8rem;white-space:nowrap}
+.a88-form-line>.a88-select {align-self:center;min-width:0;color:var(--a88-purple)}
+.a88-form-line>.a88-select span {font-size:.72rem;text-align:center}
+.a88-form-line>.a88-select select {padding:.4rem .1rem;font-size:.9rem}
+.a88-flip-note {padding:.5rem;border-left:3px solid var(--a88-purple);background:#f8f1ff}
+@media(max-width:680px){.a88-form-line{grid-template-columns:minmax(0,1fr) 60px minmax(0,1fr)}}
