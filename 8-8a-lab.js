@@ -151,7 +151,7 @@
   }
   function scene(task,data) {
     const byId=Object.fromEntries(task.terms.map(t=>[t.id,t]));
-    if (task.kind==="geometry") return `<p class="a88-story a88-geometry-statement">${esc(task.statement).replace(/\{([a-z0-9]+)\}/g,(_,id)=>byId[id]?tokenButton(byId[id],data):"")}</p>${geometryFigure(task,data)}<p class="a88-scene-note">${esc(task.note)} ${question(task,data)}</p>`;
+    if (task.kind==="geometry") return `<p class="a88-story a88-geometry-statement">${esc(task.statement).replace(/\{([a-z0-9]+)\}/g,(_,id)=>byId[id]?tokenButton(byId[id],data):"")}</p>${geometryFigure(task,data)}<p class="a88-scene-note">${data.index<7?`${esc(task.note)} `:""}${question(task,data)}</p>`;
     return `<p class="a88-story">${esc(task.context).replace(/\{s:([a-z0-9]+):([^}]+)\}|\{([a-z0-9]+)\}/g,(_,signId,phrase,termId)=>signId?`<button type="button" class="a88-sign-cue ${data.index<7?`a88-${byId[signId]?.kind||"constant"}`:"a88-neutral"}${data.signPicked.has(signId)?" is-picked":""}" data-sign-cue="${signId}" aria-pressed="${data.signPicked.has(signId)}">${esc(phrase)}</button>`:byId[termId]?tokenButton(byId[termId],data):"")} ${question(task,data)}</p>`;
   }
   function select(name, current, choices, label, placeholder="Choose…") {
