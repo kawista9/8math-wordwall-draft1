@@ -128,3 +128,18 @@ body.lab-is-open #standardsLab {overflow:visible}
 .a88-inline-variable b {font-size:.9rem;color:var(--a88-blue)}
 .a88-form-line {grid-template-columns:minmax(0,1fr) 62px minmax(0,1fr)}
 .a88-final-side>strong {white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.a88-geometry-statement {line-height:1.7 !important;margin-bottom:.6rem}
+.a88-single-figure {position:relative;margin:.5rem 0;padding:0;width:100%;height:245px;border:1px solid #cbd7e7;border-radius:12px;background:#fff}
+.a88-single-figure svg {display:block;width:100%;height:100%;overflow:visible}
+.a88-outline {fill:none;stroke:#253b5b;stroke-width:1.2;stroke-linejoin:round}
+.a88-vertices {fill:#253b5b;font:6px Arial,sans-serif}
+.a88-figure-label {position:absolute;display:flex;align-items:center;justify-content:center;gap:.1rem;padding:.08rem .2rem;border-radius:7px;background:rgba(255,255,255,.97);white-space:nowrap}
+.a88-figure-label .a88-token {margin:0;padding:.08rem .16rem;font-size:.78rem;border-width:1px}
+.a88-triangle .edge-left {left:1%;top:45%}
+.a88-triangle .edge-right {right:1%;top:45%}
+.a88-triangle .edge-bottom {left:50%;bottom:2%;transform:translateX(-50%)}
+.a88-rectangle .edge-top,.a88-quadrilateral .edge-top {left:50%;top:2%;transform:translateX(-50%)}
+.a88-rectangle .edge-left,.a88-quadrilateral .edge-left {left:1%;top:46%}
+.a88-quadrilateral .edge-right {right:1%;top:46%}
+.a88-quadrilateral .edge-bottom {left:50%;bottom:2%;transform:translateX(-50%)}
