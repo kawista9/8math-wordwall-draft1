@@ -191,7 +191,9 @@
     body.querySelectorAll("[data-action]").forEach(button=>button.addEventListener("click",()=>{
       const action=button.dataset.action;
       if(action==="read"){data.read=true;if(guided&&data.phase===0)data.phase=1;window.render88ALab({labRuntime,$,setLabProgress,setLabFeedback,showLabCompletion,syncWhiteboardQuestion});setLabFeedback("Now read the question. Click its relationship phrase.");return;}
-      if(action==="no-like"){data.noLike=button.checked;return;}\n      if(action==="question"){if(!data.read)return setLabFeedback("Read the entire problem and question first.","incorrect");data.question=true;button.classList.add("is-picked");setLabFeedback("Now click the relationship phrase within that question.");return;}\n      if(action==="cue"){if(!data.question)return setLabFeedback("First click to identify the full question.","incorrect");if(guided&&!data.read)return setLabFeedback("Read the entire problem first.","incorrect");data.cue=true;button.classList.add("is-picked");button.setAttribute("aria-pressed","true");setLabFeedback("You found the phrase. Match it to the comparison symbol.");return;}
+      if(action==="no-like"){data.noLike=button.checked;return;}
+      if(action==="question"){if(!data.read)return setLabFeedback("Read the entire problem and question first.","incorrect");data.question=true;button.classList.add("is-picked");setLabFeedback("Now click the relationship phrase within that question.");return;}
+      if(action==="cue"){if(!data.question)return setLabFeedback("First click to identify the full question.","incorrect");if(guided&&!data.read)return setLabFeedback("Read the entire problem first.","incorrect");data.cue=true;button.classList.add("is-picked");button.setAttribute("aria-pressed","true");setLabFeedback("You found the phrase. Match it to the comparison symbol.");return;}
       const relationship=()=>data.cue&&data.left==="L"&&data.right==="R"&&data.symbol===task.relation;
       if(action==="relation"){
         if(!data.read)return setLabFeedback("Read the whole situation before building the comparison.","incorrect");
@@ -213,7 +215,8 @@
         if(!data.read)return setLabFeedback("First read the entire problem and question.","incorrect");
         if(!data.question||!relationship())return setLabFeedback("Click the question's purple phrase and choose the correct order and symbol.","incorrect");
         const missing=task.terms.filter(t=>!data.picked.has(t.id));
-        if(!guided&&task.terms.some(t=>data.classifications[t.id]!==t.kind))return setLabFeedback("Classify each clicked part as blue for variable or green for constant. Click a part again to change its color.","incorrect");\n        if(missing.length)return setLabFeedback(`Select all blue and green parts in the ${task.kind==="geometry"?"figures":"story"}. ${missing.length} ${missing.length===1?"part remains":"parts remain"}.`,"incorrect");
+        if(!guided&&task.terms.some(t=>data.classifications[t.id]!==t.kind))return setLabFeedback("Classify each clicked part as blue for variable or green for constant. Click a part again to change its color.","incorrect");
+        if(missing.length)return setLabFeedback(`Select all blue and green parts in the ${task.kind==="geometry"?"figures":"story"}. ${missing.length} ${missing.length===1?"part remains":"parts remain"}.`,"incorrect");
         const negativeKinds=[...new Set(task.terms.filter(t=>!t.factor&&t.value<0).map(t=>t.kind))];
         if(!negativeKinds.includes(data.subtraction))return setLabFeedback("Look for the minus, discount, drain, or amount taken away. Is a constant or a variable term being subtracted?","incorrect");
         if(task.kind==="geometry"){
