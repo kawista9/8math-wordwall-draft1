@@ -136,7 +136,7 @@
   function scene(task,data) {
     if (task.kind==="geometry") return `<p class="a88-scene-note">${esc(task.note)}</p><div class="a88-figures">${geometryFigure(task,"L",data)}${geometryFigure(task,"R",data)}</div>`;
     const byId=Object.fromEntries(task.terms.map(t=>[t.id,t]));
-    return `<p class="a88-story">${esc(task.context).replace(/\{s:([a-z0-9]+):([^}]+)\}|\{([a-z0-9]+)\}/g,(_,signId,phrase,termId)=>signId?`<button type="button" class="a88-sign-cue${data.signPicked.has(signId)?" is-picked":""}" data-sign-cue="${signId}" aria-pressed="${data.signPicked.has(signId)}">${esc(phrase)}</button>`:byId[termId]?tokenButton(byId[termId],data):"")}</p>`;
+    return `<p class="a88-story">${esc(task.context).replace(/\{s:([a-z0-9]+):([^}]+)\}|\{([a-z0-9]+)\}/g,(_,signId,phrase,termId)=>signId?`<button type="button" class="a88-sign-cue a88-${byId[signId]?.kind||"constant"}${data.signPicked.has(signId)?" is-picked":""}" data-sign-cue="${signId}" aria-pressed="${data.signPicked.has(signId)}">${esc(phrase)}</button>`:byId[termId]?tokenButton(byId[termId],data):"")}</p>`;
   }
   function select(name, current, choices, label) {
     return `<label class="a88-select"><span>${esc(label)}</span><select data-select="${name}"><option value="">Choose…</option>${choices.map(([v,text])=>`<option value="${esc(v)}"${current===v?" selected":""}>${esc(text)}</option>`).join("")}</select></label>`;
