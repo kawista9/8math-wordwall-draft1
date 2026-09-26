@@ -143,13 +143,13 @@
   }
 
   function parseSide(raw) {
-    const compact=raw.replace(/\\s+/g,"").replace(/×/g,"*").replace(/−/g,"-");
-    if(!/^[+\\-]?\\d*(?:\\.\\d+)?(?:\\*?x)?(?:[+\\-]\\d*(?:\\.\\d+)?(?:\\*?x)?)*$/i.test(compact)||!compact)return null;
-    const parts=compact.match(/[+\\-]?[^+\\-]+/g)||[];
+    const compact=raw.replace(/\s+/g,"").replace(/×/g,"*").replace(/−/g,"-");
+    if(!/^[+\-]?\d*(?:\.\d+)?(?:\*?x)?(?:[+\-]\d*(?:\.\d+)?(?:\*?x)?)*$/i.test(compact)||!compact)return null;
+    const parts=compact.match(/[+\-]?[^+\-]+/g)||[];
     let constant=0,variable=0;
     for(const part of parts) {
       if(part.toLowerCase().includes("x")) {
-        const coefficient=part.toLowerCase().replace(/\\*?x/,"");
+        const coefficient=part.toLowerCase().replace(/\*?x/,"");
         variable+=coefficient===""||coefficient==="+"?1:coefficient==="-"?-1:Number(coefficient);
       } else constant+=Number(part);
     }
