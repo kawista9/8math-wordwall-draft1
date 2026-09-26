@@ -45,7 +45,7 @@
       group("side 3",1,[term("b3v","R","variable",-1,"− x"),term("b3c","R","constant",9,"+ 9")])
     ], "Add the three labeled sides of each triangular frame."),
     word("Bicycle rental plans", "Plan A", "Plan B",
-      "Plan A has {ac} and costs {av}. Plan B has {bc}, costs {bv}, and subtracts {bd} from its bill.",
+      "Plan A has {ac} and costs {av}. Plan B has {bc}, costs {bv}, and applies {bd} to reduce its bill.",
       "no more than", "≤", [term("ac","L","constant",18,"an $18 fee"),term("av","L","variable",7,"$7 per hour"),term("bc","R","constant",30,"a $30 fee"),term("bv","R","variable",5,"$5 per hour"),term("bd","R","constant",4,"a $4 discount")].map(t=>t.id==="bd"?{...t,value:-4}:t), "for x hours"),
     word("Reading challenge", "Tariq's pages", "Nia's pages",
       "Tariq has read {ac} pages and reads {av} each day. Nia has read {bc} pages and reads {bv} each day, but removes {bd} pages from her count after finding duplicates.",
