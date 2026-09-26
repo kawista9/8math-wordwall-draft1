@@ -136,7 +136,7 @@
       variable:groups.reduce((sum,g) => sum + g.multiplier * g.terms.filter(t => t.kind === "variable").reduce((a,t)=>a+t.value,0),0)
     };
   };
-  const fresh = index => ({ index, phase:index<7?0:4, read:false, question:false, cue:false, picked:new Set(), left:"", right:"", symbol:"", classifications:{}, signPicked:new Set(), signs:{}, inputs:{}, noConstants:false, complete:false });
+  const fresh = index => ({ index, order:Math.random()<.5?"L":"R", slots:{left:[],right:[]}, activeSide:"left", activeSlot:null, nextSlot:1, phase:index<7?0:4, read:false, question:false, cue:false, picked:new Set(), left:"", right:"", symbol:"", classifications:{}, signPicked:new Set(), signs:{}, inputs:{}, noConstants:false, complete:false });
   window.reset88AQuestion = (data,index) => { for(const key of Object.keys(data)) delete data[key]; Object.assign(data,fresh(index)); };
 
   function tokenButton(t, data) {
@@ -169,12 +169,12 @@
     return `<section class="a88-setup"><div class="a88-template"><span>Structure</span><strong>starting value + rate · x &nbsp; ${esc(data.symbol||"?")} &nbsp; starting value + rate · x</strong><small>A signed value can be negative: adding −2x means subtracting 2x.</small></div>${rawWorkspace(task,data)}<h5>Build the simplified comparison</h5><div class="a88-equation">${field("lc",`${task.left}: starting value`,"constant",data)}<span>+</span>${field("lv",`${task.left}: x coefficient`,"variable",data,"x")}<span class="a88-relation">${esc(data.symbol||"?")}</span>${field("rc",`${task.right}: starting value`,"constant",data)}<span>+</span>${field("rv",`${task.right}: x coefficient`,"variable",data,"x")}</div></section>`;
   }
   function question(task,data) {
-    const cue=`<button type="button" class="a88-cue${data.index<7?"":" a88-neutral"}${data.cue?" is-picked":""}" data-action="cue" aria-pressed="${data.cue}">${esc(task.cue)}</button>`;
+    const cue=data.index<7?`<button type="button" class="a88-cue${data.cue?" is-picked":""}" data-action="cue" aria-pressed="${data.cue}">${esc(task.cue)}</button>`:esc(task.cue);
     const marker="__RELATIONSHIP_CUE__";
     const body=task.kind==="geometry"?esc(task.question).replace("{cue}",marker):`When will ${esc(task.left)} be ${marker} ${esc(task.right)} ${esc(task.tail||"for a value of x")}? Write ${task.relation==="="?"an equation":"an inequality"} to represent the comparison.`;
     const [before,after]=body.split(marker);
     const segment=text=>`<span class="a88-question${data.question?" is-picked":""}" data-action="question" role="button" tabindex="0" aria-label="Select the question in the problem" aria-pressed="${data.question}">${text}</span>`;
-    return `<span class="a88-question-inline">${segment(before)}${cue}${segment(after)}</span>`;
+    return data.index<7?`<span class="a88-question-inline">${segment(before)}${cue}${segment(after)}</span>`:`<span class="a88-question-inline">${before}${cue}${after}</span>`;
   }
   const flipped = symbol => ({ "<":">", ">":"<", "≤":"≥", "≥":"≤", "=":"=" })[symbol];
   const symbolFor = (task,firstSide) => firstSide==="R"?flipped(task.relation):task.relation;
@@ -199,10 +199,16 @@
     return `${expression(totals(task,first))} ${symbolFor(task,first)} ${expression(totals(task,other))}`;
   };
   function independentPresent(task,data) {
-    const selected=task.terms.filter(t=>data.picked.has(t.id));
-    const choices=`<div class="a88-choices">${select("left",data.left,[["L",task.left],["R",task.right]],"First situation")}${select("symbol",data.symbol,[["=","="],["<","<"],[">",">"],["≤","≤"],["≥","≥"]],"Symbol")}${select("right",data.right,[["L",task.left],["R",task.right]],"Second situation")}</div>`;
-    const items=selected.map(t=>`<div class="a88-independent-part"><strong>${esc(t.label)}</strong><span>${esc(t.side==="L"?task.left:task.right)}</span>${select("class-"+t.id,data.classifications[t.id]||"",[["variable","Variable term"],["constant","Constant"]],"Type")}<label><span>Signed value</span><input type="number" step="any" data-input="part-${t.id}" value="${esc(data.inputs["part-"+t.id]??"")}" aria-label="Signed value for ${esc(t.label)}"></label>${task.kind==="word"?`<label><span>Sign phrase from the problem</span><input type="text" data-input="phrase-${t.id}" value="${esc(data.inputs["phrase-"+t.id]||"")}" aria-label="Sign phrase for ${esc(t.label)}"></label>`:""}</div>`).join("");
-    return `<div class="a88-lab a88-independent"><div class="a88-task-head"><span>Independent practice · ${data.index+1} of ${TASKS.length}</span><h4>${esc(task.title)}</h4></div><div class="a88-columns"><section class="a88-panel a88-problem"><h5>Read the complete problem</h5>${scene(task,data)}<button type="button" class="a88-read${data.read?" is-done":""}" data-action="read">${data.read?"✓ Entire problem read":"I read the entire problem and question"}</button></section><section class="a88-panel a88-process"><h5>Build the comparison</h5><div class="a88-stage"><h6>Compare the situations</h6>${choices}</div><div class="a88-stage"><h6>Identify the parts</h6><p>Select parts in the problem or figure, then label and enter each one.</p><div class="a88-independent-parts">${items||"<p>Your selected parts will appear here.</p>"}</div><label class="a88-none-choice"><input type="checkbox" data-action="no-constants"${data.noConstants?" checked":""}> No constants in this problem</label></div><div class="a88-stage"><h5>Write the comparison</h5>${finalForm(task,data,1,data.left||"L")}${task.relation!=="="? `<p>Write the same comparison with the situations reversed.</p>${finalForm(task,data,2,data.left==="R"?"L":"R")}`:""}<button type="button" class="lab-action a88-check" data-action="check">Check my answer</button></div>${data.complete?`<section class="a88-success"><strong>Correct comparison! Here is the complete ${task.relation==="="?"equation":"inequality"}:</strong><p class="a88-completed-equation">${esc(comparison(task,data.left||"L"))}</p>${task.relation!=="="? `<p class="a88-completed-reverse">Sides reversed: <strong>${esc(comparison(task,data.left==="L"?"R":"L"))}</strong></p>`:""}<button type="button" class="lab-next" data-action="next">${data.index===TASKS.length-1?"Finish lab":"Next question →"}</button></section>`:""}</section></div></div>`;
+    const first=data.order||"L", second=first==="L"?"R":"L";
+    const name=side=>side==="L"?task.left:task.right;
+    const all=[...data.slots.left,...data.slots.right];
+    const active=all.find(slot=>slot.id===data.activeSlot);
+    const slotMarkup=slot=>`<button type="button" class="a88-build-slot ${slot.kind==="variable"?"a88-slot-variable":"a88-slot-constant"}${slot.id===data.activeSlot?" is-active":""}" data-slot-id="${esc(slot.id)}" aria-label="${slot.kind==="variable"?"Variable term":"Constant"} box ${esc(slot.raw||"empty")}">${esc(slot.raw||"□")}${slot.kind==="variable"?"x":""}</button>`;
+    const sideMarkup=(position,side)=>`<div class="a88-build-side${data.activeSide===position?" is-current":""}" data-drop-side="${position}" style="flex:${Math.max(2,data.slots[position].length)}"><strong>${esc(name(side))}</strong><div class="a88-slot-row">${data.slots[position].map(slotMarkup).join("")||'<span class="a88-drop-placeholder">Drop boxes here</span>'}</div></div>`;
+    const source=active&&task.terms.find(t=>t.id===active.sourceId);
+    const sign=active&&task.signPhrases?.[active.signId];
+    const detail=active?`<div class="a88-slot-detail"><h6>Selected ${active.kind==="variable"?"x term":"constant"} box</h6><label>Signed number <input type="text" inputmode="decimal" data-slot-value="${esc(active.id)}" value="${esc(active.raw||"")}" placeholder="2, +2, or −2" aria-label="Signed number for selected box"></label><p>Click the amount or label in the problem that tells you whether this is an x term or a fixed amount.</p><p class="a88-evidence">Amount or label: ${source?esc(source.label):"Choose from the problem"}</p><label>Which words or figure marks tell you its type? <input type="text" data-slot-reason="${esc(active.id)}" value="${esc(active.reason||"")}" placeholder="Words or marks you noticed"></label>${task.kind==="word"?`<p>Click the word or phrase in the problem that tells you whether this amount is added or subtracted.</p><p class="a88-evidence">Sign clue: ${sign?esc(sign):"Choose from the problem"}</p>`:`<p>Use the sign shown on the figure label when entering this amount.</p>`}<div class="a88-slot-actions"><button type="button" data-action="next-slot">Next box →</button><button type="button" data-action="remove-slot">Remove box</button></div></div>`:'<p class="a88-select-box">Choose a box on the comparison line to enter its value and evidence.</p>';
+    return `<div class="a88-lab a88-independent a88-builder"><div class="a88-task-head"><span>Independent practice · ${data.index+1} of ${TASKS.length}</span><h4>${esc(task.title)}</h4></div><div class="a88-columns"><section class="a88-panel a88-problem"><h5>Read the complete problem</h5>${scene(task,data)}</section><section class="a88-panel a88-process"><h5>Build the comparison</h5><div class="a88-stage"><p>Choose the symbol, then build each situation from left to right.</p><div class="a88-palette"><span>Drag a box into the highlighted situation:</span><button type="button" draggable="true" data-palette="variable" aria-label="Add variable term box">□x</button><button type="button" draggable="true" data-palette="constant" aria-label="Add constant box">□</button></div><div class="a88-builder-row">${sideMarkup("left",first)}${select("symbol",data.symbol,[["=","="],["<","<"],[">",">"],["≤","≤"],["≥","≥"]],"Symbol","?")}${sideMarkup("right",second)}</div><button type="button" class="a88-switch-side" data-action="switch-side">Work on ${esc(name(data.activeSide==="left"?second:first))} →</button></div><div class="a88-stage">${detail}</div><div class="a88-stage"><button type="button" class="lab-action a88-check" data-action="check">Check my answer</button></div>${data.complete?`<section class="a88-success"><strong>Correct comparison! Here is the complete ${task.relation==="="?"equation":"inequality"}:</strong><p class="a88-completed-equation">${esc(comparison(task,first))}</p><button type="button" class="lab-next" data-action="next">${data.index===TASKS.length-1?"Finish lab":"Next question →"}</button></section>`:""}</section></div></div>`;
   }
   function present(task,data) {
     const guided=data.index<7, relationReady=!guided||data.phase>=1, variableReady=!guided||data.phase>=2, constantReady=!guided||data.phase>=3, buildReady=!guided||data.phase>=4;
@@ -232,6 +238,68 @@
     const left=parseSide(match[1]),right=parseSide(match[3]),L=totals(task,"L"),R=totals(task,"R");
     return !!left&&!!right&&Math.abs(left.constant-L.constant)<.0001&&Math.abs(left.variable-L.variable)<.0001&&Math.abs(right.constant-R.constant)<.0001&&Math.abs(right.variable-R.variable)<.0001;
   }
+  function bindIndependent(task,data,{labRuntime,$,setLabProgress,setLabFeedback,showLabCompletion,syncWhiteboardQuestion}) {
+    const body=$("#standardsLabBody");
+    const rerender=()=>window.render88ALab({labRuntime,$,setLabProgress,setLabFeedback,showLabCompletion,syncWhiteboardQuestion});
+    const all=()=>[...data.slots.left,...data.slots.right];
+    const current=()=>all().find(slot=>slot.id===data.activeSlot);
+    const name=side=>side==="L"?task.left:task.right;
+    const sideCode=position=>position==="left"?data.order:(data.order==="L"?"R":"L");
+    const add=kind=>{const slot={id:"s"+data.nextSlot++,kind,raw:"",sourceId:"",signId:"",reason:""};data.slots[data.activeSide].push(slot);data.activeSlot=slot.id;rerender();setLabFeedback("Choose the box and use the problem as evidence.");};
+    body.querySelectorAll("[data-palette]").forEach(el=>{
+      el.addEventListener("click",()=>add(el.dataset.palette));
+      el.addEventListener("dragstart",event=>event.dataTransfer.setData("text/plain",el.dataset.palette));
+    });
+    body.querySelectorAll("[data-drop-side]").forEach(el=>{
+      el.addEventListener("dragover",event=>{if(el.dataset.dropSide===data.activeSide)event.preventDefault();});
+      el.addEventListener("drop",event=>{event.preventDefault();if(el.dataset.dropSide!==data.activeSide)return;const kind=event.dataTransfer.getData("text/plain");if(["variable","constant"].includes(kind))add(kind);});
+    });
+    body.querySelectorAll("[data-slot-id]").forEach(el=>el.addEventListener("click",()=>{data.activeSlot=el.dataset.slotId;data.activeSide=data.slots.left.some(x=>x.id===data.activeSlot)?"left":"right";rerender();}));
+    body.querySelectorAll("[data-token]").forEach(el=>el.addEventListener("click",()=>{
+      const slot=current();if(!slot)return setLabFeedback("Choose a box before pointing to evidence.","incorrect");
+      const id=el.dataset.token;if(all().some(other=>other!==slot&&other.sourceId===id))return setLabFeedback("That amount is already used in another box.","incorrect");
+      slot.sourceId=id;data.picked=new Set(all().map(x=>x.sourceId).filter(Boolean));rerender();setLabFeedback("Amount or label selected.");
+    }));
+    body.querySelectorAll("[data-sign-cue]").forEach(el=>el.addEventListener("click",()=>{
+      const slot=current();if(!slot)return setLabFeedback("Choose a box before pointing to evidence.","incorrect");
+      slot.signId=el.dataset.signCue;data.signPicked=new Set(all().map(x=>x.signId).filter(Boolean));rerender();setLabFeedback("Sign phrase selected.");
+    }));
+    body.querySelectorAll("[data-slot-value]").forEach(el=>el.addEventListener("input",()=>{const slot=current();if(slot){slot.raw=el.value;const box=body.querySelector('[data-slot-id="'+slot.id+'"]');if(box)box.textContent=(slot.raw||"□")+(slot.kind==="variable"?"x":"");}}));
+    body.querySelectorAll("[data-slot-reason]").forEach(el=>el.addEventListener("input",()=>{const slot=current();if(slot)slot.reason=el.value;}));
+    body.querySelectorAll('[data-select="symbol"]').forEach(el=>el.addEventListener("change",()=>{data.symbol=el.value;}));
+    body.querySelectorAll("[data-action]").forEach(el=>el.addEventListener("click",()=>{
+      const action=el.dataset.action;
+      if(action==="switch-side"){data.activeSide=data.activeSide==="left"?"right":"left";data.activeSlot=null;rerender();return;}
+      if(action==="remove-slot"){const slot=current();if(slot){data.slots[data.activeSide]=data.slots[data.activeSide].filter(x=>x!==slot);data.activeSlot=null;data.picked=new Set(all().map(x=>x.sourceId).filter(Boolean));data.signPicked=new Set(all().map(x=>x.signId).filter(Boolean));rerender();}return;}
+      if(action==="next-slot"){const list=data.slots[data.activeSide],index=list.findIndex(x=>x.id===data.activeSlot);if(index>=0&&index<list.length-1)data.activeSlot=list[index+1].id;else if(data.activeSide==="left"){data.activeSide="right";data.activeSlot=data.slots.right[0]?.id||null;}else data.activeSlot=null;rerender();return;}
+      if(action==="check"){
+        const first=data.order,second=first==="L"?"R":"L";
+        if(data.symbol!==symbolFor(task,first))return setLabFeedback("Check the comparison symbol for the situation order shown.","incorrect");
+        for(const [position,side] of [["left",first],["right",second]]){
+          const slots=data.slots[position],expected=task.terms.filter(t=>t.side===side);
+          if(slots.length!==expected.length)return setLabFeedback("Review the number of boxes for "+name(side)+".","incorrect");
+          const used=new Set();
+          for(let i=0;i<slots.length;i++){
+            const slot=slots[i],term=task.terms.find(t=>t.id===slot.sourceId);
+            const where=name(side)+", box "+(i+1);
+            if(!term||term.side!==side||used.has(term.id))return setLabFeedback(where+": select a matching amount or figure label from this situation.","incorrect");
+            used.add(term.id);
+            if(slot.kind!==term.kind)return setLabFeedback(where+": review whether this amount changes with x or stays fixed.","incorrect");
+            if(!slot.reason?.trim())return setLabFeedback(where+": identify the words or marks that show its term type.","incorrect");
+            const raw=slot.raw.trim().replace(/−/g,"-");
+            const valid=i===0?/^[+-]?(?:\d+(?:\.\d+)?|\.\d+)$/:/^[+-](?:\d+(?:\.\d+)?|\.\d+)$/;
+            if(!valid.test(raw)||Math.abs(Number(raw)-term.value)>0.0001)return setLabFeedback(where+": check the signed number. Use + for a positive amount after another box.","incorrect");
+            if(task.kind==="word"&&slot.signId!==term.id)return setLabFeedback(where+": select the word or phrase that explains its sign.","incorrect");
+          }
+        }
+        data.complete=true;rerender();setLabFeedback("Correct! The complete comparison is shown below.","correct");return;
+      }
+      if(action==="next"){
+        if(data.index===TASKS.length-1){setLabProgress(TASKS.length,TASKS.length,"All comparisons complete.");showLabCompletion("8.8A");body.querySelector(".a88-lab").hidden=true;return;}
+        window.reset88AQuestion(data,data.index+1);rerender();setLabFeedback("Read the next problem.");return;
+      }
+    }));
+  }
   window.render88ALab = function({labRuntime,$,setLabProgress,setLabFeedback,showLabCompletion,syncWhiteboardQuestion}) {
     if (!labRuntime.data) labRuntime.data=fresh(0);
     const data=labRuntime.data, task=TASKS[data.index], guided=data.index<7; 
@@ -240,6 +308,7 @@
     $("#standardsLabBody").innerHTML=present(task,data);
     syncWhiteboardQuestion();
     const body=$("#standardsLabBody");
+    if(!guided){bindIndependent(task,data,{labRuntime,$,setLabProgress,setLabFeedback,showLabCompletion,syncWhiteboardQuestion});return;}
     body.querySelectorAll("[data-token]").forEach(button=>button.addEventListener("click",()=>{
       const id=button.dataset.token, t=task.terms.find(part=>part.id===id);
       if(guided) {
