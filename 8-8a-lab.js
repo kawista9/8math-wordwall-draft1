@@ -89,6 +89,27 @@
     word("Game points", "Team A points", "Team B points", "Team A begins with {ac} points and loses {av} points in every round. Team B begins with {bc} points and gains {bv} in every round.", "less than", "<", [term("ac","L","constant",52,"52"),term("av","L","variable",-3,"3 points per round"),term("bc","R","constant",20,"20"),term("bv","R","variable",2,"2 points per round")], "after x rounds")
   ];
 
+  // Sign evidence is part of the displayed story, not a separate answer bank.
+  const SIGN_STORIES = {
+    "Music studio memberships": "Studio A {s:ac:charges} {ac} to join and {s:av:adds} {av} for each lesson. Studio B {s:bc:charges} {bc} to join and {s:bv:adds} {bv} for each lesson, then {s:bd:takes off} {bd} with a coupon.",
+    "Two delivery services": "Courier A {s:ac:charges} {ac} and {s:av:adds} {av}. Courier B {s:bc:charges} {bc} and {s:bv:adds} {bv}, then {s:bd:takes off} {bd} from the final bill.",
+    "Arcade points": "Mira {s:ac:begins with} {ac} points and {s:av:uses} {av} in each round. Leo {s:bc:begins with} {bc} points and {s:bv:earns} {bv} in each round.",
+    "Seedling collections": "Garden A {s:ac:starts with} {ac} seedlings, {s:av:adds} {av} each week, and {s:ad:donates} {ad} seedlings once. Garden B {s:bc:starts with} {bc} and {s:bv:adds} {bv} each week.",
+    "Bicycle rental plans": "Plan A {s:ac:charges} {ac} and {s:av:adds} {av}. Plan B {s:bc:charges} {bc} and {s:bv:adds} {bv}, then {s:bd:takes off} {bd} as a discount.",
+    "Reading challenge": "Tariq {s:ac:has read} {ac} pages and {s:av:reads} {av} more each day. Nia {s:bc:has read} {bc} pages and {s:bv:reads} {bv} more each day, but {s:bd:removes} {bd} pages after finding duplicates.",
+    "Two water tanks": "Tank A {s:ac:contains} {ac} liters and {s:av:drains} {av} per minute. Tank B {s:bc:contains} {bc} liters and {s:bv:drains} {bv} per minute.",
+    "Online craft orders": "Shop A {s:ac:collects} {ac} as a service fee and {s:av:adds} {av} for each item, then {s:ad:refunds} {ad} from the service fee. Shop B {s:bc:collects} {bc} and {s:bv:adds} {bv} for each item.",
+    "Fundraising jars": "Jar A {s:ac:has} {ac} and {s:av:gains} {av} each day. Jar B {s:bc:has} {bc} and {s:bv:gains} {bv} each day, but {s:bd:spends} {bd} once on supplies.",
+    "Two school buses": "Bus A {s:ac:starts with} {ac} riders, {s:av:picks up} {av} at each stop, and {s:ad:lets off} {ad} riders once. Bus B {s:bc:starts with} {bc} and {s:bv:picks up} {bv} at each stop.",
+    "Digital storage": "Account A {s:ac:has} {ac} gigabytes available and {s:av:uses} {av} each week. Account B {s:bc:has} {bc} gigabytes available and {s:bv:uses} {bv} each week.",
+    "Community pool passes": "Pass A {s:ac:charges} {ac} to start and {s:av:adds} {av} per visit. Pass B {s:bc:charges} {bc} to start and {s:bv:adds} {bv} per visit, then {s:bd:takes off} {bd} from the total.",
+    "Game points": "Team A {s:ac:begins with} {ac} points and {s:av:loses} {av} points in every round. Team B {s:bc:begins with} {bc} points and {s:bv:gains} {bv} in every round."
+  };
+  for (const task of TASKS) if (task.kind === "word") {
+    task.context = SIGN_STORIES[task.title];
+    task.signPhrases = Object.fromEntries([...task.context.matchAll(/\{s:([a-z0-9]+):([^}]+)\}/g)].map(([,id,phrase])=>[id,phrase]));
+  }
+
   window.EQUATION_88A_TOTAL = TASKS.length;
   const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
   const fmt = n => Number.isInteger(n) ? String(n) : String(Number(n.toFixed(3)));
@@ -101,7 +122,7 @@
       variable:groups.reduce((sum,g) => sum + g.multiplier * g.terms.filter(t => t.kind === "variable").reduce((a,t)=>a+t.value,0),0)
     };
   };
-  const fresh = index => ({ index, phase:index<7?0:4, read:false, question:false, cue:false, picked:new Set(), left:"", right:"", symbol:"", subtraction:"", classifications:{}, combined:"", final:"", inputs:{}, complete:false });
+  const fresh = index => ({ index, phase:index<7?0:4, read:false, question:false, cue:false, picked:new Set(), left:"", right:"", symbol:"", subtraction:"", classifications:{}, signPicked:new Set(), signs:{}, inputs:{}, complete:false });
   window.reset88AQuestion = (data,index) => Object.assign(data,fresh(index));
 
   function tokenButton(t, data) {
@@ -115,7 +136,7 @@
   function scene(task,data) {
     if (task.kind==="geometry") return `<p class="a88-scene-note">${esc(task.note)}</p><div class="a88-figures">${geometryFigure(task,"L",data)}${geometryFigure(task,"R",data)}</div>`;
     const byId=Object.fromEntries(task.terms.map(t=>[t.id,t]));
-    return `<p class="a88-story">${esc(task.context).replace(/\{([a-z0-9]+)\}/g,(_,id)=>byId[id]?tokenButton(byId[id],data):"")}</p>`;
+    return `<p class="a88-story">${esc(task.context).replace(/\{s:([a-z0-9]+):([^}]+)\}|\{([a-z0-9]+)\}/g,(_,signId,phrase,termId)=>signId?`<button type="button" class="a88-sign-cue${data.signPicked.has(signId)?" is-picked":""}" data-sign-cue="${signId}" aria-pressed="${data.signPicked.has(signId)}">${esc(phrase)}</button>`:byId[termId]?tokenButton(byId[termId],data):"")}</p>`;
   }
   function select(name, current, choices, label) {
     return `<label class="a88-select"><span>${esc(label)}</span><select data-select="${name}"><option value="">Choose…</option>${choices.map(([v,text])=>`<option value="${esc(v)}"${current===v?" selected":""}>${esc(text)}</option>`).join("")}</select></label>`;
@@ -134,12 +155,25 @@
   function question(task,data) {
     return `<div class="a88-question-wrap"><button type="button" class="a88-question-mark${data.question?" is-picked":""}" data-action="question">Click to identify the question ↓</button><p class="a88-question">When will ${esc(task.left)} be <button type="button" class="a88-cue${data.cue?" is-picked":""}" data-action="cue" aria-pressed="${data.cue}">${esc(task.cue)}</button> ${esc(task.right)} ${esc(task.tail||"for a value of x")}? Write ${task.relation==="="?"an equation":"an inequality"} to represent the comparison.</p></div>`;
   }
+  const flipped = symbol => ({ "<":">", ">":"<", "≤":"≥", "≥":"≤", "=":"=" })[symbol];
+  const symbolFor = (task,firstSide) => firstSide==="R"?flipped(task.relation):task.relation;
+  function finalForm(task,data,n,firstSide) {
+    const secondSide=firstSide==="R"?"L":"R";
+    const sideName=side=>side==="L"?task.left:task.right;
+    const part=(side,kind)=> {
+      const key=`f${n}-${side===firstSide?"left":"right"}-${kind}`;
+      return `<label class="a88-final-part a88-${kind}"><span>${kind==="constant"?"Constant":"Variable term"}</span><span class="a88-final-entry"><select data-select="${key}-sign" aria-label="${esc(sideName(side))} ${kind} sign"><option value="">±</option><option value="+" ${data[key+"-sign"]==="+"?"selected":""}>+</option><option value="-" ${data[key+"-sign"]==="-"?"selected":""}>−</option></select><input type="number" min="0" step="any" inputmode="decimal" data-input="${key}" value="${esc(data.inputs[key]||"")}" aria-label="${esc(sideName(side))} ${kind} amount">${kind==="variable"?"<b>· x</b>":""}</span></label>`;
+    };
+    const side=code=>`<div class="a88-final-side"><strong>${esc(sideName(code))}</strong>${part(code,"constant")}${part(code,"variable")}</div>`;
+    return `<div class="a88-form"><h6>${n===1?"First way":"Same comparison, sides reversed"}</h6><div class="a88-form-line">${side(firstSide)}${select("f"+n+"-symbol",data["f"+n+"-symbol"]||"",[["=","="],["<","<"],[">",">"],["≤","≤"],["≥","≥"]],"Symbol")}${side(secondSide)}</div></div>`;
+  }
   function present(task,data) {
     const guided=data.index<7, relationReady=!guided||data.phase>=1, variableReady=!guided||data.phase>=2, constantReady=!guided||data.phase>=3, buildReady=!guided||data.phase>=4;
     const choices=`<div class="a88-choices">${select("left",data.left,[["L",task.left],["R",task.right]],"First situation")}${select("symbol",data.symbol,[["=","="],["<","<"],[">",">"],["≤","≤"],["≥","≥"]],"Purple: relationship")}${select("right",data.right,[["L",task.left],["R",task.right]],"Second situation")}</div>`;
-    const category=(kind)=>`<div class="a88-category a88-${kind}"><strong>${kind==="variable"?"Blue · variable terms":"Green · constants"}</strong><p>Click every ${kind==="variable"?"rate or x term":"starting value or fixed amount"} in the problem or figure, then identify what the situation subtracts.</p><div class="a88-category-fields">${task.terms.filter(t=>t.kind===kind).map(t=>field("part-"+t.id,`${t.side==="L"?task.left:task.right}: ${t.label}`,kind,data,t.kind==="variable"?"x":"")).join("")}</div><p class="a88-selected">Selected ${task.terms.filter(t=>t.kind===kind&&data.picked.has(t.id)).length} of ${task.terms.filter(t=>t.kind===kind).length} ${kind} parts</p></div>`;
+    const signRow=t=>task.kind!=="word"?"":`<div class="a88-sign-row">${guided?select("sign-"+t.id,data.signs[t.id]||"",[["positive","Positive (+)"],["negative","Negative (−)"]],`Is ${t.label} positive or negative?`):""}<label class="a88-sign-evidence"><span>${guided?"Click the word or phrase on the left that tells you the sign":"Click the sign phrase on the left, then type it here"}</span><input type="text" data-input="phrase-${t.id}" value="${esc(data.inputs["phrase-"+t.id]||"")}" placeholder="Word or phrase from the problem"></label></div>`;
+    const category=(kind)=>`<div class="a88-category a88-${kind}"><strong>${kind==="variable"?"Blue · variable terms":"Green · constants"}</strong><p>Click every ${kind==="variable"?"rate or x term":"starting value or fixed amount"} in the problem or figure${task.kind==="word"?", then click the word or phrase that shows whether each one is added or taken away":""}.</p><div class="a88-category-fields">${task.terms.filter(t=>t.kind===kind).map(t=>`<div class="a88-part">${field("part-"+t.id,`${t.side==="L"?task.left:task.right}: ${t.label}`,kind,data,t.kind==="variable"?"x":"")}${signRow(t)}</div>`).join("")}</div><p class="a88-selected">Selected ${task.terms.filter(t=>t.kind===kind&&data.picked.has(t.id)).length} of ${task.terms.filter(t=>t.kind===kind).length} ${kind} parts</p></div>`;
     const subtraction=select("subtraction",data.subtraction,[["none","Neither side subtracts"],["constant","A constant"],["variable","A variable term"],["both","Both types"]],"What is subtracted?");
-    return `<div class="a88-lab"><div class="a88-task-head"><span>${guided?"Guided pathway":"Independent practice"} · ${data.index+1} of ${TASKS.length}</span><h4>${esc(task.title)}</h4></div><div class="a88-columns"><section class="a88-panel a88-problem"><h5>Read the complete problem</h5>${scene(task,data)}${question(task,data)}<button type="button" class="a88-read${data.read?" is-done":""}" data-action="read">${data.read?"✓ Entire problem read":"I read the entire problem and question"}</button></section><section class="a88-panel a88-process"><h5>Build the comparison</h5>${relationReady?`<div class="a88-stage a88-comparison"><strong>${guided?"1 · Find the question and click its purple relationship phrase":"Question and relationship"}</strong><p>Click the question on the left, then click the word or phrase that gives the relationship. Compare the situations in the order named.</p>${choices}${guided&&data.phase===1?`<button type="button" class="lab-action a88-check" data-action="relation">Check relationship → variable terms</button>`:""}</div>`:"<p>Read the question on the left before choosing the symbol.</p>"}${variableReady?`<div class="a88-stage">${category("variable")}${guided&&data.phase===2?`<button type="button" class="lab-action a88-check" data-action="variables">Check variable terms → constants</button>`:""}</div>`:""}${constantReady?`<div class="a88-stage">${category("constant")}${subtraction}${guided&&data.phase===3?`<button type="button" class="lab-action a88-check" data-action="constants">Check constants → write comparison</button>`:""}</div>`:""}${buildReady?`<div class="a88-stage"><h5>Combine and write the comparison</h5>${rawWorkspace(task,data)}<p class="a88-build-instruction">Use the blue variable terms and green constants above. Combine like terms on each side, then write the full equation or inequality in the same order as the purple comparison.</p><label class="a88-final"><span>${esc(task.left)} ${esc(data.symbol||"?")} ${esc(task.right)}</span><input type="text" data-input="final" value="${esc(data.inputs.final||"")}" placeholder="For example: 24 + 6x = 32 + 4x"></label><button type="button" class="lab-action a88-check" data-action="check">Check my answer</button></div>`:""}${data.complete?`<section class="a88-success"><strong>Correct comparison!</strong><button type="button" class="lab-next" data-action="next">${data.index===TASKS.length-1?"Finish lab":"Next question →"}</button></section>`:""}</section></div></div>`;
+    return `<div class="a88-lab"><div class="a88-task-head"><span>${guided?"Guided pathway":"Independent practice"} · ${data.index+1} of ${TASKS.length}</span><h4>${esc(task.title)}</h4></div><div class="a88-columns"><section class="a88-panel a88-problem"><h5>Read the complete problem</h5>${scene(task,data)}${question(task,data)}<button type="button" class="a88-read${data.read?" is-done":""}" data-action="read">${data.read?"✓ Entire problem read":"I read the entire problem and question"}</button></section><section class="a88-panel a88-process"><h5>Build the comparison</h5>${relationReady?`<div class="a88-stage a88-comparison"><strong>${guided?"1 · Find the question and click its purple relationship phrase":"Question and relationship"}</strong><p>Click the question on the left, then click the word or phrase that gives the relationship. Either situation may go on the left. If you reverse their order, reverse the inequality symbol too.</p>${choices}${guided&&data.phase===1?`<button type="button" class="lab-action a88-check" data-action="relation">Check relationship → variable terms</button>`:""}</div>`:"<p>Read the question on the left before choosing the symbol.</p>"}${variableReady?`<div class="a88-stage">${category("variable")}${guided&&data.phase===2?`<button type="button" class="lab-action a88-check" data-action="variables">Check variable terms → constants</button>`:""}</div>`:""}${constantReady?`<div class="a88-stage">${category("constant")}${subtraction}${guided&&data.phase===3?`<button type="button" class="lab-action a88-check" data-action="constants">Check constants → write comparison</button>`:""}</div>`:""}${buildReady?`<div class="a88-stage"><h5>Combine and write the comparison</h5>${rawWorkspace(task,data)}<p class="a88-build-instruction">Combine the green constants and blue variable terms for each situation. Choose each sign and enter the size of the term. Select the relationship symbol from the dropdown.</p>${finalForm(task,data,1,data.left||"L")}${task.relation!=="="?`<p class="a88-flip-note">Now put the other situation first. The relationship stays true when the inequality symbol points the other way.</p>${finalForm(task,data,2,data.left==="R"?"L":"R")}`:""}<button type="button" class="lab-action a88-check" data-action="check">Check my answer</button></div>`:""}${data.complete?`<section class="a88-success"><strong>Correct comparison!</strong><button type="button" class="lab-next" data-action="next">${data.index===TASKS.length-1?"Finish lab":"Next question →"}</button></section>`:""}</section></div></div>`;
   }
 
   function parseSide(raw) {
@@ -168,7 +202,8 @@
 
   window.render88ALab = function({labRuntime,$,setLabProgress,setLabFeedback,showLabCompletion,syncWhiteboardQuestion}) {
     if (!labRuntime.data) labRuntime.data=fresh(0);
-    const data=labRuntime.data, task=TASKS[data.index], guided=data.index<7;
+    const data=labRuntime.data, task=TASKS[data.index], guided=data.index<7; 
+    data.signPicked ||= new Set(); data.signs ||= {};
     setLabProgress(data.index,TASKS.length,guided?`Guided ${data.index+1} of 7: read → compare → collect terms → build.`:`Independent ${data.index-6} of 12: complete the steps in any order.`);
     $("#standardsLabBody").innerHTML=present(task,data);
     syncWhiteboardQuestion();
@@ -186,7 +221,14 @@
       window.render88ALab({labRuntime,$,setLabProgress,setLabFeedback,showLabCompletion,syncWhiteboardQuestion});
       setLabFeedback(guided?"Selected part. Keep its sign when typing it on the right.":"Click again to change blue to green; click a third time to clear.");
     }));
-    body.querySelectorAll("[data-select]").forEach(el=>el.addEventListener("change",()=>{data[el.dataset.select]=el.value; }));
+    body.querySelectorAll("[data-sign-cue]").forEach(button=>button.addEventListener("click",()=>{
+      const id=button.dataset.signCue;
+      data.signPicked.has(id)?data.signPicked.delete(id):data.signPicked.add(id);
+      button.classList.toggle("is-picked",data.signPicked.has(id));
+      button.setAttribute("aria-pressed",String(data.signPicked.has(id)));
+      setLabFeedback("Use this phrase as evidence for whether the amount is added or taken away.");
+    }));
+    body.querySelectorAll("[data-select]").forEach(el=>el.addEventListener("change",()=>{if(el.dataset.select.startsWith("sign-"))data.signs[el.dataset.select.slice(5)]=el.value;else data[el.dataset.select]=el.value; if(!guided&&el.dataset.select==="left")window.render88ALab({labRuntime,$,setLabProgress,setLabFeedback,showLabCompletion,syncWhiteboardQuestion}); }));
     body.querySelectorAll("[data-input]").forEach(el=>el.addEventListener("input",()=>{data.inputs[el.dataset.input]=el.value;}));
     body.querySelectorAll("[data-action]").forEach(button=>button.addEventListener("click",()=>{
       const action=button.dataset.action;
@@ -194,17 +236,18 @@
       if(action==="no-like"){data.noLike=button.checked;return;}
       if(action==="question"){if(!data.read)return setLabFeedback("Read the entire problem and question first.","incorrect");data.question=true;button.classList.add("is-picked");setLabFeedback("Now click the relationship phrase within that question.");return;}
       if(action==="cue"){if(!data.question)return setLabFeedback("First click to identify the full question.","incorrect");if(guided&&!data.read)return setLabFeedback("Read the entire problem first.","incorrect");data.cue=true;button.classList.add("is-picked");button.setAttribute("aria-pressed","true");setLabFeedback("You found the phrase. Match it to the comparison symbol.");return;}
-      const relationship=()=>data.cue&&data.left==="L"&&data.right==="R"&&data.symbol===task.relation;
+      const relationship=()=>data.cue&&["L","R"].includes(data.left)&&data.right===(data.left==="L"?"R":"L")&&data.symbol===symbolFor(task,data.left);
       if(action==="relation"){
         if(!data.read)return setLabFeedback("Read the whole situation before building the comparison.","incorrect");
         if(!data.question||!data.cue)return setLabFeedback("Click the purple relationship phrase in the question first.","incorrect");
-        if(!relationship())return setLabFeedback("Keep the two named situations in order and check what the relationship phrase means.","incorrect");
+        if(!relationship())return setLabFeedback("Check which situation is on each side and which way the symbol points.","incorrect");
         data.phase=2;window.render88ALab({labRuntime,$,setLabProgress,setLabFeedback,showLabCompletion,syncWhiteboardQuestion});setLabFeedback("The template is ready. Select each term in the story or figure, then fill the boxes.","correct");return;
       }
       if(action==="variables"||action==="constants"){
         const kind=action==="variables"?"variable":"constant";
         const parts=task.terms.filter(t=>t.kind===kind);
         if(parts.some(t=>!data.picked.has(t.id)))return setLabFeedback(`Click every ${kind} part on the left first.`,"incorrect");
+        if(task.kind==="word"&&parts.some(t=>!data.signPicked.has(t.id)||String(data.inputs["phrase-"+t.id]||"").trim().toLowerCase()!==task.signPhrases[t.id].toLowerCase()||data.signs[t.id]!== (t.value<0?"negative":"positive")))return setLabFeedback("For each part, click its sign phrase in the problem, choose positive or negative, and type that phrase exactly.","incorrect");
         if(parts.some(t=>!close(data.inputs["part-"+t.id]??"",t.value)))return setLabFeedback(`Type the signed value of each ${kind} part on the right, including a minus when the story subtracts it.`,"incorrect");
         if(kind==="constant"&&data.subtraction!==subtractionKind(task))return setLabFeedback("Identify which kind of part the problem subtracts.","incorrect");
         data.phase=kind==="variable"?3:4;
@@ -215,6 +258,7 @@
         if(!data.read)return setLabFeedback("First read the entire problem and question.","incorrect");
         if(!data.question||!relationship())return setLabFeedback("Click the question's purple phrase and choose the correct order and symbol.","incorrect");
         if(!guided&&task.terms.some(t=>!close(data.inputs["part-"+t.id]??"",t.value)))return setLabFeedback("Enter every signed blue or green part in its matching box before checking the final comparison.","incorrect");
+        if(task.kind==="word"&&task.terms.some(t=>!data.signPicked.has(t.id)||String(data.inputs["phrase-"+t.id]||"").trim().toLowerCase()!==task.signPhrases[t.id].toLowerCase()||guided&&data.signs[t.id]!== (t.value<0?"negative":"positive")))return setLabFeedback("Click each sign phrase and type the matching words beside its term. Guided questions also need a positive or negative choice.","incorrect");
         const missing=task.terms.filter(t=>!data.picked.has(t.id));
         if(!guided&&task.terms.some(t=>data.classifications[t.id]!==t.kind))return setLabFeedback("Classify each clicked part as blue for variable or green for constant. Click a part again to change its color.","incorrect");
         if(missing.length)return setLabFeedback(`Select all blue and green parts in the ${task.kind==="geometry"?"figures":"story"}. ${missing.length} ${missing.length===1?"part remains":"parts remain"}.`,"incorrect");
@@ -226,7 +270,21 @@
             for(const t of g.terms){if(!close(data.inputs[`raw-${t.id}`]??"",t.value*g.multiplier))return setLabFeedback(`Revisit ${g.name}: multiply ${t.label} by ${g.multiplier}, keeping its sign.`,"incorrect");}
           }
         }
-        if(!validEquation(data.inputs.final||"",task))return setLabFeedback("Type the final equation or inequality with simplified expressions on both sides. Keep the symbol and order from the question.","incorrect");
+        const checkForm=(n,firstSide)=>{
+          const other=firstSide==="L"?"R":"L";
+          if(data["f"+n+"-symbol"]!==symbolFor(task,firstSide))return false;
+          for(const [position,side] of [["left",firstSide],["right",other]]){
+            const sum=totals(task,side);
+            for(const [kind,expected] of [["constant",sum.constant],["variable",sum.variable]]){
+              const key=`f${n}-${position}-${kind}`;
+              if(data[key+"-sign"]!==(expected<0?"-":"+"))return false;
+              if(!close(data.inputs[key]??"",Math.abs(expected)))return false;
+            }
+          }
+          return true;
+        };
+        if(!checkForm(1,data.left))return setLabFeedback("Check the signs, term amounts, and symbol for the first comparison. The symbol must match the situations in the order shown.","incorrect");
+        if(task.relation!=="="&&!checkForm(2,data.left==="L"?"R":"L"))return setLabFeedback("Reverse the situations for the second comparison. Keep each expression with its situation and reverse the inequality symbol.","incorrect");
         data.complete=true;button.disabled=true;body.querySelector(".a88-success")?.remove();window.render88ALab({labRuntime,$,setLabProgress,setLabFeedback,showLabCompletion,syncWhiteboardQuestion});setLabFeedback("Correct! Both complete expressions and the comparison symbol fit the question.","correct");return;
       }
       if(action==="next"){
