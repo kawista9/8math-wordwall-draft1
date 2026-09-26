@@ -62,7 +62,7 @@
 @media(max-width:800px) { .a88-figures,.a88-raw-grid { grid-template-columns:1fr; } .a88-choices { grid-template-columns:1fr; } .a88-shape.is-triangle { min-height:250px; } }
 
 .a88-columns {display:grid;grid-template-columns:minmax(300px, 1fr) minmax(420px, 1.25fr);gap:1rem;align-items:start}
-.a88-problem {position:sticky;top:1rem;max-height:calc(100vh - 2rem);overflow:auto}
+.a88-problem {position:sticky;top:76px;max-height:calc(100vh - 88px);overflow:auto;overscroll-behavior:contain}
 .a88-process {min-width:0;display:grid;gap:1rem}
 .a88-stage {padding:.8rem;border:1px solid #d7e1f2;border-radius:12px;background:#fff}
 .a88-category-fields {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;margin:.7rem 0}
@@ -76,3 +76,13 @@
 .a88-none {display:flex;align-items:center;gap:.5rem;margin:.7rem 0}
 @media(max-width:950px){.a88-columns{grid-template-columns:1fr}.a88-problem{position:static;max-height:none}}
 @media(max-width:550px){.a88-category-fields{grid-template-columns:1fr}}
+
+.a88-category.a88-constant .a88-category-fields {grid-template-columns:repeat(3,minmax(0,1fr))}
+.a88-category-fields .a88-field>span:first-child {font-size:.75rem;line-height:1.2;min-height:2.4em}
+.a88-category-fields .a88-field input {padding:.48rem .35rem;font-size:.9rem}
+.a88-choices {grid-template-columns:minmax(0,1fr) minmax(78px,.48fr) minmax(0,1fr);gap:.35rem}
+.a88-choices select {padding:.5rem .3rem;font-size:.85rem}
+.a88-build-instruction {margin:.45rem 0 .8rem;line-height:1.5}
+.a88-final>span {color:var(--a88-purple);font-size:1rem}
+@media(max-width:950px){.a88-problem{position:sticky;top:76px;max-height:calc(100vh - 88px)}}
+@media(max-width:680px){.a88-problem{position:static;max-height:none}.a88-category.a88-constant .a88-category-fields{grid-template-columns:1fr}.a88-choices{grid-template-columns:1fr}}
