@@ -143,3 +143,8 @@ body.lab-is-open #standardsLab {overflow:visible}
 .a88-rectangle .edge-left,.a88-quadrilateral .edge-left {left:1%;top:46%}
 .a88-quadrilateral .edge-right {right:1%;top:46%}
 .a88-quadrilateral .edge-bottom {left:50%;bottom:2%;transform:translateX(-50%)}
+
+.a88-no-constant {margin:.25rem 0;padding:.55rem .7rem;border-radius:8px;background:#f1faf3;color:#137044;font-weight:700}
+.a88-completed-equation {margin:.7rem 0;font-size:1.35rem;font-weight:850;color:#143452;line-height:1.4;overflow-wrap:anywhere}
+.a88-completed-reverse {margin:.3rem 0 .8rem;color:#263952}
+.a88-completed-reverse strong {font-size:1rem}
