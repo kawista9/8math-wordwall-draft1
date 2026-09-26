@@ -172,3 +172,18 @@ body.lab-is-open #standardsLab {overflow:visible}
 .a88-independent-form .a88-final-part,.a88-independent-form .a88-final-part input,.a88-independent-form .a88-inline-variable b {color:#27364c}
 .a88-independent-form .a88-final-part input {border-color:#9ca9bd}
 @media(max-width:680px){.a88-independent-part{grid-template-columns:1fr}}
+
+.a88-independent .a88-token.a88-unclassified,
+.a88-independent .a88-cue.a88-neutral,
+.a88-independent .a88-sign-cue.a88-neutral {display:inline;margin:0;padding:0;border:0;background:transparent;color:inherit;font:inherit;font-weight:inherit;text-decoration:none;cursor:pointer}
+.a88-independent .a88-token.a88-unclassified:hover,
+.a88-independent .a88-cue.a88-neutral:hover,
+.a88-independent .a88-sign-cue.a88-neutral:hover,
+.a88-independent .a88-token.a88-unclassified:focus-visible,
+.a88-independent .a88-cue.a88-neutral:focus-visible,
+.a88-independent .a88-sign-cue.a88-neutral:focus-visible {outline:1px dashed #596982;outline-offset:2px}
+.a88-independent .a88-token.a88-unclassified.is-picked,
+.a88-independent .a88-cue.a88-neutral.is-picked,
+.a88-independent .a88-sign-cue.a88-neutral.is-picked {color:#24334b;background:#e7ecf3}
+.a88-independent .a88-select:has([data-select="symbol"]),
+.a88-independent .a88-form-line>.a88-select {color:#27364c}
