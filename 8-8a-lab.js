@@ -304,7 +304,7 @@
     if (!labRuntime.data) labRuntime.data=fresh(0);
     const data=labRuntime.data, task=TASKS[data.index], guided=data.index<7; 
     data.signPicked ||= new Set(); data.signs ||= {};
-    setLabProgress(data.index,TASKS.length,guided?`Guided ${data.index+1} of 7: read → compare → collect terms → build.`:`Independent ${data.index-6} of 12: complete the steps in any order.`);
+    setLabProgress(data.index,TASKS.length,guided?`Guided ${data.index+1} of 7: read → compare → collect terms → build.`:`Independent ${data.index-6} of 12: build each situation from left to right.`);
     $("#standardsLabBody").innerHTML=present(task,data);
     syncWhiteboardQuestion();
     const body=$("#standardsLabBody");
