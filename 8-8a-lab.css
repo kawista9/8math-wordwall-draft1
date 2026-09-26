@@ -187,3 +187,28 @@ body.lab-is-open #standardsLab {overflow:visible}
 .a88-independent .a88-sign-cue.a88-neutral.is-picked {color:#24334b;background:#e7ecf3}
 .a88-independent .a88-select:has([data-select="symbol"]),
 .a88-independent .a88-form-line>.a88-select {color:#27364c}
+
+.a88-builder .a88-palette {display:flex;align-items:center;gap:.45rem;flex-wrap:wrap;margin:.5rem 0 .8rem;font-size:.85rem}
+.a88-builder .a88-palette button {min-width:2.8rem;padding:.28rem .45rem;border:1.5px dashed #536782;border-radius:8px;background:white;color:#26374f;font-size:1rem;font-weight:800;cursor:grab}
+.a88-builder-row {display:flex;align-items:stretch;gap:.22rem;width:100%;min-width:0;white-space:nowrap}
+.a88-build-side {display:flex;flex-direction:column;min-width:0;padding:.3rem .22rem;border:2px solid #a9b6c8;border-radius:9px;background:#fff}
+.a88-build-side.is-current {border-color:#f39930;box-shadow:0 0 0 2px #fbe2b7}
+.a88-build-side>strong {font-size:.68rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.a88-slot-row {display:flex;align-items:center;gap:1px;min-width:0;min-height:2.5rem;width:100%}
+.a88-drop-placeholder {display:block;overflow:hidden;text-overflow:ellipsis;font-size:.65rem;color:#66758b}
+.a88-build-slot {flex:1 1 0;min-width:0;max-width:44px;height:2rem;padding:0 1px;border:1.5px solid #677995;border-radius:5px;background:#fff;color:#1c2b42;font-size:clamp(.55rem,.9vw,.8rem);font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.a88-build-slot.is-active {outline:2px solid #f39930;outline-offset:1px}
+.a88-builder-row>.a88-select {flex:0 0 58px;align-self:center;color:#27364c}
+.a88-builder-row>.a88-select span {font-size:.65rem}
+.a88-builder-row>.a88-select select {width:100%;padding:.35rem .1rem;font-size:.78rem}
+.a88-switch-side {margin:.7rem 0 0;padding:.42rem .7rem;border:1px solid #8799b0;border-radius:8px;background:#eef3f9;color:#253954;font-weight:750;cursor:pointer}
+.a88-slot-detail {display:grid;gap:.5rem}
+.a88-slot-detail h6 {margin:0;font-size:1rem}
+.a88-slot-detail label {display:grid;gap:.22rem;font-size:.8rem;font-weight:800}
+.a88-slot-detail input {width:100%;min-width:0;padding:.55rem;border:1.5px solid #9caec5;border-radius:8px;font:inherit}
+.a88-slot-detail p {margin:.1rem 0;font-size:.86rem}
+.a88-evidence {padding:.35rem .5rem;border-radius:7px;background:#f1f4f8}
+.a88-slot-actions {display:flex;gap:.5rem;flex-wrap:wrap}
+.a88-slot-actions button {padding:.45rem .65rem;border:1px solid #8799b0;border-radius:8px;background:#fff;color:#253954;font-weight:700;cursor:pointer}
+.a88-select-box {margin:0;color:#526277}
+@media(max-width:680px){.a88-builder-row>.a88-select {flex-basis:47px}.a88-build-slot {font-size:.54rem}}
