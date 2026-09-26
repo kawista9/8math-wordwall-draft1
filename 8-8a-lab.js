@@ -214,6 +214,7 @@
       if(action==="check"){
         if(!data.read)return setLabFeedback("First read the entire problem and question.","incorrect");
         if(!data.question||!relationship())return setLabFeedback("Click the question's purple phrase and choose the correct order and symbol.","incorrect");
+        if(!guided&&task.terms.some(t=>!close(data.inputs["part-"+t.id]??"",t.value)))return setLabFeedback("Enter every signed blue or green part in its matching box before checking the final comparison.","incorrect");
         const missing=task.terms.filter(t=>!data.picked.has(t.id));
         if(!guided&&task.terms.some(t=>data.classifications[t.id]!==t.kind))return setLabFeedback("Classify each clicked part as blue for variable or green for constant. Click a part again to change its color.","incorrect");
         if(missing.length)return setLabFeedback(`Select all blue and green parts in the ${task.kind==="geometry"?"figures":"story"}. ${missing.length} ${missing.length===1?"part remains":"parts remain"}.`,"incorrect");
