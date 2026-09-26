@@ -12,7 +12,7 @@
   const TASKS = [
     word("Music studio memberships", "Studio A", "Studio B",
       "Studio A charges {ac} to join and {av} for each lesson. Studio B charges {bc} to join and {bv} for each lesson, then applies {bd} to the total.",
-      "the same as", "=", [term("ac","L","constant",24,"$24"),term("av","L","variable",6,"$6 per lesson"),term("bc","R","constant",40,"$40"),term("bv","R","variable",4,"$4 per lesson"),term("bd","R","constant",-8,"an $8 coupon")], "after x lessons"),
+      "the same as", "=", [term("ac","L","constant",24,"$24"),term("av","L","variable",6,"$6 per lesson"),term("bc","R","constant",40,"$40"),term("bv","R","variable",4,"$4 per lesson"),term("bd","R","constant",-8,"$8")], "after x lessons"),
     word("Two delivery services", "Courier A", "Courier B",
       "Courier A charges {ac} plus {av}. Courier B charges {bc} plus {bv} and takes off {bd} from the final bill.",
       "at most", "≤", [term("ac","L","constant",15,"$15 to start"),term("av","L","variable",2.5,"$2.50 per mile"),term("bc","R","constant",28,"$28 to start"),term("bv","R","variable",2,"$2 per mile"),term("bd","R","constant",-3,"$3")], "for x miles"),
@@ -46,7 +46,7 @@
     ], "Add the three labeled sides of each triangular frame."),
     word("Bicycle rental plans", "Plan A", "Plan B",
       "Plan A has {ac} and costs {av}. Plan B has {bc}, costs {bv}, and applies {bd} to reduce its bill.",
-      "no more than", "≤", [term("ac","L","constant",18,"an $18 fee"),term("av","L","variable",7,"$7 per hour"),term("bc","R","constant",30,"a $30 fee"),term("bv","R","variable",5,"$5 per hour"),term("bd","R","constant",4,"a $4 discount")].map(t=>t.id==="bd"?{...t,value:-4}:t), "for x hours"),
+      "no more than", "≤", [term("ac","L","constant",18,"an $18 fee"),term("av","L","variable",7,"$7 per hour"),term("bc","R","constant",30,"a $30 fee"),term("bv","R","variable",5,"$5 per hour"),term("bd","R","constant",4,"$4")].map(t=>t.id==="bd"?{...t,value:-4}:t), "for x hours"),
     word("Reading challenge", "Tariq's pages", "Nia's pages",
       "Tariq has read {ac} pages and reads {av} each day. Nia has read {bc} pages and reads {bv} each day, but removes {bd} pages from her count after finding duplicates.",
       "the same as", "=", [term("ac","L","constant",35,"35"),term("av","L","variable",12,"12 pages"),term("bc","R","constant",58,"58"),term("bv","R","variable",9,"9 pages"),term("bd","R","constant",-5,"5")], "after x days"),
@@ -91,7 +91,7 @@
 
   // Sign evidence is part of the displayed story, not a separate answer bank.
   const SIGN_STORIES = {
-    "Music studio memberships": "Studio A {s:ac:charges} {ac} to join and {s:av:adds} {av} for each lesson. Studio B {s:bc:charges} {bc} to join and {s:bv:adds} {bv} for each lesson, then {s:bd:takes off} {bd} from the total.",
+    "Music studio memberships": "Studio A {s:ac:charges} {ac} to join and {s:av:adds} {av} for each lesson. Studio B {s:bc:charges} {bc} to join and {s:bv:adds} {bv} for each lesson, then {s:bd:uses a coupon to take off} {bd} from the total.",
     "Two delivery services": "Courier A {s:ac:charges} {ac} and {s:av:adds} {av}. Courier B {s:bc:charges} {bc} and {s:bv:adds} {bv}, then {s:bd:takes off} {bd} from the final bill.",
     "Arcade points": "Mira {s:ac:begins with} {ac} points and {s:av:uses} {av} in each round. Leo {s:bc:begins with} {bc} points and {s:bv:earns} {bv} in each round.",
     "Seedling collections": "Garden A {s:ac:starts with} {ac} seedlings, {s:av:adds} {av} each week, and {s:ad:donates} {ad} seedlings once. Garden B {s:bc:starts with} {bc} and {s:bv:adds} {bv} each week.",
