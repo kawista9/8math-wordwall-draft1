@@ -139,8 +139,19 @@
   const fresh = index => ({ index, order:Math.random()<.5?"L":"R", slots:{left:[],right:[]}, activeSide:"left", activeSlot:null, nextSlot:1, phase:index<7?0:4, read:false, question:false, cue:false, picked:new Set(), left:"", right:"", symbol:"", classifications:{}, signPicked:new Set(), signs:{}, inputs:{}, noConstants:false, complete:false });
   window.reset88AQuestion = (data,index) => { for(const key of Object.keys(data)) delete data[key]; Object.assign(data,fresh(index)); };
 
+  function independentEvidenceClass(data,id,isSign=false) {
+    if(data.index<7)return "";
+    const left=data.slots?.left||[],right=data.slots?.right||[];
+    const slot=[...left,...right].find(item=>(isSign?item.signId:item.sourceId)===id);
+    if(!slot)return "";
+    const position=left.includes(slot)?"left":"right";
+    const expectedSide=position==="left"?data.order:(data.order==="L"?"R":"L");
+    const task=TASKS[data.index],term=task.terms.find(t=>t.id===id);
+    const correct=!!term&&term.side===expectedSide&&term.kind===slot.kind&&(!isSign||slot.sourceId===id);
+    return correct?` a88-evidence-match a88-${slot.kind}`:" a88-evidence-mismatch";
+  }
   function tokenButton(t, data) {
-    return `<button type="button" class="a88-token ${data.index<7?`a88-${t.kind}`:"a88-unclassified"}${data.classifications[t.id]?` a88-${data.classifications[t.id]}`:""}${data.picked.has(t.id)?" is-picked":""}" data-token="${esc(t.id)}" aria-pressed="${data.picked.has(t.id)}" title="${data.index<7?`Select this ${t.kind === "variable" ? "variable term" : "constant"}`:"Select this part"}">${esc(t.label)}</button>`;
+    return `<button type="button" class="a88-token ${data.index<7?`a88-${t.kind}`:"a88-unclassified"}${data.classifications[t.id]?` a88-${data.classifications[t.id]}`:""}${data.picked.has(t.id)?" is-picked":""}${independentEvidenceClass(data,t.id)}" data-token="${esc(t.id)}" aria-pressed="${data.picked.has(t.id)}" title="${data.index<7?`Select this ${t.kind === "variable" ? "variable term" : "constant"}`:"Select this part"}">${esc(t.label)}</button>`;
   }
   function geometryFigure(task,data) {
     const groups=task.figureSide==="both"?[...task.leftGroups,...task.rightGroups]:task.figureSide==="L"?task.leftGroups:task.rightGroups;
@@ -152,7 +163,7 @@
   function scene(task,data) {
     const byId=Object.fromEntries(task.terms.map(t=>[t.id,t]));
     if (task.kind==="geometry") return `<p class="a88-story a88-geometry-statement">${esc(task.statement).replace(/\{([a-z0-9]+)\}/g,(_,id)=>byId[id]?tokenButton(byId[id],data):"")}</p>${geometryFigure(task,data)}<p class="a88-scene-note">${data.index<7?`${esc(task.note)} `:""}${question(task,data)}</p>`;
-    return `<p class="a88-story">${esc(task.context).replace(/\{s:([a-z0-9]+):([^}]+)\}|\{([a-z0-9]+)\}/g,(_,signId,phrase,termId)=>signId?`<button type="button" class="a88-sign-cue ${data.index<7?`a88-${byId[signId]?.kind||"constant"}`:"a88-neutral"}${data.signPicked.has(signId)?" is-picked":""}" data-sign-cue="${signId}" aria-pressed="${data.signPicked.has(signId)}">${esc(phrase)}</button>`:byId[termId]?tokenButton(byId[termId],data):"")} ${question(task,data)}</p>`;
+    return `<p class="a88-story">${esc(task.context).replace(/\{s:([a-z0-9]+):([^}]+)\}|\{([a-z0-9]+)\}/g,(_,signId,phrase,termId)=>signId?`<button type="button" class="a88-sign-cue ${data.index<7?`a88-${byId[signId]?.kind||"constant"}`:"a88-neutral"}${data.signPicked.has(signId)?" is-picked":""}${independentEvidenceClass(data,signId,true)}" data-sign-cue="${signId}" aria-pressed="${data.signPicked.has(signId)}">${esc(phrase)}</button>`:byId[termId]?tokenButton(byId[termId],data):"")} ${question(task,data)}</p>`;
   }
   function select(name, current, choices, label, placeholder="Choose…") {
     return `<label class="a88-select"><span>${esc(label)}</span><select data-select="${name}"><option value="">${esc(placeholder)}</option>${choices.map(([v,text])=>`<option value="${esc(v)}"${current===v?" selected":""}>${esc(text)}</option>`).join("")}</select></label>`;
@@ -262,7 +273,8 @@
     }));
     body.querySelectorAll("[data-sign-cue]").forEach(el=>el.addEventListener("click",()=>{
       const slot=current();if(!slot)return setLabFeedback("Choose a box before pointing to evidence.","incorrect");
-      slot.signId=el.dataset.signCue;data.signPicked=new Set(all().map(x=>x.signId).filter(Boolean));rerender();setLabFeedback("Sign phrase selected.");
+      const id=el.dataset.signCue;if(all().some(other=>other!==slot&&other.signId===id))return setLabFeedback("That phrase is already used in another box.","incorrect");
+      slot.signId=id;data.signPicked=new Set(all().map(x=>x.signId).filter(Boolean));rerender();setLabFeedback("Sign phrase selected.");
     }));
     body.querySelectorAll("[data-slot-value]").forEach(el=>el.addEventListener("input",()=>{const slot=current();if(slot){slot.raw=el.value;const box=body.querySelector('[data-slot-id="'+slot.id+'"]');if(box)box.textContent=(slot.raw||"□")+(slot.kind==="variable"?"x":"");}}));
     body.querySelectorAll("[data-slot-reason]").forEach(el=>el.addEventListener("input",()=>{const slot=current();if(slot)slot.reason=el.value;}));
