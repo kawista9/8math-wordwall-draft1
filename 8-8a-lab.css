@@ -118,3 +118,13 @@ body.lab-is-open #standardsLab {overflow:visible}
 .a88-sign-cue.a88-constant {color:var(--a88-green);border-bottom-color:var(--a88-green);background:#eaf9ef}
 .a88-sign-cue.a88-variable.is-picked {color:#fff;background:var(--a88-blue)}
 .a88-sign-cue.a88-constant.is-picked {color:#fff;background:var(--a88-green)}
+
+.a88-inline-terms {display:flex;align-items:end;gap:.22rem;min-width:0;white-space:nowrap}
+.a88-inline-terms .a88-final-part {min-width:0;flex:1 1 0}
+.a88-inline-terms .a88-final-part.a88-constant {flex:0 1 42%}
+.a88-inline-terms .a88-final-part.a88-variable {flex:1 1 58%}
+.a88-inline-terms .a88-final-part input {width:100%;min-width:0;padding:.4rem .25rem;border:1.5px solid currentColor;border-radius:7px;background:#fff;color:#17243a;font:inherit;font-size:.9rem}
+.a88-inline-variable {display:flex;align-items:center;min-width:0;gap:.08rem}
+.a88-inline-variable b {font-size:.9rem;color:var(--a88-blue)}
+.a88-form-line {grid-template-columns:minmax(0,1fr) 62px minmax(0,1fr)}
+.a88-final-side>strong {white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
