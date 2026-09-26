@@ -148,3 +148,9 @@ body.lab-is-open #standardsLab {overflow:visible}
 .a88-completed-equation {margin:.7rem 0;font-size:1.35rem;font-weight:850;color:#143452;line-height:1.4;overflow-wrap:anywhere}
 .a88-completed-reverse {margin:.3rem 0 .8rem;color:#263952}
 .a88-completed-reverse strong {font-size:1rem}
+
+/* Keep the question in the complete problem text. */
+.a88-question {display:inline;padding:0;border:0;border-bottom:2px dotted #7136a8;border-radius:0;background:transparent;color:inherit;font:inherit;line-height:inherit;cursor:pointer}
+.a88-question.is-picked {border-bottom-style:solid;background:#f3e9ff}
+.a88-question:focus-visible {outline:2px solid #7136a8;outline-offset:3px;border-radius:3px}
+.a88-scene-note .a88-question {font-size:inherit}
