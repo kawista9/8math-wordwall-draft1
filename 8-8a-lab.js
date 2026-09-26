@@ -11,21 +11,20 @@
     ({ title,kind:"geometry",left,right,statement,question,cue,relation,figureType,figureSide,leftGroups,rightGroups,note,
       terms:[...leftGroups,...rightGroups].flatMap(g=>g.terms) });
 
-  // Every problem has a variable on each side and one visible subtraction cue.
-  // The seven guided tasks come first. The remaining ten allow work in any order.
+  // Seven guided tasks come first, followed by twelve independent tasks.
   const TASKS = [
     word("Music studio memberships", "Studio A", "Studio B",
-      "Studio A charges {ac} to join and {av} for each lesson. Studio B charges {bc} to join and {bv} for each lesson, then applies {bd} to the total.",
-      "the same as", "=", [term("ac","L","constant",24,"$24"),term("av","L","variable",6,"$6 per lesson"),term("bc","R","constant",40,"$40"),term("bv","R","variable",4,"$4 per lesson"),term("bd","R","constant",-8,"$8")], "after x lessons"),
+      "Studio A charges {ac} to join and {av} for each lesson. Studio B charges {bc} to join and {bv} for each lesson, with no other fees.",
+      "the same as", "=", [term("ac","L","constant",24,"$24"),term("av","L","variable",6,"$6 per lesson"),term("bc","R","constant",40,"$40"),term("bv","R","variable",4,"$4 per lesson")], "after x lessons"),
     word("Two delivery services", "Courier A", "Courier B",
-      "Courier A charges {ac} plus {av}. Courier B charges {bc} plus {bv} and takes off {bd} from the final bill.",
-      "at most", "≤", [term("ac","L","constant",15,"$15 to start"),term("av","L","variable",2.5,"$2.50 per mile"),term("bc","R","constant",28,"$28 to start"),term("bv","R","variable",2,"$2 per mile"),term("bd","R","constant",-3,"$3")], "for x miles"),
+      "Courier A charges {ac} plus {av}. Courier B charges {bc} plus {bv}.",
+      "at most", "≤", [term("ac","L","constant",15,"$15 to start"),term("av","L","variable",2.5,"$2.50 per mile"),term("bc","R","constant",28,"$28 to start"),term("bv","R","variable",2,"$2 per mile")], "for x miles"),
     word("Arcade points", "Mira's balance", "Leo's balance",
       "Mira begins with {ac} points and uses {av} in each round. Leo begins with {bc} points and earns {bv} in each round.",
       "greater than", ">", [term("ac","L","constant",60,"60"),term("av","L","variable",-2,"2 points per round"),term("bc","R","constant",18,"18"),term("bv","R","variable",3,"3 points per round")], "after x rounds"),
     word("Seedling collections", "Garden A", "Garden B",
-      "Garden A starts with {ac} seedlings, adds {av} each week, and donates {ad} seedlings once. Garden B starts with {bc} and adds {bv} each week.",
-      "at least", "≥", [term("ac","L","constant",12,"12"),term("av","L","variable",5,"5 seedlings"),term("ad","L","constant",-4,"4"),term("bc","R","constant",7,"7"),term("bv","R","variable",6,"6 seedlings")], "after x weeks"),
+      "Garden A starts with {ac} seedlings, adds {av} each week. Garden B starts with {bc} and adds {bv} each week.",
+      "at least", "≥", [term("ac","L","constant",12,"12"),term("av","L","variable",5,"5 seedlings"),term("bc","R","constant",7,"7"),term("bv","R","variable",6,"6 seedlings")], "after x weeks"),
     singleShape("Triangle perimeter", "given perimeter", "sum of side lengths",
       "The perimeter of the triangle shown is {p} units. The side lengths are shown in units.",
       "Which equation shows that the perimeter is {cue} the sum of the three side lengths?",
@@ -53,11 +52,11 @@
        group("left",1,[term("t4v","R","variable",2,"2x"),term("t4c","R","constant",5,"+ 5")])],
       "Add each of the four labeled side lengths."),
     word("Bicycle rental plans", "Plan A", "Plan B",
-      "Plan A has {ac} and costs {av}. Plan B has {bc}, costs {bv}, and applies {bd} to reduce its bill.",
-      "no more than", "≤", [term("ac","L","constant",18,"an $18 fee"),term("av","L","variable",7,"$7 per hour"),term("bc","R","constant",30,"a $30 fee"),term("bv","R","variable",5,"$5 per hour"),term("bd","R","constant",4,"$4")].map(t=>t.id==="bd"?{...t,value:-4}:t), "for x hours"),
+      "Plan A has {ac} and costs {av}. Plan B has {bc}, costs {bv}.",
+      "no more than", "≤", [term("ac","L","constant",18,"an $18 fee"),term("av","L","variable",7,"$7 per hour"),term("bc","R","constant",30,"a $30 fee"),term("bv","R","variable",5,"$5 per hour")], "for x hours"),
     word("Reading challenge", "Tariq's pages", "Nia's pages",
-      "Tariq has read {ac} pages and reads {av} each day. Nia has read {bc} pages and reads {bv} each day, but removes {bd} pages from her count after finding duplicates.",
-      "the same as", "=", [term("ac","L","constant",35,"35"),term("av","L","variable",12,"12 pages"),term("bc","R","constant",58,"58"),term("bv","R","variable",9,"9 pages"),term("bd","R","constant",-5,"5")], "after x days"),
+      "Tariq has read {ac} pages and reads {av} each day. Nia has read {bc} pages and reads {bv} each day.",
+      "the same as", "=", [term("ac","L","constant",35,"35"),term("av","L","variable",12,"12 pages"),term("bc","R","constant",58,"58"),term("bv","R","variable",9,"9 pages")], "after x days"),
     word("Two water tanks", "Tank A", "Tank B",
       "Tank A contains {ac} liters and drains {av} per minute. Tank B contains {bc} liters and drains {bv} per minute.",
       "less than", "<", [term("ac","L","constant",90,"90"),term("av","L","variable",-3.5,"3.5 liters"),term("bc","R","constant",72,"72"),term("bv","R","variable",-2,"2 liters")], "after x minutes"),
@@ -69,12 +68,12 @@
       [group("top side AB (2 copies)",2,[term("lv","R","variable",4,"4x"),term("lc","R","constant",3,"+ 3")]),
        group("left side AD (2 copies)",2,[term("wv","R","variable",3,"3x"),term("wc","R","constant",5,"+ 5")])],
       "Opposite sides of a rectangle have equal lengths. Include two lengths and two widths."),
-    word("Online craft orders", "Shop A", "Shop B",
-      "Shop A collects {ac} as a service fee and {av} for each item, then refunds {ad} from the service fee. Shop B collects {bc} plus {bv} for each item.",
-      "at least", "≥", [term("ac","L","constant",21,"$21"),term("av","L","variable",8,"$8"),term("ad","L","constant",-6,"$6"),term("bc","R","constant",12,"$12"),term("bv","R","variable",9.5,"$9.50")], "for x items"),
+    word("Apple orders", "Orchard A cost", "Orchard B cost",
+      "Orchard A charges {av} for apples and {as} for delivery. Orchard B charges {bv} for apples and {bs} to deliver each pound.",
+      "less than", "<", [term("av","L","variable",2,"$2 per pound"),term("as","L","variable",0.5,"$0.50 per pound"),term("bv","R","variable",2.25,"$2.25 per pound"),term("bs","R","variable",0.75,"$0.75 per pound")], "for x pounds of apples"),
     word("Fundraising jars", "Jar A", "Jar B",
-      "Jar A has {ac} and gains {av} each day. Jar B has {bc} and gains {bv} each day, but spends {bd} once on supplies.",
-      "equal", "=", [term("ac","L","constant",44,"$44"),term("av","L","variable",3.25,"$3.25"),term("bc","R","constant",26,"$26"),term("bv","R","variable",5.25,"$5.25"),term("bd","R","constant",-7,"$7")], "after x days"),
+      "Jar A has {ac} and gains {av} each day. Jar B has {bc} and gains {bv} each day.",
+      "equal", "=", [term("ac","L","constant",44,"$44"),term("av","L","variable",3.25,"$3.25"),term("bc","R","constant",26,"$26"),term("bv","R","variable",5.25,"$5.25")], "after x days"),
     singleShape("Triangle and ribbon", "triangle perimeter", "ribbon length",
       "A ribbon is {rv} {rc} centimeters long. The side lengths of the triangle are shown in centimeters.",
       "The triangle's perimeter must be {cue} the ribbon length. Which inequality represents this situation?",
@@ -85,8 +84,8 @@
       [group("ribbon length",1,[term("rv","R","variable",18,"18x"),term("rc","R","constant",15,"+ 15")])],
       "Add the three side lengths, then compare the perimeter with the ribbon."),
     word("Two school buses", "Bus A riders", "Bus B riders",
-      "Bus A starts with {ac} riders, picks up {av} at each stop, and lets {ad} riders off once. Bus B starts with {bc} and picks up {bv} at each stop.",
-      "more than", ">", [term("ac","L","constant",22,"22"),term("av","L","variable",4,"4 riders"),term("ad","L","constant",-5,"5"),term("bc","R","constant",10,"10"),term("bv","R","variable",5,"5 riders")], "after x stops"),
+      "Bus A starts with {ac} riders, picks up {av} at each stop. Bus B starts with {bc} and picks up {bv} at each stop.",
+      "more than", ">", [term("ac","L","constant",22,"22"),term("av","L","variable",4,"4 riders"),term("bc","R","constant",10,"10"),term("bv","R","variable",5,"5 riders")], "after x stops"),
     word("Digital storage", "Account A", "Account B",
       "Account A has {ac} gigabytes available and uses {av} each week. Account B has {bc} gigabytes available and uses {bv} each week.",
       "at least", "≥", [term("ac","L","constant",48,"48"),term("av","L","variable",-1.5,"1.5 gigabytes"),term("bc","R","constant",30,"30"),term("bv","R","variable",-0.75,"0.75 gigabytes")], "after x weeks"),
@@ -100,24 +99,24 @@
        group("left",1,[term("t4v","L","variable",2,"2x"),term("t4c","L","constant",4,"+ 4")])],
       [group("wire length",1,[term("wv","R","variable",19,"19x"),term("wc","R","constant",8,"+ 8")])],
       "Add the four sides, then compare the perimeter with the wire."),
-    word("Community pool passes", "Pass A cost", "Pass B cost", "Pass A costs {ac} to start plus {av} per visit. Pass B costs {bc} to start plus {bv} per visit, with {bd} taken off the total.", "at most", "≤", [term("ac","L","constant",16,"$16"),term("av","L","variable",4,"$4 per visit"),term("bc","R","constant",28,"$28"),term("bv","R","variable",3,"$3 per visit"),term("bd","R","constant",-2,"$2 discount")], "after x visits"),
+    word("Community pool passes", "Pass A cost", "Pass B cost", "Pass A costs {ac} to start plus {av} per visit. Pass B costs {bc} to start plus {bv} per visit.", "at most", "≤", [term("ac","L","constant",16,"$16"),term("av","L","variable",4,"$4 per visit"),term("bc","R","constant",28,"$28"),term("bv","R","variable",3,"$3 per visit")], "after x visits"),
     word("Game points", "Team A points", "Team B points", "Team A begins with {ac} points and loses {av} points in every round. Team B begins with {bc} points and gains {bv} in every round.", "less than", "<", [term("ac","L","constant",52,"52"),term("av","L","variable",-3,"3 points per round"),term("bc","R","constant",20,"20"),term("bv","R","variable",2,"2 points per round")], "after x rounds")
   ];
 
   // Sign evidence is part of the displayed story, not a separate answer bank.
   const SIGN_STORIES = {
-    "Music studio memberships": "Studio A {s:ac:charges} {ac} to join and {s:av:adds} {av} for each lesson. Studio B {s:bc:charges} {bc} to join and {s:bv:adds} {bv} for each lesson, then {s:bd:uses a coupon to take off} {bd} from the total.",
-    "Two delivery services": "Courier A {s:ac:charges} {ac} and {s:av:adds} {av}. Courier B {s:bc:charges} {bc} and {s:bv:adds} {bv}, then {s:bd:takes off} {bd} from the final bill.",
+    "Music studio memberships": "Studio A {s:ac:charges} {ac} to join and {s:av:adds} {av} for each lesson. Studio B {s:bc:charges} {bc} to join and {s:bv:adds} {bv} for each lesson, with no other fees.",
+    "Two delivery services": "Courier A {s:ac:charges} {ac} and {s:av:adds} {av}. Courier B {s:bc:charges} {bc} and {s:bv:adds} {bv}.",
     "Arcade points": "Mira {s:ac:begins with} {ac} points and {s:av:uses} {av} in each round. Leo {s:bc:begins with} {bc} points and {s:bv:earns} {bv} in each round.",
-    "Seedling collections": "Garden A {s:ac:starts with} {ac} seedlings, {s:av:adds} {av} each week, and {s:ad:donates} {ad} seedlings once. Garden B {s:bc:starts with} {bc} and {s:bv:adds} {bv} each week.",
-    "Bicycle rental plans": "Plan A {s:ac:charges} {ac} and {s:av:adds} {av}. Plan B {s:bc:charges} {bc} and {s:bv:adds} {bv}, then {s:bd:takes off} {bd} from the bill.",
-    "Reading challenge": "Tariq {s:ac:has read} {ac} pages and {s:av:reads} {av} more each day. Nia {s:bc:has read} {bc} pages and {s:bv:reads} {bv} more each day, but {s:bd:removes} {bd} pages after finding duplicates.",
+    "Seedling collections": "Garden A {s:ac:starts with} {ac} seedlings, {s:av:adds} {av} each week. Garden B {s:bc:starts with} {bc} and {s:bv:adds} {bv} each week.",
+    "Bicycle rental plans": "Plan A {s:ac:charges} {ac} and {s:av:adds} {av}. Plan B {s:bc:charges} {bc} and {s:bv:adds} {bv}.",
+    "Reading challenge": "Tariq {s:ac:has read} {ac} pages and {s:av:reads} {av} more each day. Nia {s:bc:has read} {bc} pages and {s:bv:reads} {bv} more each day.",
     "Two water tanks": "Tank A {s:ac:contains} {ac} liters and {s:av:drains} {av} per minute. Tank B {s:bc:contains} {bc} liters and {s:bv:drains} {bv} per minute.",
-    "Online craft orders": "Shop A {s:ac:collects} {ac} as a service fee and {s:av:adds} {av} for each item, then {s:ad:refunds} {ad} from the service fee. Shop B {s:bc:collects} {bc} and {s:bv:adds} {bv} for each item.",
-    "Fundraising jars": "Jar A {s:ac:has} {ac} and {s:av:gains} {av} each day. Jar B {s:bc:has} {bc} and {s:bv:gains} {bv} each day, but {s:bd:spends} {bd} once on supplies.",
-    "Two school buses": "Bus A {s:ac:starts with} {ac} riders, {s:av:picks up} {av} at each stop, and {s:ad:lets off} {ad} riders once. Bus B {s:bc:starts with} {bc} and {s:bv:picks up} {bv} at each stop.",
+    "Apple orders": "Orchard A {s:av:charges} {av} for apples and {s:as:adds} {as} for delivery. Orchard B {s:bv:charges} {bv} for apples and {s:bs:adds} {bs} for delivery.",
+    "Fundraising jars": "Jar A {s:ac:has} {ac} and {s:av:gains} {av} each day. Jar B {s:bc:has} {bc} and {s:bv:gains} {bv} each day.",
+    "Two school buses": "Bus A {s:ac:starts with} {ac} riders, {s:av:picks up} {av} at each stop. Bus B {s:bc:starts with} {bc} and {s:bv:picks up} {bv} at each stop.",
     "Digital storage": "Account A {s:ac:has} {ac} gigabytes available and {s:av:uses} {av} each week. Account B {s:bc:has} {bc} gigabytes available and {s:bv:uses} {bv} each week.",
-    "Community pool passes": "Pass A {s:ac:charges} {ac} to start and {s:av:adds} {av} per visit. Pass B {s:bc:charges} {bc} to start and {s:bv:adds} {bv} per visit, then {s:bd:takes off} {bd} from the total.",
+    "Community pool passes": "Pass A {s:ac:charges} {ac} to start and {s:av:adds} {av} per visit. Pass B {s:bc:charges} {bc} to start and {s:bv:adds} {bv} per visit.",
     "Game points": "Team A {s:ac:begins with} {ac} points and {s:av:loses} {av} points in every round. Team B {s:bc:begins with} {bc} points and {s:bv:gains} {bv} in every round."
   };
   for (const task of TASKS) if (task.kind === "word") {
@@ -137,7 +136,7 @@
       variable:groups.reduce((sum,g) => sum + g.multiplier * g.terms.filter(t => t.kind === "variable").reduce((a,t)=>a+t.value,0),0)
     };
   };
-  const fresh = index => ({ index, phase:index<7?0:4, read:false, question:false, cue:false, picked:new Set(), left:"", right:"", symbol:"", subtraction:"", classifications:{}, signPicked:new Set(), signs:{}, inputs:{}, complete:false });
+  const fresh = index => ({ index, phase:index<7?0:4, read:false, question:false, cue:false, picked:new Set(), left:"", right:"", symbol:"", classifications:{}, signPicked:new Set(), signs:{}, inputs:{}, complete:false });
   window.reset88AQuestion = (data,index) => { for(const key of Object.keys(data)) delete data[key]; Object.assign(data,fresh(index)); };
 
   function tokenButton(t, data) {
@@ -186,13 +185,22 @@
     };
     return `<div class="a88-form"><h6>${n===1?"First way":"Same comparison, sides reversed"}</h6><div class="a88-form-line">${side(firstSide,"left")}${select("f"+n+"-symbol",data["f"+n+"-symbol"]||"",[["=","="],["<","<"],[">",">"],["≤","≤"],["≥","≥"]],"Symbol","?")}${side(secondSide,"right")}</div></div>`;
   }
+  const expression = sum => {
+    const c=sum.constant, v=sum.variable;
+    const constant=c?fmt(c):"";
+    const variable=v?`${c&&v>0?"+ ":v<0?(c?"− ":"−"):""}${fmt(Math.abs(v))}x`:"";
+    return [constant,variable].filter(Boolean).join(c?" ":"")||"0";
+  };
+  const comparison = (task,first) => {
+    const other=first==="L"?"R":"L";
+    return `${expression(totals(task,first))} ${symbolFor(task,first)} ${expression(totals(task,other))}`;
+  };
   function present(task,data) {
     const guided=data.index<7, relationReady=!guided||data.phase>=1, variableReady=!guided||data.phase>=2, constantReady=!guided||data.phase>=3, buildReady=!guided||data.phase>=4;
     const choices=`<div class="a88-choices">${select("left",data.left,[["L",task.left],["R",task.right]],"First situation")}${select("symbol",data.symbol,[["=","="],["<","<"],[">",">"],["≤","≤"],["≥","≥"]],"Purple: relationship")}${select("right",data.right,[["L",task.left],["R",task.right]],"Second situation")}</div>`;
     const signRow=t=>task.kind!=="word"?"":`<div class="a88-sign-row">${guided?select("sign-"+t.id,data.signs[t.id]||"",[["positive","Positive (+)"],["negative","Negative (−)"]],`Is ${t.label} positive or negative?`):""}<label class="a88-sign-evidence"><span>${guided?"Click the word or phrase on the left that tells you the sign":"Click the sign phrase on the left, then type it here"}</span><input type="text" data-input="phrase-${t.id}" aria-label="Sign phrase for ${esc(t.label)}" value="${esc(data.inputs["phrase-"+t.id]||"")}" placeholder="Word or phrase from the problem"></label></div>`;
-    const category=(kind)=>`<div class="a88-category a88-${kind}"><strong>${kind==="variable"?"Blue · variable terms":"Green · constants"}</strong><p>Click every ${kind==="variable"?"rate or x term":"starting value or fixed amount"} in the problem or figure${task.kind==="word"?", then click the word or phrase that shows whether each one is added or taken away":""}.</p><div class="a88-category-fields">${task.terms.filter(t=>t.kind===kind).map(t=>`<div class="a88-part">${field("part-"+t.id,`${t.side==="L"?task.left:task.right}: ${t.label}`,kind,data,t.kind==="variable"?"x":"")}${signRow(t)}</div>`).join("")}</div><p class="a88-selected">Selected ${task.terms.filter(t=>t.kind===kind&&data.picked.has(t.id)).length} of ${task.terms.filter(t=>t.kind===kind).length} ${kind} parts</p></div>`;
-    const subtraction=select("subtraction",data.subtraction,[["none","Neither side subtracts"],["constant","A constant"],["variable","A variable term"],["both","Both types"]],"What is subtracted?");
-    return `<div class="a88-lab"><div class="a88-task-head"><span>${guided?"Guided pathway":"Independent practice"} · ${data.index+1} of ${TASKS.length}</span><h4>${esc(task.title)}</h4></div><div class="a88-columns"><section class="a88-panel a88-problem"><h5>Read the complete problem</h5>${scene(task,data)}${question(task,data)}<button type="button" class="a88-read${data.read?" is-done":""}" data-action="read">${data.read?"✓ Entire problem read":"I read the entire problem and question"}</button></section><section class="a88-panel a88-process"><h5>Build the comparison</h5>${relationReady?`<div class="a88-stage a88-comparison"><strong>${guided?"1 · Find the question and click its purple relationship phrase":"Question and relationship"}</strong><p>Click the question on the left, then click the word or phrase that gives the relationship. Either situation may go on the left. If you reverse their order, reverse the inequality symbol too.</p>${choices}${guided&&data.phase===1?`<button type="button" class="lab-action a88-check" data-action="relation">Check relationship → variable terms</button>`:""}</div>`:"<p>Read the question on the left before choosing the symbol.</p>"}${variableReady?`<div class="a88-stage">${category("variable")}${guided&&data.phase===2?`<button type="button" class="lab-action a88-check" data-action="variables">Check variable terms → constants</button>`:""}</div>`:""}${constantReady?`<div class="a88-stage">${category("constant")}${subtraction}${guided&&data.phase===3?`<button type="button" class="lab-action a88-check" data-action="constants">Check constants → write comparison</button>`:""}</div>`:""}${buildReady?`<div class="a88-stage"><h5>Combine and write the comparison</h5><p class="a88-build-instruction">Combine the green constants and blue variable terms for each situation. Type each signed value into the green and blue boxes. Start a negative term with −. Do not put + before the first positive term; put + before a positive variable term that follows the constant. Choose the relationship symbol from the dropdown.</p>${finalForm(task,data,1,data.left||"L")}${task.relation!=="="?`<p class="a88-flip-note">Now put the other situation first. The relationship stays true when the inequality symbol points the other way.</p>${finalForm(task,data,2,data.left==="R"?"L":"R")}`:""}<button type="button" class="lab-action a88-check" data-action="check">Check my answer</button></div>`:""}${data.complete?`<section class="a88-success"><strong>Correct comparison!</strong><button type="button" class="lab-next" data-action="next">${data.index===TASKS.length-1?"Finish lab":"Next question →"}</button></section>`:""}</section></div></div>`;
+    const category=(kind)=>`<div class="a88-category a88-${kind}"><strong>${kind==="variable"?"Blue · variable terms":"Green · constants"}</strong><p>${kind==="constant"&&!task.terms.some(t=>t.kind==="constant")?"There is no starting value or fixed amount in this problem.":`Click every ${kind==="variable"?"rate or x term":"starting value or fixed amount"} in the problem or figure${task.kind==="word"?", then click the word or phrase that shows whether each one is added or taken away":""}.`}</p><div class="a88-category-fields">${task.terms.filter(t=>t.kind===kind).length?"":`<p class="a88-no-constant">No fixed amount appears in this problem. Leave the constant boxes empty.</p>`}${task.terms.filter(t=>t.kind===kind).map(t=>`<div class="a88-part">${field("part-"+t.id,`${t.side==="L"?task.left:task.right}: ${t.label}`,kind,data,t.kind==="variable"?"x":"")}${signRow(t)}</div>`).join("")}</div><p class="a88-selected">Selected ${task.terms.filter(t=>t.kind===kind&&data.picked.has(t.id)).length} of ${task.terms.filter(t=>t.kind===kind).length} ${kind} parts</p></div>`;
+    return `<div class="a88-lab"><div class="a88-task-head"><span>${guided?"Guided pathway":"Independent practice"} · ${data.index+1} of ${TASKS.length}</span><h4>${esc(task.title)}</h4></div><div class="a88-columns"><section class="a88-panel a88-problem"><h5>Read the complete problem</h5>${scene(task,data)}${question(task,data)}<button type="button" class="a88-read${data.read?" is-done":""}" data-action="read">${data.read?"✓ Entire problem read":"I read the entire problem and question"}</button></section><section class="a88-panel a88-process"><h5>Build the comparison</h5>${relationReady?`<div class="a88-stage a88-comparison"><strong>${guided?"1 · Find the question and click its purple relationship phrase":"Question and relationship"}</strong><p>Click the question on the left, then click the word or phrase that gives the relationship. Either situation may go on the left. If you reverse their order, reverse the inequality symbol too.</p>${choices}${guided&&data.phase===1?`<button type="button" class="lab-action a88-check" data-action="relation">Check relationship → variable terms</button>`:""}</div>`:"<p>Read the question on the left before choosing the symbol.</p>"}${variableReady?`<div class="a88-stage">${category("variable")}${guided&&data.phase===2?`<button type="button" class="lab-action a88-check" data-action="variables">Check variable terms → constants</button>`:""}</div>`:""}${constantReady?`<div class="a88-stage">${category("constant")}${guided&&data.phase===3?`<button type="button" class="lab-action a88-check" data-action="constants">Check constants → write comparison</button>`:""}</div>`:""}${buildReady?`<div class="a88-stage"><h5>Combine and write the comparison</h5><p class="a88-build-instruction">Combine the green constants and blue variable terms for each situation. Type each signed value into the green and blue boxes. Leave a constant box empty when that situation has no fixed amount. Start a negative term with −. Do not put + before the first positive term; put + before a positive variable term that follows a constant. Choose the relationship symbol from the dropdown.</p>${finalForm(task,data,1,data.left||"L")}${task.relation!=="="?`<p class="a88-flip-note">Now put the other situation first. The relationship stays true when the inequality symbol points the other way.</p>${finalForm(task,data,2,data.left==="R"?"L":"R")}`:""}<button type="button" class="lab-action a88-check" data-action="check">Check my answer</button></div>`:""}${data.complete?`<section class="a88-success"><strong>Correct comparison! Here is the complete ${task.relation==="="?"equation":"inequality"}:</strong><p class="a88-completed-equation">${esc(comparison(task,data.left||"L"))}</p>${task.relation!=="="?`<p class="a88-completed-reverse">Sides reversed: <strong>${esc(comparison(task,data.left==="L"?"R":"L"))}</strong></p>`:""}<button type="button" class="lab-next" data-action="next">${data.index===TASKS.length-1?"Finish lab":"Next question →"}</button></section>`:""}</section></div></div>`;
   }
 
   function parseSide(raw) {
@@ -214,11 +222,6 @@
     const left=parseSide(match[1]),right=parseSide(match[3]),L=totals(task,"L"),R=totals(task,"R");
     return !!left&&!!right&&Math.abs(left.constant-L.constant)<.0001&&Math.abs(left.variable-L.variable)<.0001&&Math.abs(right.constant-R.constant)<.0001&&Math.abs(right.variable-R.variable)<.0001;
   }
-  function subtractionKind(task) {
-    const types=[...new Set(task.terms.filter(t=>!t.factor&&t.value<0).map(t=>t.kind))];
-    return types.length===2?"both":types[0]||"none";
-  }
-
   window.render88ALab = function({labRuntime,$,setLabProgress,setLabFeedback,showLabCompletion,syncWhiteboardQuestion}) {
     if (!labRuntime.data) labRuntime.data=fresh(0);
     const data=labRuntime.data, task=TASKS[data.index], guided=data.index<7; 
@@ -268,7 +271,6 @@
         if(parts.some(t=>!data.picked.has(t.id)))return setLabFeedback(`Click every ${kind} part on the left first.`,"incorrect");
         if(task.kind==="word"&&parts.some(t=>!data.signPicked.has(t.id)||String(data.inputs["phrase-"+t.id]||"").trim().toLowerCase()!==task.signPhrases[t.id].toLowerCase()||data.signs[t.id]!== (t.value<0?"negative":"positive")))return setLabFeedback("For each part, click its sign phrase in the problem, choose positive or negative, and type that phrase exactly.","incorrect");
         if(parts.some(t=>!close(data.inputs["part-"+t.id]??"",t.value)))return setLabFeedback(`Type the signed value of each ${kind} part on the right, including a minus when the story subtracts it.`,"incorrect");
-        if(kind==="constant"&&data.subtraction!==subtractionKind(task))return setLabFeedback("Identify which kind of part the problem subtracts.","incorrect");
         data.phase=kind==="variable"?3:4;
         window.render88ALab({labRuntime,$,setLabProgress,setLabFeedback,showLabCompletion,syncWhiteboardQuestion});
         setLabFeedback(kind==="variable"?"Now identify the green constants.":"Now combine like terms and write the complete comparison.","correct");return;
@@ -281,7 +283,6 @@
         const missing=task.terms.filter(t=>!data.picked.has(t.id));
         if(!guided&&task.terms.some(t=>data.classifications[t.id]!==t.kind))return setLabFeedback("Classify each clicked part as blue for variable or green for constant. Click a part again to change its color.","incorrect");
         if(missing.length)return setLabFeedback(`Select all blue and green parts in the ${task.kind==="geometry"?"figures":"story"}. ${missing.length} ${missing.length===1?"part remains":"parts remain"}.`,"incorrect");
-        if(data.subtraction!==subtractionKind(task))return setLabFeedback("Look for the minus, discount, drain, or amount taken away. Is a constant or a variable term being subtracted?","incorrect");
         const signedValue=(raw,afterFirst)=>{
           const input=String(raw??"").trim().replace(/−/g,"-");
           const valid=afterFirst?/^[+-](?:\d+(?:\.\d+)?|\.\d+)$/:/^-?(?:\d+(?:\.\d+)?|\.\d+)$/;
@@ -293,7 +294,8 @@
           for(const [position,side] of [["left",firstSide],["right",other]]){
             const sum=totals(task,side);
             for(const [kind,expected] of [["constant",sum.constant],["variable",sum.variable]]){
-              const entered=signedValue(data.inputs[`f${n}-${position}-${kind}`],kind==="variable");
+              const raw=data.inputs[`f${n}-${position}-${kind}`];
+               const entered=kind==="constant"&&expected===0&&String(raw??"").trim()===""?0:signedValue(raw,kind==="variable"&&sum.constant!==0);
               if(!Number.isFinite(entered)||Math.abs(entered-expected)>0.0001)return false;
             }
           }
