@@ -695,6 +695,15 @@
   }
 
   const LABS = {
+    "8.8A": {
+      title: "Equation or Inequality? Build Both Sides",
+      description: "Read the entire situation, then the question. Work through seven guided comparisons and ten independent ones. Mark the relationship clue, collect variable terms and constants, identify subtraction, and build a one-variable equation or inequality with x on both sides.",
+      summary: "You used words such as equal, more than, at most, and at least to compare two complete expressions. You tracked signed variable terms and constants, expanded geometric expressions, combined like terms, and wrote equations or inequalities with x on both sides.",
+      videos: [
+        ["https://go.screenpal.com/watch/cOfIcVnOer1", "Watch Me First"],
+        ["https://go.screenpal.com/watch/cOflF0nOnK6", "Basic Equation and Inequality Set-Up"]
+      ]
+    },
     "8.5A": {
       title: "One Relationship, Four Representations",
       description: "Work through twelve proportional relationships. Each problem begins with a graph, equation, table, or real-world situation, and you build the other three representations. Use two quality points when graphing, complete every missing table value, and write each equation in the form y = kx + b.",
@@ -1085,6 +1094,7 @@
     if (standard === "8.7B") renderLab87B();
     if (standard === "8.7C") renderLab87C();
     if (standard === "8.7D") renderLab87D();
+    if (standard === "8.8A") window.render88ALab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
     if (standard === "8.10A") renderLabA();
     if (standard === "8.10B") renderLabB();
     if (standard === "8.10C") renderLabC();
@@ -6400,6 +6410,10 @@
       if (typeof window.resetDistance87DQuestion === "function") window.resetDistance87DQuestion(data, nextIndex);
       else Object.assign(data, { index: nextIndex, step: 0, solved: false, inputs: {} });
       renderLab87D();
+    } else if (standard === "8.8A") {
+      if (data.index >= window.EQUATION_88A_TOTAL - 1) return showLabCompletion(standard);
+      window.reset88AQuestion(data, data.index + 1);
+      renderStandardsLab(standard);
     } else if (standard === "8.3A") {
       if (data.index >= SIMILARITY_TASKS.length - 1) return showLabCompletion(standard);
       data.index += 1;
