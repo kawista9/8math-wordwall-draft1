@@ -45,8 +45,9 @@
 .a88-figure>strong { display:block; margin-bottom:.55rem; }
 .a88-shape { display:flex; align-items:center; justify-content:center; min-height:200px; padding:.8rem; border:4px solid #1855b3; background:linear-gradient(145deg,#eaf6ff,#f7f2ff); }
 .a88-shape.is-rectangle,.a88-shape.is-area { border-radius:7px; }
-.a88-shape.is-triangle { clip-path:polygon(50% 1%,100% 100%,0 100%); min-height:240px; padding:2.7rem 2rem .6rem; background:#eaf6ff; border:0; outline:0; }
-.a88-dimensions { display:grid; gap:.4rem; width:100%; }
+.a88-shape.is-triangle { position:relative; min-height:240px; padding:.8rem; border:0; background:white; }
+.a88-shape.is-triangle::before { content:""; position:absolute; inset:6px; background:#eaf6ff; clip-path:polygon(50% 1%,100% 100%,0 100%); }
+.a88-dimensions { position:relative; display:grid; gap:.4rem; width:100%; }
 .a88-dimension { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:.35rem; padding:.25rem .4rem; border-radius:8px; background:rgba(255,255,255,.9); }
 .a88-dimension small { font-size:.72rem; font-weight:900; }
 .a88-dimension .a88-token { font-size:.86rem; }
