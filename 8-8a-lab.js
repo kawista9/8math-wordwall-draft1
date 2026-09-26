@@ -170,8 +170,11 @@
   }
   function question(task,data) {
     const cue=`<button type="button" class="a88-cue${data.cue?" is-picked":""}" data-action="cue" aria-pressed="${data.cue}">${esc(task.cue)}</button>`;
-    const body=task.kind==="geometry"?esc(task.question).replace("{cue}",cue):`When will ${esc(task.left)} be ${cue} ${esc(task.right)} ${esc(task.tail||"for a value of x")}? Write ${task.relation==="="?"an equation":"an inequality"} to represent the comparison.`;
-    return `<span class="a88-question${data.question?" is-picked":""}" data-action="question" role="button" tabindex="0" aria-label="Select the question in the problem" aria-pressed="${data.question}">${body}</span>`;
+    const marker="__RELATIONSHIP_CUE__";
+    const body=task.kind==="geometry"?esc(task.question).replace("{cue}",marker):`When will ${esc(task.left)} be ${marker} ${esc(task.right)} ${esc(task.tail||"for a value of x")}? Write ${task.relation==="="?"an equation":"an inequality"} to represent the comparison.`;
+    const [before,after]=body.split(marker);
+    const segment=text=>`<span class="a88-question${data.question?" is-picked":""}" data-action="question" role="button" tabindex="0" aria-label="Select the question in the problem" aria-pressed="${data.question}">${text}</span>`;
+    return `<span class="a88-question-inline">${segment(before)}${cue}${segment(after)}</span>`;
   }
   const flipped = symbol => ({ "<":">", ">":"<", "≤":"≥", "≥":"≤", "=":"=" })[symbol];
   const symbolFor = (task,firstSide) => firstSide==="R"?flipped(task.relation):task.relation;
@@ -256,7 +259,7 @@
       const action=button.dataset.action;
       if(action==="read"){data.read=true;if(guided&&data.phase===0)data.phase=1;window.render88ALab({labRuntime,$,setLabProgress,setLabFeedback,showLabCompletion,syncWhiteboardQuestion});setLabFeedback("Now read the question. Click its relationship phrase.");return;}
       if(action==="no-like"){data.noLike=button.checked;return;}
-      if(action==="question"){if(!data.read)return setLabFeedback("Read the entire problem and question first.","incorrect");data.question=true;button.classList.add("is-picked");button.setAttribute("aria-pressed","true");setLabFeedback("Now click the relationship phrase within that question.");return;}
+      if(action==="question"){if(!data.read)return setLabFeedback("Read the entire problem and question first.","incorrect");data.question=true;body.querySelectorAll(".a88-question").forEach(el=>{el.classList.add("is-picked");el.setAttribute("aria-pressed","true");});setLabFeedback("Now click the relationship phrase within that question.");return;}
       if(action==="cue"){event.stopPropagation();if(!data.question){data.question=true;window.render88ALab({labRuntime,$,setLabProgress,setLabFeedback,showLabCompletion,syncWhiteboardQuestion});setLabFeedback("Question identified. Now click its purple relationship phrase.");return;}if(guided&&!data.read)return setLabFeedback("Read the entire problem first.","incorrect");data.cue=true;button.classList.add("is-picked");button.setAttribute("aria-pressed","true");setLabFeedback("You found the phrase. Match it to the comparison symbol.");return;}
       const relationship=()=>data.cue&&["L","R"].includes(data.left)&&data.right===(data.left==="L"?"R":"L")&&data.symbol===symbolFor(task,data.left);
       if(action==="relation"){
