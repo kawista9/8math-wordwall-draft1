@@ -697,7 +697,7 @@
   const LABS = {
     "8.8A": {
       title: "Equation or Inequality? Build Both Sides",
-      description: "Read the entire situation, then the question. Work through seven guided comparisons and ten independent ones. Mark the relationship clue, collect variable terms and constants, identify subtraction, and build a one-variable equation or inequality with x on both sides.",
+      description: "Read the entire situation, then the question. Work through seven guided comparisons and twelve independent ones. Mark the relationship clue, collect variable terms and constants, identify subtraction, and build a one-variable equation or inequality with x on both sides.",
       summary: "You used words such as equal, more than, at most, and at least to compare two complete expressions. You tracked signed variable terms and constants, expanded geometric expressions, combined like terms, and wrote equations or inequalities with x on both sides.",
       videos: [
         ["https://go.screenpal.com/watch/cOfIcVnOer1", "Watch Me First"],
