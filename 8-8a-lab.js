@@ -91,11 +91,11 @@
 
   // Sign evidence is part of the displayed story, not a separate answer bank.
   const SIGN_STORIES = {
-    "Music studio memberships": "Studio A {s:ac:charges} {ac} to join and {s:av:adds} {av} for each lesson. Studio B {s:bc:charges} {bc} to join and {s:bv:adds} {bv} for each lesson, then {s:bd:takes off} {bd} from the total with a coupon.",
+    "Music studio memberships": "Studio A {s:ac:charges} {ac} to join and {s:av:adds} {av} for each lesson. Studio B {s:bc:charges} {bc} to join and {s:bv:adds} {bv} for each lesson, then {s:bd:takes off} {bd} from the total.",
     "Two delivery services": "Courier A {s:ac:charges} {ac} and {s:av:adds} {av}. Courier B {s:bc:charges} {bc} and {s:bv:adds} {bv}, then {s:bd:takes off} {bd} from the final bill.",
     "Arcade points": "Mira {s:ac:begins with} {ac} points and {s:av:uses} {av} in each round. Leo {s:bc:begins with} {bc} points and {s:bv:earns} {bv} in each round.",
     "Seedling collections": "Garden A {s:ac:starts with} {ac} seedlings, {s:av:adds} {av} each week, and {s:ad:donates} {ad} seedlings once. Garden B {s:bc:starts with} {bc} and {s:bv:adds} {bv} each week.",
-    "Bicycle rental plans": "Plan A {s:ac:charges} {ac} and {s:av:adds} {av}. Plan B {s:bc:charges} {bc} and {s:bv:adds} {bv}, then {s:bd:takes off} {bd} as a discount.",
+    "Bicycle rental plans": "Plan A {s:ac:charges} {ac} and {s:av:adds} {av}. Plan B {s:bc:charges} {bc} and {s:bv:adds} {bv}, then {s:bd:takes off} {bd} from the bill.",
     "Reading challenge": "Tariq {s:ac:has read} {ac} pages and {s:av:reads} {av} more each day. Nia {s:bc:has read} {bc} pages and {s:bv:reads} {bv} more each day, but {s:bd:removes} {bd} pages after finding duplicates.",
     "Two water tanks": "Tank A {s:ac:contains} {ac} liters and {s:av:drains} {av} per minute. Tank B {s:bc:contains} {bc} liters and {s:bv:drains} {bv} per minute.",
     "Online craft orders": "Shop A {s:ac:collects} {ac} as a service fee and {s:av:adds} {av} for each item, then {s:ad:refunds} {ad} from the service fee. Shop B {s:bc:collects} {bc} and {s:bv:adds} {bv} for each item.",
