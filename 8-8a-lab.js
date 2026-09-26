@@ -12,7 +12,7 @@
   const TASKS = [
     word("Music studio memberships", "Studio A", "Studio B",
       "Studio A charges {ac} to join and {av} for each lesson. Studio B charges {bc} to join and {bv} for each lesson, then applies {bd} to the total.",
-      "the same", "=", [term("ac","L","constant",24,"$24"),term("av","L","variable",6,"$6 per lesson"),term("bc","R","constant",40,"$40"),term("bv","R","variable",4,"$4 per lesson"),term("bd","R","constant",-8,"an $8 coupon")], "after x lessons"),
+      "the same as", "=", [term("ac","L","constant",24,"$24"),term("av","L","variable",6,"$6 per lesson"),term("bc","R","constant",40,"$40"),term("bv","R","variable",4,"$4 per lesson"),term("bd","R","constant",-8,"an $8 coupon")], "after x lessons"),
     word("Two delivery services", "Courier A", "Courier B",
       "Courier A charges {ac} plus {av}. Courier B charges {bc} plus {bv} and takes off {bd} from the final bill.",
       "at most", "≤", [term("ac","L","constant",15,"$15 to start"),term("av","L","variable",2.5,"$2.50 per mile"),term("bc","R","constant",28,"$28 to start"),term("bv","R","variable",2,"$2 per mile"),term("bd","R","constant",-3,"$3")], "for x miles"),
@@ -22,7 +22,7 @@
     word("Seedling collections", "Garden A", "Garden B",
       "Garden A starts with {ac} seedlings, adds {av} each week, and donates {ad} seedlings once. Garden B starts with {bc} and adds {bv} each week.",
       "at least", "≥", [term("ac","L","constant",12,"12"),term("av","L","variable",5,"5 seedlings"),term("ad","L","constant",-4,"4"),term("bc","R","constant",7,"7"),term("bv","R","variable",6,"6 seedlings")], "after x weeks"),
-    shape("Rectangle and triangle fences", "Rectangle perimeter", "Triangle perimeter", "equal", "=", [
+    shape("Rectangle and triangle fences", "Rectangle perimeter", "Triangle perimeter", "equal to", "=", [
       group("length (two sides)",2,[term("alv","L","variable",2,"2x"),term("alc","L","constant",4,"+ 4")]),
       group("width (two sides)",2,[term("awv","L","variable",-1,"− x"),term("awc","L","constant",12,"+ 12")])
     ], [
@@ -49,7 +49,7 @@
       "no more than", "≤", [term("ac","L","constant",18,"an $18 fee"),term("av","L","variable",7,"$7 per hour"),term("bc","R","constant",30,"a $30 fee"),term("bv","R","variable",5,"$5 per hour"),term("bd","R","constant",4,"a $4 discount")].map(t=>t.id==="bd"?{...t,value:-4}:t), "for x hours"),
     word("Reading challenge", "Tariq's pages", "Nia's pages",
       "Tariq has read {ac} pages and reads {av} each day. Nia has read {bc} pages and reads {bv} each day, but removes {bd} pages from her count after finding duplicates.",
-      "the same", "=", [term("ac","L","constant",35,"35"),term("av","L","variable",12,"12 pages"),term("bc","R","constant",58,"58"),term("bv","R","variable",9,"9 pages"),term("bd","R","constant",-5,"5")], "after x days"),
+      "the same as", "=", [term("ac","L","constant",35,"35"),term("av","L","variable",12,"12 pages"),term("bc","R","constant",58,"58"),term("bv","R","variable",9,"9 pages"),term("bd","R","constant",-5,"5")], "after x days"),
     word("Two water tanks", "Tank A", "Tank B",
       "Tank A contains {ac} liters and drains {av} per minute. Tank B contains {bc} liters and drains {bv} per minute.",
       "less than", "<", [term("ac","L","constant",90,"90"),term("av","L","variable",-3.5,"3.5 liters"),term("bc","R","constant",72,"72"),term("bv","R","variable",-2,"2 liters")], "after x minutes"),
@@ -77,7 +77,7 @@
     word("Digital storage", "Account A", "Account B",
       "Account A has {ac} gigabytes available and uses {av} each week. Account B has {bc} gigabytes available and uses {bv} each week.",
       "at least", "≥", [term("ac","L","constant",48,"48"),term("av","L","variable",-1.5,"1.5 gigabytes"),term("bc","R","constant",30,"30"),term("bv","R","variable",-0.75,"0.75 gigabytes")], "after x weeks"),
-    shape("Triangle and rectangle trim", "Triangle perimeter", "Rectangle perimeter", "the same", "=", [
+    shape("Triangle and rectangle trim", "Triangle perimeter", "Rectangle perimeter", "the same as", "=", [
       group("side 1",1,[term("a1v","L","variable",2,"2x"),term("a1c","L","constant",3,"+ 3")]),
       group("side 2",1,[term("a2v","L","variable",-1,"− x"),term("a2c","L","constant",10,"+ 10")]),
       group("side 3",1,[term("a3v","L","variable",2,"2x"),term("a3c","L","constant",1,"+ 1")])
