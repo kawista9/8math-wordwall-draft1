@@ -151,13 +151,13 @@
     return correct?` a88-evidence-match a88-${slot.kind}`:" a88-evidence-mismatch";
   }
   function tokenButton(t, data) {
-    const clue=data.index>=7&&TASKS[data.index].kind==="word"?t.label.match(/(?:per\\s+\\w+|each\\s+\\w+|to start|to join|fee|per visit)$/i)?.[0]:"";
+    const clue=data.index>=7&&TASKS[data.index].kind==="word"?t.label.match(/(?:per\s+\w+|each\s+\w+|to start|to join|fee|per visit)$/i)?.[0]:"";
     const display=clue?t.label.slice(0,-clue.length).trimEnd():t.label;
     return `<button type="button" class="a88-token ${data.index<7?`a88-${t.kind}`:"a88-unclassified"}${data.classifications[t.id]?` a88-${data.classifications[t.id]}`:""}${data.picked.has(t.id)?" is-picked":""}${independentEvidenceClass(data,t.id)}" data-token="${esc(t.id)}" aria-pressed="${data.picked.has(t.id)}" title="${data.index<7?`Select this ${t.kind === "variable" ? "variable term" : "constant"}`:"Select this part"}">${esc(display)}</button>`;
   }
   function typeCueButton(t,data) {
     if(data.index<7||TASKS[data.index].kind!=="word")return "";
-    const clue=t.label.match(/(?:per\\s+\\w+|each\\s+\\w+|to start|to join|fee|per visit)$/i)?.[0];
+    const clue=t.label.match(/(?:per\s+\w+|each\s+\w+|to start|to join|fee|per visit)$/i)?.[0];
     if(!clue)return "";
     const selected=[...data.slots.left,...data.slots.right].find(slot=>slot.typeId===t.id);
     const source=selected&&TASKS[data.index].terms.find(item=>item.id===selected.sourceId);
@@ -284,8 +284,8 @@
       const slot=current();if(!slot)return setLabFeedback("Choose a box before pointing to evidence.","incorrect");
       const id=el.dataset.token;if(all().some(other=>other!==slot&&other.sourceId===id))return setLabFeedback("That amount is already used in another box.","incorrect");
       if(slot.sourceId&&slot.polarity&&(task.kind!=="word"||slot.signId)&&slot.typeChoice&&!slot.typeId)slot.typeId=id;
-       else {slot.sourceId=id;slot.raw=fmt(Math.abs(task.terms.find(t=>t.id===id).value));slot.polarity="";slot.signId="";slot.typeId="";slot.typeChoice="";slot.typeChoice="";}
-       data.picked=new Set(all().map(x=>x.sourceId).filter(Boolean));data.signPicked=new Set(all().map(x=>x.signId).filter(Boolean));rerender();setLabFeedback("Amount selected. Choose positive or negative.");
+       else {slot.sourceId=id;slot.raw=fmt(Math.abs(task.terms.find(t=>t.id===id).value));slot.polarity="";slot.signId="";slot.typeId="";slot.typeChoice="";}
+       data.picked=new Set(all().map(x=>x.sourceId).filter(Boolean));data.signPicked=new Set(all().map(x=>x.signId).filter(Boolean));rerender();setLabFeedback(slot.typeId?"Type clue selected.":"Amount selected. Choose positive or negative.");
     }));
     body.querySelectorAll("[data-sign-cue]").forEach(el=>el.addEventListener("click",()=>{
       const slot=current();if(!slot)return setLabFeedback("Choose a box before pointing to evidence.","incorrect");
@@ -309,7 +309,7 @@
       const magnitude=fmt(Math.abs(term.value));const position=data.slots.left.includes(slot)?"left":"right";
       const index=data.slots[position].indexOf(slot);
       slot.raw=(slot.polarity==="negative"?"−":index>0?"+":"")+magnitude;
-      slot.signId="";slot.typeId="";data.signPicked=new Set(all().map(x=>x.signId).filter(Boolean));
+      slot.signId="";slot.typeId="";slot.typeChoice="";data.signPicked=new Set(all().map(x=>x.signId).filter(Boolean));
       rerender();setLabFeedback(task.kind==="word"?"Now click the phrase that explains the sign.":"Now click the figure mark that shows the term type.");
     }));
     body.querySelectorAll('[data-select="symbol"]').forEach(el=>el.addEventListener("change",()=>{data.symbol=el.value;}));
