@@ -253,3 +253,16 @@ body.lab-is-open #standardsLab {overflow:visible}
 .a88-combine-field.a88-variable {color:var(--a88-blue)}
 .a88-combine-field.a88-constant {color:var(--a88-green)}
 @media(max-width:650px){.a88-combine-row {grid-template-columns:1fr}}
+
+.a88-independent .a88-question {border-bottom:2px dotted #66758f;cursor:pointer}
+.a88-independent .a88-question.is-picked {border-bottom-color:var(--a88-purple);background:#f3e9ff}
+.a88-independent .a88-cue {color:inherit;border:0;background:transparent;font:inherit;font-weight:inherit;text-decoration:underline dotted #66758f;text-underline-offset:3px}
+.a88-independent .a88-cue.is-picked {color:var(--a88-purple);background:#f3e9ff;font-weight:800;text-decoration-style:solid}
+.a88-operation {display:inline;padding:0;border:0;border-bottom:2px dotted #66758f;background:transparent;color:inherit;font:inherit;cursor:pointer}
+.a88-operation.is-picked {color:#a24e09;background:#fff1d9;border-bottom-style:solid;font-weight:800}
+.a88-type-cue.a88-variable,.a88-type-cue.a88-constant {display:inline;padding:.12rem .2rem;border:1px dashed currentColor;border-radius:5px;background:transparent;font:inherit;cursor:pointer}
+.a88-type-cue.a88-variable {color:var(--a88-blue)}
+.a88-type-cue.a88-constant {color:var(--a88-green)}
+.a88-type-cue.is-picked.a88-variable {background:#e8f1ff;font-weight:800}
+.a88-type-cue.is-picked.a88-constant {background:#e7f8ec;font-weight:800}
+.a88-independent .a88-operation {color:inherit}
