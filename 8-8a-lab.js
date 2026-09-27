@@ -154,7 +154,7 @@
     const correct=!!term&&term.side===expectedSide&&term.kind===slot.kind&&(!isSign||(slot.sourceId===id&&slot.polarity===(term.value<0?"negative":"positive")));
     return correct?` a88-evidence-match a88-${slot.kind}`:" a88-evidence-mismatch";
   }
-  const typeSuffix = label => label.match(/(?:per\\s+\\w+|each\\s+\\w+|to start|to join|fee)$/i)?.[0]||"";
+  const typeSuffix = label => label.match(/(?:per\s+\w+|each\s+\w+|to start|to join|fee)$/i)?.[0]||"";
   function tokenButton(t, data) {
     const clue=TASKS[data.index].kind==="word"?typeSuffix(t.label):"";
     const display=clue?t.label.slice(0,-clue.length).trimEnd():t.label;
