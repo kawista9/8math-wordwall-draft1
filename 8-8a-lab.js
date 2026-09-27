@@ -142,16 +142,29 @@
   function independentEvidenceClass(data,id,isSign=false) {
     if(data.index<7)return "";
     const left=data.slots?.left||[],right=data.slots?.right||[];
-    const slot=[...left,...right].find(item=>(isSign?item.signId:item.sourceId)===id);
+    const slot=[...left,...right].find(item=>(isSign?item.signId:item.sourceId===id||item.typeId===id));
     if(!slot)return "";
     const position=left.includes(slot)?"left":"right";
     const expectedSide=position==="left"?data.order:(data.order==="L"?"R":"L");
     const task=TASKS[data.index],term=task.terms.find(t=>t.id===id);
-    const correct=!!term&&term.side===expectedSide&&term.kind===slot.kind&&(!isSign||slot.sourceId===id);
+    const correct=!!term&&term.side===expectedSide&&term.kind===slot.kind&&(!isSign||(slot.sourceId===id&&slot.polarity===(term.value<0?"negative":"positive")));
     return correct?` a88-evidence-match a88-${slot.kind}`:" a88-evidence-mismatch";
   }
   function tokenButton(t, data) {
-    return `<button type="button" class="a88-token ${data.index<7?`a88-${t.kind}`:"a88-unclassified"}${data.classifications[t.id]?` a88-${data.classifications[t.id]}`:""}${data.picked.has(t.id)?" is-picked":""}${independentEvidenceClass(data,t.id)}" data-token="${esc(t.id)}" aria-pressed="${data.picked.has(t.id)}" title="${data.index<7?`Select this ${t.kind === "variable" ? "variable term" : "constant"}`:"Select this part"}">${esc(t.label)}</button>`;
+    const clue=data.index>=7&&TASKS[data.index].kind==="word"?t.label.match(/(?:per\\s+\\w+|each\\s+\\w+|to start|to join|fee|per visit)$/i)?.[0]:"";
+    const display=clue?t.label.slice(0,-clue.length).trimEnd():t.label;
+    return `<button type="button" class="a88-token ${data.index<7?`a88-${t.kind}`:"a88-unclassified"}${data.classifications[t.id]?` a88-${data.classifications[t.id]}`:""}${data.picked.has(t.id)?" is-picked":""}${independentEvidenceClass(data,t.id)}" data-token="${esc(t.id)}" aria-pressed="${data.picked.has(t.id)}" title="${data.index<7?`Select this ${t.kind === "variable" ? "variable term" : "constant"}`:"Select this part"}">${esc(display)}</button>`;
+  }
+  function typeCueButton(t,data) {
+    if(data.index<7||TASKS[data.index].kind!=="word")return "";
+    const clue=t.label.match(/(?:per\\s+\\w+|each\\s+\\w+|to start|to join|fee|per visit)$/i)?.[0];
+    if(!clue)return "";
+    const selected=[...data.slots.left,...data.slots.right].find(slot=>slot.typeId===t.id);
+    const source=selected&&TASKS[data.index].terms.find(item=>item.id===selected.sourceId);
+    const position=selected&&(data.slots.left.includes(selected)?"left":"right");
+    const side=position==="left"?data.order:(data.order==="R"?"L":"R");
+    const correct=selected&&source?.id===t.id&&source.side===side&&selected.kind===source.kind;
+    return ` <button type="button" class="a88-type-cue a88-neutral${selected?(correct?` a88-evidence-match a88-${selected.kind}`:" a88-evidence-mismatch"):""}" data-type-cue="${esc(t.id)}" aria-pressed="${!!selected}">${esc(clue)}</button>`;
   }
   function geometryFigure(task,data) {
     const groups=task.figureSide==="both"?[...task.leftGroups,...task.rightGroups]:task.figureSide==="L"?task.leftGroups:task.rightGroups;
@@ -163,7 +176,7 @@
   function scene(task,data) {
     const byId=Object.fromEntries(task.terms.map(t=>[t.id,t]));
     if (task.kind==="geometry") return `<p class="a88-story a88-geometry-statement">${esc(task.statement).replace(/\{([a-z0-9]+)\}/g,(_,id)=>byId[id]?tokenButton(byId[id],data):"")}</p>${geometryFigure(task,data)}<p class="a88-scene-note">${data.index<7?`${esc(task.note)} `:""}${question(task,data)}</p>`;
-    return `<p class="a88-story">${esc(task.context).replace(/\{s:([a-z0-9]+):([^}]+)\}|\{([a-z0-9]+)\}/g,(_,signId,phrase,termId)=>signId?`<button type="button" class="a88-sign-cue ${data.index<7?`a88-${byId[signId]?.kind||"constant"}`:"a88-neutral"}${data.signPicked.has(signId)?" is-picked":""}${independentEvidenceClass(data,signId,true)}" data-sign-cue="${signId}" aria-pressed="${data.signPicked.has(signId)}">${esc(phrase)}</button>`:byId[termId]?tokenButton(byId[termId],data):"")} ${question(task,data)}</p>`;
+    return `<p class="a88-story">${esc(task.context).replace(/\{s:([a-z0-9]+):([^}]+)\}|\{([a-z0-9]+)\}/g,(_,signId,phrase,termId)=>signId?`<button type="button" class="a88-sign-cue ${data.index<7?`a88-${byId[signId]?.kind||"constant"}`:"a88-neutral"}${data.signPicked.has(signId)?" is-picked":""}${independentEvidenceClass(data,signId,true)}" data-sign-cue="${signId}" aria-pressed="${data.signPicked.has(signId)}">${esc(phrase)}</button>`:byId[termId]?tokenButton(byId[termId],data)+typeCueButton(byId[termId],data):"")} ${question(task,data)}</p>`;
   }
   function select(name, current, choices, label, placeholder="Choose…") {
     return `<label class="a88-select"><span>${esc(label)}</span><select data-select="${name}"><option value="">${esc(placeholder)}</option>${choices.map(([v,text])=>`<option value="${esc(v)}"${current===v?" selected":""}>${esc(text)}</option>`).join("")}</select></label>`;
@@ -218,7 +231,8 @@
     const sideMarkup=(position,side)=>`<div class="a88-build-side${data.activeSide===position?" is-current":""}" data-drop-side="${position}" style="flex:${Math.max(2,data.slots[position].length)}"><strong>${esc(name(side))}</strong><div class="a88-slot-row">${data.slots[position].map(slotMarkup).join("")||'<span class="a88-drop-placeholder">Drop boxes here</span>'}</div></div>`;
     const source=active&&task.terms.find(t=>t.id===active.sourceId);
     const sign=active&&task.signPhrases?.[active.signId];
-    const detail=active?`<div class="a88-slot-detail"><h6>Selected ${active.kind==="variable"?"x term":"constant"} box</h6><label>Signed number <input type="text" inputmode="decimal" data-slot-value="${esc(active.id)}" value="${esc(active.raw||"")}" placeholder="2, +2, or −2" aria-label="Signed number for selected box"></label><p>Click the amount or label in the problem that tells you whether this is an x term or a fixed amount.</p><p class="a88-evidence">Amount or label: ${source?esc(source.label):"Choose from the problem"}</p><label>Which words or figure marks tell you its type? <input type="text" data-slot-reason="${esc(active.id)}" value="${esc(active.reason||"")}" placeholder="Words or marks you noticed"></label>${task.kind==="word"?`<p>Click the word or phrase in the problem that tells you whether this amount is added or subtracted.</p><p class="a88-evidence">Sign clue: ${sign?esc(sign):"Choose from the problem"}</p>`:`<p>Use the sign shown on the figure label when entering this amount.</p>`}<div class="a88-slot-actions"><button type="button" data-action="next-slot">Next box →</button><button type="button" data-action="remove-slot">Remove box</button></div></div>`:'<p class="a88-select-box">Choose a box on the comparison line to enter its value and evidence.</p>';
+    const type=active&&task.terms.find(t=>t.id===active.typeId);
+    const detail=active?`<div class="a88-slot-detail"><h6>Selected ${active.kind==="variable"?"x term":"constant"} box</h6><p class="a88-box-value">Box: <strong>${esc(active.raw||"□")}${active.kind==="variable"?"x":""}</strong></p><p>${source?"Click the correct choice for this amount's sign.":"Click its number or label in the problem or figure. The box fills automatically."}</p>${source?`<div class="a88-polarity" role="group" aria-label="Is this term positive or negative?"><span>Is it positive or negative?</span><button type="button" data-polarity="positive" aria-pressed="${active.polarity==="positive"}">Positive (+)</button><button type="button" data-polarity="negative" aria-pressed="${active.polarity==="negative"}">Negative (−)</button></div>`:""}${source&&active.polarity?(task.kind==="word"?`<p>Click the word or phrase in the problem that tells you its sign.${sign?` <strong>Chosen: ${esc(sign)}</strong>`:""}</p>`:`<p>The sign is shown on the figure label.</p>`):""}${source&&active.polarity&&(task.kind!=="word"||active.signId)?`<div class="a88-type-choice" role="group" aria-label="Does this amount change with x?"><span>Does this amount change with x?</span><button type="button" data-type-choice="yes" aria-pressed="${active.typeChoice==="yes"}">Yes</button><button type="button" data-type-choice="no" aria-pressed="${active.typeChoice==="no"}">No</button></div><p>Click the word, phrase, or figure mark that supports your choice.${type?` <strong>Chosen: ${esc(type.label)}</strong>`:""}</p>`:""}<div class="a88-slot-actions"><button type="button" data-action="next-slot">Next box →</button><button type="button" data-action="remove-slot">Remove box</button></div></div>`:'<p class="a88-select-box">Click a placed box, then choose its amount from the problem or figure.</p>';
     return `<div class="a88-lab a88-independent a88-builder"><div class="a88-task-head"><span>Independent practice · ${data.index+1} of ${TASKS.length}</span><h4>${esc(task.title)}</h4></div><div class="a88-columns"><section class="a88-panel a88-problem"><h5>Read the complete problem</h5>${scene(task,data)}</section><section class="a88-panel a88-process"><h5>Build the comparison</h5><div class="a88-stage"><p>Choose the symbol, then build each situation from left to right.</p><div class="a88-palette"><span>Drag a box into the highlighted situation:</span><button type="button" draggable="true" data-palette="variable" aria-label="Add variable term box">□x</button><button type="button" draggable="true" data-palette="constant" aria-label="Add constant box">□</button></div><div class="a88-builder-row">${sideMarkup("left",first)}${select("symbol",data.symbol,[["=","="],["<","<"],[">",">"],["≤","≤"],["≥","≥"]],"Symbol","?")}${sideMarkup("right",second)}</div><button type="button" class="a88-switch-side" data-action="switch-side">Work on ${esc(name(data.activeSide==="left"?second:first))} →</button></div><div class="a88-stage">${detail}</div><div class="a88-stage"><button type="button" class="lab-action a88-check" data-action="check">Check my answer</button></div>${data.complete?`<section class="a88-success"><strong>Correct comparison! Here is the complete ${task.relation==="="?"equation":"inequality"}:</strong><p class="a88-completed-equation">${esc(comparison(task,first))}</p><button type="button" class="lab-next" data-action="next">${data.index===TASKS.length-1?"Finish lab":"Next question →"}</button></section>`:""}</section></div></div>`;
   }
   function present(task,data) {
@@ -256,7 +270,7 @@
     const current=()=>all().find(slot=>slot.id===data.activeSlot);
     const name=side=>side==="L"?task.left:task.right;
     const sideCode=position=>position==="left"?data.order:(data.order==="L"?"R":"L");
-    const add=kind=>{const slot={id:"s"+data.nextSlot++,kind,raw:"",sourceId:"",signId:"",reason:""};data.slots[data.activeSide].push(slot);data.activeSlot=slot.id;rerender();setLabFeedback("Choose the box and use the problem as evidence.");};
+    const add=kind=>{const slot={id:"s"+data.nextSlot++,kind,raw:"",sourceId:"",signId:"",typeId:"",polarity:"",typeChoice:""};data.slots[data.activeSide].push(slot);data.activeSlot=slot.id;rerender();setLabFeedback("Choose the box and use the problem as evidence.");};
     body.querySelectorAll("[data-palette]").forEach(el=>{
       el.addEventListener("click",()=>add(el.dataset.palette));
       el.addEventListener("dragstart",event=>event.dataTransfer.setData("text/plain",el.dataset.palette));
@@ -269,15 +283,35 @@
     body.querySelectorAll("[data-token]").forEach(el=>el.addEventListener("click",()=>{
       const slot=current();if(!slot)return setLabFeedback("Choose a box before pointing to evidence.","incorrect");
       const id=el.dataset.token;if(all().some(other=>other!==slot&&other.sourceId===id))return setLabFeedback("That amount is already used in another box.","incorrect");
-      slot.sourceId=id;data.picked=new Set(all().map(x=>x.sourceId).filter(Boolean));rerender();setLabFeedback("Amount or label selected.");
+      if(slot.sourceId&&slot.polarity&&(task.kind!=="word"||slot.signId)&&slot.typeChoice&&!slot.typeId)slot.typeId=id;
+       else {slot.sourceId=id;slot.raw=fmt(Math.abs(task.terms.find(t=>t.id===id).value));slot.polarity="";slot.signId="";slot.typeId="";slot.typeChoice="";slot.typeChoice="";}
+       data.picked=new Set(all().map(x=>x.sourceId).filter(Boolean));data.signPicked=new Set(all().map(x=>x.signId).filter(Boolean));rerender();setLabFeedback("Amount selected. Choose positive or negative.");
     }));
     body.querySelectorAll("[data-sign-cue]").forEach(el=>el.addEventListener("click",()=>{
       const slot=current();if(!slot)return setLabFeedback("Choose a box before pointing to evidence.","incorrect");
       const id=el.dataset.signCue;if(all().some(other=>other!==slot&&other.signId===id))return setLabFeedback("That phrase is already used in another box.","incorrect");
-      slot.signId=id;data.signPicked=new Set(all().map(x=>x.signId).filter(Boolean));rerender();setLabFeedback("Sign phrase selected.");
+      if(!slot.sourceId||!slot.polarity)return setLabFeedback("Choose the amount and its sign first.","incorrect");
+       if(slot.signId&&slot.typeChoice)slot.typeId=id;
+       else slot.signId=id;
+       data.signPicked=new Set(all().map(x=>x.signId).filter(Boolean));rerender();setLabFeedback("Phrase selected.");
     }));
-    body.querySelectorAll("[data-slot-value]").forEach(el=>el.addEventListener("input",()=>{const slot=current();if(slot){slot.raw=el.value;const box=body.querySelector('[data-slot-id="'+slot.id+'"]');if(box)box.textContent=(slot.raw||"□")+(slot.kind==="variable"?"x":"");}}));
-    body.querySelectorAll("[data-slot-reason]").forEach(el=>el.addEventListener("input",()=>{const slot=current();if(slot)slot.reason=el.value;}));
+    body.querySelectorAll("[data-type-choice]").forEach(el=>el.addEventListener("click",()=>{
+      const slot=current();if(!slot)return;
+      slot.typeChoice=el.dataset.typeChoice;slot.typeId="";rerender();setLabFeedback("Now click the phrase or figure mark that supports your choice.");
+    }));
+    body.querySelectorAll("[data-type-cue]").forEach(el=>el.addEventListener("click",()=>{
+      const slot=current();if(!slot||!slot.sourceId||!slot.polarity||!slot.typeChoice||(task.kind==="word"&&!slot.signId))return setLabFeedback("Choose the amount and sign clue first.","incorrect");
+      slot.typeId=el.dataset.typeCue;rerender();setLabFeedback("Type clue selected.");
+    }));
+    body.querySelectorAll("[data-polarity]").forEach(el=>el.addEventListener("click",()=>{
+      const slot=current();if(!slot||!slot.sourceId)return;
+      slot.polarity=el.dataset.polarity;const term=task.terms.find(t=>t.id===slot.sourceId);
+      const magnitude=fmt(Math.abs(term.value));const position=data.slots.left.includes(slot)?"left":"right";
+      const index=data.slots[position].indexOf(slot);
+      slot.raw=(slot.polarity==="negative"?"−":index>0?"+":"")+magnitude;
+      slot.signId="";slot.typeId="";data.signPicked=new Set(all().map(x=>x.signId).filter(Boolean));
+      rerender();setLabFeedback(task.kind==="word"?"Now click the phrase that explains the sign.":"Now click the figure mark that shows the term type.");
+    }));
     body.querySelectorAll('[data-select="symbol"]').forEach(el=>el.addEventListener("change",()=>{data.symbol=el.value;}));
     body.querySelectorAll("[data-action]").forEach(el=>el.addEventListener("click",()=>{
       const action=el.dataset.action;
@@ -297,10 +331,10 @@
             if(!term||term.side!==side||used.has(term.id))return setLabFeedback(where+": select a matching amount or figure label from this situation.","incorrect");
             used.add(term.id);
             if(slot.kind!==term.kind)return setLabFeedback(where+": review whether this amount changes with x or stays fixed.","incorrect");
-            if(!slot.reason?.trim())return setLabFeedback(where+": identify the words or marks that show its term type.","incorrect");
+            if(slot.typeChoice!==(term.kind==="variable"?"yes":"no")||slot.typeId!==term.id)return setLabFeedback(where+": click the words or figure mark that shows its term type.","incorrect");
             const raw=slot.raw.trim().replace(/−/g,"-");
             const valid=i===0?/^[+-]?(?:\d+(?:\.\d+)?|\.\d+)$/:/^[+-](?:\d+(?:\.\d+)?|\.\d+)$/;
-            if(!valid.test(raw)||Math.abs(Number(raw)-term.value)>0.0001)return setLabFeedback(where+": check the signed number. Use + for a positive amount after another box.","incorrect");
+            if(!slot.polarity||!valid.test(raw)||Math.abs(Number(raw)-term.value)>0.0001)return setLabFeedback(where+": check the signed number. Use + for a positive amount after another box.","incorrect");
             if(task.kind==="word"&&slot.signId!==term.id)return setLabFeedback(where+": select the word or phrase that explains its sign.","incorrect");
           }
         }
