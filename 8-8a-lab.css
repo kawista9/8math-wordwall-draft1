@@ -239,3 +239,17 @@ body.lab-is-open #standardsLab {overflow:visible}
 .a88-builder .a88-type-choice {display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;font-size:.85rem;font-weight:700}
 .a88-builder .a88-type-choice button {padding:.3rem .55rem;border:1.5px solid #9caec5;border-radius:7px;background:#fff;color:#24334b;font:inherit;cursor:pointer}
 .a88-builder .a88-type-choice button[aria-pressed="true"] {border-color:#1557bd;background:#edf4ff}
+
+.a88-combine-stage {display:grid;gap:.45rem}
+.a88-combine-stage h5,.a88-combine-stage p {margin:0}
+.a88-combine-actions {display:flex;gap:.45rem;flex-wrap:wrap}
+.a88-combine-actions button {padding:.4rem .65rem;border:1.5px solid #9caec5;border-radius:8px;background:#fff;color:#24334b;font:inherit;font-weight:700;cursor:pointer}
+.a88-combine-actions button[aria-pressed="true"] {border-color:#7136a8;background:#f2eafe;color:#7136a8}
+.a88-combine-row {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem}
+.a88-combine-row>div {display:grid;gap:.35rem;align-content:start;padding:.55rem;border:1px solid #cbd6e6;border-radius:8px;background:#fff}
+.a88-combine-field {display:grid;gap:.2rem;font-size:.82rem;font-weight:700}
+.a88-combine-field>span:last-child {display:flex;align-items:center;gap:.15rem}
+.a88-combine-field input {width:100%;min-width:0;padding:.4rem;border:1.5px solid currentColor;border-radius:6px;font:inherit}
+.a88-combine-field.a88-variable {color:var(--a88-blue)}
+.a88-combine-field.a88-constant {color:var(--a88-green)}
+@media(max-width:650px){.a88-combine-row {grid-template-columns:1fr}}
