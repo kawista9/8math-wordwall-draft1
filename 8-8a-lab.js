@@ -142,7 +142,7 @@
   function independentEvidenceClass(data,id,isSign=false) {
     if(data.index<7)return "";
     const left=data.slots?.left||[],right=data.slots?.right||[];
-    const slot=[...left,...right].find(item=>(isSign?item.signId:item.sourceId===id||item.typeId===id));
+    const slot=[...left,...right].find(item=>(isSign?item.signId===id:item.sourceId===id||item.typeId===id));
     if(!slot)return "";
     const position=left.includes(slot)?"left":"right";
     const expectedSide=position==="left"?data.order:(data.order==="L"?"R":"L");
