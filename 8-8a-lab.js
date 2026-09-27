@@ -136,7 +136,11 @@
       variable:groups.reduce((sum,g) => sum + g.multiplier * g.terms.filter(t => t.kind === "variable").reduce((a,t)=>a+t.value,0),0)
     };
   };
-  const fresh = index => ({ index, order:Math.random()<.5?"L":"R", slots:{left:[],right:[]}, activeSide:"left", activeSlot:null, nextSlot:1, phase:index<7?0:4, read:false, question:false, cue:false, picked:new Set(), left:"", right:"", symbol:"", classifications:{}, signPicked:new Set(), signs:{}, inputs:{}, noConstants:false, complete:false });
+  const expandedTerms = (task,side) => task.kind==="word"
+    ? task.terms.filter(t=>t.side===side)
+    : (side==="L"?task.leftGroups:task.rightGroups).flatMap(g=>Array.from({length:g.multiplier},()=>g.terms).flat());
+  const repeatedKinds = (task,side) => ["variable","constant"].filter(kind=>expandedTerms(task,side).filter(t=>t.kind===kind).length>1);
+  const fresh = index => ({ combineChoice:"", combined:{}, index, order:Math.random()<.5?"L":"R", slots:{left:[],right:[]}, activeSide:"left", activeSlot:null, nextSlot:1, phase:index<7?0:4, read:false, question:false, cue:false, picked:new Set(), left:"", right:"", symbol:"", classifications:{}, signPicked:new Set(), signs:{}, inputs:{}, noConstants:false, complete:false });
   window.reset88AQuestion = (data,index) => { for(const key of Object.keys(data)) delete data[key]; Object.assign(data,fresh(index)); };
 
   function independentEvidenceClass(data,id,isSign=false) {
@@ -232,8 +236,10 @@
     const source=active&&task.terms.find(t=>t.id===active.sourceId);
     const sign=active&&task.signPhrases?.[active.signId];
     const type=active&&task.terms.find(t=>t.id===active.typeId);
+    const combineFields=side=>repeatedKinds(task,side).map(kind=>`<label class="a88-combine-field a88-${kind}"><span>${kind==="variable"?"Combined x coefficient":"Combined constant"}</span><span><input type="text" inputmode="decimal" data-combine="${side}-${kind}" value="${esc(data.combined?.[side+"-"+kind]||"")}" aria-label="${esc(name(side))} combined ${kind}">${kind==="variable"?"x":""}</span></label>`).join("");
+    const combineStage=`<div class="a88-stage a88-combine-stage"><h5>Combine like terms</h5><p>Look at the boxes on each side. Add the x terms together and the constants together when a side has more than one of the same kind.</p><div class="a88-combine-actions"><button type="button" data-combine-choice="combine" aria-pressed="${data.combineChoice==="combine"}">Combine like terms</button><button type="button" data-combine-choice="none" aria-pressed="${data.combineChoice==="none"}">No like terms to combine</button></div>${data.combineChoice==="combine"?`<div class="a88-combine-row"><div><strong>${esc(name(first))}</strong>${combineFields(first)||"<span>No terms to combine on this side.</span>"}</div><div><strong>${esc(name(second))}</strong>${combineFields(second)||"<span>No terms to combine on this side.</span>"}</div></div>`:""}</div>`;
     const detail=active?`<div class="a88-slot-detail"><h6>Selected ${active.kind==="variable"?"x term":"constant"} box</h6><p class="a88-box-value">Box: <strong>${esc(active.raw||"□")}${active.kind==="variable"?"x":""}</strong></p><p>${source?"Click the correct choice for this amount's sign.":"Click its number or label in the problem or figure. The box fills automatically."}</p>${source?`<div class="a88-polarity" role="group" aria-label="Is this term positive or negative?"><span>Is it positive or negative?</span><button type="button" data-polarity="positive" aria-pressed="${active.polarity==="positive"}">Positive (+)</button><button type="button" data-polarity="negative" aria-pressed="${active.polarity==="negative"}">Negative (−)</button></div>`:""}${source&&active.polarity?(task.kind==="word"?`<p>Click the word or phrase in the problem that tells you its sign.${sign?` <strong>Chosen: ${esc(sign)}</strong>`:""}</p>`:`<p>The sign is shown on the figure label.</p>`):""}${source&&active.polarity&&(task.kind!=="word"||active.signId)?`<p>Click the word, phrase, or figure mark that shows why this is a ${active.kind==="variable"?"variable term":"constant"}.${type?` <strong>Chosen: ${esc(type.label)}</strong>`:""}</p>`:""}<div class="a88-slot-actions"><button type="button" data-action="next-slot">Next box →</button><button type="button" data-action="remove-slot">Remove box</button></div></div>`:'<p class="a88-select-box">Click a placed box, then choose its amount from the problem or figure.</p>';
-    return `<div class="a88-lab a88-independent a88-builder"><div class="a88-task-head"><span>Independent practice · ${data.index+1} of ${TASKS.length}</span><h4>${esc(task.title)}</h4></div><div class="a88-columns"><section class="a88-panel a88-problem"><h5>Read the complete problem</h5>${scene(task,data)}</section><section class="a88-panel a88-process"><h5>Build the comparison</h5><div class="a88-stage"><p>Choose the symbol, then build each situation from left to right.</p><div class="a88-palette"><span>Drag a box into the highlighted situation:</span><button type="button" draggable="true" data-palette="variable" aria-label="Add variable term box">□x</button><button type="button" draggable="true" data-palette="constant" aria-label="Add constant box">□</button></div><div class="a88-builder-row">${sideMarkup("left",first)}${select("symbol",data.symbol,[["=","="],["<","<"],[">",">"],["≤","≤"],["≥","≥"]],"Symbol","?")}${sideMarkup("right",second)}</div><button type="button" class="a88-switch-side" data-action="switch-side">Work on ${esc(name(data.activeSide==="left"?second:first))} →</button>${detail}</div><div class="a88-stage"><button type="button" class="lab-action a88-check" data-action="check">Check my answer</button></div>${data.complete?`<section class="a88-success"><strong>Correct comparison! Here is the complete ${task.relation==="="?"equation":"inequality"}:</strong><p class="a88-completed-equation">${esc(comparison(task,first))}</p><button type="button" class="lab-next" data-action="next">${data.index===TASKS.length-1?"Finish lab":"Next question →"}</button></section>`:""}</section></div></div>`;
+    return `<div class="a88-lab a88-independent a88-builder"><div class="a88-task-head"><span>Independent practice · ${data.index+1} of ${TASKS.length}</span><h4>${esc(task.title)}</h4></div><div class="a88-columns"><section class="a88-panel a88-problem"><h5>Read the complete problem</h5>${scene(task,data)}</section><section class="a88-panel a88-process"><h5>Build the comparison</h5><div class="a88-stage"><p>Choose the symbol, then build each situation from left to right.</p><div class="a88-palette"><span>Drag a box into the highlighted situation:</span><button type="button" draggable="true" data-palette="variable" aria-label="Add variable term box">□x</button><button type="button" draggable="true" data-palette="constant" aria-label="Add constant box">□</button></div><div class="a88-builder-row">${sideMarkup("left",first)}${select("symbol",data.symbol,[["=","="],["<","<"],[">",">"],["≤","≤"],["≥","≥"]],"Symbol","?")}${sideMarkup("right",second)}</div><button type="button" class="a88-switch-side" data-action="switch-side">Work on ${esc(name(data.activeSide==="left"?second:first))} →</button>${detail}</div>${combineStage}<div class="a88-stage"><button type="button" class="lab-action a88-check" data-action="check">Check my answer</button></div>${data.complete?`<section class="a88-success"><strong>Correct comparison! Here is the complete ${task.relation==="="?"equation":"inequality"}:</strong><p class="a88-completed-equation">${esc(comparison(task,first))}</p><button type="button" class="lab-next" data-action="next">${data.index===TASKS.length-1?"Finish lab":"Next question →"}</button></section>`:""}</section></div></div>`;
   }
   function present(task,data) {
     const guided=data.index<7, relationReady=!guided||data.phase>=1, variableReady=!guided||data.phase>=2, constantReady=!guided||data.phase>=3, buildReady=!guided||data.phase>=4;
@@ -282,8 +288,14 @@
     body.querySelectorAll("[data-slot-id]").forEach(el=>el.addEventListener("click",()=>{data.activeSlot=el.dataset.slotId;data.activeSide=data.slots.left.some(x=>x.id===data.activeSlot)?"left":"right";rerender();}));
     body.querySelectorAll("[data-token]").forEach(el=>el.addEventListener("click",()=>{
       const slot=current();if(!slot)return setLabFeedback("Choose a box before pointing to evidence.","incorrect");
-      const id=el.dataset.token;if(all().some(other=>other!==slot&&other.sourceId===id))return setLabFeedback("That amount is already used in another box.","incorrect");
-      if(slot.sourceId&&slot.polarity&&(task.kind!=="word"||slot.signId)&&!slot.typeId)slot.typeId=id;
+      const id=el.dataset.token;
+      const choosingType=!!(slot.sourceId&&slot.polarity&&(task.kind!=="word"||slot.signId)&&!slot.typeId);
+      if(!choosingType){
+        const matching=expandedTerms(task,sideCode(data.activeSide)).filter(t=>t.id===id).length;
+        const used=all().filter(other=>other!==slot&&other.sourceId===id).length;
+        if(matching&&used>=matching)return setLabFeedback("That value has already been used the required number of times on this side.","incorrect");
+      }
+      if(choosingType)slot.typeId=id;
        else {slot.sourceId=id;slot.raw=fmt(Math.abs(task.terms.find(t=>t.id===id).value));slot.polarity="";slot.signId="";slot.typeId="";}
        data.picked=new Set(all().map(x=>x.sourceId).filter(Boolean));data.signPicked=new Set(all().map(x=>x.signId).filter(Boolean));rerender();setLabFeedback(slot.typeId?"Type clue selected.":"Amount selected. Choose positive or negative.");
     }));
@@ -308,6 +320,10 @@
       slot.signId="";slot.typeId="";data.signPicked=new Set(all().map(x=>x.signId).filter(Boolean));
       rerender();setLabFeedback(task.kind==="word"?"Now click the phrase that explains the sign.":"Now click the figure mark that shows the term type.");
     }));
+    body.querySelectorAll("[data-combine-choice]").forEach(el=>el.addEventListener("click",()=>{
+      data.combineChoice=el.dataset.combineChoice;rerender();setLabFeedback(data.combineChoice==="combine"?"Add the like terms on each side.":"No like terms selected.");
+    }));
+    body.querySelectorAll("[data-combine]").forEach(el=>el.addEventListener("input",()=>{data.combined[el.dataset.combine]=el.value;}));
     body.querySelectorAll('[data-select="symbol"]').forEach(el=>el.addEventListener("change",()=>{data.symbol=el.value;}));
     body.querySelectorAll("[data-action]").forEach(el=>el.addEventListener("click",()=>{
       const action=el.dataset.action;
@@ -318,14 +334,14 @@
         const first=data.order,second=first==="L"?"R":"L";
         if(data.symbol!==symbolFor(task,first))return setLabFeedback("Check the comparison symbol for the situation order shown.","incorrect");
         for(const [position,side] of [["left",first],["right",second]]){
-          const slots=data.slots[position],expected=task.terms.filter(t=>t.side===side);
+          const slots=data.slots[position],expected=expandedTerms(task,side);
           if(slots.length!==expected.length)return setLabFeedback("Review the number of boxes for "+name(side)+".","incorrect");
-          const used=new Set();
+          const used=new Map();
           for(let i=0;i<slots.length;i++){
             const slot=slots[i],term=task.terms.find(t=>t.id===slot.sourceId);
             const where=name(side)+", box "+(i+1);
-            if(!term||term.side!==side||used.has(term.id))return setLabFeedback(where+": select a matching amount or figure label from this situation.","incorrect");
-            used.add(term.id);
+            if(!term||term.side!==side||(used.get(term.id)||0)>=expected.filter(t=>t.id===term.id).length)return setLabFeedback(where+": select a matching amount or figure label from this situation.","incorrect");
+            used.set(term.id,(used.get(term.id)||0)+1);
             if(slot.kind!==term.kind)return setLabFeedback(where+": review whether this amount changes with x or stays fixed.","incorrect");
             if(slot.typeId!==term.id)return setLabFeedback(where+": click the words or figure mark that shows its term type.","incorrect");
             const raw=slot.raw.trim().replace(/−/g,"-");
@@ -333,6 +349,13 @@
             if(!slot.polarity||!valid.test(raw)||Math.abs(Number(raw)-term.value)>0.0001)return setLabFeedback(where+": check the signed number. Use + for a positive amount after another box.","incorrect");
             if(task.kind==="word"&&slot.signId!==term.id)return setLabFeedback(where+": select the word or phrase that explains its sign.","incorrect");
           }
+        }
+        const hasLike=[first,second].some(side=>repeatedKinds(task,side).length);
+        if(!data.combineChoice)return setLabFeedback("Choose whether there are like terms to combine.","incorrect");
+        if(data.combineChoice===(hasLike?"none":"combine"))return setLabFeedback(hasLike?"Some terms on a side can be combined.":"There are no like terms to combine here.","incorrect");
+        if(hasLike)for(const side of [first,second])for(const kind of repeatedKinds(task,side)){
+          const raw=(data.combined?.[side+"-"+kind]||"").trim().replace(/−/g,"-");
+          if(!close(raw,totals(task,side)[kind]))return setLabFeedback(name(side)+": check the combined "+(kind==="variable"?"x coefficient":"constant")+".","incorrect");
         }
         data.complete=true;rerender();setLabFeedback("Correct! The complete comparison is shown below.","correct");return;
       }
@@ -345,7 +368,7 @@
   window.render88ALab = function({labRuntime,$,setLabProgress,setLabFeedback,showLabCompletion,syncWhiteboardQuestion}) {
     if (!labRuntime.data) labRuntime.data=fresh(0);
     const data=labRuntime.data, task=TASKS[data.index], guided=data.index<7; 
-    data.signPicked ||= new Set(); data.signs ||= {};
+    data.signPicked ||= new Set(); data.signs ||= {}; data.combined ||= {}; data.combineChoice ||= "";
     setLabProgress(data.index,TASKS.length,guided?`Guided ${data.index+1} of 7: read → compare → collect terms → build.`:`Independent ${data.index-6} of 12: build each situation from left to right.`);
     $("#standardsLabBody").innerHTML=present(task,data);
     syncWhiteboardQuestion();
