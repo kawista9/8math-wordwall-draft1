@@ -170,7 +170,7 @@
     const guided=data.index<7;
     return ` <button type="button" class="a88-type-cue ${guided?`a88-${t.kind}`:"a88-neutral"}${guided&&data.typePicked.has(t.id)?" is-picked":""}${!guided&&selected?(correct?` a88-evidence-match a88-${selected.kind}`:" a88-evidence-mismatch"):""}" data-type-cue="${esc(t.id)}" aria-pressed="${guided?data.typePicked.has(t.id):!!selected}">${esc(phrase)}</button>`;
   }
-  const operationCue=(text,task,data)=>task.kind==="geometry"&&/perimeter/i.test(task.title)
+  const operationCue=(text,task,data)=>task.kind==="geometry"&&/perimeter/i.test(task.statement+" "+task.question)
     ? text.replace(/perimeter/gi,word=>`<button type="button" class="a88-operation${data.operation?" is-picked":""}" data-operation="perimeter" aria-pressed="${data.operation}">${word}</button>`)
     : text;
   function geometryFigure(task,data) {
@@ -204,7 +204,7 @@
     const marker="__RELATIONSHIP_CUE__";
     const body=task.kind==="geometry"?esc(task.question).replace("{cue}",marker):`When will ${esc(task.left)} be ${marker} ${esc(task.right)} ${esc(task.tail||"for a value of x")}? Write ${task.relation==="="?"an equation":"an inequality"} to represent the comparison.`;
     const [before,after]=body.split(marker);
-    const segment=text=>text.split(/(perimeter)/gi).map(part=>/^perimeter$/i.test(part)&&task.kind==="geometry"&&/perimeter/i.test(task.title)
+    const segment=text=>text.split(/(perimeter)/gi).map(part=>/^perimeter$/i.test(part)&&task.kind==="geometry"&&/perimeter/i.test(task.statement+" "+task.question)
       ? operationCue(part,task,data)
       :`<span class="a88-question${data.question?" is-picked":""}" data-action="question" role="button" tabindex="0" aria-label="Select the question in the problem" aria-pressed="${data.question}">${part}</span>`).join("");
     return `<span class="a88-question-inline">${segment(before)}${cue}${segment(after)}</span>`;
@@ -342,7 +342,7 @@
       if(action==="next-slot"){const list=data.slots[data.activeSide],index=list.findIndex(x=>x.id===data.activeSlot);if(index>=0&&index<list.length-1)data.activeSlot=list[index+1].id;else if(data.activeSide==="left"){data.activeSide="right";data.activeSlot=data.slots.right[0]?.id||null;}else data.activeSlot=null;rerender();return;}
       if(action==="check"){
         if(!data.question||!data.cue)return setLabFeedback("Click the question and the relationship phrase in the problem first.","incorrect");
-        if(task.kind==="geometry"&&/perimeter/i.test(task.title)&&!data.operation)return setLabFeedback("Click perimeter to show what tells you to add the side lengths.","incorrect");
+        if(task.kind==="geometry"&&/perimeter/i.test(task.statement+" "+task.question)&&!data.operation)return setLabFeedback("Click perimeter to show what tells you to add the side lengths.","incorrect");
         const first=data.order,second=first==="L"?"R":"L";
         if(data.symbol!==symbolFor(task,first))return setLabFeedback("Check the comparison symbol for the situation order shown.","incorrect");
         for(const [position,side] of [["left",first],["right",second]]){
@@ -429,7 +429,7 @@
       if(action==="relation"){
         if(!data.read)return setLabFeedback("Read the whole situation before building the comparison.","incorrect");
         if(!data.question||!data.cue)return setLabFeedback("Click the purple relationship phrase in the question first.","incorrect");
-        if(task.kind==="geometry"&&/perimeter/i.test(task.title)&&!data.operation)return setLabFeedback("Click perimeter to show that all side lengths must be added.","incorrect");
+        if(task.kind==="geometry"&&/perimeter/i.test(task.statement+" "+task.question)&&!data.operation)return setLabFeedback("Click perimeter to show that all side lengths must be added.","incorrect");
         if(!relationship())return setLabFeedback("Check which situation is on each side and which way the symbol points.","incorrect");
         data.phase=2;window.render88ALab({labRuntime,$,setLabProgress,setLabFeedback,showLabCompletion,syncWhiteboardQuestion});setLabFeedback("The template is ready. Select each term in the story or figure, then fill the boxes.","correct");return;
       }
