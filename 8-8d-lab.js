@@ -1,8 +1,8 @@
 (() => {
   const TASKS = [
-    {type:"exterior",title:"Find the exterior angle", a:48,b:67,e:115,ask:"e"},
-    {type:"exterior",title:"Find a remote interior angle",a:42,b:77,e:119,ask:"b"},
-    {type:"exterior",title:"Find the other remote angle",a:74,b:53,e:127,ask:"a"},
+    {type:"exterior",title:"Find the exterior angle", a:48,b:67,e:115,ask:"e",orient:"right"},
+    {type:"exterior",title:"Find a remote interior angle",a:42,b:77,e:119,ask:"b",orient:"left"},
+    {type:"exterior",title:"Find the other remote angle",a:74,b:53,e:127,ask:"a",orient:"upper-left"},
     {type:"expressions",title:"Exterior angle expressions",a:"2x + 15",b:"x + 20",e:"4x + 5",x:30,values:[75,50,125]},
     {type:"expressions",title:"Another exterior angle",a:"3x + 8",b:"2x + 12",e:"6x − 5",x:25,values:[83,62,145]},
     {type:"expressions",title:"Solve every marked angle",a:"4x − 6",b:"x + 18",e:"6x − 8",x:20,values:[74,38,112]},
@@ -39,7 +39,9 @@
   const triangle=(t,clickable)=>{
     const keys=["a","b","c","e"],names=["∠A","∠B","∠C","∠D"];
     const measures=(clickable?[t.a,t.b,180-t.e,t.e]:[t.a,t.b,null,t.e]).map((v,i)=>i===({a:0,b:1,e:3}[t.ask])?"x":v);
-    return '<div class="d88-triangle" role="group" aria-label="Triangle ABC with exterior angle D"><svg viewBox="0 0 360 260" role="img" aria-label="Triangle with the base extended at C"><path d="M 140 25 L 55 210 L 245 210 L 140 25 M 245 210 L 330 210"/></svg>'+
+    const orient=t.orient||"right";
+    const transform=orient==="left"?"translate(360 0) scale(-1 1)":orient==="upper-left"?"rotate(180 180 130)":"";
+    return '<div class="d88-triangle d88-orient-'+orient+'" role="group" aria-label="Triangle ABC with exterior angle D"><svg viewBox="0 0 360 260" role="img" aria-label="Triangle ABC with side BC extended at C"><g transform="'+transform+'"><path d="M 140 25 L 55 210 L 245 210 L 140 25 M 245 210 L 330 210"/></g></svg>'+
       keys.map((key,i)=>'<button type="button" class="d88-angle d88-angle-'+key+'" data-d88-angle="'+key+'" '+(clickable?'':'disabled')+' aria-pressed="false"><span>'+names[i]+' =</span>'+(measures[i]===null?'':'<strong>'+escapeHTML(measures[i])+'°</strong>')+'</button>').join("")+'</div>';
   };
     const twoTriangles=t=>'<div class="d88-similar-figures">'+[t.first,t.second].map((angles,g)=>
