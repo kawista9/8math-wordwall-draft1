@@ -24,3 +24,11 @@
 .c88-figure.c88-two-triangles{max-width:760px;aspect-ratio:2.6;min-height:225px}
 .c88-two-triangles .c88-figure-label{font-size:clamp(.8rem,1.3vw,1rem);padding:.08rem .2rem}
 @media(max-width:560px){.c88-figure.c88-two-triangles{min-height:185px;aspect-ratio:2.2}.c88-two-triangles .c88-figure-label{font-size:.75rem}}
+
+.c88-two-stack{display:grid;gap:12px;width:100%;min-width:0;margin:1rem 0 .3rem}
+.c88-triangle-card{position:relative;box-sizing:border-box;width:100%;height:205px;margin:0;border:1px solid #cfdaeb;border-radius:16px;background:#fff;overflow:hidden}
+.c88-triangle-card svg{position:absolute;inset:0;width:100%;height:100%}
+.c88-triangle-card polygon{fill:none;stroke:#263d60;stroke-width:1.35;stroke-linecap:round;stroke-linejoin:round}
+.c88-triangle-label{position:absolute;z-index:1;transform:translate(-50%,-50%);padding:.08rem .2rem;background:#fff;border-radius:5px;color:#124da8;font-size:clamp(.85rem,1.35vw,1rem);font-weight:850;white-space:nowrap}
+.c88-triangle-label-0{left:19%;top:49%}.c88-triangle-label-1{left:81%;top:49%}.c88-triangle-label-2{left:50%;top:91%}
+@media(max-width:560px){.c88-triangle-card{height:185px}.c88-triangle-label{font-size:.85rem}}
