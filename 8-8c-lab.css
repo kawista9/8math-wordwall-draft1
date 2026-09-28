@@ -32,3 +32,9 @@
 .c88-triangle-label{position:absolute;z-index:1;transform:translate(-50%,-50%);padding:.08rem .2rem;background:#fff;border-radius:5px;color:#124da8;font-size:clamp(.85rem,1.35vw,1rem);font-weight:850;white-space:nowrap}
 .c88-triangle-label-0{left:23%;top:49%}.c88-triangle-label-1{left:77%;top:49%}.c88-triangle-label-2{left:50%;top:91%}
 @media(max-width:560px){.c88-triangle-card{height:185px}.c88-triangle-label{font-size:.85rem}}
+
+.c88-tile-row{align-items:flex-start;justify-content:flex-start;gap:.5rem}
+.c88-tile-cluster{display:grid;gap:.22rem;flex:none}
+.c88-x-cluster{grid-auto-flow:column;grid-auto-columns:27px}
+.c88-unit-cluster{grid-template-columns:repeat(5,27px)}
+@media(max-width:420px){.c88-unit-cluster{grid-template-columns:repeat(4,27px)}}
