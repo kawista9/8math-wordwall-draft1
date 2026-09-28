@@ -16,7 +16,7 @@
 .d88-angle small{display:block;font-size:.7rem;color:#536887}
 .d88-angle strong{font-size:calc(1rem + 2px)}
 .d88-angle.active{background:#e5f1ff;outline:2px solid #175cc1}
-.d88-angle-a{top:24%;left:39%}.d88-angle-b{top:67%;left:24%}.d88-angle-e{top:67%;left:88%}
+.d88-angle-a{top:24%;left:42%}.d88-angle-b{top:67%;left:24%}.d88-angle-e{top:67%;left:88%}
 .d88-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;margin:.9rem 0}
 .d88-input{display:block;min-width:0;font-weight:750}
 .d88-input>span{display:block;margin-bottom:.35rem}
@@ -63,11 +63,11 @@
 .d88-angle-c{top:67%;left:60%}
 
 /* Every vertex label is inset 14% of the SVG width/height into its angle. */
-.d88-orient-left .d88-angle-a{left:61%;top:24%}
+.d88-orient-left .d88-angle-a{left:58%;top:24%}
 .d88-orient-left .d88-angle-b{left:76%;top:67%}
 .d88-orient-left .d88-angle-c{left:40%;top:67%}
 .d88-orient-left .d88-angle-e{left:12%;top:67%}
-.d88-orient-upper-left .d88-angle-a{left:61%;top:76%}
+.d88-orient-upper-left .d88-angle-a{left:58%;top:76%}
 .d88-orient-upper-left .d88-angle-b{left:76%;top:33%}
 .d88-orient-upper-left .d88-angle-c{left:40%;top:33%}
 .d88-orient-upper-left .d88-angle-e{left:12%;top:33%}
