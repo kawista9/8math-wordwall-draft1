@@ -38,3 +38,6 @@
 .c88-x-cluster{grid-auto-flow:column;grid-auto-columns:27px}
 .c88-unit-cluster{grid-template-columns:repeat(5,27px)}
 @media(max-width:420px){.c88-unit-cluster{grid-template-columns:repeat(4,27px)}}
+
+.c88-figure.c88-rect-square{aspect-ratio:1.6;max-width:520px;overflow:hidden}
+.c88-rect-square .c88-figure-label{font-size:clamp(.85rem,1.4vw,1rem)}
