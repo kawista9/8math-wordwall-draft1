@@ -36,8 +36,8 @@
         <section class="c88-panel c88-work">
           ${needsChoice?`<h5>Choose an equation</h5><div class="c88-choices" role="radiogroup" aria-label="Equation choices">${task.choices.map((choice,i)=>`<label class="c88-choice${data.choice===i?" is-selected":""}${data.choiceCorrect&&data.choice===i?" is-correct":""}"><input type="radio" name="c88-equation" value="${i}" ${data.choice===i?"checked":""} ${data.choiceCorrect||data.solved?"disabled":""}><b>${"ABCD"[i]}</b><span>${math(choice)}</span></label>`).join("")}</div>${!data.choiceCorrect?`<button type="button" class="lab-action c88-check" data-c88-equation>Check equation</button>`:""}`:"<h5>Find x</h5>"}
           ${(!needsChoice||data.choiceCorrect)?`<div class="c88-answer"><label for="c88-x">What is the value of x?</label><div class="c88-answer-entry"><span>x =</span>${fractionInput(data)}</div>${!data.solved?fractionTemplate(data):""}<button type="button" class="lab-action c88-check" data-c88-x ${data.solved?"disabled":""}>Check x</button></div>`:""}
-          ${data.attempted&&!data.solved?`<p class="c88-hint" role="status">${esc(task.hint)}</p>`:""}
-          ${data.solved?`<div class="c88-success" role="status"><strong>Correct! x = ${esc(task.answer)}</strong><p>${esc(task.explain)}</p>${task.section==="models"?`<p>The model represents ${esc(task.equation)}.</p>`:""}</div><button type="button" class="lab-next" data-c88-next>${data.index===TASKS.length-1?"Finish lab":"Next question →"}</button>`:""}
+          ${data.attempted&&!data.solved?`<p class="c88-hint" role="status">${math(task.hint)}</p>`:""}
+          ${data.solved?`<div class="c88-success" role="status"><strong>Correct! x = ${esc(task.answer)}</strong><p>${math(task.explain)}</p>${task.section==="models"?`<p>The model represents ${math(task.equation)}.</p>`:""}</div><button type="button" class="lab-next" data-c88-next>${data.index===TASKS.length-1?"Finish lab":"Next question →"}</button>`:""}
         </section>
       </div>
     </div>`;
