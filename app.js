@@ -695,6 +695,13 @@
   }
 
   const LABS = {
+    "8.8D": {
+      title: "Angle Relationships Lab",
+      description: "Complete 17 interactive angle questions: exterior angles, similar triangles, pairs formed by parallel lines, and equations that determine all eight angles.",
+      summary: "You identified remote interior angles, used triangle angle relationships and similarity, classified angle pairs, and solved all eight angles formed by a transversal.",
+      videos: [],
+      videoPlacement: "practice"
+    },
     "8.8C": {
       title: "Model, Write, and Solve",
       description: "Solve 21 equations with x on both sides. Begin with four algebra-tile models and three rational-number equations. Then choose an equation from each geometry diagram and word problem before solving for x.",
@@ -1110,6 +1117,7 @@
     if (standard === "8.7D") renderLab87D();
     if (standard === "8.8A") window.render88ALab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
     if (standard === "8.8B") window.render88BLab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
+    if (standard === "8.8D") window.render88DLab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
     if (standard === "8.8C") window.render88CLab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
     if (standard === "8.10A") renderLabA();
     if (standard === "8.10B") renderLabB();
@@ -6426,6 +6434,10 @@
       if (typeof window.resetDistance87DQuestion === "function") window.resetDistance87DQuestion(data, nextIndex);
       else Object.assign(data, { index: nextIndex, step: 0, solved: false, inputs: {} });
       renderLab87D();
+    } else if (standard === "8.8D") {
+      if (data.index >= window.ANGLES_88D_TOTAL - 1) return showLabCompletion(standard);
+      window.reset88DQuestion(data, data.index + 1);
+      renderStandardsLab(standard);
     } else if (standard === "8.8C") {
       if (data.index >= window.EQUATION_88C_TOTAL - 1) return showLabCompletion(standard);
       window.reset88CQuestion(data, data.index + 1);
