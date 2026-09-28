@@ -16,7 +16,7 @@
 .d88-angle small{display:block;font-size:.7rem;color:#536887}
 .d88-angle strong{font-size:1rem}
 .d88-angle.active{background:#e5f1ff;outline:2px solid #175cc1}
-.d88-angle-a{top:52%;left:40%}.d88-angle-b{top:70%;left:30%}.d88-angle-e{top:70%;left:80%}
+.d88-angle-a{top:30%;left:40%}.d88-angle-b{top:77%;left:23%}.d88-angle-e{top:77%;left:73%}
 .d88-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;margin:.9rem 0}
 .d88-input{display:block;min-width:0;font-weight:750}
 .d88-input>span{display:block;margin-bottom:.35rem}
@@ -60,16 +60,20 @@
 @media(max-width:520px){.d88-match-row{grid-template-columns:1fr}.d88-eight{grid-template-columns:repeat(2,minmax(0,1fr))}.d88-fields{grid-template-columns:1fr}.d88-similar-figures{gap:.3rem}.d88-sim-triangle span{font-size:.75rem}}
 
 .d88-angle span{display:block;font-size:.9rem;font-weight:850;color:#123b78}
-.d88-angle-c{top:70%;left:53%}
+.d88-angle-c{top:77%;left:62%}
 
-/* Keep labels in the open angle regions as the triangle turns. */
-.d88-orient-left .d88-angle-a{left:60%;top:52%}
-.d88-orient-left .d88-angle-b{left:70%;top:70%}
-.d88-orient-left .d88-angle-c{left:47%;top:70%}
-.d88-orient-left .d88-angle-e{left:20%;top:70%}
-.d88-orient-upper-left .d88-angle-a{left:60%;top:60%}
-.d88-orient-upper-left .d88-angle-b{left:72%;top:33%}
-.d88-orient-upper-left .d88-angle-c{left:45%;top:33%}
-.d88-orient-upper-left .d88-angle-e{left:20%;top:33%}
+/* Label positions follow the angle vertices in the 360 × 260 SVG. */
+.d88-orient-left .d88-angle-a{left:60%;top:30%}
+.d88-orient-left .d88-angle-b{left:77%;top:77%}
+.d88-orient-left .d88-angle-c{left:38%;top:77%}
+.d88-orient-left .d88-angle-e{left:27%;top:77%}
+.d88-orient-upper-left .d88-angle-a{left:60%;top:70%}
+.d88-orient-upper-left .d88-angle-b{left:77%;top:23%}
+.d88-orient-upper-left .d88-angle-c{left:38%;top:23%}
+.d88-orient-upper-left .d88-angle-e{left:27%;top:23%}
+/* Algebraic labels are wider, so they sit deeper in each angle. */
+.d88-expressions .d88-angle-a{top:49%;left:40%}
+.d88-expressions .d88-angle-b{top:72%;left:29%}
+.d88-expressions .d88-angle-e{top:72%;left:78%}
 .d88-angle:focus-visible{outline:2px solid #175cc1;outline-offset:2px}
 .d88-lines .d88-number.active{background:#7040b5;color:#fff}
