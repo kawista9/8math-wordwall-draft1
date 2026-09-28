@@ -74,5 +74,7 @@
 /* Expression labels use the same 15% positions with smaller text to clear the sides. */
 .d88-expressions .d88-angle span{font-size:clamp(.62rem,1.8vw,.78rem)}
 .d88-expressions .d88-angle strong{font-size:clamp(.65rem,2vw,.82rem)}
+.d88-expressions .d88-angle-a{top:38%}
+.d88-expressions.d88-orient-upper-left .d88-angle-a{top:62%}
 .d88-angle:focus-visible{outline:2px solid #175cc1;outline-offset:2px}
 .d88-lines .d88-number.active{background:#7040b5;color:#fff}
