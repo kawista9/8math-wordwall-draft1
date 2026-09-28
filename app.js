@@ -695,6 +695,13 @@
   }
 
   const LABS = {
+    "8.9A": {
+      title: "Two Lines, One Solution",
+      description: "Answer seven multiple choice questions about the intersection of two graphed linear equations. Check each solution in both equations.",
+      summary: "You found the point where two lines intersect and verified its x- and y-coordinates in both equations. A solution to a system must satisfy both equations at the same time.",
+      videos: [],
+      videoPlacement: "practice"
+    },
     "8.8D": {
       title: "Angle Relationships Lab",
       description: "Complete 17 interactive angle questions: exterior angles, similar triangles, pairs formed by parallel lines, and equations that determine all eight angles.",
@@ -1117,6 +1124,7 @@
     if (standard === "8.7D") renderLab87D();
     if (standard === "8.8A") window.render88ALab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
     if (standard === "8.8B") window.render88BLab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
+    if (standard === "8.9A") window.render89ALab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
     if (standard === "8.8D") window.render88DLab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
     if (standard === "8.8C") window.render88CLab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
     if (standard === "8.10A") renderLabA();
@@ -6434,6 +6442,10 @@
       if (typeof window.resetDistance87DQuestion === "function") window.resetDistance87DQuestion(data, nextIndex);
       else Object.assign(data, { index: nextIndex, step: 0, solved: false, inputs: {} });
       renderLab87D();
+    } else if (standard === "8.9A") {
+      if (data.index >= window.INTERSECTION_89A_TOTAL - 1) return showLabCompletion(standard);
+      window.reset89AQuestion(data, data.index + 1);
+      renderStandardsLab(standard);
     } else if (standard === "8.8D") {
       if (data.index >= window.ANGLES_88D_TOTAL - 1) return showLabCompletion(standard);
       window.reset88DQuestion(data, data.index + 1);
