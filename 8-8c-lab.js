@@ -20,6 +20,7 @@
   };
   const model=task=>`<div class="c88-balance" aria-label="Algebra tile balance">${tiles(task.tiles.L,"Left side")}<span class="c88-equals">=</span>${tiles(task.tiles.R,"Right side")}</div><p class="c88-key">Blue tiles: x · gray x tiles: −x · white squares: +1 · gray squares: −1</p>`;
   const figure=task=>{
+    if(task.figure==="two-triangles")return `<div class="c88-two-stack" role="group" aria-label="Two triangles with equal perimeters">${[0,1].map((group)=>`<figure class="c88-triangle-card" aria-label="Triangle ${group+1}"><svg viewBox="0 0 100 100" preserveAspectRatio="none" role="img" aria-label="Triangle ${group+1}"><polygon points="28,82 50,12 72,82"/></svg>${task.labels.slice(group*3,group*3+3).map((label,i)=>`<span class="c88-triangle-label c88-triangle-label-${i}">${esc(label)}</span>`).join("")}</figure>`).join("")}</div>`;
     const f=FIGURES[task.figure];
     return `<figure class="c88-figure c88-${task.figure}" aria-label="${esc(task.title)} diagram"><svg viewBox="0 0 ${task.figure==="two-triangles"?"260 100":"100 100"}" role="img" aria-label="${esc(task.title)}">${f.svg}</svg>${task.labels.map((label,i)=>`<span class="c88-figure-label" style="left:${f.spots[i][0]}%;top:${f.spots[i][1]}%">${esc(label)}</span>`).join("")}</figure>`;
   };
