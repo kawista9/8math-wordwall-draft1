@@ -41,7 +41,7 @@
     const measures=(clickable?[t.a,t.b,180-t.e,t.e]:[t.a,t.b,null,t.e]).map((v,i)=>i===({a:0,b:1,e:3}[t.ask])?"x":v);
     const orient=t.orient||"right";
     const transform=orient==="left"?"translate(360 0) scale(-1 1)":orient==="upper-left"?"rotate(180 180 130)":"";
-    return '<div class="d88-triangle d88-orient-'+orient+'" role="group" aria-label="Triangle ABC with exterior angle D"><svg viewBox="0 0 360 260" role="img" aria-label="Triangle ABC with side BC extended at C"><g transform="'+transform+'"><path d="M 140 25 L 55 210 L 245 210 L 140 25 M 245 210 L 330 210"/></g></svg>'+
+    return '<div class="d88-triangle d88-orient-'+orient+(clickable?'':' d88-expressions')+'" role="group" aria-label="Triangle ABC with exterior angle D"><svg viewBox="0 0 360 260" role="img" aria-label="Triangle ABC with side BC extended at C"><g transform="'+transform+'"><path d="M 140 25 L 55 210 L 245 210 L 140 25 M 245 210 L 330 210"/></g></svg>'+
       keys.map((key,i)=>'<button type="button" class="d88-angle d88-angle-'+key+'" data-d88-angle="'+key+'" '+(clickable?'':'disabled')+' aria-pressed="false"><span>'+names[i]+' =</span>'+(measures[i]===null?'':'<strong>'+escapeHTML(measures[i])+'°</strong>')+'</button>').join("")+'</div>';
   };
     const twoTriangles=t=>'<div class="d88-similar-figures">'+[t.first,t.second].map((angles,g)=>
