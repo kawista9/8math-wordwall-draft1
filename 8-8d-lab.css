@@ -14,9 +14,9 @@
 .d88-angle{position:absolute;transform:translate(-50%,-50%);border:0;border-radius:8px;background:transparent;color:#123b78;padding:.12rem .2rem;min-width:0;line-height:1.1;cursor:pointer;white-space:nowrap;text-align:center}
 .d88-angle:disabled{cursor:default}
 .d88-angle small{display:block;font-size:.7rem;color:#536887}
-.d88-angle strong{font-size:1rem}
+.d88-angle strong{font-size:calc(1rem + 2px)}
 .d88-angle.active{background:#e5f1ff;outline:2px solid #175cc1}
-.d88-angle-a{top:25%;left:39%}.d88-angle-b{top:66%;left:25%}.d88-angle-e{top:66%;left:89%}
+.d88-angle-a{top:24%;left:39%}.d88-angle-b{top:67%;left:24%}.d88-angle-e{top:67%;left:88%}
 .d88-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;margin:.9rem 0}
 .d88-input{display:block;min-width:0;font-weight:750}
 .d88-input>span{display:block;margin-bottom:.35rem}
@@ -28,15 +28,15 @@
 .d88-sim-triangle{position:relative;min-width:0;aspect-ratio:220/190;border:1px solid #d4def0;border-radius:12px;background:#fff;overflow:hidden}
 .d88-sim-triangle strong{position:absolute;top:.3rem;left:.6rem}
 .d88-sim-triangle svg{top:18%;height:74%}
-.d88-sim-triangle span{position:absolute;background:transparent;padding:.08rem .22rem;color:#1255a3;font-weight:800;border-radius:4px}
-.d88-sim-triangle .top{top:34%;left:44%}.d88-sim-triangle .left{bottom:26%;left:24%}.d88-sim-triangle .right{bottom:26%;right:24%}
+.d88-sim-triangle span{font-size:calc(1rem + 2px);position:absolute;background:transparent;padding:.08rem .22rem;color:#1255a3;font-weight:800;border-radius:4px}
+.d88-sim-triangle .top{top:33%;left:44%}.d88-sim-triangle .left{bottom:26%;left:24%}.d88-sim-triangle .right{bottom:26%;right:24%}
 .d88-yesno{display:flex;gap:1rem;flex-wrap:wrap;margin:1rem 0;border:0;padding:0}
 .d88-yesno legend{font-weight:800;margin-bottom:.5rem}
 .d88-yesno label{border:2px solid #b4c6e3;border-radius:10px;padding:.5rem .8rem;cursor:pointer}
 .d88-lines{position:relative;width:100%;max-width:390px;aspect-ratio:330/225;margin:.8rem auto;background:#fff;border:1px solid #d0dced;border-radius:12px}
 .d88-lines svg path{stroke-width:2.5}
 .d88-lines svg .d88-parallel-mark{stroke-width:2}
-.d88-number{position:absolute;transform:translate(-50%,-50%);display:grid;place-items:center;width:1.55rem;height:1.55rem;border-radius:50%;background:transparent;color:#234578;font-weight:850;line-height:1}
+.d88-number{font-size:calc(1rem + 2px);position:absolute;transform:translate(-50%,-50%);display:grid;place-items:center;width:1.75rem;height:1.75rem;border-radius:50%;background:transparent;color:#234578;font-weight:850;line-height:1}
 .d88-number.active{background:#7040b5;color:#fff}
 .d88-match-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem;margin:1rem 0}
 .d88-match-row{min-width:0;border:1px solid #cbd7eb;border-radius:12px;padding:.6rem;display:grid;grid-template-columns:minmax(0,1fr) minmax(155px,.7fr);gap:.5rem;align-items:center}
@@ -57,23 +57,23 @@
 .d88-feedback{background:#fff1e5;color:#804608}
 .d88-lab .lab-next{margin-top:.5rem}
 @media(max-width:900px){.d88-grid,.d88-match-grid{grid-template-columns:1fr}.d88-match-row{grid-template-columns:minmax(0,1fr) minmax(150px,.7fr)}}
-@media(max-width:520px){.d88-match-row{grid-template-columns:1fr}.d88-eight{grid-template-columns:repeat(2,minmax(0,1fr))}.d88-fields{grid-template-columns:1fr}.d88-similar-figures{gap:.3rem}.d88-sim-triangle span{font-size:.75rem}}
+@media(max-width:520px){.d88-match-row{grid-template-columns:1fr}.d88-eight{grid-template-columns:repeat(2,minmax(0,1fr))}.d88-fields{grid-template-columns:1fr}.d88-similar-figures{gap:.3rem}.d88-sim-triangle span{font-size:calc(.75rem + 2px)}}
 
-.d88-angle span{display:block;font-size:.9rem;font-weight:850;color:#123b78}
-.d88-angle-c{top:66%;left:59%}
+.d88-angle span{display:block;font-size:calc(.9rem + 2px);font-weight:850;color:#123b78}
+.d88-angle-c{top:67%;left:60%}
 
-/* Every vertex label is inset 15% of the SVG width/height into its angle. */
-.d88-orient-left .d88-angle-a{left:61%;top:25%}
-.d88-orient-left .d88-angle-b{left:75%;top:66%}
-.d88-orient-left .d88-angle-c{left:41%;top:66%}
-.d88-orient-left .d88-angle-e{left:11%;top:66%}
-.d88-orient-upper-left .d88-angle-a{left:61%;top:75%}
-.d88-orient-upper-left .d88-angle-b{left:75%;top:34%}
-.d88-orient-upper-left .d88-angle-c{left:41%;top:34%}
-.d88-orient-upper-left .d88-angle-e{left:11%;top:34%}
-/* Expression labels use the same 15% positions with smaller text to clear the sides. */
-.d88-expressions .d88-angle span{font-size:clamp(.62rem,1.8vw,.78rem)}
-.d88-expressions .d88-angle strong{font-size:clamp(.65rem,2vw,.82rem)}
+/* Every vertex label is inset 14% of the SVG width/height into its angle. */
+.d88-orient-left .d88-angle-a{left:61%;top:24%}
+.d88-orient-left .d88-angle-b{left:76%;top:67%}
+.d88-orient-left .d88-angle-c{left:40%;top:67%}
+.d88-orient-left .d88-angle-e{left:12%;top:67%}
+.d88-orient-upper-left .d88-angle-a{left:61%;top:76%}
+.d88-orient-upper-left .d88-angle-b{left:76%;top:33%}
+.d88-orient-upper-left .d88-angle-c{left:40%;top:33%}
+.d88-orient-upper-left .d88-angle-e{left:12%;top:33%}
+/* Expression labels use the same 14% positions with smaller text to clear the sides. */
+.d88-expressions .d88-angle span{font-size:clamp(calc(.62rem + 2px),calc(1.8vw + 2px),calc(.78rem + 2px))}
+.d88-expressions .d88-angle strong{font-size:clamp(calc(.65rem + 2px),calc(2vw + 2px),calc(.82rem + 2px))}
 .d88-expressions .d88-angle-a{top:38%}
 .d88-expressions.d88-orient-upper-left .d88-angle-a{top:62%}
 .d88-angle:focus-visible{outline:2px solid #175cc1;outline-offset:2px}
