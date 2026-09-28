@@ -29,7 +29,7 @@
 .d88-sim-triangle strong{position:absolute;top:.3rem;left:.6rem}
 .d88-sim-triangle svg{top:18%;height:74%}
 .d88-sim-triangle span{position:absolute;background:transparent;padding:.08rem .22rem;color:#1255a3;font-weight:800;border-radius:4px}
-.d88-sim-triangle .top{top:31%;left:44%}.d88-sim-triangle .left{bottom:19%;left:19%}.d88-sim-triangle .right{bottom:19%;right:19%}
+.d88-sim-triangle .top{top:34%;left:44%}.d88-sim-triangle .left{bottom:26%;left:24%}.d88-sim-triangle .right{bottom:26%;right:24%}
 .d88-yesno{display:flex;gap:1rem;flex-wrap:wrap;margin:1rem 0;border:0;padding:0}
 .d88-yesno legend{font-weight:800;margin-bottom:.5rem}
 .d88-yesno label{border:2px solid #b4c6e3;border-radius:10px;padding:.5rem .8rem;cursor:pointer}
@@ -71,9 +71,8 @@
 .d88-orient-upper-left .d88-angle-b{left:75%;top:34%}
 .d88-orient-upper-left .d88-angle-c{left:41%;top:34%}
 .d88-orient-upper-left .d88-angle-e{left:11%;top:34%}
-/* Algebraic labels are wider, so they sit deeper in each angle. */
-.d88-expressions .d88-angle-a{top:49%;left:40%}
-.d88-expressions .d88-angle-b{top:72%;left:29%}
-.d88-expressions .d88-angle-e{top:72%;left:78%}
+/* Expression labels use the same 15% positions with smaller text to clear the sides. */
+.d88-expressions .d88-angle span{font-size:clamp(.62rem,1.8vw,.78rem)}
+.d88-expressions .d88-angle strong{font-size:clamp(.65rem,2vw,.82rem)}
 .d88-angle:focus-visible{outline:2px solid #175cc1;outline-offset:2px}
 .d88-lines .d88-number.active{background:#7040b5;color:#fff}
