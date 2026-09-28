@@ -45,7 +45,7 @@
       keys.map((key,i)=>!clickable&&key==="c"?"":'<button type="button" class="d88-angle d88-angle-'+key+'" data-d88-angle="'+key+'" '+(clickable?'':'disabled')+' aria-pressed="false"><span>'+names[i]+' =</span>'+(measures[i]===null?'':'<strong>'+escapeHTML(measures[i])+'°</strong>')+'</button>').join("")+'</div>';
   };
     const twoTriangles=t=>'<div class="d88-similar-figures">'+[t.first,t.second].map((angles,g)=>
-    '<div class="d88-sim-triangle"><strong>Triangle '+(g+1)+'</strong><svg viewBox="0 0 220 160" aria-hidden="true"><path d="M 110 10 L 20 145 L 200 145 Z"/></svg><span class="top">'+angles[0]+'°</span><span class="left">'+angles[1]+'°</span><span class="right">'+"?"+'</span></div>').join("")+'</div>';
+    '<div class="d88-sim-triangle"><strong>Triangle '+(g+1)+'</strong><svg viewBox="0 0 220 160" aria-hidden="true"><path d="M 110 10 L 5 145 L 215 145 Z"/></svg><span class="top">'+angles[0]+'°</span><span class="left">'+angles[1]+'°</span><span class="right">'+"?"+'</span></div>').join("")+'</div>';
   const transversal=(highlight=[])=>{
     const places=[[100,55],[192,55],[119,115],[205,115],[168,158],[260,158],[182,211],[258,211]];
     return '<div class="d88-lines" role="img" aria-label="Two parallel lines cut by a transversal, with angles 1 through 8"><svg viewBox="0 0 330 225" aria-hidden="true"><path d="M 25 85 L 305 85 M 25 190 L 305 190 M 105 10 L 235 220"/><path class="d88-parallel-mark" d="M 48 77 L 57 85 L 48 93 M 48 182 L 57 190 L 48 198"/></svg>'+places.map((p,i)=>'<span class="d88-number'+(highlight.includes(i+1)?' active':'')+'" style="left:'+(p[0]/330*100)+'%;top:'+(p[1]/225*100)+'%">'+(i+1)+'</span>').join("")+'</div>';
