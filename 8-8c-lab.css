@@ -20,3 +20,7 @@
 .c88-answer-fraction input:first-child{border-bottom:2px solid #192a44!important}
 .c88-back-text{border:0;background:transparent;color:#7040b5;text-decoration:underline;cursor:pointer;font:inherit}
 @media(max-width:560px){.c88-answer-entry{flex-wrap:wrap}.c88-answer-fraction{width:100%}.c88-frac-instruction{flex-basis:100%}}
+
+.c88-figure.c88-two-triangles{max-width:760px;aspect-ratio:2.6;min-height:225px}
+.c88-two-triangles .c88-figure-label{font-size:clamp(.8rem,1.3vw,1rem);padding:.08rem .2rem}
+@media(max-width:560px){.c88-figure.c88-two-triangles{min-height:185px;aspect-ratio:2.2}.c88-two-triangles .c88-figure-label{font-size:.75rem}}
