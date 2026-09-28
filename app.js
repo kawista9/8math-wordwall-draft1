@@ -695,6 +695,13 @@
   }
 
   const LABS = {
+    "8.8C": {
+      title: "Model, Write, and Solve",
+      description: "Solve 21 equations with x on both sides. Begin with four algebra-tile models and three rational-number equations. Then choose an equation from each geometry diagram and word problem before solving for x.",
+      summary: "You used models, geometry relationships, and real situations to write and solve equations with x on both sides. You checked rational solutions by making both sides equal.",
+      videos: [],
+      videoPlacement: "practice"
+    },
     "8.8B": {
       title: "From Equation to Situation",
       description: "Read each given equation or inequality, then choose the real-world situation that matches its starting amounts, rates, operations, and comparison. Seven multiple-choice questions.",
@@ -1103,6 +1110,7 @@
     if (standard === "8.7D") renderLab87D();
     if (standard === "8.8A") window.render88ALab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
     if (standard === "8.8B") window.render88BLab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
+    if (standard === "8.8C") window.render88CLab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
     if (standard === "8.10A") renderLabA();
     if (standard === "8.10B") renderLabB();
     if (standard === "8.10C") renderLabC();
@@ -6418,6 +6426,10 @@
       if (typeof window.resetDistance87DQuestion === "function") window.resetDistance87DQuestion(data, nextIndex);
       else Object.assign(data, { index: nextIndex, step: 0, solved: false, inputs: {} });
       renderLab87D();
+    } else if (standard === "8.8C") {
+      if (data.index >= window.EQUATION_88C_TOTAL - 1) return showLabCompletion(standard);
+      window.reset88CQuestion(data, data.index + 1);
+      renderStandardsLab(standard);
     } else if (standard === "8.8B") {
       if (data.index >= window.EQUATION_88B_TOTAL - 1) return showLabCompletion(standard);
       window.reset88BQuestion(data, data.index + 1);
