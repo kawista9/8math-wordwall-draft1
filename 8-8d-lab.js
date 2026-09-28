@@ -37,12 +37,12 @@
   const num=v=>Number(String(v??"").trim().replace(/°/g,""));
   const input=(key,label,unit)=>'<label class="d88-input"><span>'+escapeHTML(label)+'</span><div><input type="text" inputmode="decimal" data-d88-input="'+key+'" aria-label="'+escapeHTML(label)+'" autocomplete="off"><span>'+escapeHTML(unit||"")+'</span></div></label>';
   const triangle=(t,clickable)=>{
-    const labels=[t.a,t.b,t.e].map((v,i)=>i===({a:0,b:1,e:2}[t.ask])?"?":v);
-    const keys=["a","b","e"],titles=["Remote angle A","Remote angle B","Exterior angle E"];
-    return '<div class="d88-triangle" role="group" aria-label="Triangle ABC with exterior angle E"><svg viewBox="0 0 360 260" role="img" aria-label="Triangle with the base extended at C"><path d="M 140 25 L 55 210 L 245 210 L 140 25 M 245 210 L 330 210"/></svg>'+
-      keys.map((key,i)=>'<button type="button" class="d88-angle d88-angle-'+key+'" data-d88-angle="'+key+'" '+(clickable?'':'disabled')+' aria-pressed="false"><small>'+titles[i]+'</small><strong>'+escapeHTML(labels[i])+'°</strong></button>').join("")+'</div>';
+    const keys=["a","b","c","e"],names=["∠A","∠B","∠C","∠D"];
+    const measures=[t.a,t.b,null,t.e].map((v,i)=>i===({a:0,b:1,e:3}[t.ask])?"?":v);
+    return '<div class="d88-triangle" role="group" aria-label="Triangle ABC with exterior angle D"><svg viewBox="0 0 360 260" role="img" aria-label="Triangle with the base extended at C"><path d="M 140 25 L 55 210 L 245 210 L 140 25 M 245 210 L 330 210"/></svg>'+
+      keys.map((key,i)=>'<button type="button" class="d88-angle d88-angle-'+key+'" data-d88-angle="'+key+'" '+(clickable?'':'disabled')+' aria-pressed="false"><span>'+names[i]+'</span>'+(measures[i]===null?'':'<strong>'+escapeHTML(measures[i])+'°</strong>')+'</button>').join("")+'</div>';
   };
-  const twoTriangles=t=>'<div class="d88-similar-figures">'+[t.first,t.second].map((angles,g)=>
+    const twoTriangles=t=>'<div class="d88-similar-figures">'+[t.first,t.second].map((angles,g)=>
     '<div class="d88-sim-triangle"><strong>Triangle '+(g+1)+'</strong><svg viewBox="0 0 220 160" aria-hidden="true"><path d="M 110 10 L 20 145 L 200 145 Z"/></svg><span class="top">'+angles[0]+'°</span><span class="left">'+angles[1]+'°</span><span class="right">'+"?"+'</span></div>').join("")+'</div>';
   const transversal=(highlight=[])=>{
     const places=[[105,48],[185,48],[105,113],[185,113],[175,155],[255,155],[175,207],[255,207]];
@@ -50,7 +50,7 @@
   };
   const choose=(key,options)=>'<select data-d88-input="'+key+'" aria-label="'+escapeHTML(key)+'"><option value="">Choose</option>'+options.map(o=>'<option>'+escapeHTML(o)+'</option>').join("")+'</select>';
   const renderTask=(t,d)=>{
-    if(t.type==="exterior")return '<div class="d88-grid"><section class="d88-card"><h5>Choose the remote interior angles</h5><p>Click the two angles inside the triangle that are not next to the exterior angle.</p>'+triangle(t,true)+'</section><section class="d88-card"><h5>Work with the exterior angle</h5><p class="d88-rule">The exterior angle equals the sum of the two remote interior angles.</p><p>Selected: <strong data-d88-selected>none</strong></p>'+(!d.phase?'<button type="button" class="lab-action" data-d88-check-remote>Check angles</button>':'<div class="d88-fields">'+input("answer",t.ask==="e"?"Exterior angle E":"Remote interior angle "+t.ask.toUpperCase(),"°")+'</div><button type="button" class="lab-action" data-d88-check>Check answer</button>')+'</section></div>';
+    if(t.type==="exterior")return '<div class="d88-grid"><section class="d88-card"><h5>Choose the remote interior angles</h5><p>Click the two angles inside the triangle that are not next to the exterior angle.</p>'+triangle(t,true)+'</section><section class="d88-card"><h5>Work with the exterior angle</h5><p class="d88-rule">The exterior angle equals the sum of the two remote interior angles.</p><p>Selected: <strong data-d88-selected>'+((d.selected||[]).map(x=>"∠"+(x==="e"?"D":x.toUpperCase())).join(" and ")||"none")+'</strong></p>'+(!d.phase?'<button type="button" class="lab-action" data-d88-check-remote>Check angles</button>':'<div class="d88-fields">'+input("answer",t.ask==="e"?"Exterior angle D":"Remote interior angle "+t.ask.toUpperCase(),"°")+'</div><button type="button" class="lab-action" data-d88-check>Check answer</button>')+'</section></div>';
     if(t.type==="expressions")return '<div class="d88-grid"><section class="d88-card"><h5>Read the diagram</h5><p>The exterior angle equals the sum of its two remote interior angles.</p>'+triangle(t,false)+'</section><section class="d88-card"><h5>Solve for x and each angle</h5><p>Angle A: '+escapeHTML(t.a)+' · Angle B: '+escapeHTML(t.b)+' · Exterior E: '+escapeHTML(t.e)+'</p><div class="d88-fields">'+input("x","x","")+input("a","Angle A","°")+input("b","Angle B","°")+input("e","Exterior angle E","°")+'</div><button type="button" class="lab-action" data-d88-check>Check values</button></section></div>';
     if(t.type==="similar")return '<div class="d88-grid"><section class="d88-card"><h5>Compare the triangles</h5><p>Use the angle sum of a triangle to find the missing angle in Triangle 1.</p>'+twoTriangles(t)+'</section><section class="d88-card"><h5>Find and compare</h5><div class="d88-fields">'+input("third","Triangle 1: third angle","°")+'</div><fieldset class="d88-yesno"><legend>Are these triangles similar?</legend><label><input type="radio" name="d88-similar" value="yes"> Yes</label><label><input type="radio" name="d88-similar" value="no"> No</label></fieldset><button type="button" class="lab-action" data-d88-check>Check answer</button></section></div>';
     if(t.type==="matching")return '<div class="d88-card"><h5>Match each highlighted pair</h5><p>For each diagram, choose the pair name and whether the angles are congruent or supplementary.</p><div class="d88-match-grid">'+t.rows.map((r,i)=>'<div class="d88-match-row">'+transversal(r.pair)+'<div><strong>∠'+r.pair[0]+' and ∠'+r.pair[1]+'</strong>'+choose("name"+i,NAMES)+'<div class="d88-choice-buttons" data-d88-rule="'+i+'"><button type="button" data-value="Congruent">Congruent</button><button type="button" data-value="Supplementary">Supplementary</button></div></div></div>').join("")+'</div><button type="button" class="lab-action" data-d88-check>Check matches</button></div>';
@@ -76,12 +76,12 @@
       if(okay){window.render88DLab(ctx);setLabFeedback(message||"Correct!","correct");}
       else {body.querySelector(".d88-feedback")?.remove();body.querySelector(".d88-lab").insertAdjacentHTML("beforeend",'<p class="d88-feedback" role="status">'+escapeHTML(message||"Check your work and try again.")+'</p>');setLabFeedback(message||"Check your work and try again.","incorrect");}
     };
-    body.querySelectorAll("[data-d88-angle]").forEach(button=>button.addEventListener("click",()=>{
+    body.querySelectorAll("[data-d88-angle]").forEach(button=>{const active=d.selected.includes(button.dataset.d88Angle);button.classList.toggle("active",active);button.setAttribute("aria-pressed",active);button.addEventListener("click",()=>{
       const key=button.dataset.d88Angle;
       d.selected=d.selected.includes(key)?d.selected.filter(x=>x!==key):[...d.selected,key];
       button.classList.toggle("active",d.selected.includes(key));button.setAttribute("aria-pressed",d.selected.includes(key));
-      body.querySelector("[data-d88-selected]").textContent=d.selected.map(x=>"∠"+x.toUpperCase()).join(" and ")||"none";
-    }));
+      body.querySelector("[data-d88-selected]").textContent=d.selected.map(x=>"∠"+(x==="e"?"D":x.toUpperCase())).join(" and ")||"none";
+    });});
     body.querySelector("[data-d88-check-remote]")?.addEventListener("click",()=>{
       if(d.selected.length!==2||!d.selected.includes("a")||!d.selected.includes("b"))return attempt(false,"Choose the two interior angles away from the exterior angle.");
       d.phase=1;d.attempted=false;window.render88DLab(ctx);setLabFeedback("Correct remote interior angles. Now find the missing measure.","correct");
