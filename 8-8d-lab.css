@@ -61,3 +61,13 @@
 
 .d88-angle span{display:block;font-size:.9rem;font-weight:850;color:#123b78}
 .d88-angle-c{bottom:13%;left:55%}
+
+/* Put the exterior angle in a different location in each opening diagram. */
+.d88-orient-left .d88-angle-a{left:auto;right:31%;top:1%}
+.d88-orient-left .d88-angle-b{left:auto;right:2%;bottom:6%}
+.d88-orient-left .d88-angle-c{left:27%;bottom:13%}
+.d88-orient-left .d88-angle-e{left:1%;right:auto;bottom:6%}
+.d88-orient-upper-left .d88-angle-a{top:auto;left:57%;bottom:0}
+.d88-orient-upper-left .d88-angle-b{top:2%;left:auto;right:1%;bottom:auto}
+.d88-orient-upper-left .d88-angle-c{top:17%;left:30%;bottom:auto}
+.d88-orient-upper-left .d88-angle-e{top:2%;left:0;right:auto;bottom:auto}
