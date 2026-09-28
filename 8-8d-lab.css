@@ -11,12 +11,12 @@
 .d88-triangle{position:relative;width:100%;max-width:470px;aspect-ratio:360/260;margin:1rem auto}
 .d88-triangle svg,.d88-sim-triangle svg,.d88-lines svg{position:absolute;inset:0;width:100%;height:100%}
 .d88-triangle svg path,.d88-sim-triangle svg path,.d88-lines svg path{fill:none;stroke:#263d60;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round}
-.d88-angle{position:absolute;border:2px solid #a8bce0;border-radius:10px;background:#fff;color:#123b78;padding:.25rem .4rem;min-width:4rem;cursor:pointer}
+.d88-angle{position:absolute;transform:translate(-50%,-50%);border:0;border-radius:8px;background:transparent;color:#123b78;padding:.12rem .2rem;min-width:0;line-height:1.1;cursor:pointer;white-space:nowrap;text-align:center}
 .d88-angle:disabled{cursor:default}
 .d88-angle small{display:block;font-size:.7rem;color:#536887}
 .d88-angle strong{font-size:1rem}
-.d88-angle.active{background:#e5f1ff;border-color:#175cc1;box-shadow:0 0 0 2px #175cc1}
-.d88-angle-a{top:1%;left:38%}.d88-angle-b{bottom:6%;left:3%}.d88-angle-e{bottom:6%;right:1%}
+.d88-angle.active{background:#e5f1ff;outline:2px solid #175cc1}
+.d88-angle-a{top:52%;left:40%}.d88-angle-b{top:70%;left:30%}.d88-angle-e{top:70%;left:80%}
 .d88-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;margin:.9rem 0}
 .d88-input{display:block;min-width:0;font-weight:750}
 .d88-input>span{display:block;margin-bottom:.35rem}
@@ -28,15 +28,15 @@
 .d88-sim-triangle{position:relative;min-width:0;aspect-ratio:220/190;border:1px solid #d4def0;border-radius:12px;background:#fff;overflow:hidden}
 .d88-sim-triangle strong{position:absolute;top:.3rem;left:.6rem}
 .d88-sim-triangle svg{top:18%;height:74%}
-.d88-sim-triangle span{position:absolute;background:#fff;padding:.08rem .22rem;color:#1255a3;font-weight:800;border-radius:4px}
-.d88-sim-triangle .top{top:22%;left:45%}.d88-sim-triangle .left{bottom:7%;left:8%}.d88-sim-triangle .right{bottom:7%;right:8%}
+.d88-sim-triangle span{position:absolute;background:transparent;padding:.08rem .22rem;color:#1255a3;font-weight:800;border-radius:4px}
+.d88-sim-triangle .top{top:31%;left:44%}.d88-sim-triangle .left{bottom:19%;left:19%}.d88-sim-triangle .right{bottom:19%;right:19%}
 .d88-yesno{display:flex;gap:1rem;flex-wrap:wrap;margin:1rem 0;border:0;padding:0}
 .d88-yesno legend{font-weight:800;margin-bottom:.5rem}
 .d88-yesno label{border:2px solid #b4c6e3;border-radius:10px;padding:.5rem .8rem;cursor:pointer}
 .d88-lines{position:relative;width:100%;max-width:390px;aspect-ratio:330/225;margin:.8rem auto;background:#fff;border:1px solid #d0dced;border-radius:12px}
 .d88-lines svg path{stroke-width:2.5}
 .d88-lines svg .d88-parallel-mark{stroke-width:2}
-.d88-number{position:absolute;transform:translate(-50%,-50%);display:grid;place-items:center;width:1.8rem;height:1.8rem;border-radius:50%;background:#fff;color:#234578;font-weight:850}
+.d88-number{position:absolute;transform:translate(-50%,-50%);display:grid;place-items:center;width:1.55rem;height:1.55rem;border-radius:50%;background:transparent;color:#234578;font-weight:850;line-height:1}
 .d88-number.active{background:#7040b5;color:#fff}
 .d88-match-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem;margin:1rem 0}
 .d88-match-row{min-width:0;border:1px solid #cbd7eb;border-radius:12px;padding:.6rem;display:grid;grid-template-columns:minmax(0,1fr) minmax(155px,.7fr);gap:.5rem;align-items:center}
@@ -60,14 +60,16 @@
 @media(max-width:520px){.d88-match-row{grid-template-columns:1fr}.d88-eight{grid-template-columns:repeat(2,minmax(0,1fr))}.d88-fields{grid-template-columns:1fr}.d88-similar-figures{gap:.3rem}.d88-sim-triangle span{font-size:.75rem}}
 
 .d88-angle span{display:block;font-size:.9rem;font-weight:850;color:#123b78}
-.d88-angle-c{bottom:13%;left:55%}
+.d88-angle-c{top:70%;left:53%}
 
-/* Put the exterior angle in a different location in each opening diagram. */
-.d88-orient-left .d88-angle-a{left:auto;right:31%;top:1%}
-.d88-orient-left .d88-angle-b{left:auto;right:2%;bottom:6%}
-.d88-orient-left .d88-angle-c{left:27%;bottom:13%}
-.d88-orient-left .d88-angle-e{left:1%;right:auto;bottom:6%}
-.d88-orient-upper-left .d88-angle-a{top:auto;left:57%;bottom:0}
-.d88-orient-upper-left .d88-angle-b{top:2%;left:auto;right:1%;bottom:auto}
-.d88-orient-upper-left .d88-angle-c{top:17%;left:30%;bottom:auto}
-.d88-orient-upper-left .d88-angle-e{top:2%;left:0;right:auto;bottom:auto}
+/* Keep labels in the open angle regions as the triangle turns. */
+.d88-orient-left .d88-angle-a{left:60%;top:52%}
+.d88-orient-left .d88-angle-b{left:70%;top:70%}
+.d88-orient-left .d88-angle-c{left:47%;top:70%}
+.d88-orient-left .d88-angle-e{left:20%;top:70%}
+.d88-orient-upper-left .d88-angle-a{left:60%;top:60%}
+.d88-orient-upper-left .d88-angle-b{left:72%;top:33%}
+.d88-orient-upper-left .d88-angle-c{left:45%;top:33%}
+.d88-orient-upper-left .d88-angle-e{left:20%;top:33%}
+.d88-angle:focus-visible{outline:2px solid #175cc1;outline-offset:2px}
+.d88-lines .d88-number.active{background:#7040b5;color:#fff}
