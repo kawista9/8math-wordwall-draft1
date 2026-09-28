@@ -695,6 +695,13 @@
   }
 
   const LABS = {
+    "8.8B": {
+      title: "From Equation to Situation",
+      description: "Read each given equation or inequality, then choose the real-world situation that matches its starting amounts, rates, operations, and comparison. Seven multiple-choice questions.",
+      summary: "You matched one-variable equations and inequalities to real situations by checking each starting amount, rate, operation, and relationship phrase.",
+      videos: [],
+      videoPlacement: "practice"
+    },
     "8.8A": {
       title: "Equation or Inequality? Build Both Sides",
       description: "Read the entire situation, then the question. Work through seven guided comparisons and twelve independent ones. Mark the relationship clue, collect variable terms and constants, and build a one-variable equation or inequality with x on both sides. The complete comparison appears after a correct check.",
@@ -1095,6 +1102,7 @@
     if (standard === "8.7C") renderLab87C();
     if (standard === "8.7D") renderLab87D();
     if (standard === "8.8A") window.render88ALab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
+    if (standard === "8.8B") window.render88BLab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
     if (standard === "8.10A") renderLabA();
     if (standard === "8.10B") renderLabB();
     if (standard === "8.10C") renderLabC();
@@ -6410,6 +6418,10 @@
       if (typeof window.resetDistance87DQuestion === "function") window.resetDistance87DQuestion(data, nextIndex);
       else Object.assign(data, { index: nextIndex, step: 0, solved: false, inputs: {} });
       renderLab87D();
+    } else if (standard === "8.8B") {
+      if (data.index >= window.EQUATION_88B_TOTAL - 1) return showLabCompletion(standard);
+      window.reset88BQuestion(data, data.index + 1);
+      renderStandardsLab(standard);
     } else if (standard === "8.8A") {
       if (data.index >= window.EQUATION_88A_TOTAL - 1) return showLabCompletion(standard);
       window.reset88AQuestion(data, data.index + 1);
