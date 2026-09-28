@@ -34,15 +34,15 @@
       correct:3, explanation:"Shipping subtracts 4x from 75; receiving adds 5x to 30. “At least” means ≥."
     },
     {
-      equation:"6x + 2x ≤ 18 + 4x",
+      equation:"8x ≤ 18 + 4x",
       question:"Which situation can be represented by this inequality?",
       options:[
-        ["Company A charges $6 per kit plus a one-time $2 packaging fee. Company B charges an $18 order fee plus $4 per kit. For x kits, when is A no more expensive than B?","A one-time fee would be + 2, but the equation shows + 2x."],
+        ["Company A charges $6 per kit plus a one-time $2 packaging fee. Company B charges an $18 order fee plus $4 per kit. For x kits, when is A no more expensive than B?","A one-time fee would make A’s cost 6x + 2. The inequality shows 8x, so both charges must be per kit."],
         ["Company A charges $6 per kit plus $2 per kit for packaging. Company B charges an $18 order fee plus $4 per kit. For x kits, when is A no more expensive than B?",""],
         ["Company A charges $6 per kit plus $2 per kit for packaging. Company B charges an $18 order fee plus $4 per kit. For x kits, when is A more expensive than B?","“More expensive” gives >, but the inequality uses ≤."],
         ["Company A charges a $6 order fee plus $2 per kit for packaging. Company B charges $18 per kit plus a $4 order fee. For x kits, when is A no more expensive than B?","The fixed fees and per-kit charges do not match either side of the inequality."]
       ],
-      correct:1, explanation:"Both $6 and $2 are charged for each kit, so both terms on the left contain x. Only B has an $18 fixed fee."
+      correct:1, explanation:"A charges $6 + $2 = $8 per kit, so its cost is 8x. B has an $18 order fee plus $4 per kit."
     },
     {
       equation:"2(3x + 4) + 2(x + 2) = 20 + 5x",
