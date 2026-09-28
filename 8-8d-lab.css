@@ -33,7 +33,7 @@
 .d88-yesno{display:flex;gap:1rem;flex-wrap:wrap;margin:1rem 0;border:0;padding:0}
 .d88-yesno legend{font-weight:800;margin-bottom:.5rem}
 .d88-yesno label{border:2px solid #b4c6e3;border-radius:10px;padding:.5rem .8rem;cursor:pointer}
-.d88-lines{position:relative;width:100%;max-width:390px;aspect-ratio:330/225;margin:.8rem auto;background:#fff;border:1px solid #d0dced;border-radius:12px}
+.d88-lines{position:relative;width:100%;max-width:390px;aspect-ratio:330/250;margin:.8rem auto;background:#fff;border:1px solid #d0dced;border-radius:12px}
 .d88-lines svg path{stroke-width:2.5}
 .d88-lines svg .d88-parallel-mark{stroke-width:2}
 .d88-number{font-size:calc(1rem + 2px);position:absolute;transform:translate(-50%,-50%);display:grid;place-items:center;width:1.75rem;height:1.75rem;border-radius:50%;background:transparent;color:#234578;font-weight:850;line-height:1}
