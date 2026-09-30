@@ -9,14 +9,14 @@ const patterns = {
 const categories=["Negative Linear","Positive Linear","No association"];
 const items=[
  {id:"a",kind:"Graph A",points:patterns.positive,category:1},
- {id:"b",kind:"Mathematical statement",text:"As x increases, y tends to decrease. The points cluster around a straight-line trend.",category:0},
- {id:"c",kind:"Situation",text:"A teacher records students’ shoe sizes and quiz scores. The plotted scores show no consistent upward, downward, or curved pattern as shoe size increases.",category:2},
+ {id:"b",kind:"Mathematical statement",text:"As x increases, y tends to decrease at an approximately constant rate.",category:0},
+ {id:"c",kind:"Situation",text:"A teacher compares students’ shoe sizes and quiz scores. Students with larger shoe sizes are just as likely to earn high or low scores as students with smaller shoe sizes.",category:2},
  {id:"d",kind:"Graph B",points:patterns.none,category:2},
- {id:"e",kind:"Situation",text:"A library records weekly visitors and books checked out. Weeks with more visitors generally have more checkouts, and the plotted data cluster around a rising straight-line trend.",category:1},
- {id:"f",kind:"Mathematical statement",text:"Knowing x does not reveal a consistent pattern in y. The points do not cluster around a straight line or curve.",category:2},
- {id:"g",kind:"Situation",text:"A mechanic compares cars’ ages and resale values. Older cars generally have lower values, and the plotted data cluster around a falling straight-line trend.",category:0},
+ {id:"e",kind:"Situation",text:"A library records weekly visitors and books checked out. For every 10 additional visitors, the number of books checked out tends to increase by about 15.",category:1},
+ {id:"f",kind:"Mathematical statement",text:"Knowing the value of x does not help predict the value of y. Larger x-values are not consistently paired with larger or smaller y-values.",category:2},
+ {id:"g",kind:"Situation",text:"A mechanic compares the ages and resale values of similar cars. For each additional year of age, resale value tends to decrease by about $1,200.",category:0},
  {id:"h",kind:"Graph C",points:patterns.negative,category:0},
- {id:"i",kind:"Mathematical statement",text:"As x increases, y tends to increase. The points cluster around a straight-line trend.",category:1}
+ {id:"i",kind:"Mathematical statement",text:"As x increases, y tends to increase at an approximately constant rate.",category:1}
 ];
 const tablePoints=[[1,7],[2,8],[3,5],[4,6],[5,3],[6,4]];
 const questions=[
@@ -30,7 +30,7 @@ function graph(points,x="x",y="y"){
  const sx=n=>55+26*n, sy=n=>300-26*n;
  let grid="";
  for(let n=0;n<=10;n+=2) grid+= '<path d="M'+sx(n)+' 40V300 M55 '+sy(n)+'H315" stroke="#d9dde3"/><text x="'+sx(n)+'" y="320" text-anchor="middle">'+n+'</text><text x="45" y="'+(sy(n)+4)+'" text-anchor="end">'+n+'</text>';
- return '<svg viewBox="0 0 360 365" role="img" aria-label="Scatterplot: horizontal axis '+x+', vertical axis '+y+'. Points: '+points.map(p=>p.join(", ")).join("; ")+'"><rect x="55" y="40" width="260" height="260" fill="white"/>'+grid+'<path d="M55 40V300H315" fill="none" stroke="#263246" stroke-width="2"/>'+points.map(([a,b])=>'<circle cx="'+sx(a)+'" cy="'+sy(b)+'" r="5" fill="#ce5100"/>').join("")+'<text x="185" y="349" text-anchor="middle">'+x+'</text><text transform="translate(16 170) rotate(-90)" text-anchor="middle">'+y+'</text></svg>';
+ return '<svg viewBox="0 0 360 365" role="img" aria-label="Scatterplot: horizontal axis '+x+', vertical axis '+y+'. Points: '+points.map(p=>p.join(", ")).join("; ")+'"><rect x="55" y="40" width="260" height="260" fill="white"/>'+grid+'<path d="M55 40V300H315" fill="none" stroke="#263246" stroke-width="2"/>'+points.map(([a,b])=>'<circle cx="'+sx(a)+'" cy="'+sy(b)+'" r="5" fill="#245ac5"/>').join("")+'<text x="185" y="349" text-anchor="middle">'+x+'</text><text transform="translate(16 170) rotate(-90)" text-anchor="middle">'+y+'</text></svg>';
 }
 function reset(data,index){Object.assign(data,{index,selected:null,placements:{},answered:false});}
 window.ASSOCIATION_811A_TOTAL=6;
@@ -44,7 +44,7 @@ window.render811ALab=function(ctx){
  setLabProgress(data.index+(data.answered?1:0),6,isSort?"Sort all nine items: three per category.":"Choose one answer, then check it.");
  const card=item=>'<button type="button" class="a811-item'+(data.selected===item.id?' selected':'')+'" draggable="'+!data.answered+'" data-item="'+item.id+'" '+(data.answered?'disabled':'')+'><strong>'+item.kind+'</strong>'+(item.points?graph(item.points):'<span>'+item.text+'</span>')+'</button>';
  const sort='<p>Place one graph, one mathematical statement, and one situation in each category. Drag a card, or select it and then select a category. Select “Item bank” to return a card.</p><button type="button" class="a811-target" data-zone="bank">Item bank ('+items.filter(i=>data.placements[i.id]===undefined).length+')</button><div class="a811-bank" data-drop="bank">'+items.filter(i=>data.placements[i.id]===undefined).map(card).join("")+'</div><div class="a811-categories">'+categories.map((label,c)=>'<section data-drop="'+c+'"><button type="button" class="a811-target" data-zone="'+c+'">'+label+' ('+items.filter(i=>data.placements[i.id]===c).length+'/3)</button><div>'+items.filter(i=>data.placements[i.id]===c).map(card).join("")+'</div></section>').join("")+'</div>';
- const table=task&&task.table?'<table><caption>Practice observations</caption><thead><tr><th>x: Practice time (hours)</th><th>y: Number of errors</th></tr></thead><tbody>'+task.table.map(([x,y])=>'<tr><td>'+x+'</td><td>'+y+'</td></tr>').join("")+'</tbody></table>':"";
+ const table=task&&task.table?'<div class="a811-table-wrap"><table><caption>Practice observations</caption><thead><tr><th>x: Practice time (hours)</th><th>y: Number of errors</th></tr></thead><tbody>'+task.table.map(([x,y])=>'<tr><td>'+x+'</td><td>'+y+'</td></tr>').join("")+'</tbody></table></div>':"";
  const mc=task?'<p>'+task.prompt+'</p>'+table+(task.points?'<div class="a811-main-graph">'+graph(task.points,task.x,task.y)+'</div>':"")+'<div class="a811-options'+(task.plots?' graph-options':'')+'">'+(task.plots||task.choices).map((choice,i)=>'<button type="button" class="a811-option'+(data.selected===i?' selected':'')+'" data-option="'+i+'" '+(data.answered?'disabled':'')+'><strong>'+String.fromCharCode(65+i)+'</strong>'+(task.plots?graph(choice,task.x,task.y):'<span>'+choice+'</span>')+'</button>').join("")+'</div>':"";
  body.innerHTML='<section class="a811-lab"><header><p>8.11A · QUESTION '+(data.index+1)+' OF 6</p><h4>'+(isSort?'Sort the evidence':task.title)+'</h4></header>'+(isSort?sort:mc)+(data.answered?'<p class="a811-reason">'+(isSort?'A falling straight-line cluster has a negative linear association; a rising one has a positive linear association. No association means there is no consistent linear or curved pattern.':task.reason)+'</p>':"")+'<div class="a811-actions"><button type="button" class="lab-action" id="a811Check" '+(data.answered?'disabled':'')+'>Check answer</button><button type="button" class="lab-next" id="a811Next" '+(data.answered?'':'hidden')+'>'+(data.index===5?'Finish lab':'Next question →')+'</button></div></section>';
  function place(id,zone){
