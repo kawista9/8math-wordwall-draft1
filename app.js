@@ -695,6 +695,7 @@
   }
 
   const LABS = {
+    "8.12D": {title: "Simple and Compound Interest: From Formulas to Comparisons", description: "Complete twenty questions. The first seven guide you through selecting formulas, placing values, converting percent rates and time, and finding interest or total balance. Solve seven independent problems, then compare six pairs of accounts.", summary: "Simple interest uses I = Prt. Add the principal to find the total simple-interest balance. Annual compound interest uses A = P(1 + r)^t; subtract principal to find interest earned. Always divide percentages by 100, convert months to years, and compare the quantity the question asks for.", videos: [["https://go.screenpal.com/watch/cOhIhFnt3NR", "Comparing and Contrasting Simple and Compound Interest"], ["https://go.screenpal.com/watch/cOhYq1ntpzO", "Using the Calculator to Determine Interest Rate or Time"]]},
     "8.12C": {title: "Small Deposits, Growing Savings", description: "Answer seven multiple-choice questions explaining how regular investments and interest help college and retirement savings grow over time.", summary: "Regular small deposits accumulate over time. Interest adds to the balance, and earlier interest can earn additional interest. Starting sooner gives savings more time to grow.", videos: []},
     "8.12A": {title: "Cost of Credit: Compare Rates and Loan Lengths", description: "Complete ten loan comparisons. The first five guide you through substituting values, converting percentages, calculating simple interest, and comparing the costs. The last five ask you to compare loans independently.", summary: "You compared the total simple interest for different annual rates and loan lengths. You converted percent rates to decimals, used time in years, and found the difference between the borrowing costs. Considering both rate and time helps you choose the loan with less total interest.", videos: [["https://go.screenpal.com/watch/cOhIeRnt3dt", "Applying the Interest Rate Using the Calculator"], ["https://somup.com/cOhIfuVVuxo", "Calculating the Cost of Credit"]]},
     "8.11B": {title: "Mean Absolute Deviation: Four Steps to Independence", description: "Complete ten questions. In the first five, find the mean, subtract the mean from each value, take each difference’s absolute value, and average those absolute differences. Then solve five multiple-choice problems directly for the mean absolute deviation.", summary: "You calculated mean absolute deviation through four steps and then applied the process independently. MAD is the average distance of the data values from their mean. Every observation counts, including repeated values and zero distances; MAD uses the same units as the data.", videos: [["https://go.screenpal.com/watch/cOhIeMnt3JM", "Mean Absolute Deviation Using the Calculator"]]},
@@ -1128,6 +1129,7 @@
     if (standard === "8.7D") renderLab87D();
     if (standard === "8.8A") window.render88ALab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
     if (standard === "8.8B") window.render88BLab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
+    if (standard === "8.12D") window.render812DLab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
     if (standard === "8.12C") window.render812CLab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
     if (standard === "8.12A") window.render812ALab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
     if (standard === "8.11B") window.render811BLab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
@@ -6450,6 +6452,10 @@
       if (typeof window.resetDistance87DQuestion === "function") window.resetDistance87DQuestion(data, nextIndex);
       else Object.assign(data, { index: nextIndex, step: 0, solved: false, inputs: {} });
       renderLab87D();
+    } else if (standard === "8.12D") {
+      if (data.index >= window.INTEREST_812D_TOTAL - 1) return showLabCompletion(standard);
+      window.reset812DQuestion(data, data.index + 1);
+      renderStandardsLab(standard);
     } else if (standard === "8.12C") {
       if (data.index >= window.SAVINGS_812C_TOTAL - 1) return showLabCompletion(standard);
       window.reset812CQuestion(data, data.index + 1);
