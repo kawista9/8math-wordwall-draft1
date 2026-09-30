@@ -87,7 +87,8 @@
 @media(max-width:950px){.a88-problem{position:sticky;top:76px;max-height:calc(100vh - 88px)}}
 @media(max-width:680px){.a88-problem{position:static;max-height:none}.a88-category.a88-constant .a88-category-fields{grid-template-columns:1fr}.a88-choices{grid-template-columns:1fr}}
 
-body.lab-is-open #standardsLab {overflow:visible}
+/* Clip the shared rounded frame without creating a scroll container for sticky problem cards. */
+body.lab-is-open #standardsLab {overflow:hidden;overflow:clip}
 
 .a88-sign-cue {display:inline;padding:.1rem .2rem;border:0;border-bottom:2px dashed #7136a8;border-radius:3px;background:#f6efff;color:#7136a8;font:inherit;font-weight:800;cursor:pointer}
 .a88-sign-cue.is-picked {background:#7136a8;color:#fff;border-bottom-style:solid}
