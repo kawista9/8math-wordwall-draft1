@@ -1646,14 +1646,14 @@ window.WORD_WALL_DATA = [
         "resource": "Calculator tips",
         "videos": [
           {
-            "title": "How to Calculate Mean Absolute Deviation",
-            "url": "https://go.screenpal.com/watch/cOh61Cnt2k9"
+            "title": "Calculating the Mean Absolute Deviation Using the Calculator",
+            "url": "https://go.screenpal.com/watch/cOhIeMnt3JM"
           }
         ],
         "videoHotspots": [
           {
-            "title": "How to Calculate Mean Absolute Deviation",
-            "url": "https://go.screenpal.com/watch/cOh61Cnt2k9",
+            "title": "Calculating the Mean Absolute Deviation Using the Calculator",
+            "url": "https://go.screenpal.com/watch/cOhIeMnt3JM",
             "left": 47,
             "top": 37,
             "width": 45,
@@ -1724,7 +1724,34 @@ window.WORD_WALL_DATA = [
         "image": "assets/8-12A-calculator.png",
         "standard": "8.12A",
         "resource": "Calculator tips",
-        "videos": []
+        "videos": [
+          {
+            "title": "Applying the Interest Rate Using the Calculator",
+            "url": "https://go.screenpal.com/watch/cOhIeRnt3dt"
+          },
+          {
+            "title": "Calculating the Cost of Credit",
+            "url": "https://somup.com/cOhIfuVVuxo"
+          }
+        ],
+        "videoHotspots": [
+          {
+            "title": "Applying the Interest Rate Using the Calculator",
+            "url": "https://go.screenpal.com/watch/cOhIeRnt3dt",
+            "left": 15.5,
+            "top": 17,
+            "width": 33,
+            "height": 10
+          },
+          {
+            "title": "Calculating the Cost of Credit",
+            "url": "https://somup.com/cOhIfuVVuxo",
+            "left": 51,
+            "top": 17,
+            "width": 33,
+            "height": 10
+          }
+        ]
       },
       {
         "page": 8,
@@ -1802,15 +1829,27 @@ window.WORD_WALL_DATA = [
         "resource": "Calculator tips",
         "videos": [
           {
-            "title": "Simple Interest vs Compound Interest Comparison",
-            "url": "https://go.screenpal.com/watch/cOhlj1ntYfy"
+            "title": "Comparing and Contrasting Simple and Compound Interest",
+            "url": "https://go.screenpal.com/watch/cOhIhFnt3NR"
+          },
+          {
+            "title": "Using the Calculator to Determine Interest Rate or Time",
+            "url": "https://go.screenpal.com/watch/cOhYq1ntpzO"
           }
         ],
         "videoHotspots": [
           {
-            "title": "Simple Interest vs Compound Interest Comparison",
-            "url": "https://go.screenpal.com/watch/cOhlj1ntYfy",
+            "title": "Comparing and Contrasting Simple and Compound Interest",
+            "url": "https://go.screenpal.com/watch/cOhIhFnt3NR",
             "left": 11,
+            "top": 24,
+            "width": 34,
+            "height": 10
+          },
+          {
+            "title": "Using the Calculator to Determine Interest Rate or Time",
+            "url": "https://go.screenpal.com/watch/cOhYq1ntpzO",
+            "left": 55,
             "top": 24,
             "width": 34,
             "height": 10
