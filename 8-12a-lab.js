@@ -53,7 +53,7 @@ window.render812ALab=function(ctx){
  if(guided){
   if(data.step===0){
    instruction="Place the amount borrowed, annual interest rate, and loan length into each formula.";
-   activity='<div class="c812-rule">Simple interest = amount borrowed × annual interest rate (decimal) × loan length (years)</div><div class="c812-two">'+q.loans.map((l,i)=>formula(q,l,i,data)).join("")+'</div>';
+   activity='<div class="c812-rule">Simple interest = amount borrowed × annual interest rate (decimal) × loan length (years)</div><div class="c812-two c812-formula-grid">'+q.loans.map((l,i)=>formula(q,l,i,data)).join("")+'</div>';
   }else if(data.step===1){
    instruction="Convert each percent to a decimal by dividing the percent by 100.";
    activity='<div class="c812-rule">Percent ÷ 100 = decimal form of the interest rate</div><div class="c812-two">'+q.loans.map((l,i)=>'<article class="c812-card"><h5>'+l.name+'</h5><p>'+number(l.rate)+' ÷ 100 =</p>'+input("rate"+i,"Interest rate as a decimal",data,"decimal")+'</article>').join("")+'</div>';

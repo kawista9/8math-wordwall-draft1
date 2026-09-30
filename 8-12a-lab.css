@@ -17,7 +17,11 @@
 .c812-steps li.done{border-color:#15804b;color:#12623a;background:#e9faef}
 .c812-rule{background:#f4ebff;color:#56289c;border-left:4px solid #7140bc;border-radius:9px;padding:1rem;margin:1rem 0;font-weight:800;line-height:1.5}
 .c812-two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;min-width:0}
-.c812-formula{display:flex;align-items:center;flex-wrap:wrap;gap:.45rem;font-weight:800}
+.c812-two.c812-formula-grid{grid-template-columns:1fr}
+.c812-formula{display:grid;grid-template-columns:max-content minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr);align-items:start;gap:.6rem;font-weight:800;min-width:0}
+.c812-formula>strong,.c812-formula>span{align-self:center}
+.c812-formula .c812-factor{min-width:0;width:100%}
+.c812-formula .c812-slot{width:100%}
 .c812-factor{display:flex;flex-direction:column;align-items:center;gap:.3rem}
 .c812-slot{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.35rem;min-width:0;width:128px;min-height:108px;border:2px dashed #9daec4;background:#f7faff;border-radius:12px;color:#192a44;padding:.5rem;font:inherit;cursor:pointer;white-space:normal}
 .c812-slot small{font-size:.75rem;color:#536176}
@@ -42,3 +46,5 @@
 .c812-lab button:disabled{cursor:default;opacity:1}
 @media(max-width:800px){.c812-two{grid-template-columns:1fr}.c812-steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:520px){.c812-story,.c812-card,.c812-formula-card{padding:.8rem}.c812-steps li{padding:.5rem;font-size:.8rem}.c812-slot{width:110px}.c812-compare{padding:.75rem}}
+
+@media(max-width:520px){.c812-formula{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr);gap:.35rem}.c812-formula>strong{grid-column:1/-1}.c812-formula .c812-slot{padding:.35rem;min-height:108px}.c812-formula .c812-slot small{font-size:.7rem}.c812-formula .c812-slot strong{font-size:1rem}}
