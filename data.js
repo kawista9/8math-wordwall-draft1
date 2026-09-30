@@ -1474,234 +1474,403 @@ window.WORD_WALL_DATA = [
     "pages": [
       {
         "page": 1,
-        "image": "assets/8-11-12-p01.png",
+        "image": "assets/8-11-12-hub.png",
+        "resource": "Standards",
         "videos": [],
-        "resource": "Welcome"
+        "substandardHotspots": [
+          {
+            "standard": "8.11A",
+            "label": "Scatter plots",
+            "left": 1.5,
+            "top": 26.5,
+            "width": 46,
+            "height": 20.7
+          },
+          {
+            "standard": "8.11B",
+            "label": "Mean absolute deviation",
+            "left": 52.2,
+            "top": 26.5,
+            "width": 46,
+            "height": 20.7
+          },
+          {
+            "standard": "8.12A",
+            "label": "Cost of credit",
+            "left": 1.5,
+            "top": 48.7,
+            "width": 43.5,
+            "height": 20.7
+          },
+          {
+            "standard": "8.12C",
+            "label": "Saving over time",
+            "left": 55.5,
+            "top": 48.7,
+            "width": 43,
+            "height": 20.7
+          },
+          {
+            "standard": "8.12D",
+            "label": "Simple and compound interest",
+            "left": 1.5,
+            "top": 70.8,
+            "width": 46.5,
+            "height": 20.7
+          },
+          {
+            "standard": "8.12G",
+            "label": "College plan",
+            "left": 52,
+            "top": 70.8,
+            "width": 46,
+            "height": 20.7
+          }
+        ]
       },
       {
         "page": 2,
-        "image": "assets/8-11-12-p02.png",
-        "videos": [],
-        "resource": "Standards"
-      },
-      {
-        "page": 3,
-        "image": "assets/8-11-12-p03.png",
-        "videos": [],
-        "resource": "Standards"
-      },
-      {
-        "page": 4,
-        "image": "assets/8-11-12-p04.png",
-        "videos": [],
+        "image": "assets/8-11A-anchor.png",
         "standard": "8.11A",
-        "resource": "Start"
-      },
-      {
-        "page": 5,
-        "image": "assets/8-11-12-p05.png",
+        "resource": "Anchor chart",
         "videos": [
           {
-            "title": "Watch lesson 1",
+            "title": "Understanding Negative Linear Associations",
             "url": "https://go.screenpal.com/watch/cOh6hRnt2aK"
           },
           {
-            "title": "Watch lesson 2",
+            "title": "Understanding Positive Linear Associations",
             "url": "https://go.screenpal.com/watch/cOh61hnt2zf"
           },
           {
-            "title": "Watch lesson 3",
+            "title": "Understanding Non-Correlation in Statistics",
             "url": "https://go.screenpal.com/watch/cOh612nt2zz"
           }
         ],
-        "standard": "8.11A",
-        "resource": "Anchor chart"
+        "videoHotspots": [
+          {
+            "title": "Understanding Negative Linear Associations",
+            "url": "https://go.screenpal.com/watch/cOh6hRnt2aK",
+            "left": 2,
+            "top": 19.5,
+            "width": 6,
+            "height": 10
+          },
+          {
+            "title": "Understanding Positive Linear Associations",
+            "url": "https://go.screenpal.com/watch/cOh61hnt2zf",
+            "left": 34.5,
+            "top": 19.5,
+            "width": 6,
+            "height": 10
+          },
+          {
+            "title": "Understanding Non-Correlation in Statistics",
+            "url": "https://go.screenpal.com/watch/cOh612nt2zz",
+            "left": 66.5,
+            "top": 19.5,
+            "width": 6,
+            "height": 10
+          }
+        ]
       },
       {
-        "page": 6,
-        "image": "assets/8-11-12-p06.png",
-        "videos": [],
+        "page": 3,
+        "image": "assets/8-11A-calculator.png",
         "standard": "8.11A",
-        "resource": "Calculator tips"
+        "resource": "Calculator tips",
+        "videos": []
       },
       {
-        "page": 7,
-        "image": "assets/8-11-12-p07.png",
-        "videos": [],
+        "page": 4,
+        "image": "assets/8-11B-anchor.png",
         "standard": "8.11B",
-        "resource": "Start"
-      },
-      {
-        "page": 8,
-        "image": "assets/8-11-12-p08.png",
+        "resource": "Anchor chart",
         "videos": [
           {
-            "title": "Watch lesson 2",
+            "title": "Meaning of Mean",
             "url": "https://go.screenpal.com/watch/cOh61Fnt2zm"
           },
           {
-            "title": "Watch lesson 3",
+            "title": "Understanding Absolute Value",
             "url": "https://go.screenpal.com/watch/cOh613nt2B1"
           },
           {
-            "title": "Watch lesson 4",
+            "title": "Understanding Mean Absolute Deviation",
             "url": "https://go.screenpal.com/watch/cOh61Tnt2gH"
           },
           {
-            "title": "Watch lesson 5",
+            "title": "How to Calculate Mean Absolute Deviation",
             "url": "https://go.screenpal.com/watch/cOh61Cnt2k9"
           }
         ],
+        "videoHotspots": [
+          {
+            "title": "Meaning of Mean",
+            "url": "https://go.screenpal.com/watch/cOh61Fnt2zm",
+            "left": 5.3,
+            "top": 26,
+            "width": 6,
+            "height": 11
+          },
+          {
+            "title": "Understanding Absolute Value",
+            "url": "https://go.screenpal.com/watch/cOh613nt2B1",
+            "left": 36.5,
+            "top": 26,
+            "width": 6,
+            "height": 11
+          },
+          {
+            "title": "Understanding Mean Absolute Deviation",
+            "url": "https://go.screenpal.com/watch/cOh61Tnt2gH",
+            "left": 68,
+            "top": 26,
+            "width": 6,
+            "height": 11
+          },
+          {
+            "title": "How to Calculate Mean Absolute Deviation",
+            "url": "https://go.screenpal.com/watch/cOh61Cnt2k9",
+            "left": 12,
+            "top": 39.5,
+            "width": 5,
+            "height": 9
+          }
+        ]
+      },
+      {
+        "page": 5,
+        "image": "assets/8-11B-calculator.png",
         "standard": "8.11B",
-        "resource": "Anchor chart"
-      },
-      {
-        "page": 9,
-        "image": "assets/8-11-12-p09.png",
-        "videos": [],
-        "standard": "8.11B",
-        "resource": "Calculator tips"
-      },
-      {
-        "page": 10,
-        "image": "assets/8-11-12-p10.png",
-        "videos": [],
-        "standard": "8.12A",
-        "resource": "Start"
-      },
-      {
-        "page": 11,
-        "image": "assets/8-11-12-p11.png",
+        "resource": "Calculator tips",
         "videos": [
           {
-            "title": "Watch lesson 1",
+            "title": "How to Calculate Mean Absolute Deviation",
+            "url": "https://go.screenpal.com/watch/cOh61Cnt2k9"
+          }
+        ],
+        "videoHotspots": [
+          {
+            "title": "How to Calculate Mean Absolute Deviation",
+            "url": "https://go.screenpal.com/watch/cOh61Cnt2k9",
+            "left": 47,
+            "top": 37,
+            "width": 45,
+            "height": 28
+          }
+        ]
+      },
+      {
+        "page": 6,
+        "image": "assets/8-12A-anchor.png",
+        "standard": "8.12A",
+        "resource": "Anchor chart",
+        "videos": [
+          {
+            "title": "Understanding the Definition of Principal in Finance",
             "url": "https://go.screenpal.com/watch/cOh61dnt2pj"
           },
           {
-            "title": "Watch lesson 2",
+            "title": "Understanding Interest Rates",
             "url": "https://go.screenpal.com/watch/cOhl1vntqM3"
           },
           {
-            "title": "Watch lesson 3",
+            "title": "Understanding the Impact of Time on Loan Costs",
             "url": "https://go.screenpal.com/watch/cOhl1Lntq8A"
+          },
+          {
+            "title": "Understanding Simple Interest",
+            "url": "https://go.screenpal.com/watch/cOhliCntYVl"
           }
         ],
-        "standard": "8.12A",
-        "resource": "Anchor chart"
+        "videoHotspots": [
+          {
+            "title": "Understanding the Definition of Principal in Finance",
+            "url": "https://go.screenpal.com/watch/cOh61dnt2pj",
+            "left": 43,
+            "top": 31,
+            "width": 5,
+            "height": 10
+          },
+          {
+            "title": "Understanding Interest Rates",
+            "url": "https://go.screenpal.com/watch/cOhl1vntqM3",
+            "left": 43,
+            "top": 44,
+            "width": 5,
+            "height": 10
+          },
+          {
+            "title": "Understanding the Impact of Time on Loan Costs",
+            "url": "https://go.screenpal.com/watch/cOhl1Lntq8A",
+            "left": 43,
+            "top": 57,
+            "width": 5,
+            "height": 10
+          },
+          {
+            "title": "Understanding Simple Interest",
+            "url": "https://go.screenpal.com/watch/cOhliCntYVl",
+            "left": 43,
+            "top": 70,
+            "width": 5,
+            "height": 10
+          }
+        ]
       },
       {
-        "page": 12,
-        "image": "assets/8-11-12-p12.png",
-        "videos": [],
+        "page": 7,
+        "image": "assets/8-12A-calculator.png",
         "standard": "8.12A",
-        "resource": "Calculator tips"
+        "resource": "Calculator tips",
+        "videos": []
       },
       {
-        "page": 13,
-        "image": "assets/8-11-12-p13.png",
-        "videos": [],
+        "page": 8,
+        "image": "assets/8-12C-anchor.png",
         "standard": "8.12C",
-        "resource": "Start"
-      },
-      {
-        "page": 14,
-        "image": "assets/8-11-12-p14.png",
+        "resource": "Anchor chart",
         "videos": [
           {
-            "title": "Watch lesson 1",
+            "title": "Understanding Deposits in Investment Accounts",
             "url": "https://go.screenpal.com/watch/cOhlifntqPK"
           },
           {
-            "title": "Watch lesson 2",
+            "title": "Growing Your Savings Account",
             "url": "https://go.screenpal.com/watch/cOhlivntqWw"
           }
-        ],
-        "standard": "8.12C",
-        "resource": "Anchor chart"
+        ]
       },
       {
-        "page": 15,
-        "image": "assets/8-11-12-p15.png",
-        "videos": [],
+        "page": 9,
+        "image": "assets/8-12C-calculator.png",
         "standard": "8.12C",
-        "resource": "Calculator tips"
+        "resource": "Calculator tips",
+        "videos": []
       },
       {
-        "page": 16,
-        "image": "assets/8-11-12-p16.png",
-        "videos": [],
+        "page": 10,
+        "image": "assets/8-12D-anchor.png",
         "standard": "8.12D",
-        "resource": "Start"
-      },
-      {
-        "page": 17,
-        "image": "assets/8-11-12-p17.png",
+        "resource": "Anchor chart",
         "videos": [
           {
-            "title": "Watch lesson 1",
+            "title": "Understanding the Definition of Principal in Finance",
             "url": "https://go.screenpal.com/watch/cOh61dnt2pj"
           },
           {
-            "title": "Watch lesson 2",
+            "title": "Understanding Interest Rates",
             "url": "https://go.screenpal.com/watch/cOhl1vntqM3"
           },
           {
-            "title": "Watch lesson 3",
+            "title": "Understanding Simple Interest",
             "url": "https://go.screenpal.com/watch/cOhliCntYVl"
           },
           {
-            "title": "Watch lesson 4",
+            "title": "Understanding Compound Interest",
             "url": "https://go.screenpal.com/watch/cOhljcntYep"
           },
           {
-            "title": "Watch lesson 5",
+            "title": "Simple Interest vs Compound Interest Comparison",
             "url": "https://go.screenpal.com/watch/cOhlj1ntYfy"
           }
         ],
+        "videoHotspots": [
+          {
+            "title": "Understanding Simple Interest",
+            "url": "https://go.screenpal.com/watch/cOhliCntYVl",
+            "left": 3.2,
+            "top": 38,
+            "width": 7.5,
+            "height": 15
+          },
+          {
+            "title": "Understanding Compound Interest",
+            "url": "https://go.screenpal.com/watch/cOhljcntYep",
+            "left": 3.2,
+            "top": 64,
+            "width": 7.5,
+            "height": 15
+          }
+        ]
+      },
+      {
+        "page": 11,
+        "image": "assets/8-12D-calculator.png",
         "standard": "8.12D",
-        "resource": "Anchor chart"
-      },
-      {
-        "page": 18,
-        "image": "assets/8-11-12-p18.png",
-        "videos": [],
-        "standard": "8.12D",
-        "resource": "Calculator tips"
-      },
-      {
-        "page": 19,
-        "image": "assets/8-11-12-p19.png",
-        "videos": [],
-        "standard": "8.12G",
-        "resource": "Start"
-      },
-      {
-        "page": 20,
-        "image": "assets/8-11-12-p20.png",
+        "resource": "Calculator tips",
         "videos": [
           {
-            "title": "Watch lesson 1",
+            "title": "Simple Interest vs Compound Interest Comparison",
+            "url": "https://go.screenpal.com/watch/cOhlj1ntYfy"
+          }
+        ],
+        "videoHotspots": [
+          {
+            "title": "Simple Interest vs Compound Interest Comparison",
+            "url": "https://go.screenpal.com/watch/cOhlj1ntYfy",
+            "left": 11,
+            "top": 24,
+            "width": 34,
+            "height": 10
+          }
+        ]
+      },
+      {
+        "page": 12,
+        "image": "assets/8-12G-anchor.png",
+        "standard": "8.12G",
+        "resource": "Anchor chart",
+        "videos": [
+          {
+            "title": "Understanding College Expenses",
             "url": "https://go.screenpal.com/watch/cOhljlntYhe"
           },
           {
-            "title": "Watch lesson 2",
+            "title": "Ways to Fund Your College Experience",
             "url": "https://go.screenpal.com/watch/cOhljDntYhw"
           },
           {
-            "title": "Watch lesson 3",
+            "title": "Developing a Plan to Pay for College Expenses",
             "url": "https://go.screenpal.com/watch/cOhljJntY6h"
           }
         ],
-        "standard": "8.12G",
-        "resource": "Anchor chart"
+        "videoHotspots": [
+          {
+            "title": "Understanding College Expenses",
+            "url": "https://go.screenpal.com/watch/cOhljlntYhe",
+            "left": 9,
+            "top": 25,
+            "width": 5,
+            "height": 9
+          },
+          {
+            "title": "Ways to Fund Your College Experience",
+            "url": "https://go.screenpal.com/watch/cOhljDntYhw",
+            "left": 59,
+            "top": 25,
+            "width": 5,
+            "height": 9
+          },
+          {
+            "title": "Developing a Plan to Pay for College Expenses",
+            "url": "https://go.screenpal.com/watch/cOhljJntY6h",
+            "left": 11.3,
+            "top": 85,
+            "width": 5.5,
+            "height": 10
+          }
+        ]
       },
       {
-        "page": 21,
-        "image": "assets/8-11-12-p21.png",
-        "videos": [],
+        "page": 13,
+        "image": "assets/8-12G-calculator.png",
         "standard": "8.12G",
-        "resource": "Calculator tips"
+        "resource": "Calculator tips",
+        "videos": []
       }
-    ]
+    ],
+    "entryPageIndex": 0
   }
 ];
