@@ -695,6 +695,7 @@
   }
 
   const LABS = {
+    "8.12A": {title: "Cost of Credit: Compare Rates and Loan Lengths", description: "Complete ten loan comparisons. The first five guide you through substituting values, converting percentages, calculating simple interest, and comparing the costs. The last five ask you to compare loans independently.", summary: "You compared the total simple interest for different annual rates and loan lengths. You converted percent rates to decimals, used time in years, and found the difference between the borrowing costs. Considering both rate and time helps you choose the loan with less total interest.", videos: [["https://go.screenpal.com/watch/cOhIeRnt3dt", "Applying the Interest Rate Using the Calculator"], ["https://somup.com/cOhIfuVVuxo", "Calculating the Cost of Credit"]]},
     "8.11B": {title: "Mean Absolute Deviation: Four Steps to Independence", description: "Complete ten questions. In the first five, find the mean, subtract the mean from each value, take each difference’s absolute value, and average those absolute differences. Then solve five multiple-choice problems directly for the mean absolute deviation.", summary: "You calculated mean absolute deviation through four steps and then applied the process independently. MAD is the average distance of the data values from their mean. Every observation counts, including repeated values and zero distances; MAD uses the same units as the data.", videos: [["https://go.screenpal.com/watch/cOhIeMnt3JM", "Mean Absolute Deviation Using the Calculator"]]},
     "8.11A": {title: "Scatterplots: Sort and Interpret Associations", description: "Complete six questions. First sort nine graphs, mathematical statements, and situations into three categories. Then answer five multiple-choice questions about observed trends, matching plotted data, and nonlinear association.", summary: "You connected negative linear, positive linear, and no association across graphs, mathematical statements, and situations. You matched paired data to a scatterplot and distinguished a curved nonlinear pattern from a straight-line trend or no association.", videos: [["https://go.screenpal.com/watch/cOh6hRnt2aK", "Understanding Negative Linear Associations"], ["https://go.screenpal.com/watch/cOh61hnt2zf", "Understanding Positive Linear Associations"], ["https://go.screenpal.com/watch/cOh612nt2zz", "Understanding No Association"]]},
     "8.9A": {
@@ -1126,6 +1127,7 @@
     if (standard === "8.7D") renderLab87D();
     if (standard === "8.8A") window.render88ALab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
     if (standard === "8.8B") window.render88BLab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
+    if (standard === "8.12A") window.render812ALab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
     if (standard === "8.11B") window.render811BLab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
     if (standard === "8.11A") window.render811ALab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
     if (standard === "8.9A") window.render89ALab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
@@ -6446,6 +6448,10 @@
       if (typeof window.resetDistance87DQuestion === "function") window.resetDistance87DQuestion(data, nextIndex);
       else Object.assign(data, { index: nextIndex, step: 0, solved: false, inputs: {} });
       renderLab87D();
+    } else if (standard === "8.12A") {
+      if (data.index >= window.CREDIT_812A_TOTAL - 1) return showLabCompletion(standard);
+      window.reset812AQuestion(data, data.index + 1);
+      renderStandardsLab(standard);
     } else if (standard === "8.11B") {
       if (data.index >= window.MAD_811B_TOTAL - 1) return showLabCompletion(standard);
       window.reset811BQuestion(data, data.index + 1);
