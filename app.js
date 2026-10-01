@@ -203,12 +203,17 @@
   }
 
   function renderHotspots() {
-    groups.forEach(group => {
+    // Circle geometry in the original 1448 × 1086 landing image.
+    const circles = [[707,399,85],[931,443,85],[1028,590,80],[978,761,80],[851,879,80],[665,890,81],[480,832,82],[416,667,83],[484,480,89]];
+    groups.forEach((group, index) => {
       const button = document.createElement("button");
       button.type = "button";
       button.className = "map-hotspot";
-      button.style.left = `${group.pos[0]}%`;
-      button.style.top = `${group.pos[1]}%`;
+      const [x, y, radius] = circles[index];
+      button.style.left = `${x / 1448 * 100}%`;
+      button.style.top = `${y / 1086 * 100}%`;
+      button.style.width = `${radius * 2 / 1448 * 100}%`;
+      button.style.height = `${radius * 2 / 1086 * 100}%`;
       button.setAttribute("aria-label", `Open ${group.code}: ${group.topic}`);
       button.title = `${group.code}: ${group.topic}`;
       button.addEventListener("click", () => openGroup(group.id));

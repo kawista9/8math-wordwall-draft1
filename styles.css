@@ -113,21 +113,16 @@ h1 { margin-bottom: .5rem; font-size: clamp(2rem, 4vw, 4rem); line-height: .96; 
   background: white; border: 1px solid rgba(82,111,245,.18);
 }
 .map-frame img { display: block; width: 100%; height: auto; }
+.map-hotspots { position: absolute; inset: 0; pointer-events: none; }
 .map-hotspot {
-  position: absolute; width: clamp(24px, 4.2vw, 54px); aspect-ratio: 1;
+  position: absolute; padding: 0; pointer-events: auto;
   transform: translate(-50%,-50%); border-radius: 50%; cursor: pointer;
-  border: 2px solid rgba(255,255,255,.9); background: rgba(24,196,209,.08);
-  box-shadow: 0 0 0 3px rgba(24,196,209,.45), 0 0 22px rgba(24,196,209,.75);
-  transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
-}
-.map-hotspot::after {
-  content: ""; position: absolute; left: 50%; top: 50%; width: 7px; height: 7px;
-  transform: translate(-50%,-50%); border-radius: 50%; background: white;
-  box-shadow: 0 0 0 2px var(--ink);
+  border: 0; background: transparent; box-shadow: none;
+  transition: box-shadow .2s ease;
 }
 .map-hotspot:hover, .map-hotspot:focus-visible {
-  transform: translate(-50%,-50%) scale(1.14); background: rgba(246,232,100,.32);
-  box-shadow: 0 0 0 5px rgba(255,111,44,.4), 0 0 28px rgba(255,111,44,.7);
+  outline: 3px solid #fff; outline-offset: 2px;
+  box-shadow: 0 0 0 6px rgba(24,196,209,.7);
 }
 .map-note { display: flex; align-items: center; justify-content: center; gap: .5rem; margin: .85rem .4rem .15rem; color: #626473; font-size: .9rem; }
 .tap-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 0 4px rgba(24,196,209,.18); }
