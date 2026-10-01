@@ -175,30 +175,62 @@
     localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
   }
 
-  function filteredGroups(query = "") {
-    const needle = query.trim().toLowerCase();
-    if (!needle) return groups;
-    return groups.filter(group =>
-      [group.code, group.topic, ...group.standards].join(" ").toLowerCase().includes(needle)
-    );
+  function normalizeSearch(value) {
+    return value.toLowerCase().replace(/non[ -]proportional/g, "nonproportional")
+      .replace(/scatter[ -]plot/g, "scatterplot").replace(/[^a-z0-9]+/g, " ").trim();
+  }
+
+  function searchStandards(query) {
+    const normalized = normalizeSearch(query);
+    const words = normalized.split(" ").filter(word => !["the", "a", "an", "of", "to", "how", "do", "i", "find", "what", "is", "and", "with", "for", "my"].includes(word));
+    if (!words.length) return [];
+    return (window.WORD_WALL_SEARCH || []).flatMap(([code, title, vocabulary]) => {
+      const group = groups.find(item => item.standards.includes(code));
+      if (!group) return [];
+      const text = normalizeSearch(code + " " + title + " " + vocabulary);
+      const compactCode = code.toLowerCase().replace(/[^a-z0-9]/g, "");
+      const codeQuery = query.toLowerCase().replace(/[^a-z0-9]/g, "");
+      const codeMatch = compactCode === codeQuery;
+      const terms = text.split(" ");
+      if (!codeMatch && !words.every(word => terms.some(term => term.startsWith(word)))) return [];
+      const score = codeMatch ? 100 : normalizeSearch(title).includes(normalized) ? 20 : 1;
+      return [{code, title, group, score}];
+    }).sort((a, b) => b.score - a.score);
   }
 
   function renderDashboard(query = "") {
-    const shown = filteredGroups(query);
     groupList.innerHTML = "";
-    shown.forEach(group => {
+    const searching = query.trim().length > 0;
+    const shown = searching ? searchStandards(query) : groups;
+    shown.forEach(item => {
+      const group = searching ? item.group : item;
       const button = document.createElement("button");
       button.type = "button";
       button.className = "group-card";
       button.dataset.accent = group.accent;
-      button.innerHTML = `
-        <span class="group-index">${group.number}</span>
-        <span><strong>${group.code} · ${group.topic}</strong><small>${group.standards.join(" · ")}</small></span>
-        <span class="group-arrow" aria-hidden="true">→</span>`;
-      button.addEventListener("click", () => openGroup(group.id));
+      const icon = document.createElement("span");
+      icon.className = "group-index";
+      icon.textContent = group.number;
+      const copy = document.createElement("span");
+      const title = document.createElement("strong");
+      title.textContent = searching ? item.code + " · " + item.title : group.code + " · " + group.topic;
+      const subtitle = document.createElement("small");
+      subtitle.textContent = searching ? group.topic : group.standards.join(" · ");
+      copy.append(title, subtitle);
+      const arrow = document.createElement("span");
+      arrow.className = "group-arrow";
+      arrow.setAttribute("aria-hidden", "true");
+      arrow.textContent = "→";
+      button.append(icon, copy, arrow);
+      button.addEventListener("click", () => {
+        const index = searching ? group.pages.findIndex(page => page.standard === item.code) : undefined;
+        openGroup(group.id, index >= 0 ? index : undefined);
+      });
       groupList.append(button);
     });
-    $("#groupCount").textContent = `${shown.length} ${shown.length === 1 ? "group" : "groups"}`;
+    $("#groupCount").textContent = searching
+      ? shown.length + " matching " + (shown.length === 1 ? "standard" : "standards")
+      : groups.length + " groups";
     $("#emptyState").hidden = shown.length > 0;
   }
 

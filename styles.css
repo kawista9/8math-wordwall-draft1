@@ -2031,3 +2031,5 @@ button.root-integer-tick:hover i, button.root-integer-tick:focus-visible i, butt
   .cylinder-lab-actions .lab-action { flex: 1 1 0; }
 }
 
+
+.search-hint { margin: -.5rem 0 1rem; color: #626473; font-size: .9rem; }
