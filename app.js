@@ -695,6 +695,7 @@
   }
 
   const LABS = {
+    "8.12G": {title: "College Costs and Monthly Savings Plans", description: "Complete ten college savings questions. The first five guide you through estimating expenses, calculating family contributions, finding your share, and planning monthly savings. The next five let you solve independently. Each group begins with two drag-and-drop questions and ends with three multiple-choice questions.", summary: "Estimate annual college expenses and the cost for the college years being funded. Subtract family contributions and awarded scholarships, then account for existing savings. Divide the remaining goal by the months available to save. Round up to the next cent when needed so the plan covers the cost.", videos: []},
     "8.12D": {title: "Simple and Compound Interest: From Formulas to Comparisons", description: "Complete twenty questions. The first seven guide you through choosing simple or compound interest, placing values, converting percent rates and time, and finding interest or total balance. Solve seven independent problems, then compare six pairs of accounts.", summary: "Simple interest uses I = Prt. Add the principal to find the total simple-interest balance. Annual compound interest uses A = P(1 + r)^t; subtract principal to find interest earned. Always divide percentages by 100, convert months to years, and compare the quantity the question asks for.", videos: [["https://go.screenpal.com/watch/cOhIhFnt3NR", "Comparing and Contrasting Simple and Compound Interest"], ["https://go.screenpal.com/watch/cOhYq1ntpzO", "Using the Calculator to Determine Interest Rate or Time"]]},
     "8.12C": {title: "Small Deposits, Growing Savings", description: "Answer seven multiple-choice questions explaining how regular investments and interest help college and retirement savings grow over time.", summary: "Regular small deposits accumulate over time. Interest adds to the balance, and earlier interest can earn additional interest. Starting sooner gives savings more time to grow.", videos: []},
     "8.12A": {title: "Cost of Credit: Compare Rates and Loan Lengths", description: "Complete ten loan comparisons. The first five guide you through substituting values, converting percentages, calculating simple interest, and comparing the costs. The last five ask you to compare loans independently.", summary: "You compared the total simple interest for different annual rates and loan lengths. You converted percent rates to decimals, used time in years, and found the difference between the borrowing costs. Considering both rate and time helps you choose the loan with less total interest.", videos: [["https://go.screenpal.com/watch/cOhIeRnt3dt", "Applying the Interest Rate Using the Calculator"], ["https://somup.com/cOhIfuVVuxo", "Calculating the Cost of Credit"]]},
@@ -1129,6 +1130,7 @@
     if (standard === "8.7D") renderLab87D();
     if (standard === "8.8A") window.render88ALab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
     if (standard === "8.8B") window.render88BLab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
+    if (standard === "8.12G") window.render812GLab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
     if (standard === "8.12D") window.render812DLab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
     if (standard === "8.12C") window.render812CLab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
     if (standard === "8.12A") window.render812ALab({ labRuntime, $, setLabProgress, setLabFeedback, showLabCompletion, syncWhiteboardQuestion });
@@ -6452,6 +6454,10 @@
       if (typeof window.resetDistance87DQuestion === "function") window.resetDistance87DQuestion(data, nextIndex);
       else Object.assign(data, { index: nextIndex, step: 0, solved: false, inputs: {} });
       renderLab87D();
+    } else if (standard === "8.12G") {
+      if (data.index >= window.COLLEGE_812G_TOTAL - 1) return showLabCompletion(standard);
+      window.reset812GQuestion(data, data.index + 1);
+      renderStandardsLab(standard);
     } else if (standard === "8.12D") {
       if (data.index >= window.INTEREST_812D_TOTAL - 1) return showLabCompletion(standard);
       window.reset812DQuestion(data, data.index + 1);
