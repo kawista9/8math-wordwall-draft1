@@ -1,5 +1,5 @@
 export function hasAccess(rows, now = Math.floor(Date.now()/1000)) {
- return rows.some(row => row.status === 'active' && row.access_until > now);
+ return rows.some(row => ['active','trialing'].includes(row.status) && row.access_until > now);
 }
 export function sessionToken(request) {
  const bearer = request.headers.get('authorization');

@@ -1,12 +1,6 @@
-CREATE TABLE IF NOT EXISTS customers (
- user_id TEXT PRIMARY KEY, customer_id TEXT NOT NULL UNIQUE
-);
-CREATE TABLE IF NOT EXISTS subscriptions (
- subscription_id TEXT PRIMARY KEY, user_id TEXT NOT NULL,
- status TEXT NOT NULL, access_until INTEGER NOT NULL DEFAULT 0,
- plan TEXT NOT NULL DEFAULT 'individual', canceling INTEGER NOT NULL DEFAULT 0
-);
-CREATE INDEX IF NOT EXISTS subscriptions_user ON subscriptions(user_id);
+ALTER TABLE subscriptions ADD COLUMN plan TEXT NOT NULL DEFAULT 'individual';
+ALTER TABLE subscriptions ADD COLUMN canceling INTEGER NOT NULL DEFAULT 0;
+
 CREATE TABLE IF NOT EXISTS teacher_offers (
  user_id TEXT PRIMARY KEY, checkout_id TEXT NOT NULL UNIQUE,
  schedule_id TEXT, used INTEGER NOT NULL DEFAULT 0
