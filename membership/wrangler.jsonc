@@ -19,8 +19,8 @@
   ],
   "vars": {
     "SITE_URL": "https://REPLACE_WITH_YOUR_DOMAIN",
-    "CLERK_PUBLISHABLE_KEY": "",
-    "CLERK_ISSUER": "",
+    "CLERK_PUBLISHABLE_KEY": "pk_test_cmVmaW5lZC1qZW5uZXQtNDMzNy5jbGVyay5hY2NvdW50cy5kZXYk",
+    "CLERK_ISSUER": "https://refined-jennet-4337.clerk.accounts.dev",
     "STRIPE_INDIVIDUAL_PRICE_ID": "price_1UNMZiPeemN9MfvJlekWT0wz",
     "STRIPE_TEACHER_PRICE_ID": "price_1UNMvDPeemN9MfvJTPefPVfM",
     "STRIPE_TEACHER_INTRO_PRICE_ID": "price_1UNNxXPeemN9MfvJvBzjzRHW",
