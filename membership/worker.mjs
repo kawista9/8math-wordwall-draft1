@@ -109,7 +109,7 @@ export default {
      if(existing?.ui_mode==='embedded_page'){const session=await stripe.checkout.sessions.retrieve(existing.id);return json({clientSecret:session.client_secret});}
      // Expire old open sessions before switching plans so a learner cannot buy both.
      for(const session of sessions.data)if(session.metadata?.word_wall_user_id===user)await stripe.checkout.sessions.expire(session.id);
-     const common={customer,client_reference_id:user,metadata:{word_wall_user_id:user,plan:variant},ui_mode:'embedded_page',redirect_on_completion:'never'};
+     const common={customer,client_reference_id:user,metadata:{word_wall_user_id:user,plan:variant},ui_mode:'embedded_page',redirect_on_completion:'never',managed_payments:{enabled:false}};
      const params=promo?{...common,mode:'setup',currency:'usd',setup_intent_data:{metadata:{word_wall_user_id:user,offer:'teacher_launch_v1'}},custom_text:{submit:{message:`Teacher membership: ${TEACHER_OFFER} One teacher and up to 150 learners. By saving your card you authorize these automatic charges.`}}}:{...common,mode:'subscription',line_items:[{price:body.plan==='teacher'?env.STRIPE_TEACHER_PRICE_ID:env.STRIPE_INDIVIDUAL_PRICE_ID,quantity:1}],subscription_data:{metadata:{word_wall_user_id:user,plan:body.plan}}};
      const checkout=await stripe.checkout.sessions.create(params,{idempotencyKey:`checkout-${user}-${lock}`});
      if(promo)await env.DB.prepare('INSERT INTO teacher_offers(user_id,checkout_id) VALUES (?,?) ON CONFLICT(user_id) DO UPDATE SET checkout_id=excluded.checkout_id WHERE teacher_offers.used=0').bind(user,checkout.id).run();
