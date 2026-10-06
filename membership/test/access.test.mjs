@@ -7,7 +7,7 @@ import {hasAccess,sessionToken} from '../access.mjs';
 const {privateKey,publicKey}=generateKeyPairSync('rsa',{modulusLength:2048});
 const issuer='https://example.clerk.accounts.dev',origin='https://math.example.com';
 function token(overrides={}){const t=Math.floor(Date.now()/1000);const enc=x=>Buffer.from(JSON.stringify(x)).toString('base64url');const input=enc({alg:'RS256',typ:'JWT',kid:'test'})+'.'+enc({iss:issuer,sub:'user_1',sid:'sess_1',azp:origin,iat:t,nbf:t-5,exp:t+60,...overrides});return input+'.'+sign('RSA-SHA256',Buffer.from(input),privateKey).toString('base64url');}
-function env(rows=[]){return {SITE_URL:origin,CLERK_PUBLISHABLE_KEY:'pk_test_example',CLERK_ISSUER:issuer,CLERK_JWT_KEY:publicKey.export({type:'spki',format:'pem'}),STRIPE_SECRET_KEY:'sk_test_example',STRIPE_INDIVIDUAL_PRICE_ID:'price_individual',STRIPE_TEACHER_PRICE_ID:'price_teacher',STRIPE_TEACHER_INTRO_PRICE_ID:'price_intro',STRIPE_WEBHOOK_SECRET:'whsec_example',DB:{prepare(){return {bind(){return this},all:async()=>({results:rows})}}},ASSETS:{fetch:async()=>new Response('protected image',{headers:{'Content-Type':'image/png'}})}};}
+function env(rows=[]){return {SITE_URL:origin,CLERK_PUBLISHABLE_KEY:'pk_test_example',CLERK_ISSUER:issuer,CLERK_JWT_KEY:publicKey.export({type:'spki',format:'pem'}),STRIPE_SECRET_KEY:'sk_test_example',STRIPE_PUBLISHABLE_KEY:'pk_test_example',STRIPE_INDIVIDUAL_PRICE_ID:'price_individual',STRIPE_TEACHER_PRICE_ID:'price_teacher',STRIPE_TEACHER_INTRO_PRICE_ID:'price_intro',STRIPE_WEBHOOK_SECRET:'whsec_example',DB:{prepare(){return {bind(){return this},all:async()=>({results:rows})}}},ASSETS:{fetch:async()=>new Response('protected image',{headers:{'Content-Type':'image/png'}})}};}
 const request=(path,jwt,extra={})=>new Request(origin+path,{...extra,headers:{...(jwt?{Cookie:`__session=${jwt}`} : {}),...extra.headers}});
 test('only active unexpired subscriptions grant access',()=>{for(const status of ['canceled','past_due','unpaid','incomplete'])assert.equal(hasAccess([{status,access_until:101}],100),false);assert.equal(hasAccess([{status:'active',access_until:100}],100),false);assert.equal(hasAccess([{status:'active',access_until:101}],100),true);});
 test('cookie parsing selects exact session cookie',()=>assert.equal(sessionToken(new Request(origin,{headers:{cookie:'not__session=wrong; __session=right'}})),'right'));
@@ -43,17 +43,17 @@ test('teacher checkout requires consent, collects a card without charging, and r
   if(path==='/v1/subscriptions')return respond({data:[],has_more:false});
   if(path==='/v1/checkout/sessions' && options.method==='POST'){
    const body=new URLSearchParams(options.body);sent.push(body);created++;
-   return respond({id:'cs_t',url:'https://checkout.stripe.com/test',status:'open',mode:'setup'});
+   return respond({id:'cs_t',client_secret:'cs_t_secret_example',ui_mode:'embedded_page',status:'open',mode:'setup'});
   }
-  if(path==='/v1/checkout/sessions/cs_t')return respond({id:'cs_t',status:'open'});
-  if(path==='/v1/checkout/sessions')return respond({data:created?[{id:'cs_t',url:'https://checkout.stripe.com/test',status:'open',mode:'setup',metadata:{word_wall_user_id:'user_1',plan:'teacher_offer'}}]:[],has_more:false});
+  if(path==='/v1/checkout/sessions/cs_t')return respond({id:'cs_t',status:'open',client_secret:'cs_t_secret_example'});
+  if(path==='/v1/checkout/sessions')return respond({data:created?[{id:'cs_t',client_secret:'cs_t_secret_example',ui_mode:'embedded_page',status:'open',mode:'setup',metadata:{word_wall_user_id:'user_1',plan:'teacher_offer'}}]:[],has_more:false});
   throw new Error('Unexpected Stripe call: '+path);
  };
  try{
   const post=body=>worker.fetch(request('/api/checkout',token(),{method:'POST',headers:{Origin:origin,'Content-Type':'application/json'},body:JSON.stringify(body)}),e);
   assert.equal((await post({plan:'teacher',accepted:false})).status,400);
-  let result=await post({plan:'teacher',accepted:true});assert.equal(result.status,200);assert.equal((await result.json()).url,'https://checkout.stripe.com/test');
-  assert.equal(sent[0].get('mode'),'setup');assert.equal(sent[0].get('line_items[0][price]'),null);
+  let result=await post({plan:'teacher',accepted:true});assert.equal(result.status,200);assert.equal((await result.json()).clientSecret,'cs_t_secret_example');
+  assert.equal(sent[0].get('ui_mode'),'embedded_page');assert.equal(sent[0].get('redirect_on_completion'),'never');assert.equal(sent[0].get('success_url'),null);assert.equal(sent[0].get('mode'),'setup');assert.equal(sent[0].get('line_items[0][price]'),null);
   assert.match(sent[0].get('custom_text[submit][message]'),/\$24\.99.*\$49\.99/);
   assert.equal((await post({plan:'teacher',accepted:true})).status,200);assert.equal(created,1);
   assert.equal(e.DB.raw.prepare('SELECT COUNT(*) AS n FROM checkout_locks').get().n,0);

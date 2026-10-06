@@ -24,6 +24,7 @@
     "STRIPE_INDIVIDUAL_PRICE_ID": "price_1UNMZiPeemN9MfvJlekWT0wz",
     "STRIPE_TEACHER_PRICE_ID": "price_1UNMvDPeemN9MfvJTPefPVfM",
     "STRIPE_TEACHER_INTRO_PRICE_ID": "price_1UNNxXPeemN9MfvJvBzjzRHW",
-    "OWNER_USER_ID": ""
+    "OWNER_USER_ID": "",
+    "STRIPE_PUBLISHABLE_KEY": ""
   }
 }

@@ -126,3 +126,12 @@ After passing these checks, switch all provider settings to production, repeat a
 The source repository and current GitHub Pages URL are public. The paid deployment cannot revoke those copies. After the paid site works, disable public Pages and make the repository private, retaining a private backup. Arrange continued access for existing testers first.
 
 Existing ScreenPal videos have external links. This paywall protects discovery inside the word wall but cannot independently restrict a public ScreenPal link or erase prior downloads. Configure video-host privacy separately if required.
+
+
+## Embedded checkout and current deployment configuration
+
+Checkout renders inside the account page using Stripe.js createEmbeddedCheckoutPage and Checkout ui_mode embedded_page. Only card payments are enabled; redirect_on_completion never keeps completion on the site. Completion refreshes server-verified membership; webhooks remain required. The server returns the authenticated customer’s client secret, never a secret API key. Hosted open sessions are expired before a new embedded session is created.
+
+Cloudflare project: math-word-wall-membership. Repository: kawista9/8math-wordwall-draft1. Production branch: launch/membership-paywall. Root directory: membership. Build: npm ci && npm run build. Deploy: npx wrangler deploy. Disable preview builds until separate test resources exist.
+
+STRIPE_PUBLISHABLE_KEY is an additional required public variable (pk_live for the current live prices; pk_test with separate sandbox prices). The three owner-provided live price IDs are saved in wrangler.jsonc. Before deployment, replace the D1 database ID and SITE_URL and supply the Clerk configuration and Stripe secrets. Do not put secret keys in git. Test checkout and all teacher schedule phases in sandbox before opening live registration.

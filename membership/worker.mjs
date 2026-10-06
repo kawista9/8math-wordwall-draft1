@@ -50,13 +50,13 @@ async function customerFor(user,env,stripe) {
  row=await env.DB.prepare('SELECT customer_id FROM customers WHERE user_id=?').bind(user).first();
  return row.customer_id;
 }
-function configured(env) { return ['DB','SITE_URL','CLERK_PUBLISHABLE_KEY','CLERK_ISSUER','CLERK_JWT_KEY','STRIPE_SECRET_KEY','STRIPE_INDIVIDUAL_PRICE_ID','STRIPE_TEACHER_PRICE_ID','STRIPE_TEACHER_INTRO_PRICE_ID','STRIPE_WEBHOOK_SECRET'].every(k=>!!env[k]); }
+function configured(env) { return ['DB','SITE_URL','CLERK_PUBLISHABLE_KEY','CLERK_ISSUER','CLERK_JWT_KEY','STRIPE_SECRET_KEY','STRIPE_PUBLISHABLE_KEY','STRIPE_INDIVIDUAL_PRICE_ID','STRIPE_TEACHER_PRICE_ID','STRIPE_TEACHER_INTRO_PRICE_ID','STRIPE_WEBHOOK_SECRET'].every(k=>!!env[k]); }
 export default {
  async fetch(req,env) {
   const url=new URL(req.url), path=url.pathname;
   try {
    if (path==='/membership-client.js' && req.method==='GET') return env.ASSETS.fetch(req);
-   if (path==='/api/config' && req.method==='GET') return json({publishableKey:env.CLERK_PUBLISHABLE_KEY || '',configured:configured(env)});
+   if (path==='/api/config' && req.method==='GET') return json({publishableKey:env.CLERK_PUBLISHABLE_KEY || '',stripePublishableKey:env.STRIPE_PUBLISHABLE_KEY || '',configured:configured(env)});
    if (path==='/account' && req.method==='GET') return new Response(page(env),{headers:{'Content-Type':'text/html;charset=utf-8','Cache-Control':'no-store','Referrer-Policy':'no-referrer'}});
    if (!configured(env)) return json({error:'Membership setup is still in progress. Please check back soon.'},503);
    const stripe=stripeClient(env);
@@ -106,14 +106,14 @@ export default {
      const variant=promo?'teacher_offer':body.plan;
      const sessions=await stripe.checkout.sessions.list({customer,status:'open',limit:100});
      const existing=sessions.data.find(s=>s.metadata?.word_wall_user_id===user && s.metadata?.plan===variant);
-     if(existing)return json({url:existing.url});
+     if(existing?.ui_mode==='embedded_page'){const session=await stripe.checkout.sessions.retrieve(existing.id);return json({clientSecret:session.client_secret});}
      // Expire old open sessions before switching plans so a learner cannot buy both.
      for(const session of sessions.data)if(session.metadata?.word_wall_user_id===user)await stripe.checkout.sessions.expire(session.id);
-     const common={customer,client_reference_id:user,metadata:{word_wall_user_id:user,plan:variant},success_url:`${env.SITE_URL}/account?payment=success`,cancel_url:`${env.SITE_URL}/account?payment=cancelled`};
+     const common={customer,client_reference_id:user,metadata:{word_wall_user_id:user,plan:variant},ui_mode:'embedded_page',redirect_on_completion:'never',payment_method_types:['card']};
      const params=promo?{...common,mode:'setup',currency:'usd',payment_method_types:['card'],setup_intent_data:{metadata:{word_wall_user_id:user,offer:'teacher_launch_v1'}},custom_text:{submit:{message:`Teacher membership: ${TEACHER_OFFER} One teacher and up to 150 learners. By saving your card you authorize these automatic charges.`}}}:{...common,mode:'subscription',line_items:[{price:body.plan==='teacher'?env.STRIPE_TEACHER_PRICE_ID:env.STRIPE_INDIVIDUAL_PRICE_ID,quantity:1}],subscription_data:{metadata:{word_wall_user_id:user,plan:body.plan}}};
      const checkout=await stripe.checkout.sessions.create(params,{idempotencyKey:`checkout-${user}-${lock}`});
      if(promo)await env.DB.prepare('INSERT INTO teacher_offers(user_id,checkout_id) VALUES (?,?) ON CONFLICT(user_id) DO UPDATE SET checkout_id=excluded.checkout_id WHERE teacher_offers.used=0').bind(user,checkout.id).run();
-     return json({url:checkout.url});
+     return json({clientSecret:checkout.client_secret});
      } finally {await env.DB.prepare('DELETE FROM checkout_locks WHERE user_id=? AND token=?').bind(user,lock).run();}
     }
     if(path==='/api/cancel') {

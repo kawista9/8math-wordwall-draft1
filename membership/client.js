@@ -37,10 +37,13 @@
    if(data.teacher)await roster();
    show('');
   }
+  let checkout=null;
+  async function closeCheckout(){if(checkout){checkout.destroy();checkout=null;}document.getElementById('checkout-panel').hidden=true;document.getElementById('checkout-container').replaceChildren();}
+  document.getElementById('checkout-back').onclick=async()=>{await closeCheckout();await status().catch(e=>show(e.message));};
   for(const plan of ['individual','teacher'])document.getElementById(plan).onclick=async()=>{
    if(!document.getElementById('consent').checked){show('Please agree to the payment schedule before continuing.');return;}
    const buttons=['individual','teacher'].map(id=>document.getElementById(id));buttons.forEach(b=>b.disabled=true);
-   try{const data=await api('/api/checkout',{plan,accepted:true});location.assign(data.url);}catch(e){show(e.message);buttons.forEach(b=>b.disabled=false);}
+   try{const data=await api('/api/checkout',{plan,accepted:true});if(!window.Stripe)await script('https://js.stripe.com/clover/stripe.js');await closeCheckout();document.getElementById('checkout-panel').hidden=false;document.getElementById('plans').hidden=true;const stripe=window.Stripe(config.stripePublishableKey);checkout=await stripe.createEmbeddedCheckoutPage({fetchClientSecret:async()=>data.clientSecret,onComplete:async()=>{await closeCheckout();await status().catch(e=>show(e.message));}});checkout.mount('#checkout-container');document.getElementById('checkout-panel').scrollIntoView({behavior:'smooth',block:'start'});buttons.forEach(b=>b.disabled=false);}catch(e){await closeCheckout();await status().catch(()=>{});show(e.message);buttons.forEach(b=>b.disabled=false);}
   };
   document.getElementById('billing').onclick=async()=>{try{const data=await api('/api/portal');location.assign(data.url);}catch(e){show(e.message);}};
   document.getElementById('cancel').onclick=async()=>{
