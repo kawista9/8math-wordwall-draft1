@@ -48,6 +48,7 @@
    const data=await api('/api/status');
    document.getElementById('status').textContent=data.canceling?`Renewal canceled. Your access continues until ${new Date(data.accessUntil*1000).toLocaleString()}.`:data.active?'Your membership is active. You’re ready to learn.':'Choose a membership or join your teacher’s class.';
    document.getElementById('enter').hidden=!data.active;
+   document.getElementById('learning-support').hidden=!data.active;
    if(data.teacher){selectedRole='teacher';applyRole();}
    document.getElementById('plans').hidden=!selectedRole || data.ownMembership || (data.active && !data.teacher);
    document.getElementById('billing').hidden=!data.hasCustomer;

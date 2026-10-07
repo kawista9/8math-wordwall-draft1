@@ -2,6 +2,8 @@ import { verifyToken } from '@clerk/backend';
 import Stripe from 'stripe';
 import { hasAccess, sessionToken, sameOrigin, escapeHTML as esc } from './access.mjs';
 import {page} from './page.mjs';
+import {livePage} from './live-page.mjs';
+import {liveAPI,reconcileBooking} from './live.mjs';
 import {subscriptionRecord,completeTeacherSetup,validatePrices,cancelSubscription,SEAT_LIMIT,TEACHER_OFFER} from './billing.mjs';
 import {createJoinLink,joinClass} from './roster.mjs';
 const json = (data, status=200) => Response.json(data,{status,headers:{'Cache-Control':'no-store'}});
@@ -55,9 +57,11 @@ export default {
  async fetch(req,env) {
   const url=new URL(req.url), path=url.pathname;
   try {
-   if (path==='/membership-client.js' && req.method==='GET') return env.ASSETS.fetch(req);
+   if (['/membership-client.js','/live-client.js'].includes(path) && req.method==='GET') return env.ASSETS.fetch(req);
    if (path==='/api/config' && req.method==='GET') return json({publishableKey:env.CLERK_PUBLISHABLE_KEY || '',stripePublishableKey:env.STRIPE_PUBLISHABLE_KEY || '',configured:configured(env)});
    if (path==='/account' && req.method==='GET') return new Response(page(env),{headers:{'Content-Type':'text/html;charset=utf-8','Cache-Control':'no-store','Referrer-Policy':'no-referrer'}});
+   if(path==='/live' && req.method==='GET')return new Response(livePage(),{headers:{'Content-Type':'text/html;charset=utf-8','Cache-Control':'no-store','Referrer-Policy':'no-referrer'}});
+   if(path==='/api/live/public' && req.method==='GET'){let settings=null;try{settings=await env.DB.prepare('SELECT video_id,is_live,starts_at FROM live_settings WHERE id=1').first();}catch{}return json({settings});}
    if (!configured(env)) return json({error:'Membership setup is still in progress. Please check back soon.'},503);
    const stripe=stripeClient(env);
    if (path==='/api/stripe/webhook' && req.method==='POST') {
@@ -65,7 +69,9 @@ export default {
     try { event=await stripe.webhooks.constructEventAsync(await req.text(),req.headers.get('stripe-signature'),env.STRIPE_WEBHOOK_SECRET,undefined,Stripe.createSubtleCryptoProvider()); }
     catch { return json({error:'Invalid webhook signature'},400); }
     if (event.type.startsWith('customer.subscription.') || event.type==='checkout.session.completed' || event.type==='invoice.paid' || event.type==='invoice.payment_failed') {
-     const obj=event.data.object, customer=typeof obj.customer==='string'?obj.customer:obj.customer?.id;
+     const obj=event.data.object;
+     if(obj.metadata?.tutoring_booking){const booking=await env.DB.prepare('SELECT * FROM tutoring_bookings WHERE id=?').bind(obj.metadata.tutoring_booking).first();await reconcileBooking(booking,env,stripe);return json({received:true});}
+     const customer=typeof obj.customer==='string'?obj.customer:obj.customer?.id;
      const row=customer && await env.DB.prepare('SELECT user_id FROM customers WHERE customer_id=?').bind(customer).first();
      if (row) await syncCustomer(customer,row.user_id,env,stripe);
     }
@@ -80,6 +86,7 @@ export default {
    if(path.startsWith('/api/')) {
     if(req.method!=='POST') return json({error:'Method not allowed'},405);
     if(!sameOrigin(req,env.SITE_URL)) return json({error:'Invalid request origin'},403);
+    if(path.startsWith('/api/live/')||path.startsWith('/api/tutoring/'))return await liveAPI(path,await req.json(),user,env,stripe,allowed,customerFor);
     if(path==='/api/status') {
      const customer=await env.DB.prepare('SELECT customer_id FROM customers WHERE user_id=?').bind(user).first();
      if(customer)await syncCustomer(customer.customer_id,user,env,stripe);
@@ -162,7 +169,7 @@ export default {
    response.headers.set('Vary','Cookie, Authorization');
    response.headers.set('X-Content-Type-Options','nosniff');
    if(response.headers.get('Content-Type')?.includes('text/html')) {
-    return new HTMLRewriter().on('head',{element(el){el.append('<script src="/membership-client.js" defer></script>',{html:true});}}).on('.header-actions',{element(el){el.prepend('<a href="/account" style="color:inherit;margin-right:12px">My account</a>',{html:true});}}).transform(response);
+    return new HTMLRewriter().on('head',{element(el){el.append('<script src="/membership-client.js" defer></script>',{html:true});}}).on('.header-actions',{element(el){el.prepend('<a href="/live" style="color:inherit;margin-right:12px">Math Help Live</a><a href="/account" style="color:inherit;margin-right:12px">My account</a>',{html:true});}}).transform(response);
    }
    return response;
   } catch(error) {
