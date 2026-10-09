@@ -30,6 +30,13 @@
   }
  }
 
+ async function complimentaryStatus(){
+  const d=await api('/api/complimentary/list');el('complimentary-list').replaceChildren();
+  for(const g of d.grants){const expired=g.expires_at!==null&&g.expires_at<=Math.floor(Date.now()/1000);const p=item(el('complimentary-list'),(g.label||g.user_id)+' · '+(g.revoked?'Revoked':expired?'Expired':g.expires_at?'Free until '+new Date(g.expires_at*1000).toLocaleString():'Ongoing free access')+'\n'+g.user_id);
+   if(!g.revoked){const b=document.createElement('button');b.textContent='Revoke free access';b.onclick=async()=>{if(!confirm('Revoke complimentary access for this learner? Existing paid or class access will continue.'))return;b.disabled=true;try{await api('/api/complimentary/revoke',{userId:g.user_id});await complimentaryStatus();show('Complimentary access revoked.');}catch(e){show(e.message);b.disabled=false;}};p.append(b);}
+  }
+ }
+
  try{
   await publicStatus();
   const config=await(await fetch('/api/config')).json();
@@ -41,7 +48,13 @@
   const clerk=window.Clerk;
   if(!clerk.isSignedIn){show('Sign in with an active membership or teacher class account to submit questions and book tutoring.');clerk.mountSignIn(el('auth'),{routing:'hash',forceRedirectUrl:'/live',signUpForceRedirectUrl:'/live'});setInterval(()=>publicStatus().catch(()=>{}),30000);return;}
   api=async(path,data={})=>{const token=await clerk.session.getToken();const r=await fetch(path,{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(data)});const b=await r.json();if(!r.ok)throw Error(b.error||'Please try again.');return b;};
-  await liveStatus();await tutoringStatus();
+  await liveStatus();
+  if(owner){
+   el('complimentary-ongoing').onchange=()=>{el('complimentary-until').disabled=el('complimentary-ongoing').checked;el('complimentary-until').required=!el('complimentary-ongoing').checked;};
+   el('complimentary-form').onsubmit=async e=>{e.preventDefault();el('complimentary-save').disabled=true;try{await api('/api/complimentary/grant',{userId:el('complimentary-user').value,label:el('complimentary-label').value,expiresAt:el('complimentary-ongoing').checked?null:Math.floor(new Date(el('complimentary-until').value).getTime()/1000)});await complimentaryStatus();show('Free individual access granted. The learner can refresh their account page.');}catch(error){show(error.message);}finally{el('complimentary-save').disabled=false;}};
+   await complimentaryStatus().catch(e=>show(e.message));
+  }
+  await tutoringStatus();
   for(const kind of ['advance','chat'])el(kind+'-form').onsubmit=async e=>{e.preventDefault();const b=e.submitter;b.disabled=true;try{await api('/api/live/question',{kind,body:el(kind+'-body').value});el(kind+'-body').value='';await liveStatus();show('Question submitted. I’ll review it for the lesson.');}catch(error){show(error.message);}finally{b.disabled=false;if(kind==='chat')await publicStatus();}};
   el('live-settings').onsubmit=async e=>{e.preventDefault();try{await api('/api/live/settings',{videoId:el('video-id').value.trim(),isLive:el('is-live').checked,startsAt:el('live-time').value?Math.floor(new Date(el('live-time').value).getTime()/1000):null});await liveStatus();show('Live lesson updated.');}catch(error){show(error.message);}};
   async function close(){if(checkout){checkout.destroy();checkout=null;}el('tutoring-checkout').hidden=true;el('booking-form').hidden=false;el('checkout-container').replaceChildren();}

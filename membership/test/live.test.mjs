@@ -56,3 +56,10 @@ test('only verified payment confirms booking; expired sessions release reservati
  session={...session,amount_total:5000,customer_details:{email:'contact@example.com'}};await reconcileBooking(b,e,stripe);assert.equal(e.DB.raw.prepare('SELECT state FROM tutoring_slots').get().state,'paid');assert.equal(e.DB.raw.prepare('SELECT contact_email FROM tutoring_bookings').get().contact_email,'contact@example.com');
  e.DB.raw.prepare("UPDATE tutoring_slots SET state='held'").run();e.DB.raw.prepare("UPDATE tutoring_bookings SET state='pending'").run();session={...session,status:'expired',payment_status:'unpaid'};await reconcileBooking(b,e,stripe);assert.equal(e.DB.raw.prepare('SELECT state FROM tutoring_slots').get().state,'open');
 });
+
+test('complimentary individual tutoring is $25 only while grant is active',async()=>{
+ const e=env();e.DB.raw.prepare("INSERT INTO complimentary_access VALUES('user_gift','Gift',NULL,0,1,'owner')").run();
+ assert.equal(await tutoringAmount('user_gift',e),2500);
+ e.DB.raw.exec('UPDATE complimentary_access SET revoked=1');assert.equal(await tutoringAmount('user_gift',e),5000);
+ e.DB.raw.exec('UPDATE complimentary_access SET revoked=0,expires_at=1');assert.equal(await tutoringAmount('user_gift',e),5000);
+});

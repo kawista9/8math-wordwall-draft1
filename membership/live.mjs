@@ -1,3 +1,4 @@
+import {complimentaryAccess} from './complimentary.mjs';
 import {hasAccess} from './access.mjs';
 export const LEAD_SECONDS=48*60*60;
 export function validSlot(start,now){return Number.isInteger(start)&&start>=now+LEAD_SECONDS;}
@@ -6,7 +7,7 @@ export function videoId(value){return typeof value==='string'&&/^[\w-]{11}$/.tes
 export async function tutoringAmount(user,env){
  const rows=await env.DB.prepare('SELECT status,access_until,plan FROM subscriptions WHERE user_id=?').bind(user).all();
  // Prices derive from active entitlements, never the role picker.
- if(rows.results.some(r=>r.plan==='individual'&&hasAccess([r])))return 2500;
+ if(rows.results.some(r=>r.plan==='individual'&&hasAccess([r]))||await complimentaryAccess(user,env))return 2500;
  return 5000;
 }
 export async function reconcileBooking(booking,env,stripe){

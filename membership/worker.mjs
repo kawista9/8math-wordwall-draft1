@@ -1,6 +1,7 @@
 import { verifyToken } from '@clerk/backend';
 import Stripe from 'stripe';
 import { hasAccess, sessionToken, sameOrigin, escapeHTML as esc } from './access.mjs';
+import {complimentaryAccess,complimentaryAPI} from './complimentary.mjs';
 import {page} from './page.mjs';
 import {livePage} from './live-page.mjs';
 import {liveAPI,reconcileBooking} from './live.mjs';
@@ -24,7 +25,7 @@ async function ownAccess(user,env,plan) {
 async function teacherActive(user,env){return ownAccess(user,env,'teacher');}
 async function allowed(user,env) {
  if(env.OWNER_USER_ID && user===env.OWNER_USER_ID)return true;
- if(await ownAccess(user,env))return true;
+ if(await ownAccess(user,env)||await complimentaryAccess(user,env))return true;
  const rows=await env.DB.prepare("SELECT s.status,s.access_until FROM learners l JOIN subscriptions s ON s.user_id=l.teacher_id WHERE l.learner_id=? AND s.plan='teacher'").bind(user).all();
  return hasAccess(rows.results);
 }
@@ -86,6 +87,7 @@ export default {
    if(path.startsWith('/api/')) {
     if(req.method!=='POST') return json({error:'Method not allowed'},405);
     if(!sameOrigin(req,env.SITE_URL)) return json({error:'Invalid request origin'},403);
+    if(path.startsWith('/api/complimentary/'))return await complimentaryAPI(path,await req.json(),user,env);
     if(path.startsWith('/api/live/')||path.startsWith('/api/tutoring/'))return await liveAPI(path,await req.json(),user,env,stripe,allowed,customerFor);
     if(path==='/api/status') {
      const customer=await env.DB.prepare('SELECT customer_id FROM customers WHERE user_id=?').bind(user).first();

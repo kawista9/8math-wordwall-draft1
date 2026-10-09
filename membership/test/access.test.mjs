@@ -7,7 +7,7 @@ import {hasAccess,sessionToken} from '../access.mjs';
 const {privateKey,publicKey}=generateKeyPairSync('rsa',{modulusLength:2048});
 const issuer='https://example.clerk.accounts.dev',origin='https://math.example.com';
 function token(overrides={}){const t=Math.floor(Date.now()/1000);const enc=x=>Buffer.from(JSON.stringify(x)).toString('base64url');const input=enc({alg:'RS256',typ:'JWT',kid:'test'})+'.'+enc({iss:issuer,sub:'user_1',sid:'sess_1',azp:origin,iat:t,nbf:t-5,exp:t+60,...overrides});return input+'.'+sign('RSA-SHA256',Buffer.from(input),privateKey).toString('base64url');}
-function env(rows=[]){return {SITE_URL:origin,CLERK_PUBLISHABLE_KEY:'pk_test_example',CLERK_ISSUER:issuer,CLERK_JWT_KEY:publicKey.export({type:'spki',format:'pem'}),STRIPE_SECRET_KEY:'sk_test_example',STRIPE_PUBLISHABLE_KEY:'pk_test_example',STRIPE_INDIVIDUAL_PRICE_ID:'price_individual',STRIPE_TEACHER_PRICE_ID:'price_teacher',STRIPE_TEACHER_INTRO_PRICE_ID:'price_intro',STRIPE_WEBHOOK_SECRET:'whsec_example',DB:{prepare(){return {bind(){return this},all:async()=>({results:rows})}}},ASSETS:{fetch:async()=>new Response('protected image',{headers:{'Content-Type':'image/png'}})}};}
+function env(rows=[]){return {SITE_URL:origin,CLERK_PUBLISHABLE_KEY:'pk_test_example',CLERK_ISSUER:issuer,CLERK_JWT_KEY:publicKey.export({type:'spki',format:'pem'}),STRIPE_SECRET_KEY:'sk_test_example',STRIPE_PUBLISHABLE_KEY:'pk_test_example',STRIPE_INDIVIDUAL_PRICE_ID:'price_individual',STRIPE_TEACHER_PRICE_ID:'price_teacher',STRIPE_TEACHER_INTRO_PRICE_ID:'price_intro',STRIPE_WEBHOOK_SECRET:'whsec_example',DB:{prepare(){return {bind(){return this},first:async()=>null,all:async()=>({results:rows})}}},ASSETS:{fetch:async()=>new Response('protected image',{headers:{'Content-Type':'image/png'}})}};}
 const request=(path,jwt,extra={})=>new Request(origin+path,{...extra,headers:{...(jwt?{Cookie:`__session=${jwt}`} : {}),...extra.headers}});
 test('only active unexpired subscriptions grant access',()=>{for(const status of ['canceled','past_due','unpaid','incomplete'])assert.equal(hasAccess([{status,access_until:101}],100),false);assert.equal(hasAccess([{status:'active',access_until:100}],100),false);assert.equal(hasAccess([{status:'active',access_until:101}],100),true);});
 test('cookie parsing selects exact session cookie',()=>assert.equal(sessionToken(new Request(origin,{headers:{cookie:'not__session=wrong; __session=right'}})),'right'));
@@ -59,3 +59,24 @@ test('teacher checkout requires consent, collects a card without charging, and r
   assert.equal(e.DB.raw.prepare('SELECT COUNT(*) AS n FROM checkout_locks').get().n,0);
  }finally{globalThis.fetch=original;}
 });
+
+ test('complimentary access protects assets, expires, revokes, and grants no teacher roster',async()=>{
+ const e=env();e.DB=database();e.OWNER_USER_ID='user_owner';
+ const post=(path,body,claims={sub:'user_owner'},originHeader=origin)=>worker.fetch(request(path,token(claims),{method:'POST',headers:{Origin:originHeader,'Content-Type':'application/json'},body:JSON.stringify(body)}),e);
+ const grant={userId:'user_1',label:'Individual learner',expiresAt:null};
+ assert.equal((await post('/api/complimentary/grant',grant,{sub:'user_1'})).status,403);
+ assert.equal((await post('/api/complimentary/grant',grant,{sub:'user_owner'},'https://attacker.example')).status,403);
+ assert.equal((await post('/api/complimentary/grant',grant)).status,200);
+ assert.equal((await worker.fetch(request('/assets/chart.png',token()),e)).status,200);
+ assert.equal((await post('/api/roster',{}, {sub:'user_1'})).status,403);
+ assert.equal((await post('/api/complimentary/list',{}, {sub:'user_1'})).status,403);
+ assert.equal((await post('/api/complimentary/revoke',{userId:'user_1'})).status,200);
+ assert.equal((await worker.fetch(request('/assets/chart.png',token()),e)).status,403);
+ assert.equal((await post('/api/complimentary/grant',{...grant,expiresAt:Math.floor(Date.now()/1000)+1000})).status,200);
+ e.DB.raw.exec('UPDATE complimentary_access SET expires_at=1');
+ assert.equal((await worker.fetch(request('/assets/chart.png',token()),e)).status,403);
+ e.DB.raw.prepare("INSERT INTO subscriptions(subscription_id,user_id,status,access_until,plan) VALUES('paid','user_1','active',?,'individual')").run(Math.floor(Date.now()/1000)+1000);
+ await post('/api/complimentary/revoke',{userId:'user_1'});
+ assert.equal((await worker.fetch(request('/assets/chart.png',token()),e)).status,200);
+ assert.equal(e.DB.raw.prepare('SELECT COUNT(*) AS n FROM subscriptions').get().n,1);
+ });
