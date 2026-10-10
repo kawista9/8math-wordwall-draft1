@@ -24,3 +24,31 @@ main{width:100%;max-width:none}
 @media(max-width:1100px){.dashboard-heading{flex-direction:column;align-items:stretch;gap:18px}.search-box{flex:auto;width:100%;min-width:0}.dashboard-grid{grid-template-columns:minmax(0,1.2fr) minmax(300px,.8fr)}.app-bar .brand-mark{width:90px;height:90px}}
 @media(max-width:900px){.dashboard-grid{grid-template-columns:1fr}.group-list{grid-template-columns:repeat(2,minmax(0,1fr))}.dashboard-heading:after{right:0}.app-bar{gap:16px}}
 @media(max-width:600px){.app-bar{align-items:flex-start;flex-wrap:wrap;padding:12px 16px}.app-bar .brand-mark{width:82px;height:82px}.app-bar .brand strong{font-size:18px}.header-actions{width:100%;justify-content:flex-start}.view{padding:24px 16px}.group-list{grid-template-columns:1fr}.group-card{min-height:80px}.dashboard-heading h1{font-size:36px}}
+
+/* Lesson controls stay ahead of the chart; fit the chart without clipping it. */
+.lesson-open .app-bar{padding-block:8px;min-height:84px}
+.lesson-open .app-bar .brand-mark{width:72px;height:72px}
+.workspace-view{padding:18px clamp(16px,2vw,40px) 28px}
+.workspace-heading{margin-bottom:14px;gap:10px}
+.workspace-title h1{font-size:clamp(24px,2vw,36px);line-height:1.12}
+.workspace-title .group-number{width:46px;height:46px;font-size:18px}
+.workspace-grid{grid-template-columns:200px minmax(0,1fr);gap:20px}
+.standard-sidebar{top:106px;padding:14px}
+.lesson-area{padding:16px}
+.lesson-toolbar{align-items:center;flex-wrap:wrap;margin-bottom:8px;gap:8px 16px}
+.lesson-toolbar>div{flex:1;min-width:160px}
+.lesson-toolbar h2{font-size:clamp(20px,1.5vw,28px)}
+.resource-tabs{flex-wrap:wrap;overflow:visible;padding-bottom:8px}
+.video-shelf{margin:0 0 10px;padding:10px 14px;flex-wrap:wrap;gap:8px 16px}
+.video-shelf>div:first-child strong{font-size:14px}
+.video-shelf>div:first-child span{font-size:12px}
+.video-list{justify-content:flex-start}
+.video-list button{min-height:40px;font-size:14px}
+.lesson-navigation{margin:0 0 12px;gap:12px}
+.lesson-navigation>button{min-height:40px;padding:8px 14px}
+.viewer-frame{min-height:0;margin-inline:auto;max-width:100%}
+.viewer-frame img{width:100%;height:auto}
+.chart-size-toggle{padding:9px 14px;min-height:40px;border:1px solid #b5acd1;border-radius:12px;background:#f1ecff;color:#4f248c;font:inherit;font-size:14px;font-weight:800;cursor:pointer}
+.chart-size-toggle:focus-visible{outline:3px solid #6a39b8;outline-offset:3px}
+@media(max-width:999px){.workspace-grid{grid-template-columns:1fr}.standard-sidebar{position:static}.standard-list{display:flex;flex-wrap:wrap;overflow:visible}.standard-button{width:auto;flex:0 1 auto}.overview-button{width:auto}.lesson-open .app-bar .brand-mark{width:64px;height:64px}.lesson-open .header-actions{width:auto}.lesson-area{padding:12px}.workspace-title h1{font-size:24px}.viewer-frame{width:100%}.chart-size-toggle{display:none}}
+@media(max-height:649px){.chart-size-toggle{display:none}}
