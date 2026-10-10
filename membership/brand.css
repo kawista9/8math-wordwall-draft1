@@ -37,3 +37,26 @@ body>main>.grid{grid-template-columns:minmax(0,1.15fr) minmax(360px,.85fr);gap:c
 @media(max-width:950px){.dashboard-layout{grid-template-columns:1fr;padding:18px}.sidebar{position:static;min-height:0}.sidebar .brand{flex-direction:row;align-items:center}.sidebar .brand img{width:104px;margin:0;align-self:auto}.sidebar nav{gap:8px;flex-wrap:wrap;overflow:visible}.sidebar nav a{padding:10px}.dashboard-main #members>.grid{grid-template-columns:1fr}.welcome:after{width:55%;opacity:.10}}
 @media(max-width:700px){body>main>.grid{grid-template-columns:1fr}.brand{font-size:20px;gap:14px}.brand img{width:100px}header{gap:12px}.dashboard-main #live-settings{grid-template-columns:1fr}.dashboard-main #instructor{grid-template-columns:1fr}.dash-top .eyebrow{max-width:75%;letter-spacing:.1em;font-size:10px}.dashboard-layout{padding:12px}.metric{padding:18px}.metric span{font-size:12px}.welcome h1{font-size:34px}.welcome{padding:24px}.sidebar .brand{font-size:18px}}
 @media(prefers-reduced-motion:reduce){button,.button{transition:none}button:hover,.button:hover{transform:none}}
+
+/* Membership welcome page: legible branding and screen-scaled type. */
+.membership-page{font-size:clamp(18px,1.2vw,24px);line-height:1.65}
+.membership-page>main{width:min(100%,2000px);padding:clamp(24px,3vw,64px)}
+.membership-page>main>header{gap:24px;flex-wrap:wrap;padding-bottom:28px}
+.membership-page .brand{font-size:clamp(26px,2vw,40px);gap:24px;max-width:100%}
+.membership-page .brand img{width:clamp(160px,12vw,240px);height:auto;filter:brightness(1.5) saturate(1.08);border:1px solid #87cbe32b;border-radius:28px;box-shadow:0 12px 44px #5bdfe526}
+.membership-page .brand small{font-size:clamp(12px,.75vw,15px);letter-spacing:.12em;line-height:1.7}
+.membership-page>main>.grid{align-items:start;margin-top:clamp(28px,3vw,60px);grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:clamp(28px,3vw,64px)}
+.membership-page h1{font-size:clamp(40px,3.6vw,76px);line-height:1.12;margin-block:20px 28px;max-width:18ch}
+.membership-page h2{font-size:clamp(25px,1.9vw,38px);line-height:1.25}
+.membership-page .eyebrow{font-size:clamp(12px,.85vw,16px);letter-spacing:.13em}
+.membership-page p{max-width:65ch}
+.membership-page small{font-size:clamp(15px,.95vw,19px);line-height:1.6}
+.membership-page .panel{padding:clamp(24px,2.5vw,48px)}
+.membership-page button,.membership-page .button{font-size:clamp(18px,1.15vw,23px);padding:14px 24px;min-height:52px}
+.membership-page .learning-tiles{gap:16px;margin-top:34px}
+.membership-page .learning-tiles span{font-size:clamp(16px,1vw,20px);padding:20px;line-height:1.5}
+.membership-page .learning-tiles b{font-size:clamp(22px,1.4vw,28px)}
+.membership-page .price{font-size:clamp(36px,2.5vw,50px)}
+@media(max-width:1100px){.membership-page .learning-tiles{grid-template-columns:1fr}.membership-page .learning-tiles span{grid-template-columns:40px 1fr}}
+@media(max-width:800px){.membership-page>main>.grid{grid-template-columns:1fr}.membership-page .brand{font-size:28px;gap:16px}.membership-page .brand img{width:144px}.membership-page h1{font-size:44px}}
+@media(max-width:480px){.membership-page>main{padding:20px 16px}.membership-page .brand{font-size:23px;gap:12px}.membership-page .brand img{width:116px;border-radius:20px}.membership-page .brand small{font-size:10px}.membership-page h1{font-size:38px}.membership-page h2{font-size:26px}.membership-page .panel{padding:22px}.membership-page button{padding:12px 18px}}
