@@ -1,3 +1,4 @@
+// Sandbox Worker: deploy with --config wrangler.test.jsonc.
 {
   "name": "math-word-wall-membership-test",
   "main": "worker.mjs",
