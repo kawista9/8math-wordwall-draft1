@@ -46,6 +46,7 @@
   }
   async function status(){
    const data=await api('/api/status');
+   if(data.owner && !joinCode){location.replace('/dashboard');return;}
    document.getElementById('status').textContent=data.canceling?`Renewal canceled. Your access continues until ${new Date(data.accessUntil*1000).toLocaleString()}.`:data.active?'Your membership is active. You’re ready to learn.':'Choose a membership or join your teacher’s class.';
    document.getElementById('enter').hidden=!data.active;
    document.getElementById('learning-support').hidden=!data.active;
@@ -80,3 +81,4 @@
   await status();
  }catch(e){show('We could not load your account. Please refresh and try again.');}
 })();
+

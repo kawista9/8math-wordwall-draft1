@@ -3,6 +3,7 @@ import Stripe from 'stripe';
 import { hasAccess, sessionToken, sameOrigin, escapeHTML as esc } from './access.mjs';
 import {complimentaryAccess,complimentaryAPI} from './complimentary.mjs';
 import {page} from './page.mjs';
+import {dashboardPage} from './dashboard-page.mjs';
 import {livePage} from './live-page.mjs';
 import {liveAPI,reconcileBooking} from './live.mjs';
 import {subscriptionRecord,completeTeacherSetup,validatePrices,cancelSubscription,SEAT_LIMIT,TEACHER_OFFER} from './billing.mjs';
@@ -58,7 +59,7 @@ export default {
  async fetch(req,env) {
   const url=new URL(req.url), path=url.pathname;
   try {
-   if (['/membership-client.js','/live-client.js'].includes(path) && req.method==='GET') return env.ASSETS.fetch(req);
+   if (['/membership-client.js','/live-client.js','/brand-logo.svg','/brand.css'].includes(path) && req.method==='GET') return env.ASSETS.fetch(req);
    if (path==='/api/config' && req.method==='GET') return json({publishableKey:env.CLERK_PUBLISHABLE_KEY || '',stripePublishableKey:env.STRIPE_PUBLISHABLE_KEY || '',configured:configured(env)});
    if (path==='/account' && req.method==='GET') return new Response(page(env),{headers:{'Content-Type':'text/html;charset=utf-8','Cache-Control':'no-store','Referrer-Policy':'no-referrer'}});
    if(path==='/live' && req.method==='GET')return new Response(livePage(),{headers:{'Content-Type':'text/html;charset=utf-8','Cache-Control':'no-store','Referrer-Policy':'no-referrer'}});
@@ -84,9 +85,19 @@ export default {
     if(req.headers.get('sec-fetch-dest')==='document' || path==='/' || path==='/index.html') return Response.redirect(`${env.SITE_URL}/account`,302);
     return json({error:'Sign in required'},401);
    }
+   if(path==='/dashboard' && req.method==='GET'){
+    if(!env.OWNER_USER_ID || user!==env.OWNER_USER_ID)return new Response('Owner access required.',{status:403});
+    return new Response(dashboardPage(),{headers:{'Content-Type':'text/html;charset=utf-8','Cache-Control':'private, no-store','Referrer-Policy':'no-referrer'}});
+   }
    if(path.startsWith('/api/')) {
     if(req.method!=='POST') return json({error:'Method not allowed'},405);
     if(!sameOrigin(req,env.SITE_URL)) return json({error:'Invalid request origin'},403);
+    if(path==='/api/dashboard'){
+     if(!env.OWNER_USER_ID || user!==env.OWNER_USER_ID)return json({error:'Owner access required.'},403);
+     const [subscriptions,learners,grants]=await Promise.all([env.DB.prepare('SELECT user_id,status,access_until,plan,canceling FROM subscriptions ORDER BY access_until DESC LIMIT 500').all(),env.DB.prepare('SELECT teacher_id,learner_id,display_name,joined_at FROM learners ORDER BY joined_at DESC LIMIT 500').all(),env.DB.prepare('SELECT user_id,label,expires_at,revoked FROM complimentary_access ORDER BY created_at DESC LIMIT 500').all()]);
+     const counts=await env.DB.prepare("SELECT (SELECT COUNT(DISTINCT user_id) FROM subscriptions WHERE status IN ('active','trialing') AND access_until>?) AS members,(SELECT COUNT(*) FROM learners) AS learners").bind(Math.floor(Date.now()/1000)).first();
+     return json({subscriptions:subscriptions.results,learners:learners.results,grants:grants.results,counts});
+    }
     if(path.startsWith('/api/complimentary/'))return await complimentaryAPI(path,await req.json(),user,env);
     if(path.startsWith('/api/live/')||path.startsWith('/api/tutoring/'))return await liveAPI(path,await req.json(),user,env,stripe,allowed,customerFor);
     if(path==='/api/status') {
@@ -95,7 +106,7 @@ export default {
      const rows=await env.DB.prepare('SELECT status,access_until,plan,canceling FROM subscriptions WHERE user_id=?').bind(user).all();
      const activeRows=rows.results.filter(row=>hasAccess([row]));
      const offer=await env.DB.prepare('SELECT used FROM teacher_offers WHERE user_id=?').bind(user).first();
-     return json({active:await allowed(user,env),hasCustomer:!!customer,teacher:activeRows.some(row=>row.plan==='teacher'),ownMembership:activeRows.length>0,canceling:activeRows.some(row=>row.canceling),accessUntil:activeRows.length?Math.max(...activeRows.map(r=>r.access_until)):null,teacherOfferUsed:!!offer?.used});
+     return json({owner:!!env.OWNER_USER_ID && user===env.OWNER_USER_ID,active:await allowed(user,env),hasCustomer:!!customer,teacher:activeRows.some(row=>row.plan==='teacher'),ownMembership:activeRows.length>0,canceling:activeRows.some(row=>row.canceling),accessUntil:activeRows.length?Math.max(...activeRows.map(r=>r.access_until)):null,teacherOfferUsed:!!offer?.used});
     }
     if(path==='/api/checkout') {
      const body=await req.json();
@@ -181,3 +192,4 @@ export default {
   }
  }
 };
+

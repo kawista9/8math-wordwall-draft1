@@ -9,6 +9,8 @@ for (const name of await readdir(root)) {
 }
 await cp(path.join(root,'membership/client.js'),path.join(out,'membership-client.js'));
 await cp(path.join(root,'membership/live-client.js'),path.join(out,'live-client.js'));
+await cp(path.join(root,'membership/brand.css'),path.join(out,'brand.css'));
+await cp(path.join(root,'membership/brand-logo.svg'),path.join(out,'brand-logo.svg'));
 async function inspect(dir) {
  for (const name of await readdir(dir)) {
   const file = path.join(dir,name), info = await stat(file);
@@ -18,3 +20,4 @@ async function inspect(dir) {
 }
 await inspect(out);
 console.log('Built protected word wall assets.');
+

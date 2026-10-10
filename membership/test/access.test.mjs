@@ -80,3 +80,19 @@ test('teacher checkout requires consent, collects a card without charging, and r
  assert.equal((await worker.fetch(request('/assets/chart.png',token()),e)).status,200);
  assert.equal(e.DB.raw.prepare('SELECT COUNT(*) AS n FROM subscriptions').get().n,1);
  });
+
+test('dashboard and directory are restricted to the configured owner',async()=>{
+ const e=env();e.DB=database();e.OWNER_USER_ID='user_owner';
+ assert.equal((await worker.fetch(request('/dashboard'),e)).status,401);
+ assert.equal((await worker.fetch(request('/dashboard',token()),e)).status,403);
+ const now=Math.floor(Date.now()/1000);
+ e.DB.raw.prepare("INSERT INTO subscriptions(subscription_id,user_id,status,access_until,plan) VALUES('sub_1','user_1','active',?,'individual')").run(now+3600);
+ assert.equal((await worker.fetch(request('/dashboard',token()),e)).status,403);
+ const page=await worker.fetch(request('/dashboard',token({sub:'user_owner'})),e);
+ assert.equal(page.status,200);assert.equal(page.headers.get('cache-control'),'private, no-store');assert.match(await page.text(),/Owner Dashboard/);
+ const post=(sub,originHeader=origin)=>worker.fetch(request('/api/dashboard',token({sub}),{method:'POST',headers:{Origin:originHeader}}),e);
+ assert.equal((await post('user_1')).status,403);
+ assert.equal((await post('user_owner','https://attacker.example')).status,403);
+ const records=await post('user_owner');assert.equal(records.status,200);
+ const data=await records.json();assert.equal(data.subscriptions[0].user_id,'user_1');assert.deepEqual(data.learners,[]);
+});
