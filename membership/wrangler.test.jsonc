@@ -1,0 +1,37 @@
+{
+  "name": "math-word-wall-membership-test",
+  "main": "worker.mjs",
+  "compatibility_date": "2026-10-03",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "assets": {
+    "directory": "dist",
+    "binding": "ASSETS",
+    "run_worker_first": true
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "math-word-wall-members-test",
+      "database_id": "73b32aa6-23c4-4d6d-b73d-be8370b9b724"
+    }
+  ],
+  "vars": {
+    "SITE_URL": "https://test.yourdigitallearningwall.com",
+    "CLERK_PUBLISHABLE_KEY": "pk_live_Y2xlcmsueW91cmRpZ2l0YWxsZWFybmluZ3dhbGwuY29tJA",
+    "CLERK_ISSUER": "https://clerk.yourdigitallearningwall.com",
+    "STRIPE_INDIVIDUAL_PRICE_ID": "price_1UOsWtBDLvDA7Ktt7dZeuI1m",
+    "STRIPE_TEACHER_PRICE_ID": "price_1UOsWtBDLvDA7KtteGZJkFLB",
+    "STRIPE_TEACHER_INTRO_PRICE_ID": "price_1UOsWtBDLvDA7Kttr94UI334",
+    "OWNER_USER_ID": "user_3KUDqhRyZn8R8phpubHnhy4a7xJ",
+    "STRIPE_PUBLISHABLE_KEY": "pk_test_51UOsWOBDLvDA7KttkzWMjmFDJOyxVa5ahCZ3Blx1qnjvmhC1cAlDEvBZ2GXLDSB495PZpVK2fqTQudMGyISAMhFF00k9s1t6AL",
+    "CLERK_JWT_KEY": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAy6edGF+xUouacj7wEyze\nmShFzT7fWrGRCzQLRljA3rpkQ6wLzyC1kAtf/W59yXhS9gRwtwl7lnaOA0BtGV75\n7dIFH3sO3ijpTJ2bFOYa3RrCcOUpcrYDy7GOosnl4fkH/UV3RyQClpYNmOHjN5MC\nQjpK+2u6dgPZN4sm2nsu/T09RewlOVSup+1C35//PFWy2pGiL8WOGpPjHADse9OY\nZaa9jTnkAkci0jjUEl0/Q2UOJfjd5NaP4kMQR9GEzSEdRJt7ZRPM9LKolr88+pc0\nlVwWdHqbnuKpROWalYqYCs4J3h9RGSi87wqZ7JtYcAn/GnQkuaFqA1tlIv7ftVRk\n1QIDAQAB\n-----END PUBLIC KEY-----"
+  },
+  "routes": [
+    {
+      "pattern": "test.yourdigitallearningwall.com",
+      "custom_domain": true
+    }
+  ]
+}
