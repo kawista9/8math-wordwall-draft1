@@ -1,0 +1,19 @@
+{
+  "name": "math-word-wall-membership",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test test/*.test.mjs",
+    "check": "node --check worker.mjs && node --check client.js && node --check live.mjs && node --check live-page.mjs && node --check live-client.js",
+    "dev": "wrangler dev",
+    "deploy": "npm run build && wrangler deploy"
+  },
+  "dependencies": {
+    "@clerk/backend": "3.22.0",
+    "stripe": "23.0.0"
+  },
+  "devDependencies": {
+    "wrangler": "4.147.0"
+  }
+}
