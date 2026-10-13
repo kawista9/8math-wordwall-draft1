@@ -154,3 +154,14 @@ Before offering paid tutoring, test individual and teacher-enrolled bookings in 
 ## Complimentary individual learners
 
 Existing databases: execute `migrations/0005_complimentary_access.sql` in D1. Fresh databases use schema.sql. The owner manages grants in Instructor controls at `/live`. Learners register first; the owner copies their exact User ID from the connected Clerk instance, adds an optional label, and selects ongoing access or a future expiration in the owner device timezone. This requires no new Clerk secret or email lookup. Grants are individual-only: they do not create teacher plans or class rosters. Active grants provide content and weekly member questions, and qualify for $25 one-time hourly tutoring. Only the owner may list, grant, or revoke access; expiry and revocation are checked server-side on subsequent requests. Independent paid or teacher-sponsored access continues. Grants do not cancel, refund, pause, or otherwise change existing Stripe subscriptions. To change a grant, submit the same User ID again with the new expiry. When moving to production Clerk, recreate grants using production User IDs. No notification emails are sent.
+
+## Class codes and uploaded rosters
+The account page offers Teacher, Individual Learner, and Join your teacher’s class.
+Teachers have a persistent 12-character class code, a copy-code button, and copyable joining instructions.
+Creating a replacement code invalidates older invitations without removing enrolled learners.
+Learners sign in, enter the code and their name, and receive access through the active teacher membership.
+Teachers can preview and save a CSV with First Name, Last Name, School Email headers (1–150 rows, at most 100 KB).
+Uploaded class lists and joined accounts are displayed separately. Uploading does not create accounts,
+verify school email ownership, restrict joining to the uploaded list, or send invitations.
+A new upload replaces only that teacher’s uploaded list, not enrolled accounts.
+The two additive tables are initialized on the first authorized teacher roster request; no manual SQL is needed.

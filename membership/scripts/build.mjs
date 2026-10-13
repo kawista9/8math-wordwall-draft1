@@ -7,6 +7,7 @@ await mkdir(out, { recursive: true });
 for (const name of await readdir(root)) {
  if (name === 'assets' || /\.(html|js|css)$/.test(name)) await cp(path.join(root,name),path.join(out,name),{recursive:true});
 }
+await cp(path.join(root,'membership/roster-csv.mjs'),path.join(out,'roster-csv.mjs'));
 await cp(path.join(root,'membership/client.js'),path.join(out,'membership-client.js'));
 await cp(path.join(root,'membership/live-client.js'),path.join(out,'live-client.js'));
 await cp(path.join(root,'membership/brand.css'),path.join(out,'brand.css'));

@@ -54,3 +54,6 @@ CREATE TABLE IF NOT EXISTS complimentary_access (
  created_at INTEGER NOT NULL,
  granted_by TEXT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS class_codes (teacher_id TEXT PRIMARY KEY, code TEXT NOT NULL UNIQUE);
+CREATE TABLE IF NOT EXISTS roster_uploads (teacher_id TEXT NOT NULL, email TEXT NOT NULL, first_name TEXT NOT NULL, last_name TEXT NOT NULL, PRIMARY KEY(teacher_id,email));

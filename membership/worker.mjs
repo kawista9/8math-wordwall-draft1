@@ -7,7 +7,7 @@ import {dashboardPage} from './dashboard-page.mjs';
 import {livePage} from './live-page.mjs';
 import {liveAPI,reconcileBooking} from './live.mjs';
 import {subscriptionRecord,completeTeacherSetup,validatePrices,cancelSubscription,SEAT_LIMIT,TEACHER_OFFER} from './billing.mjs';
-import {createJoinLink,joinClass} from './roster.mjs';
+import {createJoinLink,joinClass,classCode,ensureRosterTables,uploadRoster} from './roster.mjs';
 const json = (data, status=200) => Response.json(data,{status,headers:{'Cache-Control':'no-store'}});
 function stripeClient(env) { return new Stripe(env.STRIPE_SECRET_KEY,{httpClient:Stripe.createFetchHttpClient(),maxNetworkRetries:2}); }
 async function identity(req,env) {
@@ -59,7 +59,7 @@ export default {
  async fetch(req,env) {
   const url=new URL(req.url), path=url.pathname;
   try {
-   if (['/membership-client.js','/live-client.js','/brand-logo.svg','/brand.css'].includes(path) && req.method==='GET') return env.ASSETS.fetch(req);
+   if (['/membership-client.js','/roster-csv.mjs','/live-client.js','/brand-logo.svg','/brand.css'].includes(path) && req.method==='GET') return env.ASSETS.fetch(req);
    if (path==='/api/config' && req.method==='GET') return json({publishableKey:env.CLERK_PUBLISHABLE_KEY || '',stripePublishableKey:env.STRIPE_PUBLISHABLE_KEY || '',configured:configured(env)});
    if (path==='/account' && req.method==='GET') return new Response(page(env),{headers:{'Content-Type':'text/html;charset=utf-8','Cache-Control':'no-store','Referrer-Policy':'no-referrer'}});
    if(path==='/live' && req.method==='GET')return new Response(livePage(),{headers:{'Content-Type':'text/html;charset=utf-8','Cache-Control':'no-store','Referrer-Policy':'no-referrer'}});
@@ -151,8 +151,10 @@ export default {
      const result=await joinClass(user,await req.json(),env,teacherActive);
      return json(result,result.status || 200);
     }
-    if(['/api/roster','/api/class-link','/api/remove-learner'].includes(path)) {
+    if(['/api/roster','/api/class-link','/api/class-code','/api/roster-upload','/api/remove-learner'].includes(path)) {
      if(!await teacherActive(user,env))return json({error:'An active teacher membership is required.'},403);
+     if(path==='/api/class-code'){const body=await req.json();return json({code:await classCode(user,env,body.rotate===true)});}
+     if(path==='/api/roster-upload'){const text=await req.text();if(text.length>100000)return json({error:'Roster file is too large.'},413);const result=await uploadRoster(user,JSON.parse(text),env);return json(result,result.status || 200);}
      if(path==='/api/class-link')return json({url:await createJoinLink(user,env)});
      if(path==='/api/remove-learner'){
       const body=await req.json();
@@ -161,7 +163,9 @@ export default {
       return json({removed:true});
      }
      const rows=await env.DB.prepare('SELECT learner_id,display_name FROM learners WHERE teacher_id=? ORDER BY joined_at').bind(user).all();
-     return json({learners:rows.results,limit:SEAT_LIMIT});
+     await ensureRosterTables(env);
+     const uploaded=await env.DB.prepare('SELECT first_name,last_name,email FROM roster_uploads WHERE teacher_id=? ORDER BY last_name,first_name').bind(user).all();
+     return json({learners:rows.results,uploaded:uploaded.results,limit:SEAT_LIMIT,code:await classCode(user,env)});
     }
     if(path==='/api/portal') {
      const row=await env.DB.prepare('SELECT customer_id FROM customers WHERE user_id=?').bind(user).first();
