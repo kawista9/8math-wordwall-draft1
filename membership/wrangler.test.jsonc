@@ -1,4 +1,5 @@
 // Sandbox Worker: deploy with --config wrangler.test.jsonc.
+// Classroom release: copyable codes, roster CSV uploads, and dedicated learner joining.
 {
   "name": "math-word-wall-membership-test",
   "main": "worker.mjs",
