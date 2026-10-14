@@ -28,6 +28,7 @@
   badge.scrollIntoView({block:'center',behavior:'auto'});
   expiry=setTimeout(()=>{previewUntil=0;text.textContent='LIVE RIGHT NOW';badge.setAttribute('aria-label','Myelinated Melanin is live right now. Watch the tutorial.');hide();refresh();},30000);
  });
+ if(new URLSearchParams(location.search).has('preview-live'))window.dispatchEvent(new Event('wordwall:preview-live'));
  refresh();setInterval(refresh,30000);
  document.addEventListener('visibilitychange',()=>{if(document.hidden && previewUntil<=Date.now())hide();else refresh();});
 })();

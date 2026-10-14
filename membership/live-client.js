@@ -7,8 +7,7 @@
  function player(video){
   const id=video?.video_id || '',embed=!!video?.embeddable,key=id+':'+embed;
   el('watch-title').textContent=video?.title || 'Watch and learn';
-  el('watch-youtube').hidden=!id;if(id)el('watch-youtube').href='https://www.youtube.com/watch?v='+encodeURIComponent(id);
-  el('video-help').textContent=!id?'The next tutorial will be posted here. Explore previous lessons below.':embed?'If the player is unavailable, choose Watch on YouTube.':'This video cannot currently play inside the website. You can try Watch on YouTube.';
+  el('video-help').textContent=!id?'The next tutorial will be posted here. Explore previous lessons below.':embed?'Watch the lesson in the player above.':'This video is not currently available for playback on this site. Please choose another tutorial or contact the instructor.';
   if(currentVideo===key)return;currentVideo=key;el('video').replaceChildren();
   if(id && embed){const frame=document.createElement('iframe');frame.src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(id);frame.title=video.title || 'Math tutorial';frame.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';frame.allowFullscreen=true;frame.referrerPolicy='strict-origin-when-cross-origin';el('video').append(frame);}
  }
@@ -23,7 +22,6 @@
  }
  function renderPublic(data){
   lastPublic=data;renderSettings(data.settings);
-  el('youtube-channel').hidden=!data.channel_url;if(data.channel_url)el('youtube-channel').href=data.channel_url;
   const videos=data.replays || [];
   if(selectedReplay)selectedReplay=videos.find(v=>v.video_id===selectedReplay.video_id) || null;
   const current=data.settings?.video_id?data.settings:null;
@@ -38,7 +36,6 @@
    details.append(title);
    if(video.starts_at){const date=document.createElement('time');date.dateTime=new Date(video.starts_at*1000).toISOString();date.textContent=new Date(video.starts_at*1000).toLocaleDateString();details.append(date);}
    const watch=document.createElement('button');watch.textContent='Watch tutorial';watch.onclick=()=>{selectedReplay=video;player(video);renderSettings(lastPublic.settings);el('video').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});el('video').focus({preventScroll:true});};details.append(watch);
-   const link=document.createElement('a');link.href='https://www.youtube.com/watch?v='+encodeURIComponent(video.video_id);link.target='_blank';link.rel='noopener noreferrer';link.textContent='Watch on YouTube ↗';details.append(link);
    if(owner){const remove=document.createElement('button');remove.textContent='Remove from website';remove.onclick=async()=>{if(!confirm('Hide this tutorial from the website? The video stays on YouTube.'))return;remove.disabled=true;try{await api('/api/live/replay-hide',{videoId:video.video_id});await liveStatus();}catch(e){show(e.message);remove.disabled=false;}};details.append(remove);}
    card.append(image,details);el('replay-grid').append(card);
   }

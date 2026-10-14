@@ -1,8 +1,11 @@
 import test,{mock} from 'node:test';
 import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
 import {database} from './db.mjs';
 import {youtubeVideoId,youtubeChannelUrl,classifyVideo,saveYoutubeSettings,saveReplay,hideReplay,youtubePublicData} from '../youtube.mjs';
 import {liveAPI} from '../live.mjs';
+import {livePage} from '../live-page.mjs';
+import {page as accountPage} from '../page.mjs';
 
 const id='AbCdEfGh123',other='ZyXwVuTs987';
 const now=()=>Math.floor(Date.now()/1000);
@@ -10,6 +13,14 @@ const env=()=>({DB:database(),YOUTUBE_API_KEY:'test-key',OWNER_USER_ID:'owner'})
 const video=(state='live',videoId=id)=>({id:videoId,snippet:{title:'Math tutorial',liveBroadcastContent:state==='live'?'live':state==='upcoming'?'upcoming':'none',publishedAt:'2026-10-01T00:00:00Z'},status:{privacyStatus:'public',uploadStatus:'processed',embeddable:true},liveStreamingDetails:state==='video'?undefined:{scheduledStartTime:'2026-10-14T18:00:00Z',...(state==='upcoming'?{}:{actualStartTime:'2026-10-14T18:01:00Z'}),...(state==='completed'?{actualEndTime:'2026-10-14T19:00:00Z'}:{})}});
 const save=e=>saveYoutubeSettings({videoId:'https://youtu.be/'+id,channelUrl:'https://www.youtube.com/@MyelinatedMelanin',startsAt:null},e);
 const due=e=>e.DB.raw.prepare('UPDATE youtube_sync SET next_check=0').run();
+
+test('learner live page embeds lessons and keeps playback links on-site; login page carries the live badge',async()=>{
+ const lesson=livePage(),login=accountPage({}),client=await readFile(new URL('../live-client.js',import.meta.url),'utf8');
+ assert.match(client,/youtube-nocookie\.com\/embed/);
+ assert.doesNotMatch(lesson,/id="watch-youtube"|id="youtube-channel"|Watch on YouTube|open it on YouTube/);
+ assert.match(login,/live-badge\.js/);
+ assert.match(lesson,/href="\/account\?preview-live=1"/);
+});
 
 test('YouTube inputs allow genuine video and channel links only',()=>{
  for(const input of [id,`https://youtu.be/${id}?si=test`,`https://www.youtube.com/watch?v=${id}`,`https://youtube.com/live/${id}`])assert.equal(youtubeVideoId(input),id);
