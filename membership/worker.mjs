@@ -192,7 +192,7 @@ export default {
    response.headers.set('Vary','Cookie, Authorization');
    response.headers.set('X-Content-Type-Options','nosniff');
    if(response.headers.get('Content-Type')?.includes('text/html')) {
-    return new HTMLRewriter().on('head',{element(el){el.append('<script src="/membership-client.js" defer></script><script src="/live-badge.js" defer></script>',{html:true});}}).on('.header-actions',{element(el){el.prepend('<a href="/live" style="color:inherit;margin-right:12px">Live &amp; past tutorials</a><a href="/account" style="color:inherit;margin-right:12px">My account</a>',{html:true});}}).transform(response);
+    return new HTMLRewriter().on('head',{element(el){el.append('<script src="/membership-client.js" defer></script><script src="/live-badge.js?v=20261014-center-pulse" defer></script>',{html:true});}}).on('.header-actions',{element(el){el.prepend('<a href="/live" style="color:inherit;margin-right:12px">Live &amp; past tutorials</a><a href="/account" style="color:inherit;margin-right:12px">My account</a>',{html:true});}}).transform(response);
    }
    return response;
   } catch(error) {

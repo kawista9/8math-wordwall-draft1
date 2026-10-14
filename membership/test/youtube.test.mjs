@@ -19,9 +19,11 @@ test('learner live page embeds lessons and keeps playback links on-site; login p
  assert.match(client,/youtube-nocookie\.com\/embed/);
  assert.doesNotMatch(lesson,/id="watch-youtube"|id="youtube-channel"|Watch on YouTube|open it on YouTube/);
  assert.match(login,/live-badge\.js/);
+ assert.match(login,/live-badge\.js\?v=20261014-center-pulse/);
  assert.match(badge,/#live-now-badge\{position:fixed/);
  assert.match(badge,/left:50%/);
  assert.match(badge,/live-badge-blink 1\.1s ease-in-out infinite/);
+ assert.match(badge,/scale\(1\.08\)/);
  assert.match(lesson,/href="\/account\?preview-live=1"/);
 });
 
