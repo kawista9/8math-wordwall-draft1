@@ -89,6 +89,41 @@ Learners register/sign in, enter a name their teacher recognizes and join the cl
 
 Learner content access follows the sponsoring teacher's active subscription or trial, and stops if that access expires or the learner is removed. A learner's own separate individual subscription continues to grant personal access. Roster APIs derive the teacher from verified identity and cannot use a supplied teacher ID to read or alter someone else's roster.
 
+## Automatic roster enrollment
+
+Save a roster with First Name, Last Name, School Email columns to pre-enroll learners.
+Learners open `/account?mode=login` and use their student email. Clerk's combined
+sign-in/sign-up screen handles existing accounts and first-time account setup.
+After sign-in, `/api/status` retrieves the authenticated user from Clerk's Backend
+API and matches only verified email addresses. Matching active teacher rosters
+activate class membership without a code or payment. Addresses are matched
+case-insensitively; plus aliases and dots are not collapsed. No invitations or
+bulk Clerk accounts are created, and no student passwords are assigned.
+
+Add `CLERK_SECRET_KEY` as an encrypted **runtime secret** on the selected Worker.
+For the test Worker, use the `sk_test_...` secret from the same development Clerk
+application as its publishable key and issuer. Never commit the secret to Wrangler
+configuration. For production, use the corresponding production Clerk secret.
+The existing JWT verification configuration stays in place. If the new secret
+is missing or Clerk is unavailable, automatic enrollment grants nothing; the
+screen reports the problem while existing memberships and class codes still work.
+
+Roster status shows Awaiting first sign-in, Active, or Removed. Existing uploaded
+rosters work without re-upload. Learners with an existing open session can use
+Refresh membership after being added. First-time learners may be asked for a
+password or other account fields according to Clerk's configured sign-up settings.
+
+Class codes still admit learners outside the roster. Both paths share the atomic
+150-active-learner limit; pending roster rows do not reserve seats. A full class
+shows a message to contact the teacher. Removing an active learner blocks future
+automatic re-enrollment for that teacher, even if their email remains in an
+uploaded CSV. An explicit join using a current class code can restore access.
+Replacing a CSV changes pending eligibility but does not remove active learners.
+
+The additive `roster_enrollments` and `roster_removals` tables and roster email
+index are created automatically, preserving existing accounts and memberships.
+No manual D1 migration is needed for this update.
+
 ## Build and deploy
 
 ```sh

@@ -8,6 +8,7 @@ import {livePage} from './live-page.mjs';
 import {liveAPI,reconcileBooking} from './live.mjs';
 import {subscriptionRecord,completeTeacherSetup,validatePrices,cancelSubscription,SEAT_LIMIT,TEACHER_OFFER} from './billing.mjs';
 import {createJoinLink,joinClass,classCode,ensureRosterTables,uploadRoster} from './roster.mjs';
+import {autoEnroll,removeLearner,rosterWithStatus} from './roster-enrollment.mjs';
 const json = (data, status=200) => Response.json(data,{status,headers:{'Cache-Control':'no-store'}});
 function stripeClient(env) { return new Stripe(env.STRIPE_SECRET_KEY,{httpClient:Stripe.createFetchHttpClient(),maxNetworkRetries:2}); }
 async function identity(req,env) {
@@ -106,7 +107,8 @@ export default {
      const rows=await env.DB.prepare('SELECT status,access_until,plan,canceling FROM subscriptions WHERE user_id=?').bind(user).all();
      const activeRows=rows.results.filter(row=>hasAccess([row]));
      const offer=await env.DB.prepare('SELECT used FROM teacher_offers WHERE user_id=?').bind(user).first();
-     return json({owner:!!env.OWNER_USER_ID && user===env.OWNER_USER_ID,active:await allowed(user,env),hasCustomer:!!customer,teacher:activeRows.some(row=>row.plan==='teacher'),ownMembership:activeRows.length>0,canceling:activeRows.some(row=>row.canceling),accessUntil:activeRows.length?Math.max(...activeRows.map(r=>r.access_until)):null,teacherOfferUsed:!!offer?.used});
+     const enrollment=await autoEnroll(user,env,teacherActive);
+     return json({enrollment,owner:!!env.OWNER_USER_ID && user===env.OWNER_USER_ID,active:await allowed(user,env),hasCustomer:!!customer,teacher:activeRows.some(row=>row.plan==='teacher'),ownMembership:activeRows.length>0,canceling:activeRows.some(row=>row.canceling),accessUntil:activeRows.length?Math.max(...activeRows.map(r=>r.access_until)):null,teacherOfferUsed:!!offer?.used});
     }
     if(path==='/api/checkout') {
      const body=await req.json();
@@ -159,13 +161,13 @@ export default {
      if(path==='/api/remove-learner'){
       const body=await req.json();
       if(typeof body.learnerId!=='string')return json({error:'Choose a learner.'},400);
-      await env.DB.prepare('DELETE FROM learners WHERE teacher_id=? AND learner_id=?').bind(user,body.learnerId).run();
+      await removeLearner(user,body.learnerId,env);
       return json({removed:true});
      }
      const rows=await env.DB.prepare('SELECT learner_id,display_name FROM learners WHERE teacher_id=? ORDER BY joined_at').bind(user).all();
      await ensureRosterTables(env);
-     const uploaded=await env.DB.prepare('SELECT first_name,last_name,email FROM roster_uploads WHERE teacher_id=? ORDER BY last_name,first_name').bind(user).all();
-     return json({learners:rows.results,uploaded:uploaded.results,limit:SEAT_LIMIT,code:await classCode(user,env)});
+     const uploaded=await rosterWithStatus(user,env);
+     return json({learners:rows.results,uploaded,autoEnrollmentConfigured:!!env.CLERK_SECRET_KEY,limit:SEAT_LIMIT,code:await classCode(user,env)});
     }
     if(path==='/api/portal') {
      const row=await env.DB.prepare('SELECT customer_id FROM customers WHERE user_id=?').bind(user).first();

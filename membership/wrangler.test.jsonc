@@ -1,3 +1,4 @@
+// Automatic roster enrollment and student login build.
 // Sandbox Worker: deploy with --config wrangler.test.jsonc.
 // Classroom release: copyable codes, roster CSV uploads, and dedicated learner joining.
 {

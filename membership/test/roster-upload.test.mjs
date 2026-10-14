@@ -1,10 +1,12 @@
-import test from 'node:test';
+import test,{mock} from 'node:test';
 import assert from 'node:assert/strict';
 import {database} from './db.mjs';
 import {classCode,joinClass,uploadRoster} from '../roster.mjs';
 import {parseRosterCSV} from '../roster-csv.mjs';
 import worker from '../worker.mjs';
 import {generateKeyPairSync,sign} from 'node:crypto';
+// Clerk's runtime uses the replaceable global fetch in test mode.
+process.env.NODE_ENV='test';
 const headers='First Name,Last Name,School Email\r\n';
 test('CSV handles BOM, CRLF, reordered columns and quoted commas',()=>{
  assert.deepEqual(parseRosterCSV('\uFEFFSchool Email,Last Name,First Name\r\nA@School.edu,"Smith, Jr.",Alex\r\n'),[{firstName:'Alex',lastName:'Smith, Jr.',email:'a@school.edu'}]);
@@ -40,4 +42,42 @@ test('roster APIs deny non-teachers and isolate teacher class data',async()=>{
  e.DB.raw.prepare('INSERT INTO subscriptions VALUES (?,?,?,?,?,?)').run('sub','teacher','active',Math.floor(Date.now()/1000)+3600,'teacher',0);
  const saved=await worker.fetch(request('/api/roster-upload','teacher',{rows:[{firstName:'A',lastName:'B',email:'a@school.edu'}]}),e);assert.equal(saved.status,200);
  const res=await worker.fetch(request('/api/roster','teacher'),e);assert.equal(res.status,200);const body=await res.json();assert.equal(body.uploaded.length,1);assert.equal(body.code.length,12);
+});
+
+test('authenticated status resolves the verified Clerk email, grants content, and ignores a forged request email',async()=>{
+ const e=env();e.CLERK_SECRET_KEY='sk_test_mock';
+ e.ASSETS={fetch:async()=>new Response('protected word wall')};
+ e.DB.raw.prepare('INSERT INTO subscriptions VALUES (?,?,?,?,?,?)').run('sub','teacher','active',Math.floor(Date.now()/1000)+3600,'teacher',0);
+ await uploadRoster('teacher',{rows:[{firstName:'Alex',lastName:'Rivera',email:'student@school.edu'}]},e);
+ let lookupUser='attacker';
+ const backend=mock.method(globalThis,'fetch',async(input,options)=>{
+  const url=String(input instanceof Request?input.url:input);
+  assert.equal(url,`https://api.clerk.com/v1/users/${lookupUser}`);
+  const headers=new Headers(options?.headers || (input instanceof Request?input.headers:undefined));
+  assert.equal(headers.get('Authorization'),'Bearer sk_test_mock');
+  return Response.json({object:'user',id:lookupUser,email_addresses:[{id:'email_1',object:'email_address',linked_to:[],email_address:lookupUser==='student'?'student@school.edu':'attacker@school.edu',verification:{status:'verified'}}]});
+ });
+ try {
+  const forged=await worker.fetch(request('/api/status','attacker',{email:'student@school.edu',userId:'student',emailVerified:true}),e);
+  assert.equal(forged.status,200);assert.equal((await forged.json()).active,false);
+  lookupUser='student';
+  const response=await worker.fetch(request('/api/status','student'),e);assert.equal(response.status,200);
+  const body=await response.json();assert.equal(body.active,true);assert.equal(body.ownMembership,false);assert.equal(body.hasCustomer,false);assert.equal(body.enrollment.enrolled,1);
+  const content=()=>worker.fetch(new Request('https://test.example.com/lesson.html',{headers:{Authorization:'Bearer '+auth('student')}}),e);
+  assert.equal((await content()).status,200);
+  e.DB.raw.prepare("UPDATE subscriptions SET access_until=0 WHERE user_id='teacher'").run();
+  assert.equal((await content()).status,403);
+ } finally {backend.mock.restore();}
+});
+
+test('Clerk lookup failure never activates a roster learner and does not break existing paid access',async()=>{
+ const e=env();e.CLERK_SECRET_KEY='sk_test_mock';
+ e.DB.raw.prepare('INSERT INTO subscriptions VALUES (?,?,?,?,?,?)').run('sub','paid','active',Math.floor(Date.now()/1000)+3600,'individual',0);
+ const backend=mock.method(globalThis,'fetch',async()=>Response.json({errors:[{code:'authentication_invalid',message:'Invalid key'}]},{status:401}));
+ try {
+  const pending=await worker.fetch(request('/api/status','student'),e);
+  assert.equal(pending.status,200);const p=await pending.json();assert.equal(p.active,false);assert.equal(p.enrollment.state,'error');
+  const paid=await worker.fetch(request('/api/status','paid'),e);
+  assert.equal(paid.status,200);assert.equal((await paid.json()).active,true);
+ } finally {backend.mock.restore();}
 });
