@@ -10,6 +10,8 @@ for (const name of await readdir(root)) {
 await cp(path.join(root,'membership/roster-csv.mjs'),path.join(out,'roster-csv.mjs'));
 await cp(path.join(root,'membership/client.js'),path.join(out,'membership-client.js'));
 await cp(path.join(root,'membership/live-client.js'),path.join(out,'live-client.js'));
+await cp(path.join(root,'membership/live-badge.js'),path.join(out,'live-badge.js'));
+await cp(path.join(root,'membership/live-indicator.gif'),path.join(out,'live-indicator.gif'));
 await cp(path.join(root,'membership/brand.css'),path.join(out,'brand.css'));
 await cp(path.join(root,'membership/brand-logo.svg'),path.join(out,'brand-logo.svg'));
 async function inspect(dir) {

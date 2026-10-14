@@ -4,6 +4,7 @@
 {
   "name": "math-word-wall-membership-test",
   "main": "worker.mjs",
+  "triggers": { "crons": ["* * * * *"] },
   "compatibility_date": "2026-10-03",
   "compatibility_flags": [
     "nodejs_compat"

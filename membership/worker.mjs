@@ -9,6 +9,7 @@ import {liveAPI,reconcileBooking} from './live.mjs';
 import {subscriptionRecord,completeTeacherSetup,validatePrices,cancelSubscription,SEAT_LIMIT,TEACHER_OFFER} from './billing.mjs';
 import {createJoinLink,joinClass,classCode,ensureRosterTables,uploadRoster} from './roster.mjs';
 import {autoEnroll,removeLearner,rosterWithStatus} from './roster-enrollment.mjs';
+import {youtubePublicData,refreshYoutube} from './youtube.mjs';
 const json = (data, status=200) => Response.json(data,{status,headers:{'Cache-Control':'no-store'}});
 function stripeClient(env) { return new Stripe(env.STRIPE_SECRET_KEY,{httpClient:Stripe.createFetchHttpClient(),maxNetworkRetries:2}); }
 async function identity(req,env) {
@@ -57,14 +58,17 @@ async function customerFor(user,env,stripe) {
 }
 function configured(env) { return ['DB','SITE_URL','CLERK_PUBLISHABLE_KEY','CLERK_ISSUER','CLERK_JWT_KEY','STRIPE_SECRET_KEY','STRIPE_PUBLISHABLE_KEY','STRIPE_INDIVIDUAL_PRICE_ID','STRIPE_TEACHER_PRICE_ID','STRIPE_TEACHER_INTRO_PRICE_ID','STRIPE_WEBHOOK_SECRET'].every(k=>!!env[k]); }
 export default {
+ async scheduled(event,env,ctx) {
+  ctx.waitUntil(refreshYoutube(env).catch(error=>console.error('Scheduled YouTube check failed',error.name)));
+ },
  async fetch(req,env) {
   const url=new URL(req.url), path=url.pathname;
   try {
-   if (['/membership-client.js','/roster-csv.mjs','/live-client.js','/brand-logo.svg','/brand.css'].includes(path) && req.method==='GET') return env.ASSETS.fetch(req);
+   if (['/membership-client.js','/roster-csv.mjs','/live-client.js','/live-badge.js','/live-indicator.gif','/brand-logo.svg','/brand.css'].includes(path) && req.method==='GET') return env.ASSETS.fetch(req);
    if (path==='/api/config' && req.method==='GET') return json({publishableKey:env.CLERK_PUBLISHABLE_KEY || '',stripePublishableKey:env.STRIPE_PUBLISHABLE_KEY || '',configured:configured(env)});
    if (path==='/account' && req.method==='GET') return new Response(page(env),{headers:{'Content-Type':'text/html;charset=utf-8','Cache-Control':'no-store','Referrer-Policy':'no-referrer'}});
    if(path==='/live' && req.method==='GET')return new Response(livePage(),{headers:{'Content-Type':'text/html;charset=utf-8','Cache-Control':'no-store','Referrer-Policy':'no-referrer'}});
-   if(path==='/api/live/public' && req.method==='GET'){let settings=null;try{settings=await env.DB.prepare('SELECT video_id,is_live,starts_at FROM live_settings WHERE id=1').first();}catch{}return json({settings});}
+   if(path==='/api/live/public' && req.method==='GET')return json(await youtubePublicData(env));
    if (!configured(env)) return json({error:'Membership setup is still in progress. Please check back soon.'},503);
    const stripe=stripeClient(env);
    if (path==='/api/stripe/webhook' && req.method==='POST') {
@@ -188,7 +192,7 @@ export default {
    response.headers.set('Vary','Cookie, Authorization');
    response.headers.set('X-Content-Type-Options','nosniff');
    if(response.headers.get('Content-Type')?.includes('text/html')) {
-    return new HTMLRewriter().on('head',{element(el){el.append('<script src="/membership-client.js" defer></script>',{html:true});}}).on('.header-actions',{element(el){el.prepend('<a href="/live" style="color:inherit;margin-right:12px">Math Help Live</a><a href="/account" style="color:inherit;margin-right:12px">My account</a>',{html:true});}}).transform(response);
+    return new HTMLRewriter().on('head',{element(el){el.append('<script src="/membership-client.js" defer></script><script src="/live-badge.js" defer></script>',{html:true});}}).on('.header-actions',{element(el){el.prepend('<a href="/live" style="color:inherit;margin-right:12px">Live &amp; past tutorials</a><a href="/account" style="color:inherit;margin-right:12px">My account</a>',{html:true});}}).transform(response);
    }
    return response;
   } catch(error) {

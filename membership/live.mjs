@@ -1,5 +1,6 @@
 import {complimentaryAccess} from './complimentary.mjs';
 import {hasAccess} from './access.mjs';
+import {youtubePublicData,saveYoutubeSettings,saveReplay,hideReplay} from './youtube.mjs';
 export const LEAD_SECONDS=48*60*60;
 export function validSlot(start,now){return Number.isInteger(start)&&start>=now+LEAD_SECONDS;}
 export function questionBody(value){return typeof value==='string'?value.trim().slice(0,2000):'';}
@@ -35,15 +36,14 @@ export async function liveAPI(path,body,user,env,stripe,allowed,customerFor){
  try{await env.DB.prepare('SELECT id FROM live_settings WHERE id=1').first();}catch{return response({error:'Live lessons and tutoring are being set up. Please check back soon.'},503);}
  if(!owner&&!await allowed(user,env))return response({error:'An active membership or teacher class enrollment is required.'},403);
  if(path==='/api/live/status'){
-  const settings=await env.DB.prepare('SELECT * FROM live_settings WHERE id=1').first();
+  const youtube=await youtubePublicData(env);
   const questions=owner?await env.DB.prepare('SELECT id,kind,body,created_at FROM live_questions WHERE removed=0 ORDER BY created_at DESC LIMIT 100').all():await env.DB.prepare('SELECT id,kind,body,created_at FROM live_questions WHERE user_id=? AND removed=0 ORDER BY created_at DESC LIMIT 50').bind(user).all();
-  return response({settings,questions:questions.results,owner});
+  return response({...youtube,questions:questions.results,owner});
  }
  if(path==='/api/live/question'){
   const text=questionBody(body.body);
   if(!text||!['advance','chat'].includes(body.kind))return response({error:'Enter a math question (up to 2,000 characters).'},400);
-  const settings=await env.DB.prepare('SELECT is_live FROM live_settings WHERE id=1').first();
-  if(body.kind==='chat'&&!settings?.is_live)return response({error:'Live questions open when the lesson starts.'},409);
+  if(body.kind==='chat' && !(await youtubePublicData(env)).settings.is_live)return response({error:'Live questions open when the lesson starts.'},409);
   const count=await env.DB.prepare('SELECT COUNT(*) AS n FROM live_questions WHERE user_id=? AND created_at>?').bind(user,now-3600).first();
   if(count.n>=20)return response({error:'You have submitted 20 questions this hour. Please wait before sending another.'},429);
   await env.DB.prepare('INSERT INTO live_questions(id,user_id,kind,body,created_at) VALUES(?,?,?,?,?)').bind(crypto.randomUUID(),user,body.kind,text,now).run();
@@ -52,12 +52,12 @@ export async function liveAPI(path,body,user,env,stripe,allowed,customerFor){
  if(path==='/api/live/settings'||path==='/api/live/remove'){
   if(!owner)return response({error:'Only the instructor can manage lessons.'},403);
   if(path.endsWith('remove')){await env.DB.prepare('UPDATE live_questions SET removed=1 WHERE id=?').bind(String(body.id)).run();return response({saved:true});}
-  const id=videoId(body.videoId);
-  if(body.videoId&&!id)return response({error:'Enter the 11-character YouTube video ID.'},400);
-  if(body.isLive&&!id)return response({error:'Add the YouTube video ID before going live.'},400);
-  const start=body.startsAt===null?null:Number(body.startsAt);
-  if(start!==null&&!Number.isInteger(start))return response({error:'Choose a valid session time.'},400);
-  await env.DB.prepare('UPDATE live_settings SET video_id=?,is_live=?,starts_at=? WHERE id=1').bind(id,body.isLive?1:0,start).run();
+  try{await saveYoutubeSettings(body,env);}catch(error){return response({error:error.message},400);}
+  return response({saved:true});
+ }
+ if(path==='/api/live/replay-save'||path==='/api/live/replay-hide'){
+  if(!owner)return response({error:'Only the instructor can manage tutorials.'},403);
+  try{await (path.endsWith('replay-save')?saveReplay:hideReplay)(body,env);}catch(error){return response({error:error.message},400);}
   return response({saved:true});
  }
  if(path==='/api/tutoring/status'){
