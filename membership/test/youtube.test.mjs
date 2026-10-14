@@ -15,10 +15,11 @@ const save=e=>saveYoutubeSettings({videoId:'https://youtu.be/'+id,channelUrl:'ht
 const due=e=>e.DB.raw.prepare('UPDATE youtube_sync SET next_check=0').run();
 
 test('learner live page embeds lessons and keeps playback links on-site; login page carries the live badge',async()=>{
- const lesson=livePage(),login=accountPage({}),client=await readFile(new URL('../live-client.js',import.meta.url),'utf8');
+ const lesson=livePage(),login=accountPage({}),client=await readFile(new URL('../live-client.js',import.meta.url),'utf8'),badge=await readFile(new URL('../live-badge.js',import.meta.url),'utf8');
  assert.match(client,/youtube-nocookie\.com\/embed/);
  assert.doesNotMatch(lesson,/id="watch-youtube"|id="youtube-channel"|Watch on YouTube|open it on YouTube/);
  assert.match(login,/live-badge\.js/);
+ assert.match(badge,/#live-now-badge\{position:fixed/);
  assert.match(lesson,/href="\/account\?preview-live=1"/);
 });
 
