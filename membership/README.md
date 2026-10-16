@@ -9,7 +9,7 @@ Prepared integration; live registration and billing require provider connection 
 | Individual | One learner | $12 each month, starting at purchase |
 | Teacher | One teacher and up to 150 learners | 14 days free, $24.99 for the next 14 days, then $49.99 each month |
 
-The teacher introductory offer applies once per teacher account. Returning teachers pay $49.99 monthly. Customers authorize automatic charges and save a card at signup. Teachers cancel from **Cancel next renewal** on their account page; the roster keeps access through the current free or paid period. AI uploads and progress analytics are not included.
+The teacher introductory offer applies once per teacher account. Returning teachers pay $49.99 monthly. Customers authorize automatic charges and save a card at signup. Teachers cancel from **Cancel next renewal** on their account page; the roster keeps access through the current free or paid period. AI-powered problem solving and progress analytics are not included. Learners can attach one private image to a live lesson question.
 
 ## Owner accounts
 
@@ -200,3 +200,20 @@ Uploaded class lists and joined accounts are displayed separately. Uploading doe
 verify school email ownership, restrict joining to the uploaded list, or send invitations.
 A new upload replaces only that teacher’s uploaded list, not enrolled accounts.
 The two additive tables are initialized on the first authorized teacher roster request; no manual SQL is needed.
+
+
+## Learner question images
+
+Question images are limited to one JPG, PNG, or WebP image up to 5 MB. R2 stores the image; D1 stores its private object key. Only the instructor and the learner who submitted the question can load it. Marking a question handled/removing it deletes its image object.
+
+Before deploying the image upload change:
+
+1. In Cloudflare R2, create `math-word-wall-question-images` for production and `math-word-wall-question-images-test` for the test Worker. `wrangler.jsonc` and `wrangler.test.jsonc` bind these as `QUESTION_IMAGES`.
+2. Apply the migration to both databases (after connecting Wrangler):
+
+   ```sh
+   npx wrangler d1 execute math-word-wall-members --remote --file migrations/0006_live_question_images.sql
+   npx wrangler d1 execute math-word-wall-members-test --config wrangler.test.jsonc --remote --file migrations/0006_live_question_images.sql
+   ```
+
+3. Deploy the test Worker and confirm a learner can submit an image and the instructor can view it in the question queue. Then deploy production.

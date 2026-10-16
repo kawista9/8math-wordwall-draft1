@@ -94,6 +94,18 @@ export default {
     if(!env.OWNER_USER_ID || user!==env.OWNER_USER_ID)return new Response('Owner access required.',{status:403});
     return new Response(dashboardPage(),{headers:{'Content-Type':'text/html;charset=utf-8','Cache-Control':'private, no-store','Referrer-Policy':'no-referrer'}});
    }
+   if(path.startsWith('/api/live/question-image/')&&req.method==='GET'){
+    if(!await allowed(user,env))return json({error:'An active membership or teacher class enrollment is required.'},403);
+    const id=decodeURIComponent(path.slice('/api/live/question-image/'.length));
+    const question=await env.DB.prepare('SELECT user_id,image_key FROM live_questions WHERE id=? AND removed=0').bind(id).first();
+    if(!question?.image_key||(!env.OWNER_USER_ID||user!==env.OWNER_USER_ID)&&question.user_id!==user)return json({error:'Image not found.'},404);
+    if(!env.QUESTION_IMAGES)return json({error:'Image storage is not available.'},503);
+    const object=await env.QUESTION_IMAGES.get(question.image_key);
+    if(!object)return json({error:'Image not found.'},404);
+    const type=object.httpMetadata?.contentType;
+    if(!['image/jpeg','image/png','image/webp'].includes(type))return json({error:'Image unavailable.'},404);
+    return new Response(object.body,{headers:{'Content-Type':type,'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff','Content-Security-Policy':"default-src 'none'; sandbox"}});
+   }
    if(path.startsWith('/api/')) {
     if(req.method!=='POST') return json({error:'Method not allowed'},405);
     if(!sameOrigin(req,env.SITE_URL)) return json({error:'Invalid request origin'},403);
@@ -104,7 +116,14 @@ export default {
      return json({subscriptions:subscriptions.results,learners:learners.results,grants:grants.results,counts});
     }
     if(path.startsWith('/api/complimentary/'))return await complimentaryAPI(path,await req.json(),user,env);
-    if(path.startsWith('/api/live/')||path.startsWith('/api/tutoring/'))return await liveAPI(path,await req.json(),user,env,stripe,allowed,customerFor);
+    if(path.startsWith('/api/live/')||path.startsWith('/api/tutoring/')){
+     let body;
+     if(path==='/api/live/question'&&req.headers.get('content-type')?.toLowerCase().includes('multipart/form-data')){
+      const form=await req.formData(),imageFile=form.get('image');
+      body={kind:form.get('kind'),body:form.get('body'),imageFile:imageFile&&typeof imageFile==='object'?imageFile:null};
+     }else body=await req.json();
+     return await liveAPI(path,body,user,env,stripe,allowed,customerFor);
+    }
     if(path==='/api/status') {
      const customer=await env.DB.prepare('SELECT customer_id FROM customers WHERE user_id=?').bind(user).first();
      if(customer)await syncCustomer(customer.customer_id,user,env,stripe);

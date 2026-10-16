@@ -21,6 +21,12 @@
       "database_id": "73b32aa6-23c4-4d6d-b73d-be8370b9b724"
     }
   ],
+  "r2_buckets": [
+    {
+      "binding": "QUESTION_IMAGES",
+      "bucket_name": "math-word-wall-question-images-test"
+    }
+  ],
   "vars": {
     "SITE_URL": "https://test.yourdigitallearningwall.com",
     "CLERK_PUBLISHABLE_KEY": "pk_test_cmVmaW5lZC1qZW5uZXQtNDMzNy5jbGVyay5hY2NvdW50cy5kZXYk",

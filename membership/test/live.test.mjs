@@ -19,6 +19,22 @@ test('questions require membership, instructor controls are protected, questions
  const d=await(await liveAPI('/api/live/status',{},'student',e,{},allowed,customer)).json();assert.equal(d.questions.length,1);assert.equal(d.questions[0].user_id,undefined);
  const admin=await(await liveAPI('/api/live/status',{},'owner',e,{},allowed,customer)).json();assert.equal(admin.questions.length,2);
 });
+test('learners can attach a validated private image to a question and the owner can review it',async()=>{
+ const e=env(),objects=new Map();e.QUESTION_IMAGES={put:async(key,value,metadata)=>objects.set(key,{value,metadata}),delete:async key=>objects.delete(key)};
+ const png=new Blob([Uint8Array.from([0x89,0x50,0x4e,0x47,0x0d,0x0a,0x1a,0x0a,1,2,3])],{type:'image/png'});
+ assert.equal((await liveAPI('/api/live/question',{kind:'advance',body:'How do I solve this?',imageFile:png},'student',e,{},allowed,customer)).status,200);
+ assert.equal(objects.size,1);
+ const learner=await(await liveAPI('/api/live/status',{},'student',e,{},allowed,customer)).json();
+ assert.equal(learner.questions[0].image_url,'/api/live/question-image/'+learner.questions[0].id);
+ const owner=await(await liveAPI('/api/live/status',{},'owner',e,{},allowed,customer)).json();assert.equal(owner.questions.length,1);
+ await liveAPI('/api/live/remove',{id:owner.questions[0].id},'owner',e,{},allowed,customer);assert.equal(objects.size,0);
+});
+test('question image uploads reject spoofed or unsupported files',async()=>{
+ const e=env();e.QUESTION_IMAGES={put:async()=>{throw Error('should not store');}};
+ const spoofed=new Blob([Uint8Array.from([1,2,3,4])],{type:'image/png'});
+ const response=await liveAPI('/api/live/question',{kind:'advance',body:'What is this?',imageFile:spoofed},'student',e,{},allowed,customer);
+ assert.equal(response.status,400);assert.match((await response.json()).error,/JPG, PNG, or WebP/);
+});
 async function request(e,user,start=now()+200000){
  assert.equal((await liveAPI('/api/tutoring/request',{startsAt:start,topic:'Geometry',email:'learner@example.com'},user,e,{},allowed,customer)).status,200);
  return e.DB.raw.prepare('SELECT * FROM tutoring_requests WHERE user_id=? ORDER BY rowid DESC').get(user);
