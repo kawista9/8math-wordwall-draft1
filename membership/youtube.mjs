@@ -1,5 +1,6 @@
 const VIDEO_ID=/^[A-Za-z0-9_-]{11}$/;
 const DEFAULT_CHANNEL_URL='https://www.youtube.com/@MyelinatedMelanin';
+const REPLAY_RECHECK_SECONDS=300;
 const now=()=>Math.floor(Date.now()/1000);
 const schemas=new WeakMap();
 
@@ -74,8 +75,8 @@ export async function refreshYoutube(env) {
   const current=await env.DB.prepare('SELECT video_id FROM live_settings WHERE id=1').first();
   if(current?.video_id)await env.DB.prepare('INSERT OR IGNORE INTO youtube_videos(video_id) VALUES(?)').bind(current.video_id).run();
   const tracked=await env.DB.prepare(`SELECT video_id FROM youtube_videos
-   WHERE state IN ('unknown','live','upcoming') OR checked_at<?
-   ORDER BY checked_at LIMIT 49`).bind(time-86400).all();
+   WHERE state IN ('unknown','live','upcoming') OR (hidden=0 AND state IN ('completed','video') AND checked_at<?)
+   ORDER BY checked_at LIMIT 49`).bind(time-REPLAY_RECHECK_SECONDS).all();
   const ids=[...new Set([current?.video_id,...tracked.results.map(r=>r.video_id)].filter(Boolean))];
   if(!ids.length){await env.DB.prepare("UPDATE youtube_sync SET state='idle',next_check=?,lock_until=0 WHERE lock_token=?").bind(time+60,token).run();return;}
   const url=new URL('https://www.googleapis.com/youtube/v3/videos');
