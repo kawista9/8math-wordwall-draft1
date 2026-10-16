@@ -4,6 +4,19 @@ import {youtubePublicData,saveYoutubeSettings,saveReplay,hideReplay} from './you
 export const LEAD_SECONDS=48*60*60;
 export function validSlot(start,now){return Number.isInteger(start)&&start>=now+LEAD_SECONDS;}
 export function questionBody(value){return typeof value==='string'?value.trim().slice(0,2000):'';}
+export const MAX_QUESTION_IMAGE_BYTES=5*1024*1024;
+async function questionImage(file){
+ if(!file||typeof file.arrayBuffer!=='function')return null;
+ if(!Number.isFinite(file.size)||file.size<1||file.size>MAX_QUESTION_IMAGE_BYTES)throw new Error('Choose one image smaller than 5 MB.');
+ const bytes=new Uint8Array(await file.arrayBuffer());
+ const starts=(values)=>values.every((value,index)=>bytes[index]===value);
+ let type='',extension='';
+ if(starts([0x89,0x50,0x4e,0x47,0x0d,0x0a,0x1a,0x0a])){type='image/png';extension='png';}
+ else if(starts([0xff,0xd8,0xff])){type='image/jpeg';extension='jpg';}
+ else if(bytes.length>=12&&String.fromCharCode(...bytes.slice(0,4))==='RIFF'&&String.fromCharCode(...bytes.slice(8,12))==='WEBP'){type='image/webp';extension='webp';}
+ if(!type||file.type!==type)throw new Error('Use a JPG, PNG, or WebP image.');
+ return {bytes,type,extension};
+}
 export function videoId(value){return typeof value==='string'&&/^[\w-]{11}$/.test(value)?value:'';}
 export async function tutoringAmount(user,env){
  const rows=await env.DB.prepare('SELECT status,access_until,plan FROM subscriptions WHERE user_id=?').bind(user).all();
@@ -37,8 +50,8 @@ export async function liveAPI(path,body,user,env,stripe,allowed,customerFor){
  if(!owner&&!await allowed(user,env))return response({error:'An active membership or teacher class enrollment is required.'},403);
  if(path==='/api/live/status'){
   const youtube=await youtubePublicData(env);
-  const questions=owner?await env.DB.prepare('SELECT id,kind,body,created_at FROM live_questions WHERE removed=0 ORDER BY created_at DESC LIMIT 100').all():await env.DB.prepare('SELECT id,kind,body,created_at FROM live_questions WHERE user_id=? AND removed=0 ORDER BY created_at DESC LIMIT 50').bind(user).all();
-  return response({...youtube,questions:questions.results,owner});
+  const questions=owner?await env.DB.prepare('SELECT id,kind,body,created_at,image_key FROM live_questions WHERE removed=0 ORDER BY created_at DESC LIMIT 100').all():await env.DB.prepare('SELECT id,kind,body,created_at,image_key FROM live_questions WHERE user_id=? AND removed=0 ORDER BY created_at DESC LIMIT 50').bind(user).all();
+  return response({...youtube,questions:questions.results.map(({image_key,...q})=>({...q,image_url:image_key?`/api/live/question-image/${encodeURIComponent(q.id)}`:null})),owner});
  }
  if(path==='/api/live/question'){
   const text=questionBody(body.body);
@@ -46,12 +59,17 @@ export async function liveAPI(path,body,user,env,stripe,allowed,customerFor){
   if(body.kind==='chat' && !(await youtubePublicData(env)).settings.is_live)return response({error:'Live questions open when the lesson starts.'},409);
   const count=await env.DB.prepare('SELECT COUNT(*) AS n FROM live_questions WHERE user_id=? AND created_at>?').bind(user,now-3600).first();
   if(count.n>=20)return response({error:'You have submitted 20 questions this hour. Please wait before sending another.'},429);
-  await env.DB.prepare('INSERT INTO live_questions(id,user_id,kind,body,created_at) VALUES(?,?,?,?,?)').bind(crypto.randomUUID(),user,body.kind,text,now).run();
+  let image=null;try{image=await questionImage(body.imageFile);}catch(error){return response({error:error.message},400);}
+  if(image&&!env.QUESTION_IMAGES)return response({error:'Image uploads are not available yet. Please submit your question without an image.'},503);
+  const id=crypto.randomUUID(),key=image?`questions/${id}.${image.extension}`:null;
+  if(image)await env.QUESTION_IMAGES.put(key,image.bytes,{httpMetadata:{contentType:image.type,cacheControl:'private, no-store'}});
+  try{await env.DB.prepare('INSERT INTO live_questions(id,user_id,kind,body,created_at,image_key) VALUES(?,?,?,?,?,?)').bind(id,user,body.kind,text,now,key).run();}
+  catch(error){if(key)await env.QUESTION_IMAGES.delete(key);throw error;}
   return response({saved:true});
  }
  if(path==='/api/live/settings'||path==='/api/live/remove'){
   if(!owner)return response({error:'Only the instructor can manage lessons.'},403);
-  if(path.endsWith('remove')){await env.DB.prepare('UPDATE live_questions SET removed=1 WHERE id=?').bind(String(body.id)).run();return response({saved:true});}
+  if(path.endsWith('remove')){const question=await env.DB.prepare('SELECT image_key FROM live_questions WHERE id=?').bind(String(body.id)).first();await env.DB.prepare('UPDATE live_questions SET removed=1 WHERE id=?').bind(String(body.id)).run();if(question?.image_key&&env.QUESTION_IMAGES)await env.QUESTION_IMAGES.delete(question.image_key);return response({saved:true});}
   try{await saveYoutubeSettings(body,env);}catch(error){return response({error:error.message},400);}
   return response({saved:true});
  }
