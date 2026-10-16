@@ -85,6 +85,20 @@ test('non-embeddable videos retain their YouTube link metadata and missing video
  try{const data=await youtubePublicData(e);assert.equal(data.settings.embeddable,false);assert.equal(data.replays.length,1);items=[];due(e);assert.equal((await youtubePublicData(e)).replays.length,0);}finally{fetch.mock.restore();}
 });
 
+test('completed replay embedding changes in YouTube are picked up within five minutes',async()=>{
+ const e=env();await save(e);await saveYoutubeSettings({videoId:other,startsAt:null},e);let replayEmbeddable=false;
+ const fetch=mock.method(globalThis,'fetch',async()=>Response.json({items:[
+  {...video('completed',id),status:{privacyStatus:'public',uploadStatus:'processed',embeddable:replayEmbeddable}},
+  video('live',other)
+ ]}));
+ try{
+  assert.equal((await youtubePublicData(e)).replays[0].embeddable,0);
+  e.DB.raw.prepare('UPDATE youtube_videos SET checked_at=? WHERE video_id=?').run(now()-600,id);
+  replayEmbeddable=true;due(e);
+  assert.equal((await youtubePublicData(e)).replays[0].embeddable,1);
+ }finally{fetch.mock.restore();}
+});
+
 test('previous scheduled broadcasts remain tracked after the next broadcast is selected',async()=>{
  const e=env();await save(e);await saveYoutubeSettings({videoId:other,startsAt:null},e);
  const fetch=mock.method(globalThis,'fetch',async url=>{assert.ok(new URL(url).searchParams.get('id').includes(id));return Response.json({items:[video('completed'),video('upcoming',other)]});});
