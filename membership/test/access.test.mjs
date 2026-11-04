@@ -96,3 +96,27 @@ test('dashboard and directory are restricted to the configured owner',async()=>{
  const records=await post('user_owner');assert.equal(records.status,200);
  const data=await records.json();assert.equal(data.subscriptions[0].user_id,'user_1');assert.deepEqual(data.learners,[]);
 });
+
+test('complimentary teachers manage classrooms and enrolled access stops on revoke or expiry',async()=>{
+ const e=env();e.DB=database();e.OWNER_USER_ID='user_owner';
+ const post=(path,body={},sub='user_owner')=>worker.fetch(request(path,token({sub}),{method:'POST',headers:{Origin:origin,'Content-Type':'application/json'},body:JSON.stringify(body)}),e);
+ const grant={userId:'user_teacher',plan:'teacher',expiresAt:null,label:'Free teacher'};
+ assert.equal((await post('/api/complimentary/grant',grant,'user_teacher')).status,403);
+ assert.equal((await post('/api/complimentary/grant',{...grant,plan:'owner'})).status,400);
+ assert.equal((await post('/api/complimentary/grant',grant)).status,200);
+ const status=await (await post('/api/status',{},'user_teacher')).json();
+ assert.equal(status.teacher,true);assert.equal(status.complimentaryTeacher,true);assert.equal(status.ownMembership,false);
+ const roster=await post('/api/roster',{},'user_teacher');assert.equal(roster.status,200);
+ const data=await roster.json();assert.equal(data.limit,150);assert.ok(data.code);
+ const joined=await post('/api/join',{code:data.code,displayName:'Test learner'},'user_1');assert.equal(joined.status,200);
+ assert.equal((await worker.fetch(request('/assets/chart.png',token()),e)).status,200);
+ assert.equal((await post('/api/roster',{},'user_1')).status,403);
+ const list=await (await post('/api/complimentary/list')).json();assert.equal(list.grants[0].plan,'teacher');
+ await post('/api/complimentary/revoke',{userId:'user_teacher'});
+ assert.equal((await post('/api/roster',{},'user_teacher')).status,403);
+ assert.equal((await worker.fetch(request('/assets/chart.png',token()),e)).status,403);
+ await post('/api/complimentary/grant',grant);
+ e.DB.raw.exec('UPDATE complimentary_access SET expires_at=1');
+ assert.equal((await post('/api/roster',{},'user_teacher')).status,403);
+ assert.equal((await worker.fetch(request('/assets/chart.png',token()),e)).status,403);
+});

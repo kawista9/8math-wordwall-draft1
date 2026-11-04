@@ -70,7 +70,7 @@
 
  async function complimentaryStatus(){
   const d=await api('/api/complimentary/list');el('complimentary-list').replaceChildren();if(!d.grants.length)item(el('complimentary-list'),'No complimentary access grants yet.');
-  for(const g of d.grants){const expired=g.expires_at!==null&&g.expires_at<=Math.floor(Date.now()/1000);const p=item(el('complimentary-list'),(g.label||g.user_id)+' · '+(g.revoked?'Revoked':expired?'Expired':g.expires_at?'Free until '+new Date(g.expires_at*1000).toLocaleString():'Ongoing free access')+'\n'+g.user_id);
+  for(const g of d.grants){const expired=g.expires_at!==null&&g.expires_at<=Math.floor(Date.now()/1000);const p=item(el('complimentary-list'),(g.label||g.user_id)+' · '+(g.plan==='teacher'?'Teacher':'Individual')+' · '+(g.revoked?'Revoked':expired?'Expired':g.expires_at?'Free until '+new Date(g.expires_at*1000).toLocaleString():'Ongoing free access')+'\n'+g.user_id);
    if(!g.revoked){const b=document.createElement('button');b.textContent='Revoke free access';b.onclick=async()=>{if(!confirm('Revoke complimentary access for this learner? Existing paid or class access will continue.'))return;b.disabled=true;try{await api('/api/complimentary/revoke',{userId:g.user_id});await complimentaryStatus();show('Complimentary access revoked.');}catch(e){show(e.message);b.disabled=false;}};p.append(b);}
   }
  }
@@ -93,7 +93,8 @@
   if(owner){
    el('preview-live').onclick=()=>{window.dispatchEvent(new Event('wordwall:preview-live'));show('Preview shown for 30 seconds in this browser only. Learners will not see a live indicator unless YouTube confirms a live broadcast.');};
    el('complimentary-ongoing').onchange=()=>{el('complimentary-until').disabled=el('complimentary-ongoing').checked;el('complimentary-until').required=!el('complimentary-ongoing').checked;};
-   el('complimentary-form').onsubmit=async e=>{e.preventDefault();el('complimentary-save').disabled=true;try{await api('/api/complimentary/grant',{userId:el('complimentary-user').value,label:el('complimentary-label').value,expiresAt:el('complimentary-ongoing').checked?null:Math.floor(new Date(el('complimentary-until').value).getTime()/1000)});await complimentaryStatus();show('Free individual access granted. The learner can refresh their account page.');}catch(error){show(error.message);}finally{el('complimentary-save').disabled=false;}};
+   const grantMessage=text=>{el('complimentary-message').textContent=text;};
+   el('complimentary-form').onsubmit=async e=>{e.preventDefault();el('complimentary-save').disabled=true;try{await api('/api/complimentary/grant',{plan:el('complimentary-teacher').checked?'teacher':'individual',userId:el('complimentary-user').value.trim(),label:el('complimentary-label').value,expiresAt:el('complimentary-ongoing').checked?null:Math.floor(new Date(el('complimentary-until').value).getTime()/1000)});grantMessage('Free '+(el('complimentary-teacher').checked?'teacher':'individual')+' access granted. Ask the account holder to refresh their membership page.');await complimentaryStatus();}catch(error){grantMessage(error.message);}finally{el('complimentary-save').disabled=false;}};
    await complimentaryStatus().catch(e=>show(e.message));
   }
   await tutoringStatus();

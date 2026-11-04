@@ -67,12 +67,13 @@
    }
    document.getElementById('enter').hidden=!data.active;
    document.getElementById('learning-support').hidden=!data.active;
-   if(data.teacher){selectedRole='teacher';applyRole();}
+   if(data.teacher){selectedRole='teacher';applyRole();document.getElementById('account-title').textContent='Your teacher membership';}
+   if(data.complimentary)document.getElementById('status').textContent=data.complimentaryTeacher?'Your complimentary teacher access is active. Manage your classroom below.':'Your complimentary access is active. Open the word wall to begin.';
    document.getElementById('join').hidden=data.teacher || data.active || (!['class','login'].includes(selectedRole) && !joinCode);
    if(!data.teacher && (['class','login'].includes(selectedRole) || joinCode))document.getElementById('member').insertBefore(document.getElementById('join'),document.getElementById('plans'));
-   if(!data.teacher && data.active && !data.ownMembership)document.getElementById('status').textContent='Your class access is active. Open the word wall to begin.';
-   if(!data.teacher && data.active && !data.ownMembership)document.getElementById('account-title').textContent='Your class access';
-   document.getElementById('plans').hidden=!selectedRole || ['class','login'].includes(selectedRole) || data.ownMembership || (data.active && !data.teacher);
+   if(!data.teacher && data.active && !data.ownMembership && !data.complimentary)document.getElementById('status').textContent='Your class access is active. Open the word wall to begin.';
+   if(!data.teacher && data.active && !data.ownMembership && !data.complimentary)document.getElementById('account-title').textContent='Your class access';
+   document.getElementById('plans').hidden=data.complimentary || !selectedRole || ['class','login'].includes(selectedRole) || data.ownMembership || (data.active && !data.teacher);
    document.getElementById('billing').hidden=!data.hasCustomer;
    document.getElementById('cancel').hidden=!data.ownMembership || data.canceling;
    document.getElementById('roster').hidden=!data.teacher;

@@ -1,7 +1,7 @@
 import { verifyToken } from '@clerk/backend';
 import Stripe from 'stripe';
 import { hasAccess, sessionToken, sameOrigin, escapeHTML as esc } from './access.mjs';
-import {complimentaryAccess,complimentaryAPI} from './complimentary.mjs';
+import {complimentaryAccess,complimentaryTeacherAccess,complimentaryAPI} from './complimentary.mjs';
 import {page} from './page.mjs';
 import {dashboardPage} from './dashboard-page.mjs';
 import {livePage} from './live-page.mjs';
@@ -25,12 +25,15 @@ async function ownAccess(user,env,plan) {
  const rows=await env.DB.prepare('SELECT status,access_until,plan FROM subscriptions WHERE user_id=?').bind(user).all();
  return hasAccess(rows.results.filter(row=>!plan || row.plan===plan));
 }
-async function teacherActive(user,env){return ownAccess(user,env,'teacher');}
+async function teacherActive(user,env){return await ownAccess(user,env,'teacher') || !!await complimentaryTeacherAccess(user,env);}
 async function allowed(user,env) {
  if(env.OWNER_USER_ID && user===env.OWNER_USER_ID)return true;
  if(await ownAccess(user,env)||await complimentaryAccess(user,env))return true;
  const rows=await env.DB.prepare("SELECT s.status,s.access_until FROM learners l JOIN subscriptions s ON s.user_id=l.teacher_id WHERE l.learner_id=? AND s.plan='teacher'").bind(user).all();
- return hasAccess(rows.results);
+ if(hasAccess(rows.results))return true;
+ const teachers=await env.DB.prepare('SELECT teacher_id FROM learners WHERE learner_id=?').bind(user).all();
+ for(const teacher of teachers.results)if(await complimentaryTeacherAccess(teacher.teacher_id,env))return true;
+ return false;
 }
 async function syncCustomer(customer,user,env,stripe) {
  // A Checkout return URL grants nothing: retrieve the completed session server-side.
@@ -131,7 +134,8 @@ export default {
      const activeRows=rows.results.filter(row=>hasAccess([row]));
      const offer=await env.DB.prepare('SELECT used FROM teacher_offers WHERE user_id=?').bind(user).first();
      const enrollment=await autoEnroll(user,env,teacherActive);
-     return json({enrollment,owner:!!env.OWNER_USER_ID && user===env.OWNER_USER_ID,active:await allowed(user,env),hasCustomer:!!customer,teacher:activeRows.some(row=>row.plan==='teacher'),ownMembership:activeRows.length>0,canceling:activeRows.some(row=>row.canceling),accessUntil:activeRows.length?Math.max(...activeRows.map(r=>r.access_until)):null,teacherOfferUsed:!!offer?.used});
+     const complimentary=await complimentaryAccess(user,env),freeTeacher=!!await complimentaryTeacherAccess(user,env);
+     return json({enrollment,owner:!!env.OWNER_USER_ID && user===env.OWNER_USER_ID,active:await allowed(user,env),hasCustomer:!!customer,teacher:freeTeacher || activeRows.some(row=>row.plan==='teacher'),complimentary:!!complimentary,complimentaryTeacher:freeTeacher,ownMembership:activeRows.length>0,canceling:activeRows.some(row=>row.canceling),accessUntil:activeRows.length?Math.max(...activeRows.map(r=>r.access_until)):null,teacherOfferUsed:!!offer?.used});
     }
     if(path==='/api/checkout') {
      const body=await req.json();
