@@ -67,6 +67,7 @@
    }
    document.getElementById('enter').hidden=!data.active;
    document.getElementById('learning-support').hidden=!data.active;
+   document.getElementById('refresh').hidden=data.active && !data.teacher && !data.owner;
    if(data.teacher){selectedRole='teacher';applyRole();document.getElementById('account-title').textContent='Your teacher membership';}
    if(data.complimentary)document.getElementById('status').textContent=data.complimentaryTeacher?'Your complimentary teacher access is active. Manage your classroom below.':'Your complimentary access is active. Open the word wall to begin.';
    document.getElementById('join').hidden=data.teacher || data.active || (!['class','login'].includes(selectedRole) && !joinCode);
