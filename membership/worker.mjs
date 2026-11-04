@@ -4,6 +4,7 @@ import { hasAccess, sessionToken, sameOrigin, escapeHTML as esc } from './access
 import {complimentaryAccess,complimentaryTeacherAccess,complimentaryAPI} from './complimentary.mjs';
 import {page} from './page.mjs';
 import {privacyPage} from './privacy-page.mjs';
+import {termsPage} from './terms-page.mjs';
 import {dashboardPage} from './dashboard-page.mjs';
 import {livePage} from './live-page.mjs';
 import {liveAPI,reconcileBooking} from './live.mjs';
@@ -68,6 +69,7 @@ export default {
  async fetch(req,env) {
   const url=new URL(req.url), path=url.pathname;
   try {
+   if (['/terms','/terms/','/terms-of-service'].includes(path) && ['GET','HEAD'].includes(req.method)) return new Response(req.method==='HEAD'?null:termsPage(),{headers:{'Content-Type':'text/html;charset=utf-8','Cache-Control':'public, max-age=300','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer'}});
    if (['/privacy','/privacy/','/privacy-policy'].includes(path) && ['GET','HEAD'].includes(req.method)) return new Response(req.method==='HEAD'?null:privacyPage(),{headers:{'Content-Type':'text/html;charset=utf-8','Cache-Control':'public, max-age=300','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer'}});
    if (['/membership-client.js','/roster-csv.mjs','/live-client.js','/live-badge.js','/live-indicator.gif','/brand-logo.svg','/brand.css'].includes(path) && req.method==='GET') return env.ASSETS.fetch(req);
    if (path==='/api/config' && req.method==='GET') return json({publishableKey:env.CLERK_PUBLISHABLE_KEY || '',stripePublishableKey:env.STRIPE_PUBLISHABLE_KEY || '',configured:configured(env)});
@@ -217,7 +219,7 @@ export default {
    response.headers.set('Vary','Cookie, Authorization');
    response.headers.set('X-Content-Type-Options','nosniff');
    if(response.headers.get('Content-Type')?.includes('text/html')) {
-    return new HTMLRewriter().on('head',{element(el){el.append('<script src="/membership-client.js" defer></script><script src="/live-badge.js?v=20261014-center-pulse" defer></script>',{html:true});}}).on('body',{element(el){el.append('<footer style="padding:24px;text-align:center"><a href="/privacy" style="color:inherit">Privacy Policy</a></footer>',{html:true});}}).on('.header-actions',{element(el){el.prepend('<a href="/live" style="color:inherit;margin-right:12px">Live &amp; past tutorials</a><a href="/account" style="color:inherit;margin-right:12px">My account</a>',{html:true});}}).transform(response);
+    return new HTMLRewriter().on('head',{element(el){el.append('<script src="/membership-client.js" defer></script><script src="/live-badge.js?v=20261014-center-pulse" defer></script>',{html:true});}}).on('body',{element(el){el.append('<footer style="padding:24px;text-align:center"><a href="/privacy" style="color:inherit">Privacy Policy</a> · <a href="/terms" style="color:inherit">Terms of Service</a></footer>',{html:true});}}).on('.header-actions',{element(el){el.prepend('<a href="/live" style="color:inherit;margin-right:12px">Live &amp; past tutorials</a><a href="/account" style="color:inherit;margin-right:12px">My account</a>',{html:true});}}).transform(response);
    }
    return response;
   } catch(error) {
