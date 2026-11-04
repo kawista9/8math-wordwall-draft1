@@ -69,6 +69,11 @@ export default {
  async fetch(req,env) {
   const url=new URL(req.url), path=url.pathname;
   try {
+   if (['/assets/guides/teacher-guide.pdf','/assets/guides/learner-guide.pdf'].includes(path) && ['GET','HEAD'].includes(req.method)) {
+    const asset=await env.ASSETS.fetch(req);const response=new Response(asset.body,asset);
+    if(asset.ok){response.headers.set('Content-Type','application/pdf');response.headers.set('Content-Disposition','inline');}
+    response.headers.set('X-Content-Type-Options','nosniff');return response;
+   }
    if (['/terms','/terms/','/terms-of-service'].includes(path) && ['GET','HEAD'].includes(req.method)) return new Response(req.method==='HEAD'?null:termsPage(),{headers:{'Content-Type':'text/html;charset=utf-8','Cache-Control':'public, max-age=300','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer'}});
    if (['/privacy','/privacy/','/privacy-policy'].includes(path) && ['GET','HEAD'].includes(req.method)) return new Response(req.method==='HEAD'?null:privacyPage(),{headers:{'Content-Type':'text/html;charset=utf-8','Cache-Control':'public, max-age=300','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer'}});
    if (['/membership-client.js','/roster-csv.mjs','/live-client.js','/live-badge.js','/live-indicator.gif','/brand-logo.svg','/brand.css'].includes(path) && req.method==='GET') return env.ASSETS.fetch(req);
