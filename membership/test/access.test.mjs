@@ -131,3 +131,15 @@ test('free Memory Matrix game and assets are public without a membership',async(
   assert.equal(result.status,200);
  }
 });
+
+
+test('free PiDoku game and assets are public without signing in',async()=>{
+ const e=env();
+ const landing=await worker.fetch(request('/account'),e);
+ assert.equal(landing.status,200);
+ assert.match(await landing.text(),/id="pidoku-game"/);
+ for(const asset of ['/pidoku.js','/pidoku.css']){
+  const result=await worker.fetch(request(asset),e);
+  assert.equal(result.status,200);
+ }
+});
