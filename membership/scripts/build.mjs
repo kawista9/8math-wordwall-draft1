@@ -15,6 +15,8 @@ await cp(path.join(root,'membership/live-indicator.gif'),path.join(out,'live-ind
 await cp(path.join(root,'membership/brand.css'),path.join(out,'brand.css'));
 await cp(path.join(root,'membership/memory-matrix.js'),path.join(out,'memory-matrix.js'));
 await cp(path.join(root,'membership/memory-matrix.css'),path.join(out,'memory-matrix.css'));
+await cp(path.join(root,'membership/pidoku.js'),path.join(out,'pidoku.js'));
+await cp(path.join(root,'membership/pidoku.css'),path.join(out,'pidoku.css'));
 await cp(path.join(root,'membership/brand-logo.svg'),path.join(out,'brand-logo.svg'));
 async function inspect(dir) {
  for (const name of await readdir(dir)) {
