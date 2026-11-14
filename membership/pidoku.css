@@ -9,3 +9,7 @@
 .pidoku-section #pd-board .pd-cell.pd-region-6{background:#e99092!important}
 .pidoku-section #pd-board .pd-cell.pd-region-7{background:#a8d78c!important}
 .pidoku-section #pd-board .pd-cell.pd-region-8{background:#d4a98e!important}
+
+/* Override the site's global button gradient, which was covering region colors on mobile. */
+.pidoku-section #pd-board button.pd-cell{background-image:none!important;background-attachment:initial!important;filter:none!important;opacity:1!important;appearance:none!important;-webkit-appearance:none!important;box-shadow:none!important}
+.pidoku-section #pd-board button.pd-cell.pd-x{opacity:1!important}
