@@ -18,22 +18,86 @@
   }
   throw Error('Unable to create a placement puzzle');
  }
- function generateRegions(queens){
-  // Multi-source randomized growth: nine connected, irregular colored regions, one seed per queen.
+ function generateRegions(queens,style){
+  // Purposeful connected color regions. An occasional one-cell region is a built-in clue.
   const owner=Array(size*size).fill(-1),frontiers=queens.map((q,k)=>{owner[q]=k;return [q]});
+  const singleton=style==='easy'?rnd(9):style==='medium'&&rnd(3)===0?rnd(9):-1;
+  const order=shuffle(Array.from({length:9},(_,i)=>i));
   let remaining=size*size-9;
   while(remaining){
-   const choices=shuffle(Array.from({length:9},(_,i)=>i)).filter(k=>frontiers[k].some(i=>neighbors(i).some(n=>owner[n]<0)));
+   const choices=shuffle(order.slice()).filter(k=>k!==singleton&&frontiers[k].some(i=>neighbors(i).some(n=>owner[n]<0)));
    if(!choices.length)break;
    for(const k of choices){
     const options=[];
     for(const i of frontiers[k])for(const n of neighbors(i))if(owner[n]<0)options.push(n);
     if(!options.length)continue;
+    // Favor thin, uneven bands and bends rather than uniformly growing blobs.
     const chosen=options[rnd(options.length)];owner[chosen]=k;frontiers[k].push(chosen);remaining--;
     if(!remaining)break;
    }
   }
   return owner;
+ }
+ function countSolutions(givens,blocked,limit=2){
+  const candidates=Array.from({length:9},()=>[]);
+  for(let i=0;i<regions.length;i++)if(!blocked.has(i))candidates[regions[i]].push(i);
+  const forced=new Set(givens);
+  for(const i of forced){if(blocked.has(i)||!candidates[regions[i]].includes(i))return 0}
+  let solutions=0,nodes=0;
+  function search(usedRegions,usedRows,usedCols,chosen){
+   if(++nodes>250000||solutions>=limit)return;
+   if(usedRegions===511){solutions++;return}
+   let pick=-1,options=null;
+   for(let k=0;k<9;k++)if(!(usedRegions&(1<<k))){
+    const opts=candidates[k].filter(i=>{
+     if((usedRows&(1<<row(i)))||(usedCols&(1<<col(i))))return false;
+     if(chosen.some(j=>Math.abs(row(i)-row(j))<=1&&Math.abs(col(i)-col(j))<=1))return false;
+     for(const f of forced)if(regions[f]===k&&f!==i)return false;
+     return true;
+    });
+    if(!opts.length)return;
+    if(!options||opts.length<options.length){options=opts;pick=k;if(opts.length===1)break}
+   }
+   for(const i of options){chosen.push(i);search(usedRegions|(1<<pick),usedRows|(1<<row(i)),usedCols|(1<<col(i)),chosen);chosen.pop();if(solutions>=limit||nodes>250000)return}
+  }
+  // Locked symbols are hard constraints; also prevent any conflicting placements.
+  const forcedList=[...forced];
+  if(new Set(forcedList.map(i=>regions[i])).size!==forcedList.length)return 0;
+  if(forcedList.some((i,k)=>forcedList.some((j,l)=>k!==l&&(row(i)===row(j)||col(i)===col(j)||Math.abs(row(i)-row(j))<=1&&Math.abs(col(i)-col(j))<=1))))return 0;
+  search(0,0,0,[]);
+  return nodes>250000?limit:solutions;
+ }
+ function createLogicalPuzzle(){
+  const desiredGivens=level==='easy'?3:level==='medium'?2:level==='hard'?1:0;
+  // Generate several candidate layouts; retain the one requiring the fewest elimination clues.
+  let best=null;
+  for(let attempt=0;attempt<14;attempt++){
+   const queens=generateQueens(),areas=generateRegions(queens,level);
+   regions=areas;
+   const singletonRegions=new Set();
+   const sizes=Array(9).fill(0);for(const k of areas)sizes[k]++;
+   sizes.forEach((n,k)=>{if(n===1)singletonRegions.add(k)});
+   const givens=queens.filter(i=>singletonRegions.has(areas[i]));
+   for(const i of shuffle(queens.filter(i=>!givens.includes(i))))if(givens.length<desiredGivens)givens.push(i);
+   const blocked=new Set();
+   let checks=0;
+   // Add visible X clues only as necessary to force a unique placement.
+   while(countSolutions(givens,blocked)!==1&&checks<size*size){
+    const pool=shuffle(Array.from({length:size*size},(_,i)=>i).filter(i=>!queens.includes(i)&&!blocked.has(i)));
+    if(!pool.length)break;
+    let chosen=pool[0];
+    // Prefer exclusions adjacent to an already-given symbol: these are teachable deductions.
+    const near=pool.find(i=>givens.some(j=>Math.abs(row(i)-row(j))<=1&&Math.abs(col(i)-col(j))<=1));
+    if(near!==undefined)chosen=near;
+    blocked.add(chosen);checks++;
+   }
+   if(countSolutions(givens,blocked)!==1)continue;
+   const result={queens,areas,givens,blocked,clues:blocked.size};
+   if(!best||result.clues<best.clues)best=result;
+   if(best.clues<=(level==='easy'?3:level==='medium'?7:level==='hard'?10:14))break;
+  }
+  if(!best)throw Error('Unable to generate a uniquely solvable PiDoku puzzle');
+  return best;
  }
  function formatTime(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
  function msg(s){$('pd-message').textContent=s}
@@ -48,7 +112,7 @@
   }else{
    seed=(Math.random()*0xFFFFFFFF)|0;random=seeded(seed);day.textContent='Unlimited '+level+' puzzles';newBtn.textContent='New puzzle ↻';
   }
-  answer=generateQueens();regions=generateRegions(answer);marks=Array(size*size).fill(0);locked=new Set();hints=0;mistakes=0;seconds=0;started=Date.now();
+  const generated=createLogicalPuzzle();answer=generated.queens;regions=generated.areas;marks=Array(size*size).fill(0);locked=new Set(generated.givens);for(const i of generated.givens)marks[i]=1;for(const i of generated.blocked){marks[i]=-1;locked.add(i)}hints=0;mistakes=0;seconds=0;started=Date.now();
   if(level==='daily'){
    try{if(localStorage.getItem(saveKey())==='complete'){day.textContent+=' · Completed today ✓'}}catch{}
   }
@@ -56,7 +120,7 @@
   for(let i=0;i<marks.length;i++){
    const b=document.createElement('button');b.type='button';b.className='pd-cell';b.addEventListener('click',()=>act(i));board.appendChild(b);
   }
-  clearInterval(timer);timer=setInterval(tick,1000);msg('Find nine π symbols — one in each color. No shared row, column, or touching corners.');render();
+  clearInterval(timer);timer=setInterval(tick,1000);msg('Use the pre-filled π symbols, isolated color regions, and X clues to find the remaining placements.');render();
  }
  function conflicts(i){
   if(marks[i]!==1)return false;
@@ -98,7 +162,7 @@
    b.style.backgroundColor=palette[region];b.style.color=region===4?'#221934':'#132039';
    b.textContent=v===1?'π':v===-1?'×':'';
    b.setAttribute('aria-label','Row '+(row(i)+1)+', column '+(col(i)+1)+', '+['orange','pink','blue','teal','lavender','yellow','coral','green','tan'][region]+' region, '+(v===1?'pi symbol':v===-1?'marked empty':'empty'));
-   b.setAttribute('aria-pressed',String(v!==0));
+   b.setAttribute('aria-pressed',String(v!==0));b.disabled=locked.has(i);
   }
   $('pd-placed').textContent=placed+' / 9';$('pd-mistakes').textContent=mistakes;$('pd-hints-used').textContent=hints;$('pd-time').textContent=formatTime(seconds);
   root.querySelectorAll('[data-pd-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.pdMode===mode)));
