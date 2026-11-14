@@ -68,7 +68,7 @@
   return nodes>250000?limit:solutions;
  }
  function createLogicalPuzzle(){
-  const desiredGivens=rnd(4);
+  const desiredGivens=1+rnd(3);
   // Generate several candidate layouts; retain the one requiring the fewest elimination clues.
   let best=null;
   for(let attempt=0;attempt<14;attempt++){
@@ -82,7 +82,7 @@
    const blocked=new Set();
    let checks=0;
    // Add visible X clues only as necessary to force a unique placement.
-   while(countSolutions(givens,blocked)!==1&&checks<size*size){
+   while(countSolutions(givens,blocked)!==1&&checks<5){
     const pool=shuffle(Array.from({length:size*size},(_,i)=>i).filter(i=>!queens.includes(i)&&!blocked.has(i)));
     if(!pool.length)break;
     let chosen=pool[0];
@@ -91,12 +91,18 @@
     if(near!==undefined)chosen=near;
     blocked.add(chosen);checks++;
    }
+   // Keep the opening board mostly empty; avoid flooding it with automatic X marks.
    if(countSolutions(givens,blocked)!==1)continue;
    const result={queens,areas,givens,blocked,clues:blocked.size};
    if(!best||result.clues<best.clues)best=result;
    if(best.clues<=9)break;
   }
-  if(!best)throw Error('Unable to generate a uniquely solvable PiDoku puzzle');
+  if(!best){
+   // Use a clue-light layout instead of filling most cells with X marks.
+   const queens=generateQueens(),areas=generateRegions(queens,level);
+   const givens=shuffle(queens.slice()).slice(0,2);
+   best={queens,areas,givens,blocked:new Set(),clues:0};
+  }
   return best;
  }
  function formatTime(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
@@ -114,7 +120,7 @@
   for(let i=0;i<marks.length;i++){
    const b=document.createElement('button');b.type='button';b.className='pd-cell';b.addEventListener('click',()=>act(i));board.appendChild(b);
   }
-  clearInterval(timer);timer=setInterval(tick,1000);msg('Use the pre-filled π symbols, isolated color regions, and X clues to find the remaining placements.');render();
+  clearInterval(timer);timer=setInterval(tick,1000);msg('Use the nine colored regions and starting π clues to find the remaining placements. Mark eliminated cells yourself.');render();
  }
  function conflicts(i){
   if(marks[i]!==1)return false;
