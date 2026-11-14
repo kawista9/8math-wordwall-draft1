@@ -143,3 +143,15 @@ test('free PiDoku game and assets are public without signing in',async()=>{
   assert.equal(result.status,200);
  }
 });
+
+
+test('Match Lab and its assets are public without signing in',async()=>{
+ const e=env();
+ const landing=await worker.fetch(request('/account'),e);
+ assert.equal(landing.status,200);
+ assert.match(await landing.text(),/id="match-lab-game"/);
+ for(const asset of ['/match-lab.js','/match-lab.css']){
+  const result=await worker.fetch(request(asset),e);
+  assert.equal(result.status,200);
+ }
+});
