@@ -151,8 +151,8 @@
   for(let i=0;i<marks.length;i++){
    const b=cells[i],v=marks[i],region=regions[i],bad=conflicts(i);
    if(v===1)placed++;if(bad)errors++;
-   b.className='pd-cell'+(v===1?' pd-pi':'')+(v===-1?' pd-x':'')+(bad?' pd-conflict':'')+(locked.has(i)?' pd-hint':'');
-   b.style.backgroundColor=palette[region];b.style.color=region===4?'#221934':'#132039';
+   b.className='pd-cell pd-region-'+region+(v===1?' pd-pi':'')+(v===-1?' pd-x':'')+(bad?' pd-conflict':'')+(locked.has(i)?' pd-hint':'');
+   b.style.setProperty('background-color',palette[region],'important');b.style.setProperty('color',region===4?'#221934':'#132039','important');
    b.textContent=v===1?'π':v===-1?'×':'';
    b.setAttribute('aria-label','Row '+(row(i)+1)+', column '+(col(i)+1)+', '+['orange','pink','blue','teal','lavender','yellow','coral','green','tan'][region]+' region, '+(v===1?'pi symbol':v===-1?'marked empty':'empty'));
    b.setAttribute('aria-pressed',String(v!==0));b.disabled=locked.has(i);
