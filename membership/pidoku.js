@@ -115,12 +115,12 @@
   seed=(Math.random()*0xFFFFFFFF)|0;random=seeded(seed);
   day.textContent='Unlimited random puzzle · '+size+'×'+size;
   newBtn.textContent='↻ Different puzzle';
-  const generated=createLogicalPuzzle();answer=generated.queens;regions=generated.areas;marks=Array(size*size).fill(0);locked=new Set(generated.givens);for(const i of generated.givens)marks[i]=1;for(const i of generated.blocked){marks[i]=-1;locked.add(i)}hints=0;mistakes=0;seconds=0;started=Date.now();
+  const generated=createLogicalPuzzle();answer=generated.queens;regions=generated.areas;marks=Array(size*size).fill(0);locked=new Set(generated.givens);for(const i of generated.givens)marks[i]=1;// Elimination X marks belong to the player, never the opening board.hints=0;mistakes=0;seconds=0;started=Date.now();
   board.replaceChildren();board.style.setProperty('--pd-size',size);
   for(let i=0;i<marks.length;i++){
    const b=document.createElement('button');b.type='button';b.className='pd-cell';b.addEventListener('click',()=>act(i));board.appendChild(b);
   }
-  clearInterval(timer);timer=setInterval(tick,1000);msg('Use the nine colored regions and starting π clues to find the remaining placements. Mark eliminated cells yourself.');render();
+  clearInterval(timer);timer=setInterval(tick,1000);msg('Start with the colored regions. Place π symbols and mark Xs only as you solve.');render();
  }
  function conflicts(i){
   if(marks[i]!==1)return false;
