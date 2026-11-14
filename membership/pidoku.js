@@ -3,7 +3,7 @@
  const root=document.getElementById('pidoku-game');if(!root||root.dataset.initialized)return;root.dataset.initialized='true';
  const $=id=>root.querySelector('#'+id);
  const palette=['#f4aa72','#f3a4ca','#a6d1e9','#79cfc8','#b69ae9','#f1ce65','#e99092','#a8d78c','#d4a98e'];
- let size=10,regions=[],answer=[],marks=[],mode='pi',level='random',hints=0,mistakes=0,started=0,seconds=0,timer=null,finished=false,seed=0,random=Math.random,locked=new Set();
+ let size=10,regions=[],answer=[],marks=[],mode='pi',hints=0,mistakes=0,started=0,seconds=0,timer=null,finished=false,random=Math.random,locked=new Set();
  const board=$('pd-board'),day=$('pd-day'),newBtn=$('pd-new');
  function seeded(n){let x=n|0;return ()=>{x^=x<<13;x^=x>>>17;x^=x<<5;return (x>>>0)/4294967296}}
  const rnd=n=>Math.floor(random()*n);
@@ -18,7 +18,7 @@
   }
   throw Error('Unable to create a placement puzzle');
  }
- function generateRegions(queens,style){
+ function generateRegions(queens){
   // Purposeful connected color regions. An occasional one-cell region is a built-in clue.
   const owner=Array(size*size).fill(-1),frontiers=queens.map((q,k)=>{owner[q]=k;return [q]});
   const singleton=rnd(3)===0?rnd(9):-1;
@@ -38,84 +38,71 @@
   }
   return owner;
  }
- function countSolutions(givens,blocked,limit=2){
+ function hasUniqueSolution(areas,givens){
   const candidates=Array.from({length:9},()=>[]);
-  for(let i=0;i<regions.length;i++)if(!blocked.has(i))candidates[regions[i]].push(i);
-  const forced=new Set(givens);
-  for(const i of forced){if(blocked.has(i)||!candidates[regions[i]].includes(i))return 0}
+  for(let i=0;i<areas.length;i++)candidates[areas[i]].push(i);
+  for(const i of givens)candidates[areas[i]]=[i];
+
   let solutions=0,nodes=0;
-  function search(usedRegions,usedRows,usedCols,chosen){
-   if(++nodes>250000||solutions>=limit)return;
+  const nodeLimit=250000;
+  const chosen=[];
+  function search(usedRegions,usedRows,usedCols){
+   if(++nodes>nodeLimit||solutions>=2)return;
    if(usedRegions===511){solutions++;return}
    let pick=-1,options=null;
    for(let k=0;k<9;k++)if(!(usedRegions&(1<<k))){
     const opts=candidates[k].filter(i=>{
      if((usedRows&(1<<row(i)))||(usedCols&(1<<col(i))))return false;
-     if(chosen.some(j=>Math.abs(row(i)-row(j))<=1&&Math.abs(col(i)-col(j))<=1))return false;
-     for(const f of forced)if(regions[f]===k&&f!==i)return false;
-     return true;
+     return !chosen.some(j=>Math.abs(row(i)-row(j))<=1&&Math.abs(col(i)-col(j))<=1);
     });
     if(!opts.length)return;
     if(!options||opts.length<options.length){options=opts;pick=k;if(opts.length===1)break}
    }
-   for(const i of options){chosen.push(i);search(usedRegions|(1<<pick),usedRows|(1<<row(i)),usedCols|(1<<col(i)),chosen);chosen.pop();if(solutions>=limit||nodes>250000)return}
+   for(const i of options){
+    chosen.push(i);
+    search(usedRegions|(1<<pick),usedRows|(1<<row(i)),usedCols|(1<<col(i)));
+    chosen.pop();
+    if(solutions>=2||nodes>nodeLimit)return;
+   }
   }
-  // Locked symbols are hard constraints; also prevent any conflicting placements.
-  const forcedList=[...forced];
-  if(new Set(forcedList.map(i=>regions[i])).size!==forcedList.length)return 0;
-  if(forcedList.some((i,k)=>forcedList.some((j,l)=>k!==l&&(row(i)===row(j)||col(i)===col(j)||Math.abs(row(i)-row(j))<=1&&Math.abs(col(i)-col(j))<=1))))return 0;
-  search(0,0,0,[]);
-  return nodes>250000?limit:solutions;
+  search(0,0,0);
+  return nodes<=nodeLimit&&solutions===1;
  }
  function createLogicalPuzzle(){
   const desiredGivens=1+rnd(3);
-  // Generate several candidate layouts; retain the one requiring the fewest elimination clues.
   let best=null;
   for(let attempt=0;attempt<14;attempt++){
-   const queens=generateQueens(),areas=generateRegions(queens,level);
-   regions=areas;
-   const singletonRegions=new Set();
-   const sizes=Array(9).fill(0);for(const k of areas)sizes[k]++;
-   sizes.forEach((n,k)=>{if(n===1)singletonRegions.add(k)});
-   const givens=queens.filter(i=>singletonRegions.has(areas[i]));
-   for(const i of shuffle(queens.filter(i=>!givens.includes(i))))if(givens.length<desiredGivens)givens.push(i);
-   const blocked=new Set();
-   let checks=0;
-   // Add visible X clues only as necessary to force a unique placement.
-   while(countSolutions(givens,blocked)!==1&&checks<5){
-    const pool=shuffle(Array.from({length:size*size},(_,i)=>i).filter(i=>!queens.includes(i)&&!blocked.has(i)));
-    if(!pool.length)break;
-    let chosen=pool[0];
-    // Prefer exclusions adjacent to an already-given symbol: these are teachable deductions.
-    const near=pool.find(i=>givens.some(j=>Math.abs(row(i)-row(j))<=1&&Math.abs(col(i)-col(j))<=1));
-    if(near!==undefined)chosen=near;
-    blocked.add(chosen);checks++;
+   const queens=generateQueens(),areas=generateRegions(queens);
+   // The planted answer has one π per region. Remove a clue only after
+   // verifying that the remaining visible clues still force that answer.
+   let givens=queens.slice();
+   for(const clue of shuffle(queens.slice())){
+    if(givens.length<=desiredGivens)break;
+    const remaining=givens.filter(i=>i!==clue);
+    if(hasUniqueSolution(areas,remaining))givens=remaining;
    }
-   // Keep the opening board mostly empty; avoid flooding it with automatic X marks.
-   if(countSolutions(givens,blocked)!==1)continue;
-   const result={queens,areas,givens,blocked,clues:blocked.size};
-   if(!best||result.clues<best.clues)best=result;
-   if(best.clues<=9)break;
-  }
-  if(!best){
-   // Use a clue-light layout instead of filling most cells with X marks.
-   const queens=generateQueens(),areas=generateRegions(queens,level);
-   const givens=shuffle(queens.slice()).slice(0,2);
-   best={queens,areas,givens,blocked:new Set(),clues:0};
+   if(!best||givens.length<best.givens.length)best={queens,areas,givens};
+   if(givens.length<=desiredGivens)break;
   }
   return best;
  }
  function formatTime(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
  function msg(s){$('pd-message').textContent=s}
- function saveKey(){return 'pidoku-daily-'+new Date().toISOString().slice(0,10)}
  function tick(){if(!finished){seconds=Math.floor((Date.now()-started)/1000);$('pd-time').textContent=formatTime(seconds)}}
  function build(){
   clearInterval(timer);finished=false;
   size=[9,10,10,11,12][Math.floor(Math.random()*5)];
-  seed=(Math.random()*0xFFFFFFFF)|0;random=seeded(seed);
+  const seed=Math.floor(Math.random()*0xFFFFFFFF)+1;
+  random=seeded(seed);
   day.textContent='Unlimited random puzzle · '+size+'×'+size;
   newBtn.textContent='↻ Different puzzle';
-  const generated=createLogicalPuzzle();answer=generated.queens;regions=generated.areas;marks=Array(size*size).fill(0);locked=new Set(generated.givens);for(const i of generated.givens)marks[i]=1;// Elimination X marks belong to the player, never the opening board.hints=0;mistakes=0;seconds=0;started=Date.now();
+  const generated=createLogicalPuzzle();
+  answer=generated.queens;
+  regions=generated.areas;
+  marks=Array(size*size).fill(0);
+  locked=new Set(generated.givens);
+  for(const i of locked)marks[i]=1;
+  hints=0;mistakes=0;seconds=0;started=Date.now();
   board.replaceChildren();board.style.setProperty('--pd-size',size);
   for(let i=0;i<marks.length;i++){
    const b=document.createElement('button');b.type='button';b.className='pd-cell';b.addEventListener('click',()=>act(i));board.appendChild(b);
@@ -165,7 +152,8 @@
   }
   $('pd-placed').textContent=placed+' / 9';$('pd-mistakes').textContent=mistakes;$('pd-hints-used').textContent=hints;$('pd-time').textContent=formatTime(seconds);
   root.querySelectorAll('[data-pd-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.pdMode===mode)));
-  $('pd-rules').textContent=errors?'Some π symbols break a rule — red outlines show conflicts.':'Rules: one π per color, at most one per row and column, and π symbols cannot touch, even diagonally.';
+  const emptyLines=size>9?' Rows and columns can be empty on this board.':'';
+  $('pd-rules').textContent=errors?'Some π symbols break a rule — red outlines show conflicts.':'Rules: one π per color, at most one per row and column, and π symbols cannot touch, even diagonally.'+emptyLines;
  }
  root.querySelectorAll('[data-pd-mode]').forEach(b=>b.addEventListener('click',()=>{mode=b.dataset.pdMode;render()}));
  $('pd-hint').addEventListener('click',hint);
