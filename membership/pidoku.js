@@ -3,7 +3,7 @@
  const root=document.getElementById('pidoku-game');if(!root||root.dataset.initialized)return;root.dataset.initialized='true';
  const $=id=>root.querySelector('#'+id);
  const palette=['#f4aa72','#f3a4ca','#a6d1e9','#79cfc8','#b69ae9','#f1ce65','#e99092','#a8d78c','#d4a98e'];
- let size=9,regions=[],answer=[],marks=[],mode='pi',level='easy',hints=0,mistakes=0,started=0,seconds=0,timer=null,finished=false,seed=0,random=Math.random,locked=new Set();
+ let size=10,regions=[],answer=[],marks=[],mode='pi',level='random',hints=0,mistakes=0,started=0,seconds=0,timer=null,finished=false,seed=0,random=Math.random,locked=new Set();
  const board=$('pd-board'),day=$('pd-day'),newBtn=$('pd-new');
  function seeded(n){let x=n|0;return ()=>{x^=x<<13;x^=x>>>17;x^=x<<5;return (x>>>0)/4294967296}}
  const rnd=n=>Math.floor(random()*n);
@@ -21,7 +21,7 @@
  function generateRegions(queens,style){
   // Purposeful connected color regions. An occasional one-cell region is a built-in clue.
   const owner=Array(size*size).fill(-1),frontiers=queens.map((q,k)=>{owner[q]=k;return [q]});
-  const singleton=style==='easy'?rnd(9):style==='medium'&&rnd(3)===0?rnd(9):-1;
+  const singleton=rnd(3)===0?rnd(9):-1;
   const order=shuffle(Array.from({length:9},(_,i)=>i));
   let remaining=size*size-9;
   while(remaining){
@@ -68,7 +68,7 @@
   return nodes>250000?limit:solutions;
  }
  function createLogicalPuzzle(){
-  const desiredGivens=level==='easy'?3:level==='medium'?2:level==='hard'?1:0;
+  const desiredGivens=rnd(4);
   // Generate several candidate layouts; retain the one requiring the fewest elimination clues.
   let best=null;
   for(let attempt=0;attempt<14;attempt++){
@@ -94,7 +94,7 @@
    if(countSolutions(givens,blocked)!==1)continue;
    const result={queens,areas,givens,blocked,clues:blocked.size};
    if(!best||result.clues<best.clues)best=result;
-   if(best.clues<=(level==='easy'?3:level==='medium'?7:level==='hard'?10:14))break;
+   if(best.clues<=9)break;
   }
   if(!best)throw Error('Unable to generate a uniquely solvable PiDoku puzzle');
   return best;
@@ -104,18 +104,12 @@
  function saveKey(){return 'pidoku-daily-'+new Date().toISOString().slice(0,10)}
  function tick(){if(!finished){seconds=Math.floor((Date.now()-started)/1000);$('pd-time').textContent=formatTime(seconds)}}
  function build(){
-  clearInterval(timer);finished=false;size=level==='easy'?9:level==='medium'?10:level==='hard'?11:12;
-  const date=new Date().toISOString().slice(0,10);
-  if(level==='daily'){
-   seed=Array.from(date).reduce((v,ch)=>Math.imul(v,31)+ch.charCodeAt(0)|0,9471);
-   random=seeded(seed);day.textContent='Daily challenge · '+date;newBtn.textContent='Restart daily';
-  }else{
-   seed=(Math.random()*0xFFFFFFFF)|0;random=seeded(seed);day.textContent='Unlimited '+level+' puzzles';newBtn.textContent='New puzzle ↻';
-  }
+  clearInterval(timer);finished=false;
+  size=[9,10,10,11,12][Math.floor(Math.random()*5)];
+  seed=(Math.random()*0xFFFFFFFF)|0;random=seeded(seed);
+  day.textContent='Unlimited random puzzle · '+size+'×'+size;
+  newBtn.textContent='↻ Different puzzle';
   const generated=createLogicalPuzzle();answer=generated.queens;regions=generated.areas;marks=Array(size*size).fill(0);locked=new Set(generated.givens);for(const i of generated.givens)marks[i]=1;for(const i of generated.blocked){marks[i]=-1;locked.add(i)}hints=0;mistakes=0;seconds=0;started=Date.now();
-  if(level==='daily'){
-   try{if(localStorage.getItem(saveKey())==='complete'){day.textContent+=' · Completed today ✓'}}catch{}
-  }
   board.replaceChildren();board.style.setProperty('--pd-size',size);
   for(let i=0;i<marks.length;i++){
    const b=document.createElement('button');b.type='button';b.className='pd-cell';b.addEventListener('click',()=>act(i));board.appendChild(b);
@@ -142,9 +136,8 @@
   const placed=marks.map((v,i)=>v===1?i:-1).filter(i=>i>=0);
   if(placed.length!==9||placed.some(i=>conflicts(i)))return;
   finished=true;clearInterval(timer);
-  if(level==='daily'){try{localStorage.setItem(saveKey(),'complete')}catch{}}
   msg('You solved it! Nine colors, nine π symbols, no conflicts. Time: '+formatTime(seconds)+' · Hints: '+hints+'.');
-  $('pd-day').textContent=level==='daily'?'Daily challenge completed ✓':'Puzzle solved ✓';
+  $('pd-day').textContent='Puzzle solved ✓';
  }
  function hint(){
   if(finished)return;
@@ -171,6 +164,5 @@
  root.querySelectorAll('[data-pd-mode]').forEach(b=>b.addEventListener('click',()=>{mode=b.dataset.pdMode;render()}));
  $('pd-hint').addEventListener('click',hint);
  $('pd-new').addEventListener('click',build);
- $('pd-level').addEventListener('change',e=>{level=e.target.value;build()});
  build();
 })();
