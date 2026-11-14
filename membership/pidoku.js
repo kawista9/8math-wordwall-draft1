@@ -1,82 +1,112 @@
-// PiDoku: standalone free Sudoku game. No account or remote data.
+// PiDoku: region-placement puzzle, inspired by the mechanics of colored-grid logic games.
 (() => {
  const root=document.getElementById('pidoku-game');if(!root||root.dataset.initialized)return;root.dataset.initialized='true';
- const $=id=>root.querySelector('#'+id), symbols=['π','π²','π³','π⁴','π⁵','π⁶','π⁷','π⁸','π⁹'];
- let solution=[],puzzle=[],values=[],fixed=[],selected=-1,difficulty='easy',mistakes=0,hints=0,seconds=0,started=0,elapsed=0,clock=null,gameId=0,complete=false,noteMode=false,notes=Array.from({length:81},()=>new Set()),generating=false;
- const board=$('pd-board'),keys=$('pd-keys');
- const rand=n=>Math.floor(Math.random()*n);
- function shuffle(a){for(let i=a.length-1;i>0;i--){let j=rand(i+1);[a[i],a[j]]=[a[j],a[i]];}return a}
- function indices(r,c){return r*9+c}
- function makeSolved(){
-  const groups=()=>shuffle([0,1,2]).flatMap(g=>shuffle([0,1,2]).map(n=>g*3+n));
-  const rows=groups(),cols=groups(),nums=shuffle([1,2,3,4,5,6,7,8,9]);
-  return Array.from({length:81},(_,i)=>nums[(rows[Math.floor(i/9)]*3+Math.floor(rows[Math.floor(i/9)]/3)+cols[i%9])%9]);
- }
- function peers(i){let r=Math.floor(i/9),c=i%9,out=new Set();for(let j=0;j<9;j++){out.add(r*9+j);out.add(j*9+c)}let rr=Math.floor(r/3)*3,cc=Math.floor(c/3)*3;for(let y=rr;y<rr+3;y++)for(let x=cc;x<cc+3;x++)out.add(y*9+x);out.delete(i);return [...out]}
- const peerList=Array.from({length:81},(_,i)=>peers(i));
- function countSolutions(grid,limit=2){
-  let found=0;
-  function solve(){
-   if(found>=limit)return;
-   let pick=-1,opts=null;
-   for(let i=0;i<81;i++)if(!grid[i]){
-    const used=new Set(peerList[i].map(p=>grid[p])),options=[];
-    for(let n=1;n<=9;n++)if(!used.has(n))options.push(n);
-    if(!options.length)return;
-    if(!opts||options.length<opts.length){pick=i;opts=options;if(opts.length===1)break}
-   }
-   if(pick<0){found++;return}
-   for(const n of opts){grid[pick]=n;solve();grid[pick]=0;if(found>=limit)return}
+ const $=id=>root.querySelector('#'+id);
+ const palette=['#f4aa72','#f3a4ca','#a6d1e9','#79cfc8','#b69ae9','#f1ce65','#e99092','#a8d78c','#d4a98e'];
+ let size=9,regions=[],answer=[],marks=[],mode='pi',level='easy',hints=0,mistakes=0,started=0,seconds=0,timer=null,finished=false,seed=0,random=Math.random,locked=new Set();
+ const board=$('pd-board'),day=$('pd-day'),newBtn=$('pd-new');
+ function seeded(n){let x=n|0;return ()=>{x^=x<<13;x^=x>>>17;x^=x<<5;return (x>>>0)/4294967296}}
+ const rnd=n=>Math.floor(random()*n);
+ function shuffle(a){for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]]}return a}
+ const row=i=>Math.floor(i/size),col=i=>i%size;
+ function neighbors(i){let r=row(i),c=col(i),out=[];for(const [dr,dc] of [[-1,0],[1,0],[0,-1],[0,1]]){let y=r+dr,x=c+dc;if(y>=0&&x>=0&&y<size&&x<size)out.push(y*size+x)}return out}
+ function generateQueens(){
+  for(let attempt=0;attempt<5000;attempt++){
+   const rows=shuffle(Array.from({length:size},(_,i)=>i)).slice(0,9).sort((a,b)=>a-b);
+   const cols=shuffle(Array.from({length:size},(_,i)=>i)).slice(0,9);
+   if(rows.every((r,i)=>i===0||r-rows[i-1]>1||Math.abs(cols[i]-cols[i-1])>1))return rows.map((r,i)=>r*size+cols[i]);
   }
-  solve();return found;
+  throw Error('Unable to create a placement puzzle');
  }
- function makePuzzle(solved,level){
-  const targets={easy:38,medium:46,hard:52},grid=solved.slice(),order=shuffle(Array.from({length:81},(_,i)=>i));
-  let removed=0;
-  for(const i of order){if(removed>=targets[level])break;let old=grid[i];grid[i]=0;if(countSolutions(grid.slice())===1)removed++;else grid[i]=old}
-  return grid;
+ function generateRegions(queens){
+  // Multi-source randomized growth: nine connected, irregular colored regions, one seed per queen.
+  const owner=Array(size*size).fill(-1),frontiers=queens.map((q,k)=>{owner[q]=k;return [q]});
+  let remaining=size*size-9;
+  while(remaining){
+   const choices=shuffle(Array.from({length:9},(_,i)=>i)).filter(k=>frontiers[k].some(i=>neighbors(i).some(n=>owner[n]<0)));
+   if(!choices.length)break;
+   for(const k of choices){
+    const options=[];
+    for(const i of frontiers[k])for(const n of neighbors(i))if(owner[n]<0)options.push(n);
+    if(!options.length)continue;
+    const chosen=options[rnd(options.length)];owner[chosen]=k;frontiers[k].push(chosen);remaining--;
+    if(!remaining)break;
+   }
+  }
+  return owner;
  }
- function formatTime(s){return Math.floor(s/60).toString().padStart(2,'0')+':'+(s%60).toString().padStart(2,'0')}
- function message(s){$('pd-message').textContent=s}
+ function formatTime(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+ function msg(s){$('pd-message').textContent=s}
+ function saveKey(){return 'pidoku-daily-'+new Date().toISOString().slice(0,10)}
+ function tick(){if(!finished){seconds=Math.floor((Date.now()-started)/1000);$('pd-time').textContent=formatTime(seconds)}}
+ function build(){
+  clearInterval(timer);finished=false;size=level==='easy'?9:level==='medium'?10:level==='hard'?11:12;
+  const date=new Date().toISOString().slice(0,10);
+  if(level==='daily'){
+   seed=Array.from(date).reduce((v,ch)=>Math.imul(v,31)+ch.charCodeAt(0)|0,9471);
+   random=seeded(seed);day.textContent='Daily challenge · '+date;newBtn.textContent='Restart daily';
+  }else{
+   seed=(Math.random()*0xFFFFFFFF)|0;random=seeded(seed);day.textContent='Unlimited '+level+' puzzles';newBtn.textContent='New puzzle ↻';
+  }
+  answer=generateQueens();regions=generateRegions(answer);marks=Array(size*size).fill(0);locked=new Set();hints=0;mistakes=0;seconds=0;started=Date.now();
+  if(level==='daily'){
+   try{if(localStorage.getItem(saveKey())==='complete'){day.textContent+=' · Completed today ✓'}}catch{}
+  }
+  board.replaceChildren();board.style.setProperty('--pd-size',size);
+  for(let i=0;i<marks.length;i++){
+   const b=document.createElement('button');b.type='button';b.className='pd-cell';b.addEventListener('click',()=>act(i));board.appendChild(b);
+  }
+  clearInterval(timer);timer=setInterval(tick,1000);msg('Find nine π symbols — one in each color. No shared row, column, or touching corners.');render();
+ }
+ function conflicts(i){
+  if(marks[i]!==1)return false;
+  for(let j=0;j<marks.length;j++)if(j!==i&&marks[j]===1){
+   if(row(i)===row(j)||col(i)===col(j)||regions[i]===regions[j]||Math.abs(row(i)-row(j))<=1&&Math.abs(col(i)-col(j))<=1)return true;
+  }
+  return false;
+ }
+ function act(i){
+  if(finished||locked.has(i))return;
+  if(mode==='erase')marks[i]=0;
+  else if(mode==='x')marks[i]=marks[i]===-1?0:-1;
+  else marks[i]=marks[i]===1?0:1;
+  if(marks[i]===1&&conflicts(i)){mistakes++;msg('Those π symbols conflict! Check the row, column, color, or touching corners.')}
+  else msg('Keep going — find exactly one π in each colored region.');
+  render();checkWin();
+ }
+ function checkWin(){
+  const placed=marks.map((v,i)=>v===1?i:-1).filter(i=>i>=0);
+  if(placed.length!==9||placed.some(i=>conflicts(i)))return;
+  finished=true;clearInterval(timer);
+  if(level==='daily'){try{localStorage.setItem(saveKey(),'complete')}catch{}}
+  msg('You solved it! Nine colors, nine π symbols, no conflicts. Time: '+formatTime(seconds)+' · Hints: '+hints+'.');
+  $('pd-day').textContent=level==='daily'?'Daily challenge completed ✓':'Puzzle solved ✓';
+ }
+ function hint(){
+  if(finished)return;
+  const placed=marks.map((v,i)=>v===1?i:-1).filter(i=>i>=0);
+  const candidates=answer.filter(i=>marks[i]!==1&&!placed.some(j=>row(i)===row(j)||col(i)===col(j)||regions[i]===regions[j]||Math.abs(row(i)-row(j))<=1&&Math.abs(col(i)-col(j))<=1));
+  if(!candidates.length){msg('No safe hint fits your current placements. Clear conflicting π symbols first.');return}
+  const i=candidates[rnd(candidates.length)];marks[i]=1;locked.add(i);hints++;msg('Hint: a π symbol was placed in the '+(row(i)+1)+'th row.');render();checkWin();
+ }
  function render(){
-  $('pd-time').textContent=formatTime(seconds);$('pd-mistakes').textContent=mistakes;$('pd-hints-used').textContent=hints;
-  $('pd-notes').setAttribute('aria-pressed',String(noteMode));$('pd-notes').textContent=noteMode?'Notes: ON':'Notes: OFF';
-  $('pd-level').value=difficulty;
-  const selVal=selected>=0?values[selected]:0;
-  board.querySelectorAll('button').forEach((b,i)=>{
-   const n=values[i],same=selVal&&n===selVal,related=selected>=0&&(peerList[selected].includes(i));
-   b.className='pd-cell'+(fixed[i]?' pd-given':'')+(i===selected?' pd-selected':'')+(related?' pd-related':'')+(same?' pd-same':'')+(n&&!fixed[i]&&n!==solution[i]?' pd-error':'');
-   b.setAttribute('aria-label','Row '+(Math.floor(i/9)+1)+', column '+(i%9+1)+', '+(n?symbols[n-1]:'empty')+(fixed[i]?', given':''));
-   b.setAttribute('aria-pressed',String(i===selected));
-   if(n){b.textContent=symbols[n-1]}else if(notes[i].size){b.innerHTML='<span class="pd-pencil">'+Array.from({length:9},(_,j)=>'<small>'+ (notes[i].has(j+1)?symbols[j]:'')+'</small>').join('')+'</span>'}else b.textContent='';
-  });
+  const cells=board.children;let placed=0,errors=0;
+  for(let i=0;i<marks.length;i++){
+   const b=cells[i],v=marks[i],region=regions[i],bad=conflicts(i);
+   if(v===1)placed++;if(bad)errors++;
+   b.className='pd-cell'+(v===1?' pd-pi':'')+(v===-1?' pd-x':'')+(bad?' pd-conflict':'')+(locked.has(i)?' pd-hint':'');
+   b.style.backgroundColor=palette[region];b.style.color=region===4?'#221934':'#132039';
+   b.textContent=v===1?'π':v===-1?'×':'';
+   b.setAttribute('aria-label','Row '+(row(i)+1)+', column '+(col(i)+1)+', '+['orange','pink','blue','teal','lavender','yellow','coral','green','tan'][region]+' region, '+(v===1?'pi symbol':v===-1?'marked empty':'empty'));
+   b.setAttribute('aria-pressed',String(v!==0));
+  }
+  $('pd-placed').textContent=placed+' / 9';$('pd-mistakes').textContent=mistakes;$('pd-hints-used').textContent=hints;$('pd-time').textContent=formatTime(seconds);
+  root.querySelectorAll('[data-pd-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.pdMode===mode)));
+  $('pd-rules').textContent=errors?'Some π symbols break a rule — red outlines show conflicts.':'Rules: one π per color, at most one per row and column, and π symbols cannot touch, even diagonally.';
  }
- function tick(){if(!complete&&!generating){seconds=Math.floor((Date.now()-started+elapsed)/1000);$('pd-time').textContent=formatTime(seconds)}}
- async function newGame(){
-  const id=++gameId;generating=true;clearInterval(clock);$('pd-new').disabled=true;message('Creating a new '+difficulty+' puzzle…');
-  await new Promise(resolve=>setTimeout(resolve,25));if(id!==gameId)return;
-  const solved=makeSolved(),grid=makePuzzle(solved,difficulty);if(id!==gameId)return;
-  solution=solved;puzzle=grid;values=grid.slice();fixed=grid.map(Boolean);notes=Array.from({length:81},()=>new Set());selected=-1;mistakes=0;hints=0;seconds=0;elapsed=0;complete=false;noteMode=false;generating=false;started=Date.now();$('pd-new').disabled=false;
-  clearInterval(clock);clock=setInterval(tick,1000);message('Choose an empty square, then tap a π symbol.');render();
- }
- function winCheck(){if(values.every((n,i)=>n===solution[i])){complete=true;clearInterval(clock);message('Brilliant! You solved PiDoku in '+formatTime(seconds)+' with '+mistakes+' mistakes. Play again!')}}
- function put(n){
-  if(complete||generating||selected<0||fixed[selected])return;
-  if(noteMode&&n){if(notes[selected].has(n))notes[selected].delete(n);else notes[selected].add(n);render();return}
-  if(n===0){values[selected]=0;notes[selected].clear();message('Square cleared.');render();return}
-  if(values[selected]===n)return;
-  values[selected]=n;notes[selected].clear();
-  if(n!==solution[selected]){mistakes++;message('Not quite — that symbol does not fit here. Try another.')}
-  else{message('Correct placement! Keep going.');peerList[selected].forEach(p=>notes[p].delete(n))}
-  render();winCheck();
- }
- function hint(){if(complete||generating)return;let available=values.map((v,i)=>v!==solution[i]&&!fixed[i]?i:-1).filter(i=>i>=0);if(!available.length)return;let i=selected>=0&&available.includes(selected)?selected:available[rand(available.length)];values[i]=solution[i];notes[i].clear();selected=i;hints++;message('Hint revealed a correct π symbol.');render();winCheck()}
- for(let i=0;i<81;i++){let b=document.createElement('button');b.type='button';b.className='pd-cell';b.addEventListener('click',()=>{selected=i;render()});board.appendChild(b)}
- symbols.forEach((s,i)=>{let b=document.createElement('button');b.type='button';b.className='pd-key';b.textContent=s;b.setAttribute('aria-label','Place '+s);b.addEventListener('click',()=>put(i+1));keys.appendChild(b)});
- $('pd-clear').addEventListener('click',()=>put(0));$('pd-hint').addEventListener('click',hint);
- $('pd-notes').addEventListener('click',()=>{noteMode=!noteMode;render()});
- $('pd-new').addEventListener('click',newGame);
- $('pd-level').addEventListener('change',e=>{difficulty=e.target.value;newGame()});
- document.addEventListener('keydown',e=>{if(!root.isConnected||!root.contains(document.activeElement))return;if(e.key>='1'&&e.key<='9')put(Number(e.key));if(e.key==='Backspace'||e.key==='Delete')put(0)});
- newGame();
+ root.querySelectorAll('[data-pd-mode]').forEach(b=>b.addEventListener('click',()=>{mode=b.dataset.pdMode;render()}));
+ $('pd-hint').addEventListener('click',hint);
+ $('pd-new').addEventListener('click',build);
+ $('pd-level').addEventListener('change',e=>{level=e.target.value;build()});
+ build();
 })();
