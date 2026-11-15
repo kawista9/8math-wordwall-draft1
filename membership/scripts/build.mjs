@@ -1,0 +1,33 @@
+import { cp, mkdir, readdir, rm, stat } from 'node:fs/promises';
+import path from 'node:path';
+const root = path.resolve(import.meta.dirname, '../..');
+const out = path.join(root, 'membership/dist');
+await rm(out, { recursive: true, force: true });
+await mkdir(out, { recursive: true });
+for (const name of await readdir(root)) {
+ if (name === 'assets' || /\.(html|js|css)$/.test(name)) await cp(path.join(root,name),path.join(out,name),{recursive:true});
+}
+await cp(path.join(root,'membership/roster-csv.mjs'),path.join(out,'roster-csv.mjs'));
+await cp(path.join(root,'membership/client.js'),path.join(out,'membership-client.js'));
+await cp(path.join(root,'membership/live-client.js'),path.join(out,'live-client.js'));
+await cp(path.join(root,'membership/live-badge.js'),path.join(out,'live-badge.js'));
+await cp(path.join(root,'membership/live-indicator.gif'),path.join(out,'live-indicator.gif'));
+await cp(path.join(root,'membership/brand.css'),path.join(out,'brand.css'));
+await cp(path.join(root,'membership/game-celebration.js'),path.join(out,'game-celebration.js'));
+await cp(path.join(root,'membership/memory-matrix.js'),path.join(out,'memory-matrix.js'));
+await cp(path.join(root,'membership/memory-matrix.css'),path.join(out,'memory-matrix.css'));
+await cp(path.join(root,'membership/pidoku.js'),path.join(out,'pidoku.js'));
+await cp(path.join(root,'membership/pidoku.css'),path.join(out,'pidoku.css'));
+await cp(path.join(root,'membership/match-lab.js'),path.join(out,'match-lab.js'));
+await cp(path.join(root,'membership/match-lab.css'),path.join(out,'match-lab.css'));
+await cp(path.join(root,'membership/brand-logo.svg'),path.join(out,'brand-logo.svg'));
+async function inspect(dir) {
+ for (const name of await readdir(dir)) {
+  const file = path.join(dir,name), info = await stat(file);
+  if (info.isDirectory()) await inspect(file);
+  else if (info.size > 25 * 1024 * 1024) throw new Error(`Asset exceeds hosting limit: ${file}`);
+ }
+}
+await inspect(out);
+console.log('Built protected word wall assets.');
+
