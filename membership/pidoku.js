@@ -121,6 +121,7 @@
   finished=true;clearInterval(timer);
   msg('You solved it! Nine colors, nine π symbols, no conflicts. Time: '+formatTime(seconds)+' · Hints: '+hints+'.');
   $('pd-day').textContent='Puzzle solved ✓';
+  board.dispatchEvent(new Event('math-wall-win',{bubbles:true}));
  }
  function hint(){
   if(finished)return;

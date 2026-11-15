@@ -50,7 +50,11 @@
   const [a,b]=open;
   if(cards[a].id===cards[b].id){
    matched.add(cards[a].id);score+=100;open=[];status('Match found! +100 points');update();show();
-   if(matched.size===6){clearInterval(timer);score+=Math.max(0,200-moves*5);status('All six pairs found! Final score: '+score+' · '+moves+' moves.');update()}
+   if(matched.size===6){
+    clearInterval(timer);score+=Math.max(0,200-moves*5);
+    status('All six pairs found! Final score: '+score+' · '+moves+' moves.');update();
+    board.dispatchEvent(new Event('math-wall-win',{bubbles:true}));
+   }
   }else{
    busy=true;score=Math.max(0,score-10);status('Not a match — remember their positions.');update();show();
    const current=token;setTimeout(()=>{if(current!==token)return;open=[];busy=false;show()},900);

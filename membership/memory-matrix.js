@@ -56,6 +56,7 @@
     }
     if (round === totalRounds) {
       phase = 'done';
+      if (score === totalRounds * 100) board.dispatchEvent(new Event('math-wall-win', { bubbles: true }));
       status('Training complete!', 'You earned ' + score + ' out of 500 points. Play again to improve.');
     } else {
       round++;

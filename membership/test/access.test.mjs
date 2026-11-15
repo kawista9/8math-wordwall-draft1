@@ -126,7 +126,7 @@ test('free Memory Matrix game and assets are public without a membership',async(
  const e=env();
  const page=await worker.fetch(request('/account'),e);
  assert.equal(page.status,200);assert.match(await page.text(),/FREE BRAIN TRAINING/);
- for(const asset of ['/memory-matrix.js','/memory-matrix.css']){
+ for(const asset of ['/memory-matrix.js','/memory-matrix.css','/game-celebration.js']){
   const result=await worker.fetch(request(asset),e);
   assert.equal(result.status,200);
  }

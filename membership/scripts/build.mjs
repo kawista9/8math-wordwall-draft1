@@ -13,6 +13,7 @@ await cp(path.join(root,'membership/live-client.js'),path.join(out,'live-client.
 await cp(path.join(root,'membership/live-badge.js'),path.join(out,'live-badge.js'));
 await cp(path.join(root,'membership/live-indicator.gif'),path.join(out,'live-indicator.gif'));
 await cp(path.join(root,'membership/brand.css'),path.join(out,'brand.css'));
+await cp(path.join(root,'membership/game-celebration.js'),path.join(out,'game-celebration.js'));
 await cp(path.join(root,'membership/memory-matrix.js'),path.join(out,'memory-matrix.js'));
 await cp(path.join(root,'membership/memory-matrix.css'),path.join(out,'memory-matrix.css'));
 await cp(path.join(root,'membership/pidoku.js'),path.join(out,'pidoku.js'));
