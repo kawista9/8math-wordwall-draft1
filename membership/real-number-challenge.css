@@ -11,9 +11,28 @@
 #real-number-challenge fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
 #real-number-challenge legend { padding: 0; margin-bottom: .75rem; font-weight: 650; }
 .rn-choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr)); gap: .55rem; }
-.rn-choices label { display: flex; align-items: center; gap: .5rem; padding: .65rem .8rem; border: 1px solid #5367a1; border-radius: 10px; cursor: pointer; }
-.rn-choices label:has(input:checked) { background: #263e60; border-color: #91eaff; }
-.rn-choices input { accent-color: #66deff; flex: 0 0 auto; }
+#real-number-challenge .rn-choices label {
+  display: grid;
+  grid-template-columns: 1.125rem minmax(0, 1fr);
+  align-items: center;
+  gap: .5rem;
+  min-height: 44px;
+  margin: 0;
+  padding: .65rem .75rem;
+  border: 1px solid #5367a1;
+  border-radius: 10px;
+  line-height: 1.4;
+  cursor: pointer;
+}
+#real-number-challenge .rn-choices label:has(input:checked) { background: #263e60; border-color: #91eaff; }
+#real-number-challenge .rn-choices input[type="radio"] {
+  width: 100%;
+  height: 1.125rem;
+  margin: 0;
+  padding: 0;
+  appearance: auto;
+  accent-color: #66deff;
+}
 .rn-actions { display: flex; flex-wrap: wrap; gap: .65rem; margin-top: 1rem; }
 .rn-actions button { margin: 0; }
 .rn-actions button:disabled { opacity: .65; cursor: default; }
