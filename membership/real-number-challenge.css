@@ -1,0 +1,20 @@
+#real-number-challenge {
+  margin: 2rem 0;
+  padding: clamp(1rem, 4vw, 2rem);
+  border: 1px solid #5367a1;
+  border-radius: 24px;
+  background: #101936;
+}
+#real-number-challenge h2 { margin: 0 0 .5rem; }
+#real-number-challenge img { display: block; width: 100%; height: auto; margin: 1rem 0; border-radius: 14px; }
+#real-number-challenge img[hidden] { display: none; }
+#real-number-challenge fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+#real-number-challenge legend { padding: 0; margin-bottom: .75rem; font-weight: 650; }
+.rn-choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr)); gap: .55rem; }
+.rn-choices label { display: flex; align-items: center; gap: .5rem; padding: .65rem .8rem; border: 1px solid #5367a1; border-radius: 10px; cursor: pointer; }
+.rn-choices label:has(input:checked) { background: #263e60; border-color: #91eaff; }
+.rn-choices input { accent-color: #66deff; flex: 0 0 auto; }
+.rn-actions { display: flex; flex-wrap: wrap; gap: .65rem; margin-top: 1rem; }
+.rn-actions button { margin: 0; }
+.rn-actions button:disabled { opacity: .65; cursor: default; }
+#real-number-challenge [role="status"] { color: #ffde78; margin: .7rem 0 0; }

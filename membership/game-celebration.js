@@ -7,6 +7,7 @@
 
   document.addEventListener('math-wall-win', event => {
     active?.remove();
+    const smiles = event.detail?.smiles;
     const board = event.target.getBoundingClientRect();
     const originX = Math.max(32, Math.min(innerWidth - 32, board.left + board.width / 2));
     const originY = Math.max(64, Math.min(innerHeight - 64, board.top + board.height / 2));
@@ -30,7 +31,7 @@
     }
 
     if (reduceMotion.matches || typeof overlay.animate !== 'function') {
-      particle('★ π ★', originX, originY, colors[0], 48).style.transform = 'translate(-50%, -50%)';
+      particle(smiles ? '☺ π ☺' : '★ π ★', originX, originY, colors[0], 48).style.transform = 'translate(-50%, -50%)';
     } else {
       const spread = Math.min(innerWidth * 0.22, 180);
       const radius = Math.min(innerWidth * 0.25, 148);
@@ -44,8 +45,8 @@
       ];
 
       bursts.forEach(([offsetX, offsetY, delay], index) => {
-        const x = Math.max(36, Math.min(innerWidth - 36, originX + offsetX));
-        const y = Math.max(72, Math.min(innerHeight - 72, originY + offsetY));
+        const x = smiles ? innerWidth * (index % 3 + 1) / 4 : Math.max(36, Math.min(innerWidth - 36, originX + offsetX));
+        const y = smiles ? innerHeight * (index < 3 ? 0.3 : 0.7) : Math.max(72, Math.min(innerHeight - 72, originY + offsetY));
 
         for (let spark = 0; spark < 18; spark++) {
           const angle = spark * Math.PI / 9 + index * 0.17;
@@ -54,7 +55,7 @@
           const dy = Math.sin(angle) * distance;
           const color = colors[(spark + index) % colors.length];
           const isTrail = spark % 3 === 2;
-          const symbol = isTrail ? '' : spark % 3 === 0 ? '★' : 'π';
+          const symbol = isTrail ? '' : spark % 3 === 0 ? (smiles && spark % 2 === 0 ? '☺' : '★') : 'π';
           const element = particle(symbol, x, y, color, 33 + Math.random() * 18);
           if (isTrail) {
             Object.assign(element.style, {

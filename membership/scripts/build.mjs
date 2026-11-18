@@ -21,6 +21,9 @@ await cp(path.join(root,'membership/pidoku.css'),path.join(out,'pidoku.css'));
 await cp(path.join(root,'membership/match-lab.js'),path.join(out,'match-lab.js'));
 await cp(path.join(root,'membership/match-lab.css'),path.join(out,'match-lab.css'));
 await cp(path.join(root,'membership/brand-logo.svg'),path.join(out,'brand-logo.svg'));
+for (const name of ['real-number-challenge.js', 'real-number-challenge.css', 'order-real-numbers-8-2d.png']) {
+ await cp(path.join(root, 'membership', name), path.join(out, name));
+}
 async function inspect(dir) {
  for (const name of await readdir(dir)) {
   const file = path.join(dir,name), info = await stat(file);
